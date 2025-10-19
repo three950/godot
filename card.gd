@@ -1,6 +1,8 @@
 extends Control
 enum cardState{fixed, dragging, bestacked}
+enum cardType{normal, selling, architecture}  # 卡片类型
 @export var cardCurrentState = cardState.fixed
+@export var card_type: cardType = cardType.normal  # 默认为普通类型
 @export var follow_target: Label
 @export var snap_distance: float = 80.0  # 吸附检测的最大距离
 @export var stack_offset: Vector2 = Vector2(0, 15)  # 堆叠时的视觉偏移（Y轴留出label高度）
@@ -30,6 +32,10 @@ func _process(delta: float) -> void:
 				position = parent_card.position + drag_offset_in_stack
 
 func _on_button_button_down() -> void:
+	# architecture 类型不能拖拽
+	if card_type == cardType.architecture:
+		return
+	
 	cardCurrentState = cardState.dragging
 	original_position = position
 	
@@ -48,6 +54,12 @@ func _on_button_button_up() -> void:
 	z_index = 0
 	# 恢复所有子卡片的 z_index
 	update_stacked_cards_z_index()
+	
+	# selling 类型拖动后回到原始位置
+	if card_type == cardType.selling:
+		position = original_position
+		cardCurrentState = cardState.fixed
+		return
 	
 	# 检测是否可以堆叠到其他卡片上
 	var closest_card = find_closest_card()
@@ -72,6 +84,12 @@ func find_closest_card() -> Control:
 		if is_card_in_stack(card):
 			continue
 		
+		# 如果目标卡片是 selling 或 architecture 类型，不能堆叠在上面
+		# 检查是否是同类型的 card 节点（有 card_type 属性）
+		if card.get_script() == get_script():
+			if card.card_type == cardType.selling or card.card_type == cardType.architecture:
+				continue
+		
 		var distance = global_position.distance_to(card.global_position)
 		if distance < closest_distance:
 			closest_distance = distance
@@ -81,6 +99,12 @@ func find_closest_card() -> Control:
 
 # 堆叠到目标卡片上
 func stack_on_card(target_card: Control) -> void:
+	# selling 和 architecture 类型不能被堆叠
+	# 注意：architecture 理论上不会进入拖拽状态，但这里做防御性检查
+	if card_type == cardType.selling or card_type == cardType.architecture:
+		cardCurrentState = cardState.fixed
+		return
+	
 	parent_card = target_card
 	cardCurrentState = cardState.bestacked
 	
@@ -104,6 +128,11 @@ func stack_on_card(target_card: Control) -> void:
 
 # 添加卡片到堆叠
 func add_to_stack(card: Control) -> void:
+	# selling 和 architecture 类型不允许其他卡片堆叠在上面
+	if card_type == cardType.selling or card_type == cardType.architecture:
+		print("警告: %s 类型的卡片不允许堆叠其他卡片" % cardType.keys()[card_type])
+		return
+	
 	if card not in stacked_cards:
 		stacked_cards.append(card)
 		print("  堆叠数量: %d" % stacked_cards.size())

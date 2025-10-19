@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bl8gwcgn5svup"
-path="res://.godot/imported/小洞穴.png-244d7eb052e2fb3b39910d7c719b0072.ctex"
+uid="uid://bh6qgmyo0b573"
+path="res://.godot/imported/Association_of_Grotters.png-33ff1bccb9dd0781230d81371f211879.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/terrain小地形/小洞穴.png"
-dest_files=["res://.godot/imported/小洞穴.png-244d7eb052e2fb3b39910d7c719b0072.ctex"]
+source_file="res://assets/neutral_buildings/Association_of_Grotters.png"
+dest_files=["res://.godot/imported/Association_of_Grotters.png-33ff1bccb9dd0781230d81371f211879.ctex"]
 
 [params]
 
