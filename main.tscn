@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://r1lb3ajxfx1j"]
+[gd_scene load_steps=5 format=3 uid="uid://r1lb3ajxfx1j"]
 
 [ext_resource type="Script" uid="uid://b6gu1qtuwx15i" path="res://card_manager.gd" id="1_card_mgr"]
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://card.tscn" id="2_card_scene"]
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://background.tscn" id="3_h2yge"]
+[ext_resource type="Script" uid="uid://bbnp6ftl63g4m" path="res://camera_controller.gd" id="4_camera"]
 
 [node name="Main" type="Node2D"]
 
@@ -13,3 +14,7 @@ script = ExtResource("1_card_mgr")
 card_scene = ExtResource("2_card_scene")
 start_position = Vector2(100, 100)
 card_spacing = Vector2(120, 0)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(576, 328)
+script = ExtResource("4_camera")

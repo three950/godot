@@ -7,8 +7,10 @@
 [node name="backgroundUi" type="Node2D"]
 
 [node name="background" type="TextureRect" parent="."]
-offset_right = 1152.0
-offset_bottom = 648.0
+offset_left = -168.0
+offset_top = -96.0
+offset_right = 1325.3334
+offset_bottom = 744.0
 texture = ExtResource("1_oabld")
 
 [node name="ShopManager" type="Node2D" parent="." node_paths=PackedStringArray("slot_container")]
@@ -19,5 +21,5 @@ slot_container = NodePath("ShopArea")
 
 [node name="ShopArea" type="HBoxContainer" parent="ShopManager"]
 custom_minimum_size = Vector2(800, 115)
-theme_override_constants/separation = 10
 mouse_filter = 2
+theme_override_constants/separation = 10
