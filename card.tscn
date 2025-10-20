@@ -1,9 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://cxgk8a5mjy27v"]
+[gd_scene load_steps=4 format=3 uid="uid://cxgk8a5mjy27v"]
 
 [ext_resource type="Script" uid="uid://ut5tbn2q80gh" path="res://card.gd" id="1_q5obu"]
 [ext_resource type="Texture2D" uid="uid://b11wupevcdiwd" path="res://assets/人物_莉可.png" id="1_rjlel"]
 [ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="2_q5obu"]
-[ext_resource type="Script" uid="uid://bhejdfhilpa46" path="res://label.gd" id="4_e484p"]
 
 [node name="Card_莉可" type="Control" node_paths=PackedStringArray("follow_target") groups=["Cards"]]
 layout_mode = 3
@@ -45,7 +44,6 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("2_q5obu")
 theme_override_font_sizes/font_size = 10
 text = "莉可"
-script = ExtResource("4_e484p")
 
 [node name="Button" type="Button" parent="."]
 self_modulate = Color(1, 1, 1, 0)
