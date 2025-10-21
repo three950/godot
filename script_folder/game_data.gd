@@ -23,7 +23,7 @@ func load_all_game_data() -> void:
 
 ## 从CSV文件加载角色数据
 func load_character_data_from_csv() -> void:
-	var csv_path = "res://assets/card_data-人物.csv"
+	var csv_path = "res://assets/character/card_data-人物.csv"
 	var file = FileAccess.open(csv_path, FileAccess.READ)
 	
 	if not file:

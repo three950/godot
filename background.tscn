@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://cwohluet7sc50" path="res://assets/abyss/地表.jpg" id="1_oabld"]
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://card.tscn" id="2_shop"]
-[ext_resource type="Script" path="res://shop_manager.gd" id="3_shop_mgr"]
+[ext_resource type="Script" path="res://script_folder/shop_manager.gd" id="3_shop_mgr"]
 
 [node name="backgroundUi" type="Node2D"]
 

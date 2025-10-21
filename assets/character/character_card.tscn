@@ -1,6 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://ce3ve3u7c5sm0"]
+[gd_scene load_steps=4 format=3 uid="uid://dmy86nwd2147t"]
 
-[ext_resource type="Script" uid="uid://b2cxcy1nlt5ej" path="res://character_card.gd" id="1_character"]
+[ext_resource type="Script" uid="uid://b2cxcy1nlt5ej" path="res://assets/character/character_card.gd" id="1_character"]
 [ext_resource type="Texture2D" uid="uid://b11wupevcdiwd" path="res://assets/character/人物_莉可.png" id="2_texture"]
 [ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="3_font"]
 

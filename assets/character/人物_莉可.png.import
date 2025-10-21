@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://2cp8gr68qu5g"
-path="res://.godot/imported/人物_娜娜奇.png-86695fac4182c9ed4e6d091edca44dbd.ctex"
+uid="uid://b11wupevcdiwd"
+path="res://.godot/imported/人物_莉可.png-bb9d4ecc35b429aaf1ad38a004dbc950.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/人物_娜娜奇.png"
-dest_files=["res://.godot/imported/人物_娜娜奇.png-86695fac4182c9ed4e6d091edca44dbd.ctex"]
+source_file="res://assets/character/人物_莉可.png"
+dest_files=["res://.godot/imported/人物_莉可.png-bb9d4ecc35b429aaf1ad38a004dbc950.ctex"]
 
 [params]
 

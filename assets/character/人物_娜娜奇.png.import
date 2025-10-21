@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://22losaghkkco"
-path="res://.godot/imported/人物_雷古.png-5fba37393b37887517593d0b23af574f.ctex"
+uid="uid://2cp8gr68qu5g"
+path="res://.godot/imported/人物_娜娜奇.png-8f74e05b49fabdcbb4472c2b2908bf6e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/人物_雷古.png"
-dest_files=["res://.godot/imported/人物_雷古.png-5fba37393b37887517593d0b23af574f.ctex"]
+source_file="res://assets/character/人物_娜娜奇.png"
+dest_files=["res://.godot/imported/人物_娜娜奇.png-8f74e05b49fabdcbb4472c2b2908bf6e.ctex"]
 
 [params]
 
