@@ -31,8 +31,9 @@ offset_bottom = 127.0
 
 [node name="TextureRect" type="TextureRect" parent="Control/ColorRect"]
 layout_mode = 0
+offset_top = 4.0
 offset_right = 82.0
-offset_bottom = 109.0
+offset_bottom = 119.0
 texture = ExtResource("2_texture")
 expand_mode = 1
 
