@@ -1,10 +1,12 @@
-[gd_scene load_steps=6 format=3 uid="uid://r1lb3ajxfx1j"]
+[gd_scene load_steps=8 format=3 uid="uid://r1lb3ajxfx1j"]
 
 [ext_resource type="Script" uid="uid://b6gu1qtuwx15i" path="res://script_folder/card_manager.gd" id="1_card_mgr"]
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://card.tscn" id="2_card_scene"]
 [ext_resource type="PackedScene" uid="uid://dmy86nwd2147t" path="res://assets/character/character_card.tscn" id="2_character_card"]
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://background.tscn" id="3_h2yge"]
 [ext_resource type="Script" uid="uid://bbnp6ftl63g4m" path="res://script_folder/camera_controller.gd" id="4_camera"]
+[ext_resource type="PackedScene" uid="uid://scene_card_template" path="res://assets/terrain小地形/scene_card.tscn" id="5_scene_card"]
+[ext_resource type="PackedScene" uid="uid://cq3m5h8p9vw2k" path="res://assets/remains/remains_card.tscn" id="6_remains_card"]
 
 [node name="Main" type="Node2D"]
 
@@ -14,6 +16,8 @@
 script = ExtResource("1_card_mgr")
 card_scene = ExtResource("2_card_scene")
 character_card_scene = ExtResource("2_character_card")
+scene_card_scene = ExtResource("5_scene_card")
+remains_card_scene = ExtResource("6_remains_card")
 start_position = Vector2(100, 100)
 card_spacing = Vector2(120, 0)
 

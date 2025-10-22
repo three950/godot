@@ -13,6 +13,8 @@ var parent_card: Control = null  # 如果这张卡片堆叠在其他卡片上，
 var original_position: Vector2 = Vector2.ZERO  # 开始拖拽时的原始位置
 var drag_offset_in_stack: Vector2 = Vector2.ZERO  # 在堆叠中的偏移量
 
+const DRAG_TEMP_Z := 100
+
 func _ready() -> void:
 	original_position = position
 
@@ -20,10 +22,9 @@ func _process(delta: float) -> void:
 	match cardCurrentState:
 		cardState.dragging:
 			global_position = get_global_mouse_position() - size / 2
-			z_index = 100
-			# 同时更新所有子卡片的 z_index 和位置
-			update_stacked_cards_z_index()
-			update_stacked_cards_position()
+			z_index = DRAG_TEMP_Z
+			# 同步更新子卡片层级与位置
+			update_stacked_cards()
 		cardState.fixed:
 			pass
 		cardState.bestacked:
@@ -52,8 +53,8 @@ func _on_button_button_down() -> void:
 
 func _on_button_button_up() -> void:
 	z_index = 0
-	# 恢复所有子卡片的 z_index
-	update_stacked_cards_z_index()
+	# 恢复所有子卡片的 z_index 与位置
+	update_stacked_cards()
 	
 	# selling 类型拖动后回到原始位置
 	if card_type == cardType.selling:
@@ -74,7 +75,8 @@ func _on_button_button_up() -> void:
 func find_closest_card() -> Control:
 	var cards = get_tree().get_nodes_in_group("Cards")
 	var closest_card: Control = null
-	var closest_distance: float = snap_distance
+	var snap_distance_sq: float = snap_distance * snap_distance
+	var closest_distance_sq: float = snap_distance_sq
 	
 	for card in cards:
 		if card == self or card == parent_card:
@@ -84,23 +86,24 @@ func find_closest_card() -> Control:
 		if is_card_in_stack(card):
 			continue
 		
-		# 如果目标卡片是 selling 或 architecture 类型，不能堆叠在上面
-		# 检查是否是同类型的 card 节点（有 card_type 属性）
-		if card.get_script() == get_script():
-			if card.card_type == cardType.selling or card.card_type == cardType.architecture:
+		# 如果目标卡片是 selling 类型，不能堆叠在上面
+		# architecture 类型（如场景卡片）应该允许堆叠
+		# 检查目标卡片是否有 card_type 属性
+		if "card_type" in card:
+			if card.card_type == cardType.selling:
 				continue
 		
-		var distance = global_position.distance_to(card.global_position)
-		if distance < closest_distance:
-			closest_distance = distance
+		var dist_sq = global_position.distance_squared_to(card.global_position)
+		if dist_sq < closest_distance_sq:
+			closest_distance_sq = dist_sq
 			closest_card = card
 	
 	return closest_card
 
 # 堆叠到目标卡片上
 func stack_on_card(target_card: Control) -> void:
-	# selling 和 architecture 类型不能被堆叠
-	# 注意：architecture 理论上不会进入拖拽状态，但这里做防御性检查
+	# selling 类型不能被堆叠
+	# architecture 类型理论上不会进入拖拽状态（在 button_down 中已阻止），但这里做防御性检查
 	if card_type == cardType.selling or card_type == cardType.architecture:
 		cardCurrentState = cardState.fixed
 		return
@@ -108,8 +111,8 @@ func stack_on_card(target_card: Control) -> void:
 	parent_card = target_card
 	cardCurrentState = cardState.bestacked
 	
-	# 计算堆叠偏移量（基于目标卡片上已有的堆叠数量）
-	var stack_index = target_card.stacked_cards.size()
+	# 计算堆叠偏移量（基于目标卡片整条堆叠链的总数量）
+	var stack_index = target_card.get_total_stack_size()
 	drag_offset_in_stack = stack_offset * (stack_index + 1)
 	
 	# 添加到目标卡片的堆叠列表
@@ -121,6 +124,9 @@ func stack_on_card(target_card: Control) -> void:
 	# 设置层级，堆叠的卡片层级更高
 	z_index = target_card.z_index + stack_index + 1
 	
+	# 对被拖动卡片内部的子卡片递归刷新位置与层级
+	update_stacked_cards()
+	
 	# 关键：调整场景树顺序，确保子卡片在父卡片后面，优先接收输入
 	adjust_scene_tree_order()
 	
@@ -128,8 +134,9 @@ func stack_on_card(target_card: Control) -> void:
 
 # 添加卡片到堆叠
 func add_to_stack(card: Control) -> void:
-	# selling 和 architecture 类型不允许其他卡片堆叠在上面
-	if card_type == cardType.selling or card_type == cardType.architecture:
+	# 只有 selling 类型不允许其他卡片堆叠在上面
+	# architecture 类型（如场景卡片）应该允许堆叠，只是不能被拖拽
+	if card_type == cardType.selling:
 		print("警告: %s 类型的卡片不允许堆叠其他卡片" % cardType.keys()[card_type])
 		return
 	
@@ -141,6 +148,7 @@ func add_to_stack(card: Control) -> void:
 func remove_from_stack(card: Control) -> void:
 	if card in stacked_cards:
 		stacked_cards.erase(card)
+		card.parent_card = null  # 断开父引用
 		print("卡片 %s 从 %s 上移除，剩余: %d" % [card.name, name, stacked_cards.size()])
 		
 		# 重新排列剩余堆叠的卡片
@@ -169,23 +177,21 @@ func is_card_in_stack(card: Control) -> bool:
 	
 	return false
 
-# 更新所有堆叠卡片的 z_index
-func update_stacked_cards_z_index() -> void:
+# 统一更新堆叠卡片的 z_index 与 position
+func update_stacked_cards() -> void:
 	for i in range(stacked_cards.size()):
 		var card = stacked_cards[i]
 		card.z_index = z_index + i + 1
-		# 递归更新子卡片的子卡片
-		if card.has_method("update_stacked_cards_z_index"):
-			card.update_stacked_cards_z_index()
-
-# 更新所有堆叠卡片的位置（拖动时子卡片跟随）
-func update_stacked_cards_position() -> void:
-	for i in range(stacked_cards.size()):
-		var card = stacked_cards[i]
 		card.position = position + card.drag_offset_in_stack
-		# 递归更新子卡片的子卡片
-		if card.has_method("update_stacked_cards_position"):
-			card.update_stacked_cards_position()
+		if card.has_method("update_stacked_cards"):
+			card.update_stacked_cards()
+
+# 兼容旧函数名，内部调用新实现
+func update_stacked_cards_z_index() -> void:
+	update_stacked_cards()
+
+func update_stacked_cards_position() -> void:
+	update_stacked_cards()
 
 # 调整场景树顺序，确保堆叠顺序正确
 func adjust_scene_tree_order() -> void:
@@ -223,3 +229,12 @@ func move_stacked_cards_to_end() -> void:
 		# 递归移动子卡片的子卡片
 		if child_card.has_method("move_stacked_cards_to_end"):
 			child_card.move_stacked_cards_to_end()
+
+# 递归获取当前卡片堆叠链（不含自身）的总数量
+func get_total_stack_size() -> int:
+	var total := 0
+	for child in stacked_cards:
+		total += 1
+		if child.has_method("get_total_stack_size"):
+			total += child.get_total_stack_size()
+	return total
