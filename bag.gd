@@ -13,12 +13,19 @@ var was_mouse_over: bool = false
 # 当前背包所属的角色
 var current_character: CharacterData = null
 
-# 卡槽节点引用
+# 装备槽位引用（左右手）
+var left_slot: BagSlot = null
+var right_slot: BagSlot = null
+
+# 背包槽位引用（bag1-6）
 var bag_slots: Array[BagSlot] = []
 
 func _ready() -> void:
 	# 确保鼠标事件可以被检测
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	
+	# 设置背包面板的 z_index，确保显示在合适的层级
+	z_index = 10  # 背包应该在较高层级，但卡槽内的卡片会更高
 	
 	# 获取所有卡槽的引用
 	_initialize_slots()
@@ -43,23 +50,22 @@ func _process(_delta: float) -> void:
 func _initialize_slots() -> void:
 	bag_slots.clear()
 	
-	# 获取左侧的2个卡槽
+	# 获取左侧的装备槽位（left 和 right）
 	var left_slots = get_node_or_null("HBoxContainer/LeftSlots")
 	if left_slots:
-		for i in range(1, 3):  # Slot1, Slot2
-			var slot = left_slots.get_node_or_null("Slot%d" % i)
-			if slot:
-				bag_slots.append(slot)
+		left_slot = left_slots.get_node_or_null("Slot1")  # Slot1 对应 left（左手）
+		right_slot = left_slots.get_node_or_null("Slot2")  # Slot2 对应 right（右手）
 	
-	# 获取右侧的4个卡槽（只使用前4个）
+	# 获取右侧的背包槽位（bag1-6）
 	var right_slots = get_node_or_null("HBoxContainer/RightSlots")
 	if right_slots:
-		for i in range(3, 7):  # Slot3, Slot4, Slot5, Slot6
+		for i in range(3, 9):  # Slot3-8 对应 bag1-6
 			var slot = right_slots.get_node_or_null("Slot%d" % i)
 			if slot:
 				bag_slots.append(slot)
 	
-	print("【背包】初始化了 %d 个卡槽" % bag_slots.size())
+	print("【背包】初始化了装备槽位: left=%s, right=%s" % [left_slot != null, right_slot != null])
+	print("【背包】初始化了 %d 个背包槽位" % bag_slots.size())
 
 ## 加载指定角色的背包数据
 ## @param character: 要加载背包的角色数据
@@ -76,7 +82,11 @@ func load_character_bag(character: CharacterData) -> void:
 	# 保存当前角色引用
 	current_character = character
 	
-	# 获取角色的背包物品名称数组
+	# 1. 加载装备槽位（left 和 right）
+	_load_equipment_slot(left_slot, character.left, "左手")
+	_load_equipment_slot(right_slot, character.right, "右手")
+	
+	# 2. 获取角色的背包物品名称数组
 	var bag_items = [
 		character.bag1,
 		character.bag2,
@@ -86,7 +96,7 @@ func load_character_bag(character: CharacterData) -> void:
 		character.bag6
 	]
 	
-	# 遍历每个背包槽位
+	# 3. 遍历每个背包槽位
 	for i in range(min(bag_items.size(), bag_slots.size())):
 		var item_name = bag_items[i]
 		
@@ -103,16 +113,50 @@ func load_character_bag(character: CharacterData) -> void:
 		# 使用 CardFactory 创建卡片
 		var card = CardFactory.create_by_card_scene(item_data, null, Vector2.ZERO, 3)  # card_type=3 表示背包中的卡片
 		if card:
+			# 确保卡片可以接收鼠标事件
+			if "mouse_filter" in card:
+				card.mouse_filter = Control.MOUSE_FILTER_STOP
+			
 			# 将卡片放入对应的卡槽
 			if bag_slots[i].place_card(card):
-				print("【背包】加载物品到槽位 %d: %s" % [i + 1, item_name])
+				print("【背包】✓ 加载物品到背包槽位 %d: %s" % [i + 1, item_name])
 			else:
-				push_error("【背包】无法将物品放入槽位 %d: %s" % [i + 1, item_name])
+				push_error("【背包】✗ 无法将物品放入背包槽位 %d: %s" % [i + 1, item_name])
 				card.queue_free()  # 释放未使用的卡片
 		else:
-			push_error("【背包】无法创建卡片: %s" % item_name)
+			push_error("【背包】✗ 无法创建卡片: %s" % item_name)
 	
 	print("【背包】加载完成！")
+
+## 加载单个装备槽位
+func _load_equipment_slot(slot: BagSlot, item_name: String, slot_name: String) -> void:
+	if not slot:
+		return
+	
+	if item_name == "" or item_name == null:
+		return
+	
+	# 从 GameData 获取物品数据
+	var item_data = _get_item_data_by_name(item_name)
+	if item_data.is_empty():
+		push_warning("【背包】未找到装备数据: %s" % item_name)
+		return
+	
+	# 使用 CardFactory 创建卡片
+	var card = CardFactory.create_by_card_scene(item_data, null, Vector2.ZERO, 3)
+	if card:
+		# 确保卡片可以接收鼠标事件
+		if "mouse_filter" in card:
+			card.mouse_filter = Control.MOUSE_FILTER_STOP
+		
+		# 将卡片放入槽位
+		if slot.place_card(card):
+			print("【背包】✓ 加载装备到%s槽位: %s" % [slot_name, item_name])
+		else:
+			push_error("【背包】✗ 无法将装备放入%s槽位: %s" % [slot_name, item_name])
+			card.queue_free()
+	else:
+		push_error("【背包】✗ 无法创建装备卡片: %s" % item_name)
 
 ## 从 GameData 获取物品数据（按名称）
 ## 尝试从资源、道具、装备数据库中查找
@@ -139,6 +183,18 @@ func _get_item_data_by_name(item_name: String) -> Dictionary:
 func clear_bag() -> void:
 	print("【背包】正在清空背包...")
 	
+	# 清空装备槽位
+	if left_slot and not left_slot.is_empty():
+		var card = left_slot.remove_card()
+		if card:
+			card.queue_free()
+	
+	if right_slot and not right_slot.is_empty():
+		var card = right_slot.remove_card()
+		if card:
+			card.queue_free()
+	
+	# 清空背包槽位
 	for slot in bag_slots:
 		if not slot.is_empty():
 			var card = slot.remove_card()
@@ -156,26 +212,38 @@ func save_to_character() -> void:
 	
 	print("【背包】正在保存背包数据到角色 '%s'..." % current_character.character_name)
 	
-	# 清空角色的背包数据
+	# 1. 保存装备槽位数据
+	if left_slot:
+		current_character.left = _get_card_name_from_slot(left_slot)
+	if right_slot:
+		current_character.right = _get_card_name_from_slot(right_slot)
+	
+	# 2. 保存背包槽位数据
 	var bag_fields = ["bag1", "bag2", "bag3", "bag4", "bag5", "bag6"]
 	
 	# 遍历卡槽，提取物品名称
 	for i in range(min(bag_slots.size(), bag_fields.size())):
 		var slot = bag_slots[i]
 		var field_name = bag_fields[i]
-		
-		if slot.is_empty():
-			current_character.set(field_name, "")
-		else:
-			var card = slot.get_card()
-			# 尝试从卡片的 Label 获取名称
-			var label = card.get_node_or_null("Control/ColorRect/Label")
-			if label:
-				current_character.set(field_name, label.text)
-			else:
-				current_character.set(field_name, "")
+		current_character.set(field_name, _get_card_name_from_slot(slot))
 	
 	print("【背包】保存完成！")
+
+## 从卡槽中获取卡片名称
+func _get_card_name_from_slot(slot: BagSlot) -> String:
+	if not slot or slot.is_empty():
+		return ""
+	
+	var card = slot.get_card()
+	if not card:
+		return ""
+	
+	# 尝试从卡片的 Label 获取名称
+	var label = card.get_node_or_null("Control/ColorRect/Label")
+	if label:
+		return label.text
+	
+	return ""
 
 ## 获取当前背包中的物品数量
 func get_item_count() -> int:

@@ -7,6 +7,9 @@ class_name CharacterCard
 @export var defense: int = 0
 @export var equipment: String = ""
 
+# 角色数据引用
+var character_data: CharacterData = null
+
 # 属性标签引用
 var hp_label: Label = null
 var atk_label: Label = null
@@ -189,6 +192,13 @@ func show_bag() -> void:
 	var bag_pos = global_position + Vector2(size.x + 10, 0)
 	print("设置背包位置：", bag_pos)
 	bag_instance.global_position = bag_pos
+	
+	# 加载角色的背包数据
+	if character_data:
+		print("加载角色背包数据：", character_data.character_name)
+		bag_instance.load_character_bag(character_data)
+	else:
+		push_warning("角色卡片没有关联的角色数据，背包将为空")
 	
 	# 连接背包的鼠标事件
 	bag_instance.mouse_exited_bag.connect(_on_bag_mouse_exited)

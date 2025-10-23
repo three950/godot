@@ -81,8 +81,11 @@ func create_character_card(char_data: CharacterData, index: int) -> void:
 	# 添加到场景树（必须先添加，这样_ready()才会被调用，标签才能被获取）
 	add_child(card_instance)
 	
-	# 如果是角色卡片，设置属性（在add_child之后调用）
-	if card_instance.has_method("set_character_stats"):
+	# 如果是角色卡片，设置角色数据引用和属性（在add_child之后调用）
+	if card_instance is CharacterCard:
+		# 设置角色数据引用
+		card_instance.character_data = char_data
+		# 设置属性
 		card_instance.set_character_stats(
 			char_data.max_hp,
 			char_data.atk,
