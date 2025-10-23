@@ -62,10 +62,18 @@ func _on_button_button_up() -> void:
 	# 恢复所有子卡片的 z_index 与位置
 	update_stacked_cards()
 	
-	# selling 类型拖动后回到原始位置
+	# selling 类型拖动后检测是否离开商店区域
 	if card_type == cardType.selling:
-		position = original_position
-		cardCurrentState = cardState.fixed
+		if is_outside_shop_area():
+			# 如果离开商店区域，转为 normal 类型并固定在当前位置
+			card_type = cardType.normal
+			cardCurrentState = cardState.fixed
+			original_position = position
+			print("卡片 %s 离开商店区域，转为 normal 类型" % name)
+		else:
+			# 如果还在商店区域内，回到原始位置
+			position = original_position
+			cardCurrentState = cardState.fixed
 		return
 	
 	# 检测是否可以堆叠到其他卡片上
@@ -262,3 +270,25 @@ func get_total_stack_size() -> int:
 		if child.has_method("get_total_stack_size"):
 			total += child.get_total_stack_size()
 	return total
+
+# 检测卡片是否在商店区域之外
+func is_outside_shop_area() -> bool:
+	# 尝试找到 ShopArea 节点
+	var shop_area = get_tree().get_first_node_in_group("ShopArea")
+	if shop_area == null:
+		# 如果找不到 ShopArea 节点，尝试通过路径查找
+		var root = get_tree().root
+		shop_area = root.find_child("ShopArea", true, false)
+	
+	if shop_area == null:
+		print("警告: 找不到 ShopArea 节点")
+		return true  # 找不到商店区域，默认认为在外面
+	
+	# 获取卡片的全局矩形
+	var card_rect = Rect2(global_position, size)
+	
+	# 获取商店区域的全局矩形
+	var shop_rect = Rect2(shop_area.global_position, shop_area.size)
+	
+	# 检测是否有交集（如果没有交集，说明卡片在商店区域外）
+	return not card_rect.intersects(shop_rect)

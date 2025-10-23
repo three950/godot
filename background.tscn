@@ -17,18 +17,35 @@ texture = ExtResource("1_oabld")
 position = Vector2(16, 16)
 script = ExtResource("3_shop_mgr")
 card_scene = ExtResource("2_shop")
-slot_container = NodePath("ShopArea")
+slot_container = NodePath("ShopArea/HBoxContainer")
 refresh_button = NodePath("RefreshButton")
 coin_label = NodePath("CoinLabel")
 
-[node name="ShopArea" type="HBoxContainer" parent="ShopManager"]
+[node name="ShopArea" type="Panel" parent="ShopManager" groups=["ShopArea"]]
 custom_minimum_size = Vector2(800, 115)
+
+[node name="Background" type="ColorRect" parent="ShopManager/ShopArea"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0.5411765)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ShopManager/ShopArea"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 theme_override_constants/separation = 10
 
 [node name="RefreshButton" type="Button" parent="ShopManager"]
 offset_left = 820.0
-offset_top = 0.0
 offset_right = 920.0
 offset_bottom = 40.0
 text = "刷新商店"
