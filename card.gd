@@ -1,4 +1,8 @@
 extends Control
+
+# 信号：当有卡片堆叠到此卡片上时触发
+signal card_stacked_on(stacked_card: Control)
+
 enum cardState{fixed, dragging, bestacked}
 enum cardType{normal, selling, architecture}  # 卡片类型
 @export var cardCurrentState = cardState.fixed
@@ -6,6 +10,8 @@ enum cardType{normal, selling, architecture}  # 卡片类型
 @export var follow_target: Label
 @export var snap_distance: float = 80.0  # 吸附检测的最大距离
 @export var stack_offset: Vector2 = Vector2(0, 15)  # 堆叠时的视觉偏移（Y轴留出label高度）
+@export var can_accept_stack: bool = true  # 是否允许其他卡片堆叠在上面
+@export var accept_value_only: bool = false  # 若为真，仅接受带有 value 属性的卡片
 
 # 堆叠关系
 var stacked_cards: Array[Control] = []  # 堆叠在这张卡片上的其他卡片
@@ -87,10 +93,18 @@ func find_closest_card() -> Control:
 			continue
 		
 		# 如果目标卡片是 selling 类型，不能堆叠在上面
-		# architecture 类型（如场景卡片）应该允许堆叠
 		# 检查目标卡片是否有 card_type 属性
 		if "card_type" in card:
 			if card.card_type == cardType.selling:
+				continue
+		
+		# 检查目标卡片是否允许堆叠
+		if "can_accept_stack" in card and not card.can_accept_stack:
+			continue
+		# 如果目标卡片只接受带 value 的卡片
+		if "accept_value_only" in card and card.accept_value_only:
+			# 拖拽的卡必须有 value 属性
+			if not ("value" in self):
 				continue
 		
 		var dist_sq = global_position.distance_squared_to(card.global_position)
@@ -134,15 +148,25 @@ func stack_on_card(target_card: Control) -> void:
 
 # 添加卡片到堆叠
 func add_to_stack(card: Control) -> void:
-	# 只有 selling 类型不允许其他卡片堆叠在上面
-	# architecture 类型（如场景卡片）应该允许堆叠，只是不能被拖拽
+	# selling 类型不允许其他卡片堆叠在上面
 	if card_type == cardType.selling:
 		print("警告: %s 类型的卡片不允许堆叠其他卡片" % cardType.keys()[card_type])
+		return
+	
+	# 检查是否允许堆叠
+	if "can_accept_stack" in self and not can_accept_stack:
+		print("警告: %s 卡片不允许堆叠其他卡片" % name)
+		return
+	# 若仅接受带 value 的卡片
+	if accept_value_only and not ("value" in card):
+		print("警告: %s 只接受带 value 的卡片堆叠" % name)
 		return
 	
 	if card not in stacked_cards:
 		stacked_cards.append(card)
 		print("  堆叠数量: %d" % stacked_cards.size())
+		# 发射堆叠信号
+		card_stacked_on.emit(card)
 
 # 从堆叠中移除卡片
 func remove_from_stack(card: Control) -> void:

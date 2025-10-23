@@ -6,12 +6,20 @@ extends Node2D
 @export var slot_container: HBoxContainer
 # 刷新按钮
 @export var refresh_button: Button
+# 金币显示标签
+@export var coin_label: Label
 
 # 卡槽数组，用于存储卡槽节点
 var slots: Array[Control] = []
 
 # 所有可售商品数据（从GameData获取）
 var all_shop_items: Array = []
+
+# 金币数量
+var coins: int = 0
+
+# 探窟者协会卡片引用
+var association_card: Control = null
 
 func _ready() -> void:
 	if slot_container == null:
@@ -25,6 +33,9 @@ func _ready() -> void:
 	# 连接刷新按钮信号
 	if refresh_button:
 		refresh_button.pressed.connect(_on_refresh_button_pressed)
+	
+	# 初始化金币显示
+	update_coin_display()
 	
 	# 从GameData加载所有商品数据
 	load_shop_items()
@@ -44,6 +55,10 @@ func generate_shop() -> void:
 	
 	# 第一个卡槽：固定的建筑卡片（architecture 类型）
 	create_architecture_card(slots[0], "探窟家协会", "res://assets/neutral_buildings/Association_of_Grotters.png")
+	
+	# 连接探窟者协会的堆叠信号
+	if association_card != null:
+		association_card.card_stacked_on.connect(_on_association_card_stacked)
 	
 	# 从第2个卡槽开始，填满剩余的7个卡槽
 	# 创建一个临时数组并打乱顺序
@@ -118,6 +133,11 @@ func create_architecture_card(slot: Control, card_name: String, texture_path: St
 	# 设置卡片类型为 architecture
 	card_instance.card_type = 2  # cardType.architecture
 	
+	# 探窟者协会不接受堆叠
+	if card_name == "探窟家协会":
+		card_instance.can_accept_stack = true  # 允许堆叠
+		card_instance.accept_value_only = true  # 只接受带 value 的卡
+	
 	# 设置卡片位置（相对于卡槽）
 	card_instance.position = Vector2(0, 0)
 	
@@ -126,6 +146,10 @@ func create_architecture_card(slot: Control, card_name: String, texture_path: St
 	
 	# 将卡片添加到卡槽
 	slot.add_child(card_instance)
+	
+	# 如果是探窟者协会，保存引用
+	if card_name == "探窟家协会":
+		association_card = card_instance
 	
 	print("创建建筑卡片: " + card_name)
 
@@ -213,3 +237,66 @@ func load_texture_with_extensions(base_path: String) -> Texture2D:
 			return texture
 	
 	return null
+
+# 更新金币显示
+func update_coin_display() -> void:
+	if coin_label:
+		coin_label.text = "金币: %d" % coins
+
+# 处理探窟者协会的堆叠事件
+func _on_association_card_stacked(stacked_card: Control) -> void:
+	print("有卡片堆叠到探窟者协会: " + stacked_card.name)
+	
+	# 获取卡片的value值
+	var total_value = 0
+	
+	# 检查堆叠的卡片本身
+	if "value" in stacked_card:
+		total_value += stacked_card.value
+		print("  卡片价值: %d" % stacked_card.value)
+	
+	# 检查堆叠卡片上的所有子卡片（递归计算）
+	if "stacked_cards" in stacked_card:
+		total_value += calculate_stack_value(stacked_card.stacked_cards)
+	
+	# 累加到金币
+	coins += total_value
+	print("  总价值: %d, 当前金币: %d" % [total_value, coins])
+	
+	# 更新显示
+	update_coin_display()
+	
+	# 销毁卡片及其堆叠的所有子卡片
+	destroy_card_with_stack(stacked_card)
+	
+	# 从探窟者协会的堆叠列表中移除
+	if association_card and "stacked_cards" in association_card:
+		if stacked_card in association_card.stacked_cards:
+			association_card.stacked_cards.erase(stacked_card)
+
+# 递归计算堆叠卡片的总价值
+func calculate_stack_value(cards: Array) -> int:
+	var total = 0
+	for card in cards:
+		if "value" in card:
+			total += card.value
+			print("  子卡片价值: %d" % card.value)
+		# 递归计算子卡片的堆叠
+		if "stacked_cards" in card:
+			total += calculate_stack_value(card.stacked_cards)
+	return total
+
+# 销毁卡片及其所有堆叠的子卡片
+func destroy_card_with_stack(card: Control) -> void:
+	if card == null:
+		return
+	
+	# 先销毁所有子卡片
+	if "stacked_cards" in card:
+		var children = card.stacked_cards.duplicate()  # 复制数组避免修改时出错
+		for child_card in children:
+			destroy_card_with_stack(child_card)
+	
+	# 销毁卡片本身
+	print("  销毁卡片: " + card.name)
+	card.queue_free()

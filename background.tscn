@@ -13,12 +13,13 @@ offset_right = 1325.3334
 offset_bottom = 744.0
 texture = ExtResource("1_oabld")
 
-[node name="ShopManager" type="Node2D" parent="." node_paths=PackedStringArray("slot_container", "refresh_button")]
+[node name="ShopManager" type="Node2D" parent="." node_paths=PackedStringArray("slot_container", "refresh_button", "coin_label")]
 position = Vector2(16, 16)
 script = ExtResource("3_shop_mgr")
 card_scene = ExtResource("2_shop")
 slot_container = NodePath("ShopArea")
 refresh_button = NodePath("RefreshButton")
+coin_label = NodePath("CoinLabel")
 
 [node name="ShopArea" type="HBoxContainer" parent="ShopManager"]
 custom_minimum_size = Vector2(800, 115)
@@ -31,3 +32,14 @@ offset_top = 0.0
 offset_right = 920.0
 offset_bottom = 40.0
 text = "刷新商店"
+
+[node name="CoinLabel" type="Label" parent="ShopManager"]
+offset_left = 820.0
+offset_top = 50.0
+offset_right = 920.0
+offset_bottom = 90.0
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
+theme_override_font_sizes/font_size = 24
+text = "金币: 0"
+horizontal_alignment = 1
+vertical_alignment = 1

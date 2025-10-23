@@ -7,6 +7,7 @@ class_name RemainsCard
 @export var effect: String = ""  # 效果
 @export var attribute: String = ""  # 属性
 @export var remains_value: int = 0  # 价值
+@export var value: int = 0  # 通用价值字段，用于与其他系统交互
 
 # 标签引用
 var name_label: Label = null
@@ -32,7 +33,7 @@ func update_labels() -> void:
 	if grade_label:
 		grade_label.text = "等级:%s" % grade
 	if value_label:
-		value_label.text = "价值:%d" % remains_value
+		value_label.text = "价值:%d" % value
 
 # 设置遗物属性
 func set_remains_data(r_name: String, r_grade: String, r_effect: String, r_attribute: String, r_value: int) -> void:
@@ -41,6 +42,7 @@ func set_remains_data(r_name: String, r_grade: String, r_effect: String, r_attri
 	effect = r_effect
 	attribute = r_attribute
 	remains_value = r_value
+	value = r_value  # 同步
 	update_labels()
 
 # 从CSV数据初始化遗物信息
@@ -59,6 +61,7 @@ func initialize_from_csv(csv_data: Dictionary) -> void:
 			remains_value = int(value_str)
 		else:
 			remains_value = 0
+		value = remains_value
 	
 	update_labels()
 
