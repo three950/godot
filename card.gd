@@ -67,8 +67,12 @@ func _on_button_button_up() -> void:
 		if is_outside_shop_area():
 			# 如果离开商店区域，尝试购买
 			if try_purchase():
-				# 购买成功，转为 normal 类型并固定在当前位置
+				# 购买成功，转为 normal 类型
 				card_type = cardType.normal
+				
+				# 从 slot 节点移除，添加到主场景中
+				move_to_main_scene()
+				
 				cardCurrentState = cardState.fixed
 				original_position = position
 				print("卡片 %s 购买成功，转为 normal 类型" % name)
@@ -135,6 +139,18 @@ func stack_on_card(target_card: Control) -> void:
 	if card_type == cardType.selling or card_type == cardType.architecture:
 		cardCurrentState = cardState.fixed
 		return
+	
+	# 确保当前卡片和目标卡片在同一个父节点下
+	if get_parent() != target_card.get_parent():
+		var saved_global_pos = global_position
+		var old_parent = get_parent()
+		var target_parent = target_card.get_parent()
+		
+		if old_parent and target_parent:
+			old_parent.remove_child(self)
+			target_parent.add_child(self)
+			global_position = saved_global_pos
+			print("卡片 %s 移动到与 %s 相同的父节点" % [name, target_card.name])
 	
 	parent_card = target_card
 	cardCurrentState = cardState.bestacked
@@ -298,6 +314,38 @@ func is_outside_shop_area() -> bool:
 	
 	# 检测是否有交集（如果没有交集，说明卡片在商店区域外）
 	return not card_rect.intersects(shop_rect)
+
+# 将卡片从 slot 移动到主场景中
+func move_to_main_scene() -> void:
+	var old_parent = get_parent()
+	if old_parent == null:
+		return
+	
+	# 先获取场景树引用（必须在 remove_child 之前）
+	var tree = get_tree()
+	if tree == null or tree.root == null:
+		push_error("无法获取场景树")
+		return
+	
+	# 保存当前的全局位置
+	var saved_global_position = global_position
+	
+	# 尝试找到 CardManager 节点（人物卡片的父节点）
+	var card_manager = tree.root.find_child("CardManager", true, false)
+	var target_parent = card_manager
+	# 从当前父节点移除
+	old_parent.remove_child(self)
+	
+	# 添加到目标父节点
+	target_parent.add_child(self)
+	
+	# 恢复全局位置（转换为新父节点下的相对位置）
+	global_position = saved_global_position
+	
+	# 确保 z_index 合适，不会被遮挡
+	z_index = 0
+	
+	print("卡片 %s 已从 %s 移动到 %s" % [name, old_parent.name, target_parent.name])
 
 # 尝试购买卡片（扣除金币）
 func try_purchase() -> bool:

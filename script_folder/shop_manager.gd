@@ -96,10 +96,11 @@ func _on_refresh_button_pressed() -> void:
 
 # 刷新商店中的 selling 类型卡片
 func refresh_selling_cards() -> void:
-	# 遍历所有卡槽，找到并删除 selling 类型的卡片
+	# 遍历所有卡槽，找到并立即删除 selling 类型的卡片
 	for slot in slots:
-		# 获取卡槽中的所有子节点
-		for child in slot.get_children():
+		# 获取卡槽中的所有子节点（复制数组以避免修改时出错）
+		var children = slot.get_children().duplicate()
+		for child in children:
 			# 跳过Panel和ColorRect（卡槽的视觉效果）
 			if child is Panel or child is ColorRect:
 				continue
@@ -107,10 +108,10 @@ func refresh_selling_cards() -> void:
 			# 检查是否是 selling 类型的卡片
 			if "card_type" in child and child.card_type == 1:  # cardType.selling
 				print("  删除 selling 卡片: " + child.name)
-				child.queue_free()
+				slot.remove_child(child)  # 立即从父节点移除
+				child.queue_free()  # 然后释放内存
 	
-	# 等待一帧，确保旧卡片被删除
-	await get_tree().process_frame
+	# 不需要等待，因为已经从场景树中移除了
 	
 	# 创建新的随机商品卡片
 	var shuffled_items = all_shop_items.duplicate()
@@ -124,21 +125,22 @@ func refresh_selling_cards() -> void:
 		
 		var slot = slots[i]
 		
-		# 检查该卡槽是否已经有卡片（非selling类型的）
-		var has_card = false
+		# 检查该卡槽是否有architecture类型的卡片（不应该有，但以防万一）
+		var has_architecture = false
 		for child in slot.get_children():
 			if child is Panel or child is ColorRect:
 				continue
-			# 如果有非selling类型的卡片，跳过这个卡槽
-			if "card_type" in child:
-				has_card = true
-				print("  卡槽 %d 已有卡片 %s (类型: %d)，跳过" % [i, child.name, child.card_type])
+			# 只有architecture类型的卡片才跳过
+			if "card_type" in child and child.card_type == 2:  # cardType.architecture
+				has_architecture = true
+				print("  卡槽 %d 有architecture卡片 %s，跳过" % [i, child.name])
 				break
 		
-		# 如果卡槽为空且还有商品可填充
-		if not has_card and item_index < shuffled_items.size():
+		# 如果卡槽没有architecture卡片且还有商品可填充，就填充
+		if not has_architecture and item_index < shuffled_items.size():
 			var item_data = shuffled_items[item_index]
 			create_selling_card(slot, item_data)
+			print("  卡槽 %d 填充新商品: %s" % [i, item_data.get("名称", "未知")])
 			item_index += 1
 
 # 创建卡槽
