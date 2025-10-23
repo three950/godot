@@ -76,6 +76,10 @@ func load_character_data_from_csv() -> void:
 			# 使用 CharacterData 的静态方法创建资源
 			var char_data = CharacterData.from_dict(char_dict)
 			
+			# 初始化时给角色配备钓鱼竿
+			char_data.left = "钓鱼竿"
+			char_data.bag4 = "钓鱼竿"
+			
 			# 存储到数据库
 			character_database[char_data.character_name] = char_data
 			loaded_count += 1

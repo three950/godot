@@ -204,35 +204,8 @@ func create_architecture_card(slot: Control, card_name: String, texture_path: St
 
 # 创建商品类型卡片（可拖拽，但会回到原位）
 func create_selling_card(slot: Control, card_data: Dictionary) -> void:
-	# 加载卡片场景
-	var card_scene_path = card_data.get("card_scene", "")
-	if card_scene_path == "":
-		push_error("商品卡片缺少 card_scene 路径")
-		return
-		
-	var card_scene = load(card_scene_path) as PackedScene
-	if card_scene == null:
-		push_error("无法加载商品卡片场景: " + card_scene_path)
-		return
-	
-	var card_name = card_data.get("名称", "未知商品")
-	var card_instance = card_scene.instantiate()
-	card_instance.name = "Card_" + card_name
-	
-	# 设置卡片类型为 selling
-	if "card_type" in card_instance:
-		card_instance.card_type = 1  # cardType.selling
-	
-	# 设置卡片位置（相对于卡槽）
-	card_instance.position = Vector2(0, 0)
-	
-	# 初始化卡片数据（卡片会从CSV或内部数据加载自己的内容）
-	setup_card_data(card_instance, card_name, card_data)
-	
-	# 将卡片添加到卡槽
-	slot.add_child(card_instance)
-	
-	print("创建商品卡片: " + card_name)
+	# 使用 CardFactory 统一创建卡片
+	CardFactory.create_by_card_scene(card_data, slot, Vector2.ZERO, 1)
 
 # 设置建筑卡片内容（纹理和文本）
 func setup_card_content(card_instance: Control, card_name: String, texture_path: String) -> void:
@@ -249,43 +222,6 @@ func setup_card_content(card_instance: Control, card_name: String, texture_path:
 	
 	# 设置标签文本
 	label.text = card_name
-
-# 设置商品卡片数据（通过卡片名称设置标签文本和纹理）
-func setup_card_data(card_instance: Control, card_name: String, card_data: Dictionary) -> void:
-	# 尝试查找并设置Label节点
-	var label = card_instance.get_node_or_null("Control/ColorRect/Label")
-	if label:
-		label.text = card_name
-	
-	# 尝试设置纹理
-	var texture_rect = card_instance.get_node_or_null("Control/ColorRect/TextureRect")
-	if texture_rect:
-		var texture_path = card_data.get("地址", "")
-		if texture_path != "":
-			# 尝试加载 .png 或 .jpg 扩展名
-			var texture = load_texture_with_extensions(texture_path)
-			if texture:
-				texture_rect.texture = texture
-			else:
-				push_warning("无法加载纹理: " + texture_path)
-
-# 尝试加载纹理（支持多种扩展名）
-func load_texture_with_extensions(base_path: String) -> Texture2D:
-	# 如果已经有扩展名，直接加载
-	if base_path.ends_with(".png") or base_path.ends_with(".jpg") or base_path.ends_with(".jpeg") or base_path.ends_with(".svg"):
-		var texture = load(base_path)
-		if texture:
-			return texture
-	
-	# 否则尝试多种扩展名
-	var extensions = [".png", ".jpg", ".jpeg", ".svg"]
-	for ext in extensions:
-		var full_path = base_path + ext
-		var texture = load(full_path)
-		if texture:
-			return texture
-	
-	return null
 
 # 更新金币显示
 func update_coin_display() -> void:

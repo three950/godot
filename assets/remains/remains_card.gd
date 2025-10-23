@@ -61,4 +61,3 @@ func initialize_from_csv(csv_data: Dictionary) -> void:
 			value = 0
 	
 	update_labels()
-

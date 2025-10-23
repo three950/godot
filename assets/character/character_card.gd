@@ -13,12 +13,13 @@ var atk_label: Label = null
 var defense_label: Label = null
 
 # 悬停UI相关
-var hover_area: Control = null  # 悬停触发区域
 var bag_instance: Panel = null  # 背包实例
 var show_timer: Timer = null  # 显示延迟计时器
 var hide_timer: Timer = null  # 隐藏延迟计时器
 var is_hover_area_hovered: bool = false  # 悬停区域是否被悬停
+var was_hover_area_hovered: bool = false  # 上一帧的悬停状态
 var bag_scene = preload("res://bag.tscn")  # 预加载背包场景
+var hover_trigger_width: float = 15.0  # 悬停触发区域宽度
 
 func _ready() -> void:
 	super._ready()
@@ -31,9 +32,6 @@ func _ready() -> void:
 			atk_label = right_stats.get_node_or_null("ATKLabel")
 			defense_label = right_stats.get_node_or_null("DEFLabel")
 	update_stat_labels()
-	
-	# 设置悬停区域
-	setup_hover_area()
 	
 	# 创建计时器
 	show_timer = Timer.new()
@@ -93,20 +91,34 @@ func set_stat_labels(hp_lbl: Label, atk_lbl: Label, def_lbl: Label) -> void:
 	defense_label = def_lbl
 	update_stat_labels()
 
-# 设置悬停区域
-func setup_hover_area() -> void:
-	hover_area = get_node_or_null("HoverTrigger")
-	if hover_area:
-		print("悬停区域已找到：", hover_area.name)
-		hover_area.mouse_entered.connect(_on_hover_area_entered)
-		hover_area.mouse_exited.connect(_on_hover_area_exited)
-	else:
-		print("警告：未找到 HoverTrigger 节点！")
+# 每帧检测鼠标位置
+func _process(_delta: float) -> void:
+	# 先调用父类的 _process，保持拖拽功能
+	super._process(_delta)
+	
+	# 计算悬停触发区域（卡片右侧）
+	var hover_rect = Rect2(
+		global_position + Vector2(size.x, 0),  # 从卡片右边开始
+		Vector2(hover_trigger_width, size.y)    # 宽度15像素，高度与卡片相同
+	)
+	
+	# 检测鼠标是否在悬停区域内
+	var mouse_pos = get_global_mouse_position()
+	is_hover_area_hovered = hover_rect.has_point(mouse_pos)
+	
+	# 检测状态变化
+	if is_hover_area_hovered and not was_hover_area_hovered:
+		# 鼠标进入悬停区域
+		_on_hover_area_entered()
+	elif not is_hover_area_hovered and was_hover_area_hovered:
+		# 鼠标离开悬停区域
+		_on_hover_area_exited()
+	
+	was_hover_area_hovered = is_hover_area_hovered
 
 # 当鼠标进入悬停区域
 func _on_hover_area_entered() -> void:
 	print("鼠标进入悬停区域")
-	is_hover_area_hovered = true
 	# 停止隐藏计时器
 	if hide_timer and hide_timer.time_left > 0:
 		hide_timer.stop()
@@ -123,7 +135,6 @@ func _on_hover_area_entered() -> void:
 # 当鼠标离开悬停区域
 func _on_hover_area_exited() -> void:
 	print("鼠标离开悬停区域")
-	is_hover_area_hovered = false
 	# 停止显示计时器
 	if show_timer and show_timer.time_left > 0:
 		show_timer.stop()

@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 GameData="*res://script_folder/game_data.gd"
+CardFactory="*res://script_folder/card_factory.gd"
 
 [display]
 
