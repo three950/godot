@@ -1,16 +1,17 @@
 extends Node2D
 
-# 卡片预制体场景
+# 卡片场景（用于建筑卡片）
 @export var card_scene: PackedScene
 # 卡槽容器
 @export var slot_container: HBoxContainer
 
 # 商品数据列表（用于随机选择）
+# 每个商品包含：卡片场景路径、卡片名称（对应CSV中的名称）
 var selling_items = [
-	{"name": "鱼", "texture_path": "res://assets/food/fish.jpg"},
-	{"name": "肉", "texture_path": "res://assets/food/meat.png"},
-	{"name": "盾牌", "texture_path": "res://assets/equipment/armour防具/盾牌.png"},
-	{"name": "锥", "texture_path": "res://assets/equipment/weapon/锥.jpg"},
+	{"card_scene": "res://assets/resources/resource_card.tscn", "card_name": "生鱼"},
+	{"card_scene": "res://assets/resources/resource_card.tscn", "card_name": "生肉"},
+	{"card_scene": "res://assets/equipment/equipment_card.tscn", "card_name": "盾牌"},
+	{"card_scene": "res://assets/equipment/equipment_card.tscn", "card_name": "锥"},
 ]
 
 # 卡槽数组，用于存储卡槽节点
@@ -45,7 +46,7 @@ func generate_shop() -> void:
 	for i in range(3):
 		var slot_index = i + 1  # 卡槽 1, 2, 3
 		var item_data = shuffled_items[i]
-		create_selling_card(slots[slot_index], item_data["name"], item_data["texture_path"])
+		create_selling_card(slots[slot_index], item_data)
 
 # 创建卡槽
 func create_slot(index: int) -> Control:
@@ -98,25 +99,32 @@ func create_architecture_card(slot: Control, card_name: String, texture_path: St
 	print("创建建筑卡片: " + card_name)
 
 # 创建商品类型卡片（可拖拽，但会回到原位）
-func create_selling_card(slot: Control, card_name: String, texture_path: String) -> void:
+func create_selling_card(slot: Control, card_data: Dictionary) -> void:
+	# 加载卡片场景
+	var card_scene = load(card_data["card_scene"]) as PackedScene
+	if card_scene == null:
+		push_error("无法加载商品卡片场景: " + card_data["card_scene"])
+		return
+	
 	var card_instance = card_scene.instantiate()
-	card_instance.name = "Card_" + card_name
+	card_instance.name = "Card_" + card_data["card_name"]
 	
 	# 设置卡片类型为 selling
-	card_instance.card_type = 1  # cardType.selling
+	if "card_type" in card_instance:
+		card_instance.card_type = 1  # cardType.selling
 	
 	# 设置卡片位置（相对于卡槽）
 	card_instance.position = Vector2(0, 0)
 	
-	# 设置卡片内容
-	setup_card_content(card_instance, card_name, texture_path)
+	# 初始化卡片数据（卡片会从CSV或内部数据加载自己的内容）
+	setup_card_data(card_instance, card_data["card_name"])
 	
 	# 将卡片添加到卡槽
 	slot.add_child(card_instance)
 	
-	print("创建商品卡片: " + card_name)
+	print("创建商品卡片: " + card_data["card_name"])
 
-# 设置卡片内容（纹理和文本）
+# 设置建筑卡片内容（纹理和文本）
 func setup_card_content(card_instance: Control, card_name: String, texture_path: String) -> void:
 	# 查找并设置子节点
 	var texture_rect = card_instance.get_node("Control/ColorRect/TextureRect")
@@ -131,3 +139,13 @@ func setup_card_content(card_instance: Control, card_name: String, texture_path:
 	
 	# 设置标签文本
 	label.text = card_name
+
+# 设置商品卡片数据（通过卡片名称设置标签文本）
+# 注意：更详细的数据（纹理、属性等）应该在各个卡片的_ready()函数中从CSV加载
+func setup_card_data(card_instance: Control, card_name: String) -> void:
+	# 尝试查找并设置Label节点
+	var label = card_instance.get_node_or_null("Control/ColorRect/Label")
+	if label:
+		label.text = card_name
+	else:
+		push_warning("卡片 %s 没有找到Label节点" % card_name)

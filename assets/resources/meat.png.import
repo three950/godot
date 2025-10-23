@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c8tkdocp183ia"
-path="res://.godot/imported/fish.jpg-d6964fd92916622c8edcded4001f0ca3.ctex"
+uid="uid://yhr14dughpmr"
+path="res://.godot/imported/meat.png-8decec4e3236fbadd5ed42b215c70cc4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/food/fish.jpg"
-dest_files=["res://.godot/imported/fish.jpg-d6964fd92916622c8edcded4001f0ca3.ctex"]
+source_file="res://assets/resources/meat.png"
+dest_files=["res://.godot/imported/meat.png-8decec4e3236fbadd5ed42b215c70cc4.ctex"]
 
 [params]
 

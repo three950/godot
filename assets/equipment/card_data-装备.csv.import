@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://c5rv4g2df3gkb"
+
+[deps]
+
+files=["res://assets/equipment/card_data-装备.效果.translation", "res://assets/equipment/card_data-装备.类型.translation", "res://assets/equipment/card_data-装备.地址.translation", "res://assets/equipment/card_data-装备.出现场景与概率.translation", "res://assets/equipment/card_data-装备.value.translation", "res://assets/equipment/card_data-装备.是否是遗物.translation"]
+
+source_file="res://assets/equipment/card_data-装备.csv"
+dest_files=["res://assets/equipment/card_data-装备.效果.translation", "res://assets/equipment/card_data-装备.类型.translation", "res://assets/equipment/card_data-装备.地址.translation", "res://assets/equipment/card_data-装备.出现场景与概率.translation", "res://assets/equipment/card_data-装备.value.translation", "res://assets/equipment/card_data-装备.是否是遗物.translation"]
+
+[params]
+
+compress=true
+delimiter=0
