@@ -4,18 +4,14 @@ extends Node2D
 @export var card_scene: PackedScene
 # 卡槽容器
 @export var slot_container: HBoxContainer
-
-# 商品数据列表（用于随机选择）
-# 每个商品包含：卡片场景路径、卡片名称（对应CSV中的名称）
-var selling_items = [
-	{"card_scene": "res://assets/resources/resource_card.tscn", "card_name": "生鱼"},
-	{"card_scene": "res://assets/resources/resource_card.tscn", "card_name": "生肉"},
-	{"card_scene": "res://assets/equipment/equipment_card.tscn", "card_name": "盾牌"},
-	{"card_scene": "res://assets/equipment/equipment_card.tscn", "card_name": "锥"},
-]
+# 刷新按钮
+@export var refresh_button: Button
 
 # 卡槽数组，用于存储卡槽节点
 var slots: Array[Control] = []
+
+# 所有可售商品数据（从GameData获取）
+var all_shop_items: Array = []
 
 func _ready() -> void:
 	if slot_container == null:
@@ -26,9 +22,20 @@ func _ready() -> void:
 	slot_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	slot_container.clip_contents = false
 	
+	# 连接刷新按钮信号
+	if refresh_button:
+		refresh_button.pressed.connect(_on_refresh_button_pressed)
+	
+	# 从GameData加载所有商品数据
+	load_shop_items()
+	
+	# 生成商店
 	generate_shop()
 
 func generate_shop() -> void:
+	# 清空所有卡槽
+	clear_shop()
+	
 	# 创建8个卡槽
 	for i in range(8):
 		var slot = create_slot(i)
@@ -38,15 +45,39 @@ func generate_shop() -> void:
 	# 第一个卡槽：固定的建筑卡片（architecture 类型）
 	create_architecture_card(slots[0], "探窟家协会", "res://assets/neutral_buildings/Association_of_Grotters.png")
 	
-	# 从第2个卡槽开始，按顺序放置3个商品卡片（selling 类型）
-	# 创建一个临时数组并打乱顺序，确保不重复
-	var shuffled_items = selling_items.duplicate()
+	# 从第2个卡槽开始，填满剩余的7个卡槽
+	# 创建一个临时数组并打乱顺序
+	var shuffled_items = all_shop_items.duplicate()
 	shuffled_items.shuffle()
 	
-	for i in range(3):
-		var slot_index = i + 1  # 卡槽 1, 2, 3
+	# 填满剩余的7个卡槽
+	var slots_to_fill = min(7, shuffled_items.size())
+	for i in range(slots_to_fill):
+		var slot_index = i + 1  # 卡槽 1-7
 		var item_data = shuffled_items[i]
 		create_selling_card(slots[slot_index], item_data)
+
+# 从GameData加载所有商品数据
+func load_shop_items() -> void:
+	# 等待GameData加载完成
+	if not GameData.is_data_loaded:
+		await get_tree().create_timer(0.1).timeout
+	
+	# 获取所有商品数据
+	all_shop_items = GameData.get_all_shop_items()
+	print("商店加载了 %d 个商品" % all_shop_items.size())
+
+# 清空商店
+func clear_shop() -> void:
+	# 清空所有卡槽
+	for slot in slots:
+		slot.queue_free()
+	slots.clear()
+
+# 刷新按钮点击事件
+func _on_refresh_button_pressed() -> void:
+	print("刷新商店...")
+	generate_shop()
 
 # 创建卡槽
 func create_slot(index: int) -> Control:
@@ -101,13 +132,19 @@ func create_architecture_card(slot: Control, card_name: String, texture_path: St
 # 创建商品类型卡片（可拖拽，但会回到原位）
 func create_selling_card(slot: Control, card_data: Dictionary) -> void:
 	# 加载卡片场景
-	var card_scene = load(card_data["card_scene"]) as PackedScene
+	var card_scene_path = card_data.get("card_scene", "")
+	if card_scene_path == "":
+		push_error("商品卡片缺少 card_scene 路径")
+		return
+		
+	var card_scene = load(card_scene_path) as PackedScene
 	if card_scene == null:
-		push_error("无法加载商品卡片场景: " + card_data["card_scene"])
+		push_error("无法加载商品卡片场景: " + card_scene_path)
 		return
 	
+	var card_name = card_data.get("名称", "未知商品")
 	var card_instance = card_scene.instantiate()
-	card_instance.name = "Card_" + card_data["card_name"]
+	card_instance.name = "Card_" + card_name
 	
 	# 设置卡片类型为 selling
 	if "card_type" in card_instance:
@@ -117,12 +154,12 @@ func create_selling_card(slot: Control, card_data: Dictionary) -> void:
 	card_instance.position = Vector2(0, 0)
 	
 	# 初始化卡片数据（卡片会从CSV或内部数据加载自己的内容）
-	setup_card_data(card_instance, card_data["card_name"])
+	setup_card_data(card_instance, card_name, card_data)
 	
 	# 将卡片添加到卡槽
 	slot.add_child(card_instance)
 	
-	print("创建商品卡片: " + card_data["card_name"])
+	print("创建商品卡片: " + card_name)
 
 # 设置建筑卡片内容（纹理和文本）
 func setup_card_content(card_instance: Control, card_name: String, texture_path: String) -> void:
@@ -140,12 +177,39 @@ func setup_card_content(card_instance: Control, card_name: String, texture_path:
 	# 设置标签文本
 	label.text = card_name
 
-# 设置商品卡片数据（通过卡片名称设置标签文本）
-# 注意：更详细的数据（纹理、属性等）应该在各个卡片的_ready()函数中从CSV加载
-func setup_card_data(card_instance: Control, card_name: String) -> void:
+# 设置商品卡片数据（通过卡片名称设置标签文本和纹理）
+func setup_card_data(card_instance: Control, card_name: String, card_data: Dictionary) -> void:
 	# 尝试查找并设置Label节点
 	var label = card_instance.get_node_or_null("Control/ColorRect/Label")
 	if label:
 		label.text = card_name
-	else:
-		push_warning("卡片 %s 没有找到Label节点" % card_name)
+	
+	# 尝试设置纹理
+	var texture_rect = card_instance.get_node_or_null("Control/ColorRect/TextureRect")
+	if texture_rect:
+		var texture_path = card_data.get("地址", "")
+		if texture_path != "":
+			# 尝试加载 .png 或 .jpg 扩展名
+			var texture = load_texture_with_extensions(texture_path)
+			if texture:
+				texture_rect.texture = texture
+			else:
+				push_warning("无法加载纹理: " + texture_path)
+
+# 尝试加载纹理（支持多种扩展名）
+func load_texture_with_extensions(base_path: String) -> Texture2D:
+	# 如果已经有扩展名，直接加载
+	if base_path.ends_with(".png") or base_path.ends_with(".jpg") or base_path.ends_with(".jpeg") or base_path.ends_with(".svg"):
+		var texture = load(base_path)
+		if texture:
+			return texture
+	
+	# 否则尝试多种扩展名
+	var extensions = [".png", ".jpg", ".jpeg", ".svg"]
+	for ext in extensions:
+		var full_path = base_path + ext
+		var texture = load(full_path)
+		if texture:
+			return texture
+	
+	return null

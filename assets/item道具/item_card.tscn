@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://item_card_template"]
 
-[ext_resource type="Script" path="res://item_card.gd" id="1_item"]
+[ext_resource type="Script" path="res://assets/item道具/item_card.gd" id="1_item"]
 [ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="2_font"]
 
 [node name="ItemCard" type="Control" node_paths=PackedStringArray("follow_target") groups=["Cards"]]

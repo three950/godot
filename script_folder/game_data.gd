@@ -13,6 +13,15 @@ var remains_database: Dictionary = {}
 # 场景数据库 - key: 场景名称, value: Dictionary
 var scene_database: Dictionary = {}
 
+# 资源数据库 - key: 资源名称, value: Dictionary
+var resource_database: Dictionary = {}
+
+# 道具数据库 - key: 道具名称, value: Dictionary
+var item_database: Dictionary = {}
+
+# 装备数据库 - key: 装备名称, value: Dictionary
+var equipment_database: Dictionary = {}
+
 # 数据是否已加载
 var is_data_loaded: bool = false
 
@@ -25,6 +34,9 @@ func load_all_game_data() -> void:
 	load_character_data_from_csv()
 	load_remains_data_from_csv()
 	load_scene_data_from_csv()
+	load_resource_data_from_csv()
+	load_item_data_from_csv()
+	load_equipment_data_from_csv()
 	is_data_loaded = true
 	print("游戏数据加载完成！")
 	print_database_summary()
@@ -197,6 +209,184 @@ func get_scene(scene_name: String) -> Dictionary:
 		return {}
 	return scene_database[scene_name]
 
+## 从CSV文件加载资源数据
+func load_resource_data_from_csv() -> void:
+	var csv_path = "res://assets/resources/card_data-资源.csv"
+	var file = FileAccess.open(csv_path, FileAccess.READ)
+	
+	if not file:
+		push_error("无法打开CSV文件: " + csv_path)
+		return
+	
+	# 跳过标题行
+	var header = file.get_csv_line()
+	
+	# 读取数据行
+	var loaded_count = 0
+	while not file.eof_reached():
+		var line = file.get_csv_line()
+		
+		# 跳过空行
+		if line.size() < 2 or line[0] == "":
+			continue
+		
+		var resource_dict = {
+			"名称": line[0],
+			"地址": line[1] if line.size() > 1 else "",
+			"类型": line[2] if line.size() > 2 else "",
+			"food": line[3] if line.size() > 3 else "0",
+			"water": line[4] if line.size() > 4 else "0",
+			"effect": line[5] if line.size() > 5 else "",
+			"合成配方": line[6] if line.size() > 6 else "",
+			"value": line[7] if line.size() > 7 else "0",
+			"是否是遗物": line[8] if line.size() > 8 else "FALSE",
+			"card_scene": "res://assets/resources/resource_card.tscn"
+		}
+		
+		# 存储到数据库
+		resource_database[resource_dict["名称"]] = resource_dict
+		loaded_count += 1
+		
+		print("  加载资源: %s (类型:%s 价值:%s)" % [
+			resource_dict["名称"], 
+			resource_dict["类型"], 
+			resource_dict["value"]
+		])
+	
+	file.close()
+	print("从CSV加载了 %d 个资源" % loaded_count)
+
+## 从CSV文件加载道具数据
+func load_item_data_from_csv() -> void:
+	var csv_path = "res://assets/item道具/card_data-道具.csv"
+	var file = FileAccess.open(csv_path, FileAccess.READ)
+	
+	if not file:
+		push_error("无法打开CSV文件: " + csv_path)
+		return
+	
+	# 跳过标题行
+	var header = file.get_csv_line()
+	
+	# 读取数据行
+	var loaded_count = 0
+	while not file.eof_reached():
+		var line = file.get_csv_line()
+		
+		# 跳过空行
+		if line.size() < 2 or line[0] == "":
+			continue
+		
+		var item_dict = {
+			"名称": line[0],
+			"描述文本": line[1] if line.size() > 1 else "",
+			"使用次数限制": line[2] if line.size() > 2 else "",
+			"道具类型": line[3] if line.size() > 3 else "",
+			"是否是遗物": line[4] if line.size() > 4 else "FALSE",
+			"VALUE": line[5] if line.size() > 5 else "0",
+			"地址": line[6] if line.size() > 6 else "",
+			"card_scene": "res://assets/item道具/item_card.tscn"
+		}
+		
+		# 存储到数据库
+		item_database[item_dict["名称"]] = item_dict
+		loaded_count += 1
+		
+		print("  加载道具: %s (类型:%s 价值:%s)" % [
+			item_dict["名称"], 
+			item_dict["道具类型"], 
+			item_dict["VALUE"]
+		])
+	
+	file.close()
+	print("从CSV加载了 %d 个道具" % loaded_count)
+
+## 从CSV文件加载装备数据
+func load_equipment_data_from_csv() -> void:
+	var csv_path = "res://assets/equipment/card_data-装备.csv"
+	var file = FileAccess.open(csv_path, FileAccess.READ)
+	
+	if not file:
+		push_error("无法打开CSV文件: " + csv_path)
+		return
+	
+	# 跳过标题行
+	var header = file.get_csv_line()
+	
+	# 读取数据行
+	var loaded_count = 0
+	while not file.eof_reached():
+		var line = file.get_csv_line()
+		
+		# 跳过空行
+		if line.size() < 2 or line[0] == "":
+			continue
+		
+		var equipment_dict = {
+			"名称": line[0],
+			"效果": line[1] if line.size() > 1 else "",
+			"类型": line[2] if line.size() > 2 else "",
+			"地址": line[3] if line.size() > 3 else "",
+			"出现场景与概率": line[4] if line.size() > 4 else "",
+			"value": line[5] if line.size() > 5 else "0",
+			"是否是遗物": line[6] if line.size() > 6 else "FALSE",
+			"card_scene": "res://assets/equipment/equipment_card.tscn"
+		}
+		
+		# 存储到数据库
+		equipment_database[equipment_dict["名称"]] = equipment_dict
+		loaded_count += 1
+		
+		print("  加载装备: %s (类型:%s 价值:%s)" % [
+			equipment_dict["名称"], 
+			equipment_dict["类型"], 
+			equipment_dict["value"]
+		])
+	
+	file.close()
+	print("从CSV加载了 %d 个装备" % loaded_count)
+
+## 获取指定资源数据
+func get_resource(resource_name: String) -> Dictionary:
+	if not resource_database.has(resource_name):
+		push_warning("未找到资源数据: " + resource_name)
+		return {}
+	return resource_database[resource_name]
+
+## 获取所有资源数据
+func get_all_resources() -> Array:
+	return resource_database.values()
+
+## 获取指定道具数据
+func get_item(item_name: String) -> Dictionary:
+	if not item_database.has(item_name):
+		push_warning("未找到道具数据: " + item_name)
+		return {}
+	return item_database[item_name]
+
+## 获取所有道具数据
+func get_all_items() -> Array:
+	return item_database.values()
+
+## 获取指定装备数据
+func get_equipment(equipment_name: String) -> Dictionary:
+	if not equipment_database.has(equipment_name):
+		push_warning("未找到装备数据: " + equipment_name)
+		return {}
+	return equipment_database[equipment_name]
+
+## 获取所有装备数据
+func get_all_equipments() -> Array:
+	return equipment_database.values()
+
+## 获取所有商品数据（资源+道具+装备）
+func get_all_shop_items() -> Array:
+	var all_items = []
+	all_items.append_array(get_all_resources())
+	all_items.append_array(get_all_items())
+	all_items.append_array(get_all_equipments())
+	return all_items
+
 ## 打印数据库摘要信息
 func print_database_summary() -> void:
 	print("========== 游戏数据摘要 ==========")
@@ -204,6 +394,9 @@ func print_database_summary() -> void:
 	print("角色列表: %s" % str(get_all_character_names()))
 	print("遗物总数: %d" % remains_database.size())
 	print("场景总数: %d" % scene_database.size())
+	print("资源总数: %d" % resource_database.size())
+	print("道具总数: %d" % item_database.size())
+	print("装备总数: %d" % equipment_database.size())
 	print("================================")
 
 ## 可选：重新加载数据（开发调试用）
@@ -211,5 +404,8 @@ func reload_data() -> void:
 	character_database.clear()
 	remains_database.clear()
 	scene_database.clear()
+	resource_database.clear()
+	item_database.clear()
+	equipment_database.clear()
 	is_data_loaded = false
 	load_all_game_data()

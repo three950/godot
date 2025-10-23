@@ -13,13 +13,21 @@ offset_right = 1325.3334
 offset_bottom = 744.0
 texture = ExtResource("1_oabld")
 
-[node name="ShopManager" type="Node2D" parent="." node_paths=PackedStringArray("slot_container")]
+[node name="ShopManager" type="Node2D" parent="." node_paths=PackedStringArray("slot_container", "refresh_button")]
 position = Vector2(16, 16)
 script = ExtResource("3_shop_mgr")
 card_scene = ExtResource("2_shop")
 slot_container = NodePath("ShopArea")
+refresh_button = NodePath("RefreshButton")
 
 [node name="ShopArea" type="HBoxContainer" parent="ShopManager"]
 custom_minimum_size = Vector2(800, 115)
 mouse_filter = 2
 theme_override_constants/separation = 10
+
+[node name="RefreshButton" type="Button" parent="ShopManager"]
+offset_left = 820.0
+offset_top = 0.0
+offset_right = 920.0
+offset_bottom = 40.0
+text = "刷新商店"
