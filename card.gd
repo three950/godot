@@ -65,11 +65,17 @@ func _on_button_button_up() -> void:
 	# selling 类型拖动后检测是否离开商店区域
 	if card_type == cardType.selling:
 		if is_outside_shop_area():
-			# 如果离开商店区域，转为 normal 类型并固定在当前位置
-			card_type = cardType.normal
-			cardCurrentState = cardState.fixed
-			original_position = position
-			print("卡片 %s 离开商店区域，转为 normal 类型" % name)
+			# 如果离开商店区域，尝试购买
+			if try_purchase():
+				# 购买成功，转为 normal 类型并固定在当前位置
+				card_type = cardType.normal
+				cardCurrentState = cardState.fixed
+				original_position = position
+				print("卡片 %s 购买成功，转为 normal 类型" % name)
+			else:
+				# 购买失败（金币不足），回到原始位置
+				position = original_position
+				cardCurrentState = cardState.fixed
 		else:
 			# 如果还在商店区域内，回到原始位置
 			position = original_position
@@ -292,3 +298,35 @@ func is_outside_shop_area() -> bool:
 	
 	# 检测是否有交集（如果没有交集，说明卡片在商店区域外）
 	return not card_rect.intersects(shop_rect)
+
+# 尝试购买卡片（扣除金币）
+func try_purchase() -> bool:
+	# 获取卡片的价值
+	if not ("value" in self):
+		print("警告: 卡片 %s 没有 value 属性，无法购买" % name)
+		return false
+	
+	var card_value = self.value
+	
+	# 查找 ShopManager
+	var shop_manager = get_tree().get_first_node_in_group("ShopManager")
+	if shop_manager == null:
+		# 如果找不到，通过路径查找
+		var root = get_tree().root
+		shop_manager = root.find_child("ShopManager", true, false)
+	
+	if shop_manager == null:
+		print("警告: 找不到 ShopManager 节点")
+		return false
+	
+	# 检查金币是否足够
+	if shop_manager.coins < card_value:
+		print("金币不足：需要 %d，当前 %d" % [card_value, shop_manager.coins])
+		return false
+	
+	# 扣除金币
+	shop_manager.coins -= card_value
+	shop_manager.update_coin_display()
+	print("购买成功：花费 %d 金币，剩余 %d 金币" % [card_value, shop_manager.coins])
+	
+	return true

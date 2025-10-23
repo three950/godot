@@ -13,7 +13,7 @@ offset_right = 1325.3334
 offset_bottom = 744.0
 texture = ExtResource("1_oabld")
 
-[node name="ShopManager" type="Node2D" parent="." node_paths=PackedStringArray("slot_container", "refresh_button", "coin_label")]
+[node name="ShopManager" type="Node2D" parent="." node_paths=PackedStringArray("slot_container", "refresh_button", "coin_label") groups=["ShopManager"]]
 position = Vector2(16, 16)
 script = ExtResource("3_shop_mgr")
 card_scene = ExtResource("2_shop")

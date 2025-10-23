@@ -5,7 +5,7 @@ class_name EquipmentCard
 # 装备卡片：有防具和武器，可以和遗物合成新的装备，本身可以是遗物
 enum EquipmentType { WEAPON, ARMOR, RELIC }
 @export var equipment_type: EquipmentType = EquipmentType.WEAPON
-@export var equipment_value: int = 1  # 装备价值
+@export var value: int = 1  # 装备价值
 @export var atk_bonus: int = 0  # 攻击力加成
 @export var def_bonus: int = 0  # 防御力加成
 @export var hp_bonus: int = 0  # 生命值加成
@@ -104,9 +104,9 @@ func unequip() -> void:
 	equipped_character = null
 
 # 设置装备属性
-func set_equipment_stats(eq_type: EquipmentType, value: int, atk: int = 0, def: int = 0, hp: int = 0, relic: bool = false) -> void:
+func set_equipment_stats(eq_type: EquipmentType, equipment_value: int, atk: int = 0, def: int = 0, hp: int = 0, relic: bool = false) -> void:
 	equipment_type = eq_type
-	equipment_value = value
+	value = equipment_value
 	atk_bonus = atk
 	def_bonus = def
 	hp_bonus = hp

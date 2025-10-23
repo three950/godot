@@ -3,7 +3,7 @@ class_name ItemCard
 
 # 道具卡片特有属性
 # 道具卡片：具有各种特殊效果，是物品
-@export var item_value: int = 1  # 道具价值
+@export var value: int = 1  # 道具价值
 @export var effect_type: String = ""  # 效果类型（如 "heal", "buff", "debuff" 等）
 @export var effect_power: int = 0  # 效果强度
 @export var is_consumable: bool = false  # 是否是消耗品
@@ -74,8 +74,8 @@ func apply_effect(target: Node) -> bool:
 	return false
 
 # 设置道具属性
-func set_item_stats(value: int, eff_type: String, power: int, consumable: bool = false) -> void:
-	item_value = value
+func set_item_stats(item_value: int, eff_type: String, power: int, consumable: bool = false) -> void:
+	value = item_value
 	effect_type = eff_type
 	effect_power = power
 	is_consumable = consumable

@@ -3,7 +3,7 @@ class_name ResourceCard
 
 # 资源卡片特有属性
 # 资源卡片：包括调料和食物，可以合成，是物品
-@export var resource_value: int = 1  # 资源价值
+@export var value: int = 1  # 资源价值
 @export var is_food: bool = false  # 是否是食物
 @export var is_seasoning: bool = false  # 是否是调料
 @export var nutrition: int = 0  # 营养值（食物类）
@@ -85,7 +85,7 @@ func complete_synthesis() -> void:
 	# 具体实现需要配合 CardManager
 
 # 设置资源属性
-func set_resource_stats(value: int, is_food_type: bool = false, nutrition_value: int = 0) -> void:
-	resource_value = value
+func set_resource_stats(resource_value: int, is_food_type: bool = false, nutrition_value: int = 0) -> void:
+	value = resource_value
 	is_food = is_food_type
 	nutrition = nutrition_value
