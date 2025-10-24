@@ -99,8 +99,8 @@ func load_character_bag(character: CharacterData) -> void:
 			push_warning("【背包】未找到物品数据: %s" % item_name)
 			continue
 		
-		# 使用 CardFactory 创建卡片
-		var card = CardFactory.create_by_card_scene(item_data, null, Vector2.ZERO, 3)  # card_type=3 表示背包中的卡片
+		# 使用 CardFactory 创建卡片（card_type=0 表示 normal 类型，可以放入背包）
+		var card = CardFactory.create_by_card_scene(item_data, null, Vector2.ZERO, 0)
 		if card:
 			# 确保卡片可以接收鼠标事件
 			if "mouse_filter" in card:
@@ -131,8 +131,8 @@ func _load_equipment_slot(slot: BagSlot, item_name: String, slot_name: String) -
 		push_warning("【背包】未找到装备数据: %s" % item_name)
 		return
 	
-	# 使用 CardFactory 创建卡片
-	var card = CardFactory.create_by_card_scene(item_data, null, Vector2.ZERO, 3)
+	# 使用 CardFactory 创建卡片（card_type=0 表示 normal 类型，可以放入背包）
+	var card = CardFactory.create_by_card_scene(item_data, null, Vector2.ZERO, 0)
 	if card:
 		# 确保卡片可以接收鼠标事件
 		if "mouse_filter" in card:

@@ -24,7 +24,7 @@ const DRAG_TEMP_Z := 100
 func _ready() -> void:
 	original_position = position
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	match cardCurrentState:
 		cardState.dragging:
 			global_position = get_global_mouse_position() - size / 2
@@ -68,26 +68,14 @@ func _on_button_button_up() -> void:
 	# 恢复所有子卡片的 z_index 与位置
 	update_stacked_cards()
 	
-	# selling 类型拖动后检测是否离开商店区域
+	# selling 类型拖动后检测是否离开商店区域（BaggableCard 处理）
 	if card_type == cardType.selling:
-		if is_outside_shop_area():
-			# 如果离开商店区域，尝试购买
-			if try_purchase():
-				# 购买成功，转为 normal 类型
-				card_type = cardType.normal
-				
-				# 从 slot 节点移除，添加到主场景中
-				move_to_main_scene()
-				
-				cardCurrentState = cardState.fixed
-				original_position = position
-				print("卡片 %s 购买成功，转为 normal 类型" % name)
-			else:
-				# 购买失败（金币不足），回到原始位置
-				position = original_position
-				cardCurrentState = cardState.fixed
+		# 如果是可背包物品，调用其商店处理逻辑
+		if has_method("handle_shop_card_release"):
+			if call("handle_shop_card_release"):
+				return
 		else:
-			# 如果还在商店区域内，回到原始位置
+			# 如果不是可背包物品但是 selling 类型，回到原位
 			position = original_position
 			cardCurrentState = cardState.fixed
 		return
@@ -299,88 +287,6 @@ func get_total_stack_size() -> int:
 			total += child.get_total_stack_size()
 	return total
 
-# 检测卡片是否在商店区域之外
-func is_outside_shop_area() -> bool:
-	# 尝试找到 ShopArea 节点
-	var shop_area = get_tree().get_first_node_in_group("ShopArea")
-	if shop_area == null:
-		# 如果找不到 ShopArea 节点，尝试通过路径查找
-		var root = get_tree().root
-		shop_area = root.find_child("ShopArea", true, false)
-	
-	if shop_area == null:
-		print("警告: 找不到 ShopArea 节点")
-		return true  # 找不到商店区域，默认认为在外面
-	
-	# 获取卡片的全局矩形
-	var card_rect = Rect2(global_position, size)
-	
-	# 获取商店区域的全局矩形
-	var shop_rect = Rect2(shop_area.global_position, shop_area.size)
-	
-	# 检测是否有交集（如果没有交集，说明卡片在商店区域外）
-	return not card_rect.intersects(shop_rect)
-
-# 将卡片从 slot 移动到主场景中
-func move_to_main_scene() -> void:
-	var old_parent = get_parent()
-	if old_parent == null:
-		return
-	
-	# 先获取场景树引用（必须在 remove_child 之前）
-	var tree = get_tree()
-	if tree == null or tree.root == null:
-		push_error("无法获取场景树")
-		return
-	
-	# 保存当前的全局位置
-	var saved_global_position = global_position
-	
-	# 尝试找到 CardManager 节点（人物卡片的父节点）
-	var card_manager = tree.root.find_child("CardManager", true, false)
-	var target_parent = card_manager
-	# 从当前父节点移除
-	old_parent.remove_child(self)
-	
-	# 添加到目标父节点
-	target_parent.add_child(self)
-	
-	# 恢复全局位置（转换为新父节点下的相对位置）
-	global_position = saved_global_position
-	
-	# 确保 z_index 合适，不会被遮挡
-	z_index = 0
-	
-	print("卡片 %s 已从 %s 移动到 %s" % [name, old_parent.name, target_parent.name])
-
-# 尝试购买卡片（扣除金币）
-func try_purchase() -> bool:
-	# 获取卡片的价值
-	if not ("value" in self):
-		print("警告: 卡片 %s 没有 value 属性，无法购买" % name)
-		return false
-	
-	var card_value = self.value
-	
-	# 查找 ShopManager
-	var shop_manager = get_tree().get_first_node_in_group("ShopManager")
-	if shop_manager == null:
-		# 如果找不到，通过路径查找
-		var root = get_tree().root
-		shop_manager = root.find_child("ShopManager", true, false)
-	
-	if shop_manager == null:
-		print("警告: 找不到 ShopManager 节点")
-		return false
-	
-	# 检查金币是否足够
-	if shop_manager.coins < card_value:
-		print("金币不足：需要 %d，当前 %d" % [card_value, shop_manager.coins])
-		return false
-	
-	# 扣除金币
-	shop_manager.coins -= card_value
-	shop_manager.update_coin_display()
-	print("购买成功：花费 %d 金币，剩余 %d 金币" % [card_value, shop_manager.coins])
-	
-	return true
+# ========== 注意：商店相关的功能已移至 BaggableCard ==========
+# is_outside_shop_area(), try_purchase(), move_to_main_scene() 
+# 这些方法现在在 baggable_card.gd 中实现

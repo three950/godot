@@ -1,6 +1,9 @@
 extends Panel
 class_name BagSlot
 
+# 预加载 BaggableCard 类以支持类型检查
+const BaggableCardScript = preload("res://baggable_card.gd")
+
 # 信号：当卡片被放入卡槽
 signal card_placed(card: Control)
 # 信号：当卡片被移出卡槽
@@ -21,6 +24,18 @@ func is_empty() -> bool:
 func place_card(card: Control) -> bool:
 	# 如果卡槽已有卡片，不能接收
 	if not is_empty():
+		return false
+	
+	# 检查是否是可背包物品（BaggableCard）
+	var is_baggable = card.get_script() != null and (card.get_script() == BaggableCardScript or card.get_script().get_base_script() == BaggableCardScript or _is_derived_from_baggable(card.get_script()))
+	
+	if not is_baggable:
+		print("【卡槽】只能放入可背包物品（装备、道具、资源）")
+		return false
+	
+	# 检查卡片是否可以放入背包
+	if card.has_method("can_put_in_bag") and not card.can_put_in_bag():
+		print("【卡槽】该卡片当前状态不能放入背包")
 		return false
 	
 	# 保存卡片的原始父节点
@@ -59,6 +74,10 @@ func place_card(card: Control) -> bool:
 	if "cardCurrentState" in card:
 		card.cardCurrentState = card.cardState.fixed
 	
+	# 调用卡片的放入背包回调
+	if card.has_method("on_put_in_bag"):
+		card.on_put_in_bag(self)
+	
 	# 发射信号
 	card_placed.emit(card)
 	
@@ -81,10 +100,27 @@ func remove_card() -> Control:
 	# 【重置缩放】恢复卡片的原始大小
 	card.scale = Vector2(1.0, 1.0)
 	
+	# 调用卡片的从背包取出回调
+	if card.has_method("on_take_out_from_bag"):
+		card.on_take_out_from_bag(self)
+	
 	# 发射信号
 	card_removed.emit(card)
 	
 	return card
+
+# 检查脚本是否继承自 BaggableCard
+func _is_derived_from_baggable(script: Script) -> bool:
+	if script == null:
+		return false
+	
+	var base = script.get_base_script()
+	while base != null:
+		if base == BaggableCardScript:
+			return true
+		base = base.get_base_script()
+	
+	return false
 
 # 获取卡槽中的卡片
 func get_card() -> Control:

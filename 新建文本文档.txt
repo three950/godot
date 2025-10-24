@@ -1,3 +1,5 @@
 HoverVisual 的鼠标过滤器可能阻止了鼠标事件
 
 create_by_card_scene()卡片工厂类
+
+move_to_main_scene()在商店里

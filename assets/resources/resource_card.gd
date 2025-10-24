@@ -1,9 +1,9 @@
-extends "res://card.gd"
+extends "res://baggable_card.gd"
 class_name ResourceCard
 
 # 资源卡片特有属性
 # 资源卡片：包括调料和食物，可以合成，是物品
-@export var value: int = 1  # 资源价值
+# value 和 is_relic 已在父类 BaggableCard 中定义
 @export var is_food: bool = false  # 是否是食物
 @export var is_seasoning: bool = false  # 是否是调料
 @export var nutrition: int = 0  # 营养值（食物类）
@@ -15,7 +15,7 @@ var is_synthesizing: bool = false
 
 func _ready() -> void:
 	super._ready()
-	# 资源卡片是物品，可以放入背包、在商店出售
+	# 资源继承自 BaggableCard，可以放入背包、在商店出售
 
 func _process(delta: float) -> void:
 	super._process(delta)
@@ -69,7 +69,7 @@ func check_recipe_match(recipe: Dictionary, resources: Array[ResourceCard]) -> b
 	return true
 
 # 开始合成
-func start_synthesis(recipe: Dictionary, resources: Array[ResourceCard]) -> void:
+func start_synthesis(recipe: Dictionary, _resources: Array[ResourceCard]) -> void:
 	is_synthesizing = true
 	synthesis_timer = 0.0
 	print("开始合成: %s" % recipe.get("result", "未知"))

@@ -1,15 +1,14 @@
-extends "res://card.gd"
+extends "res://baggable_card.gd"
 class_name EquipmentCard
 
 # 装备卡片特有属性
 # 装备卡片：有防具和武器，可以和遗物合成新的装备，本身可以是遗物
 enum EquipmentType { WEAPON, ARMOR, RELIC }
 @export var equipment_type: EquipmentType = EquipmentType.WEAPON
-@export var value: int = 1  # 装备价值
+# value 和 is_relic 已在父类 BaggableCard 中定义
 @export var atk_bonus: int = 0  # 攻击力加成
 @export var def_bonus: int = 0  # 防御力加成
 @export var hp_bonus: int = 0  # 生命值加成
-@export var is_relic: bool = false  # 是否是遗物
 @export var special_effect: String = ""  # 特殊效果描述
 
 # 装备标签引用
@@ -18,7 +17,7 @@ var equipped_character: CharacterCard = null  # 装备在哪个角色上
 
 func _ready() -> void:
 	super._ready()
-	# 装备是物品，可以放入背包、在商店出售
+	# 装备继承自 BaggableCard，可以放入背包、在商店出售
 	var stats_lbl = get_node_or_null("Control/ColorRect/StatsLabel")
 	if stats_lbl:
 		stats_label = stats_lbl
