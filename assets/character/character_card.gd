@@ -15,14 +15,10 @@ var hp_label: Label = null
 var atk_label: Label = null
 var defense_label: Label = null
 
-# 悬停UI相关
+# 背包相关
 var bag_instance: Panel = null  # 背包实例
-var show_timer: Timer = null  # 显示延迟计时器
-var hide_timer: Timer = null  # 隐藏延迟计时器
-var is_hover_area_hovered: bool = false  # 悬停区域是否被悬停
-var was_hover_area_hovered: bool = false  # 上一帧的悬停状态
 var bag_scene = preload("res://bag.tscn")  # 预加载背包场景
-var hover_trigger_width: float = 15.0  # 悬停触发区域宽度
+var bag_button: Button = null  # 背包按钮
 
 func _ready() -> void:
 	super._ready()
@@ -36,18 +32,8 @@ func _ready() -> void:
 			defense_label = right_stats.get_node_or_null("DEFLabel")
 	update_stat_labels()
 	
-	# 创建计时器
-	show_timer = Timer.new()
-	show_timer.wait_time = 0.5
-	show_timer.one_shot = true
-	show_timer.timeout.connect(_on_show_timer_timeout)
-	add_child(show_timer)
-	
-	hide_timer = Timer.new()
-	hide_timer.wait_time = 0.5
-	hide_timer.one_shot = true
-	hide_timer.timeout.connect(_on_hide_timer_timeout)
-	add_child(hide_timer)
+	# 创建背包按钮
+	_create_bag_button()
 
 # 更新属性标签显示（使用Label动态显示，值可以随时改变）
 func update_stat_labels() -> void:
@@ -94,131 +80,144 @@ func set_stat_labels(hp_lbl: Label, atk_lbl: Label, def_lbl: Label) -> void:
 	defense_label = def_lbl
 	update_stat_labels()
 
-# 每帧检测鼠标位置
-func _process(_delta: float) -> void:
-	# 先调用父类的 _process，保持拖拽功能
-	super._process(_delta)
+# 创建背包按钮
+func _create_bag_button() -> void:
+	# 创建按钮
+	bag_button = Button.new()
+	bag_button.text = "🎒"  # 使用背包emoji作为图标
+	bag_button.custom_minimum_size = Vector2(30, 30)
 	
-	# 计算悬停触发区域（卡片右侧）
-	var hover_rect = Rect2(
-		global_position + Vector2(size.x, 0),  # 从卡片右边开始
-		Vector2(hover_trigger_width, size.y)    # 宽度15像素，高度与卡片相同
-	)
+	# 设置按钮样式
+	var style_normal = StyleBoxFlat.new()
+	style_normal.bg_color = Color(0.2, 0.3, 0.4, 0.8)  # 深蓝色背景
+	style_normal.corner_radius_top_left = 5
+	style_normal.corner_radius_top_right = 5
+	style_normal.corner_radius_bottom_left = 5
+	style_normal.corner_radius_bottom_right = 5
 	
-	# 检测鼠标是否在悬停区域内
-	var mouse_pos = get_global_mouse_position()
-	is_hover_area_hovered = hover_rect.has_point(mouse_pos)
+	var style_hover = StyleBoxFlat.new()
+	style_hover.bg_color = Color(0.3, 0.4, 0.5, 0.9)  # 悬停时稍亮
+	style_hover.corner_radius_top_left = 5
+	style_hover.corner_radius_top_right = 5
+	style_hover.corner_radius_bottom_left = 5
+	style_hover.corner_radius_bottom_right = 5
 	
-	# 检测状态变化
-	if is_hover_area_hovered and not was_hover_area_hovered:
-		# 鼠标进入悬停区域
-		_on_hover_area_entered()
-	elif not is_hover_area_hovered and was_hover_area_hovered:
-		# 鼠标离开悬停区域
-		_on_hover_area_exited()
+	var style_pressed = StyleBoxFlat.new()
+	style_pressed.bg_color = Color(0.1, 0.2, 0.3, 1.0)  # 按下时更深
+	style_pressed.corner_radius_top_left = 5
+	style_pressed.corner_radius_top_right = 5
+	style_pressed.corner_radius_bottom_left = 5
+	style_pressed.corner_radius_bottom_right = 5
 	
-	was_hover_area_hovered = is_hover_area_hovered
+	bag_button.add_theme_stylebox_override("normal", style_normal)
+	bag_button.add_theme_stylebox_override("hover", style_hover)
+	bag_button.add_theme_stylebox_override("pressed", style_pressed)
+	
+	# 设置按钮位置（在卡片右侧）
+	bag_button.position = Vector2(size.x + 5, 0)
+	
+	# 设置高层级，确保按钮在最上面
+	bag_button.z_index = 100
+	
+	# 添加到卡片
+	add_child(bag_button)
+	
+	# 连接按钮点击信号
+	bag_button.pressed.connect(toggle_bag)
+	
+	print("【角色卡片】背包按钮已创建")
 
-# 当鼠标进入悬停区域
-func _on_hover_area_entered() -> void:
-	print("鼠标进入悬停区域")
-	# 停止隐藏计时器
-	if hide_timer and hide_timer.time_left > 0:
-		hide_timer.stop()
-	
-	# 如果背包已经显示，不需要重新启动显示计时器
+# 切换背包显示状态
+func toggle_bag() -> void:
 	if bag_instance and is_instance_valid(bag_instance):
-		return
-	
-	# 启动显示计时器
-	if show_timer:
-		print("启动显示计时器")
-		show_timer.start()
-
-# 当鼠标离开悬停区域
-func _on_hover_area_exited() -> void:
-	print("鼠标离开悬停区域")
-	# 停止显示计时器
-	if show_timer and show_timer.time_left > 0:
-		show_timer.stop()
-	
-	# 如果背包已显示，启动隐藏计时器
-	if bag_instance and is_instance_valid(bag_instance):
-		print("启动隐藏计时器")
-		hide_timer.start()
-
-# 显示计时器超时 - 显示背包
-func _on_show_timer_timeout() -> void:
-	print("显示计时器超时")
-	if not is_hover_area_hovered:
-		print("鼠标已离开悬停区域，取消显示")
-		return
-	
-	print("准备显示背包")
-	show_bag()
-
-# 隐藏计时器超时 - 隐藏背包
-func _on_hide_timer_timeout() -> void:
-	print("隐藏计时器超时")
-	# 检查鼠标是否在背包区域内
-	if bag_instance and is_instance_valid(bag_instance):
-		print("检查背包鼠标状态：", bag_instance.is_mouse_over)
-		if bag_instance.is_mouse_over:
-			# 鼠标在背包内，不隐藏
-			print("鼠标在背包内，保持显示")
-			return
-		print("鼠标不在背包内，准备隐藏")
-		hide_bag()
+		# 如果背包已显示，则关闭
+		close_bag()
 	else:
-		print("背包实例无效")
+		# 如果背包未显示，则打开
+		open_bag()
 
-# 显示背包
-func show_bag() -> void:
-	print("show_bag 被调用")
+# 打开背包
+func open_bag() -> void:
+	print("【角色卡片】打开背包")
 	if bag_instance and is_instance_valid(bag_instance):
-		print("背包已经显示")
+		print("【角色卡片】背包已经显示")
 		return  # 背包已经显示
 	
 	# 实例化背包
-	print("实例化背包")
 	bag_instance = bag_scene.instantiate()
 	
-	# 将背包添加到场景树的合适位置（通常是根节点或UI层）
+	# 将背包添加到场景树的根节点
 	var root = get_tree().root
-	print("将背包添加到根节点")
 	root.add_child(bag_instance)
 	
 	# 设置背包位置（在卡片右侧）
 	var bag_pos = global_position + Vector2(size.x + 10, 0)
-	print("设置背包位置：", bag_pos)
 	bag_instance.global_position = bag_pos
 	
 	# 加载角色的背包数据
 	if character_data:
-		print("加载角色背包数据：", character_data.character_name)
+		print("【角色卡片】加载角色背包数据：", character_data.character_name)
 		bag_instance.load_character_bag(character_data)
 	else:
-		push_warning("角色卡片没有关联的角色数据，背包将为空")
+		push_warning("【角色卡片】角色卡片没有关联的角色数据，背包将为空")
 	
-	# 连接背包的鼠标事件
-	bag_instance.mouse_exited_bag.connect(_on_bag_mouse_exited)
-	print("背包显示完成")
+	# 连接背包的关闭请求信号
+	if bag_instance.has_signal("close_requested"):
+		bag_instance.close_requested.connect(_on_bag_close_requested)
+	
+	# 更新按钮状态
+	_update_bag_button_state(true)
+	
+	print("【角色卡片】背包显示完成")
 
-# 隐藏背包
-func hide_bag() -> void:
+# 关闭背包
+func close_bag() -> void:
+	print("【角色卡片】关闭背包")
 	if bag_instance and is_instance_valid(bag_instance):
+		# 先保留背包外的卡片（避免被删除）
+		if bag_instance.has_method("preserve_cards_outside_bag"):
+			bag_instance.preserve_cards_outside_bag()
+		
+		# 保存背包数据回角色
+		if bag_instance.has_method("save_to_character"):
+			bag_instance.save_to_character()
+		
+		# 释放背包实例
 		bag_instance.queue_free()
 		bag_instance = null
+		
+		# 更新按钮状态
+		_update_bag_button_state(false)
+		
+		print("【角色卡片】背包已关闭")
 
-# 当鼠标离开背包区域
-func _on_bag_mouse_exited() -> void:
-	print("鼠标离开背包区域")
-	# 检查鼠标是否回到悬停区域
-	if is_hover_area_hovered:
-		print("鼠标在悬停区域，不隐藏")
-		return  # 鼠标在悬停区域，不隐藏
+# 更新背包按钮的状态
+func _update_bag_button_state(is_open: bool) -> void:
+	if not bag_button:
+		return
 	
-	# 启动隐藏计时器
-	if hide_timer:
-		print("从背包离开，启动隐藏计时器")
-		hide_timer.start()
+	if is_open:
+		# 背包打开时的样式
+		bag_button.text = "✖"  # 改为关闭图标
+		var style_active = StyleBoxFlat.new()
+		style_active.bg_color = Color(0.8, 0.5, 0.2, 0.9)  # 橙色表示激活
+		style_active.corner_radius_top_left = 5
+		style_active.corner_radius_top_right = 5
+		style_active.corner_radius_bottom_left = 5
+		style_active.corner_radius_bottom_right = 5
+		bag_button.add_theme_stylebox_override("normal", style_active)
+	else:
+		# 背包关闭时的样式
+		bag_button.text = "🎒"  # 背包图标
+		var style_normal = StyleBoxFlat.new()
+		style_normal.bg_color = Color(0.2, 0.3, 0.4, 0.8)  # 深蓝色背景
+		style_normal.corner_radius_top_left = 5
+		style_normal.corner_radius_top_right = 5
+		style_normal.corner_radius_bottom_left = 5
+		style_normal.corner_radius_bottom_right = 5
+		bag_button.add_theme_stylebox_override("normal", style_normal)
+
+# 当背包请求关闭时的回调
+func _on_bag_close_requested() -> void:
+	print("【角色卡片】收到背包关闭请求")
+	close_bag()

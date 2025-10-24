@@ -46,6 +46,12 @@ func _on_button_button_down() -> void:
 	cardCurrentState = cardState.dragging
 	original_position = position
 	
+	# 如果卡片在背包槽位中，重置缩放（槽位会缩放卡片）
+	var current_parent = get_parent()
+	if current_parent != null and current_parent is BagSlot:
+		scale = Vector2(1.0, 1.0)
+		print("【卡片】从背包槽位拖出，重置缩放")
+	
 	# 如果这张卡片堆叠在其他卡片上，从堆叠中移除
 	if parent_card != null:
 		parent_card.remove_from_stack(self)

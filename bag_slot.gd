@@ -78,6 +78,9 @@ func remove_card() -> Control:
 	if card.get_parent() == self:
 		remove_child(card)
 	
+	# 【重置缩放】恢复卡片的原始大小
+	card.scale = Vector2(1.0, 1.0)
+	
 	# 发射信号
 	card_removed.emit(card)
 	

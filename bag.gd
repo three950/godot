@@ -1,14 +1,8 @@
 extends Panel
 class_name BagPanel
 
-# 信号：当鼠标进入背包区域
-signal mouse_entered_bag
-# 信号：当鼠标离开背包区域
-signal mouse_exited_bag
-
-# 背包状态
-var is_mouse_over: bool = false
-var was_mouse_over: bool = false
+# 信号：请求关闭背包
+signal close_requested
 
 # 当前背包所属的角色
 var current_character: CharacterData = null
@@ -21,30 +15,25 @@ var right_slot: BagSlot = null
 var bag_slots: Array[BagSlot] = []
 
 func _ready() -> void:
-	# 确保鼠标事件可以被检测
+	# 确保可以检测鼠标事件
 	mouse_filter = Control.MOUSE_FILTER_STOP
-	
-	# 设置背包面板的 z_index，确保显示在合适的层级
-	z_index = 10  # 背包应该在较高层级，但卡槽内的卡片会更高
 	
 	# 获取所有卡槽的引用
 	_initialize_slots()
 
-func _process(_delta: float) -> void:
-	# 使用矩形检测代替鼠标事件，更可靠
-	var mouse_pos = get_global_mouse_position()
-	var bag_rect = Rect2(global_position, size)
-	is_mouse_over = bag_rect.has_point(mouse_pos)
-	
-	# 检测状态变化并发射信号
-	if is_mouse_over and not was_mouse_over:
-		print("【背包】鼠标进入背包（矩形检测）")
-		mouse_entered_bag.emit()
-	elif not is_mouse_over and was_mouse_over:
-		print("【背包】鼠标离开背包（矩形检测）")
-		mouse_exited_bag.emit()
-	
-	was_mouse_over = is_mouse_over
+# 处理未处理的输入（用于检测点击背包外部）
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			# 检查点击位置是否在背包外部
+			var mouse_pos = get_global_mouse_position()
+			var bag_rect = Rect2(global_position, size)
+			
+			if not bag_rect.has_point(mouse_pos):
+				# 点击在背包外部，发出关闭请求
+				print("【背包】检测到点击背包外部，请求关闭")
+				close_requested.emit()
+				get_viewport().set_input_as_handled()
 
 ## 初始化卡槽引用
 func _initialize_slots() -> void:
@@ -253,3 +242,88 @@ func get_item_count() -> int:
 			count += 1
 	return count
 
+## 在关闭背包前，将背包外的卡片移到主场景
+## 这样这些卡片就不会随着背包一起被删除
+func preserve_cards_outside_bag() -> void:
+	print("【背包】正在检查并保留背包外的卡片...")
+	
+	# 获取背包的全局矩形区域
+	var bag_rect = Rect2(global_position, size)
+	
+	# 收集所有卡片（包括槽位中的和可能拖出的）
+	var all_cards: Array[Control] = []
+	
+	# 从所有槽位收集卡片
+	if left_slot and not left_slot.is_empty():
+		all_cards.append(left_slot.get_card())
+	if right_slot and not right_slot.is_empty():
+		all_cards.append(right_slot.get_card())
+	for slot in bag_slots:
+		if not slot.is_empty():
+			all_cards.append(slot.get_card())
+	
+	# 也收集背包面板的直接子节点中的卡片（可能被拖出但还未归位）
+	for child in get_children():
+		if child is Control and "cardCurrentState" in child:
+			if child not in all_cards:
+				all_cards.append(child)
+	
+	# 检查每张卡片
+	for card in all_cards:
+		if not is_instance_valid(card):
+			continue
+		
+		# 检查卡片的全局位置是否在背包外
+		var card_rect = Rect2(card.global_position, card.size)
+		
+		# 如果卡片不与背包区域相交，说明它在背包外
+		if not card_rect.intersects(bag_rect):
+			print("【背包】发现背包外的卡片: %s，位置: %s" % [card.name, card.global_position])
+			_move_card_to_main_scene(card)
+
+## 将卡片移动到主场景（CardManager）
+func _move_card_to_main_scene(card: Control) -> void:
+	var old_parent = card.get_parent()
+	if old_parent == null:
+		return
+	
+	# 保存卡片的全局位置
+	var saved_global_position = card.global_position
+	
+	# 先获取场景树引用
+	var tree = get_tree()
+	if tree == null or tree.root == null:
+		push_error("【背包】无法获取场景树")
+		return
+	
+	# 尝试找到 CardManager 节点
+	var card_manager = tree.root.find_child("CardManager", true, false)
+	if card_manager == null:
+		push_warning("【背包】找不到 CardManager，卡片将添加到根节点")
+		card_manager = tree.root.get_child(0)  # 使用主场景作为目标
+	
+	# 从当前父节点移除
+	old_parent.remove_child(card)
+	
+	# 如果卡片在槽位中，需要清除槽位的引用
+	if old_parent is BagSlot:
+		if old_parent.stored_card == card:
+			old_parent.stored_card = null
+	
+	# 添加到目标父节点
+	card_manager.add_child(card)
+	
+	# 恢复全局位置
+	card.global_position = saved_global_position
+	
+	# 重置卡片缩放（因为槽位会缩放卡片）
+	card.scale = Vector2(1.0, 1.0)
+	
+	# 确保卡片处于固定状态
+	if "cardCurrentState" in card:
+		card.cardCurrentState = card.cardState.fixed
+	
+	# 重置 z_index
+	card.z_index = 0
+	
+	print("【背包】卡片 %s 已移动到主场景，位置: %s" % [card.name, card.global_position])
