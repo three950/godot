@@ -19,6 +19,11 @@ var parent_card: Control = null  # 如果这张卡片堆叠在其他卡片上，
 var original_position: Vector2 = Vector2.ZERO  # 开始拖拽时的原始位置
 var drag_offset_in_stack: Vector2 = Vector2.ZERO  # 在堆叠中的偏移量
 
+# 卡槽相关
+var parent_slot: Control = null  # 如果卡片在卡槽中，这是父卡槽
+var original_scale: Vector2 = Vector2.ONE  # 记录原始缩放，从卡槽拿出时恢复
+var original_parent: Node = null  # 记录从卡槽拿出前的父节点
+
 const DRAG_TEMP_Z := 100
 
 func _ready() -> void:
@@ -45,6 +50,10 @@ func _on_button_button_down() -> void:
 	
 	cardCurrentState = cardState.dragging
 	original_position = position
+	
+	# 如果卡片在卡槽中，从卡槽中移除
+	if parent_slot != null:
+		remove_from_slot()
 	
 	# 如果这张卡片堆叠在其他卡片上，从堆叠中移除
 	if parent_card != null:
@@ -84,6 +93,12 @@ func _on_button_button_up() -> void:
 			# 如果还在商店区域内，回到原始位置
 			position = original_position
 			cardCurrentState = cardState.fixed
+		return
+	
+	# 优先检测是否可以放入卡槽
+	var closest_slot = find_closest_slot()
+	if closest_slot != null:
+		place_in_slot(closest_slot)
 		return
 	
 	# 检测是否可以堆叠到其他卡片上
@@ -378,3 +393,129 @@ func try_purchase() -> bool:
 	print("购买成功：花费 %d 金币，剩余 %d 金币" % [card_value, shop_manager.coins])
 	
 	return true
+
+# ==================== 卡槽相关方法 ====================
+
+# 查找最近的空卡槽
+func find_closest_slot() -> Control:
+	# 获取所有背包面板
+	var bag_panels = get_tree().get_nodes_in_group("BagPanel")
+	if bag_panels.is_empty():
+		return null
+	
+	var closest_slot: Control = null
+	var snap_distance_sq: float = snap_distance * snap_distance
+	var closest_distance_sq: float = snap_distance_sq
+	
+	for bag_panel in bag_panels:
+		# 获取背包中的所有卡槽
+		var slots = []
+		
+		# 尝试获取左侧槽位
+		var left_slots = bag_panel.get_node_or_null("HBoxContainer/LeftSlots")
+		if left_slots:
+			for child in left_slots.get_children():
+				if child.is_class("Panel") and child.has_method("is_empty"):
+					slots.append(child)
+		
+		# 尝试获取右侧槽位
+		var right_slots = bag_panel.get_node_or_null("HBoxContainer/RightSlots")
+		if right_slots:
+			for child in right_slots.get_children():
+				if child.is_class("Panel") and child.has_method("is_empty"):
+					slots.append(child)
+		
+		# 检查每个卡槽
+		for slot in slots:
+			# 只考虑空卡槽
+			if not slot.is_empty():
+				continue
+			
+			var dist_sq = global_position.distance_squared_to(slot.global_position)
+			if dist_sq < closest_distance_sq:
+				closest_distance_sq = dist_sq
+				closest_slot = slot
+	
+	return closest_slot
+
+# 将卡片放入卡槽
+func place_in_slot(slot: Control) -> void:
+	if slot == null or not slot.has_method("place_card"):
+		print("警告: 无效的卡槽")
+		cardCurrentState = cardState.fixed
+		return
+	
+	# 检查卡槽是否为空
+	if not slot.is_empty():
+		print("警告: 卡槽已有卡片")
+		cardCurrentState = cardState.fixed
+		return
+	
+	# 检查当前卡片是否有堆叠的子卡片
+	if stacked_cards.size() > 0:
+		print("警告: 带有堆叠卡片的卡片不能放入背包槽")
+		cardCurrentState = cardState.fixed
+		return
+	
+	# 记录原始父节点（用于从卡槽拿出时恢复）
+	original_parent = get_parent()
+	
+	# 记录原始缩放
+	original_scale = scale
+	
+	# 调用卡槽的 place_card 方法
+	if slot.place_card(self):
+		parent_slot = slot
+		cardCurrentState = cardState.fixed
+		print("卡片 %s 已放入卡槽 %s" % [name, slot.name])
+	else:
+		print("警告: 无法将卡片放入卡槽")
+		cardCurrentState = cardState.fixed
+
+# 从卡槽中移除卡片
+func remove_from_slot() -> void:
+	if parent_slot == null:
+		return
+	
+	# 获取场景树引用
+	var tree = get_tree()
+	if tree == null or tree.root == null:
+		push_error("无法获取场景树")
+		return
+	
+	# 保存当前的全局位置
+	var saved_global_position = global_position
+	
+	# 确定目标父节点（优先使用原始父节点，否则查找 CardManager）
+	var target_parent = original_parent
+	if target_parent == null or not is_instance_valid(target_parent):
+		target_parent = tree.root.find_child("CardManager", true, false)
+		if target_parent == null:
+			# 如果找不到 CardManager，使用根节点的第一个有效容器
+			target_parent = tree.root.get_child(0)
+	
+	# 从卡槽移除
+	if parent_slot.has_method("remove_card"):
+		parent_slot.remove_card()
+	else:
+		# 手动移除
+		if get_parent() == parent_slot:
+			parent_slot.remove_child(self)
+	
+	# 添加到目标父节点
+	if target_parent:
+		target_parent.add_child(self)
+		
+		# 恢复全局位置
+		global_position = saved_global_position
+		
+		# 恢复原始缩放
+		scale = original_scale
+		
+		# 重置 z_index
+		z_index = 0
+		
+		print("卡片 %s 已从卡槽 %s 移除，移动到 %s" % [name, parent_slot.name, target_parent.name])
+	
+	# 清除卡槽引用
+	parent_slot = null

@@ -1,9 +1,9 @@
 [gd_scene load_steps=3 format=3 uid="uid://bkflydah8kasa"]
 
-[ext_resource type="Script" path="res://bag.gd" id="1_bag"]
-[ext_resource type="Script" path="res://bag_slot.gd" id="2_slot"]
+[ext_resource type="Script" uid="uid://64jap16yehx" path="res://bag.gd" id="1_bag"]
+[ext_resource type="Script" uid="uid://cw80ymunf8dnw" path="res://bag_slot.gd" id="2_slot"]
 
-[node name="BagPanel" type="Panel"]
+[node name="BagPanel" type="Panel" groups=["BagPanel"]]
 offset_right = 328.0
 offset_bottom = 216.0
 script = ExtResource("1_bag")

@@ -1,3 +1,76 @@
 HoverVisual 的鼠标过滤器可能阻止了鼠标事件
 
 create_by_card_scene()卡片工厂类
+
+==============================================
+背包系统与数据联动 - 开发说明
+==============================================
+
+【更新日期】2024年10月24日
+
+【系统概述】
+背包系统现已支持与 CharacterData 的实时数据联动。
+当卡片放入或移出背包卡槽时，会自动同步更新角色数据。
+
+【核心功能】
+
+1. 卡槽与数据绑定
+   - 每个卡槽对应 CharacterData 中的一个字段
+   - 左侧槽位：Slot1(left) 和 Slot2(right) - 装备槽
+   - 右侧槽位：Slot3-8 对应 bag1-bag6 - 背包槽
+
+2. 自动数据同步
+   - 放入卡片：自动将卡片名称保存到对应字段
+   - 移出卡片：自动清空对应字段
+   - 实时更新：无需手动调用保存方法
+
+3. 卡片操作
+   - 拖拽卡片到卡槽：松开鼠标时自动吸附并放入（吸附距离80像素）
+   - 从卡槽取出：直接拖拽卡槽中的卡片即可
+   - 堆叠限制：不允许带有堆叠卡片的卡片放入背包
+
+【使用流程】
+
+1. 加载角色背包
+   var bag_panel = $BagPanel
+   var character_data = CharacterData.new()
+   bag_panel.load_character_bag(character_data)
+
+2. 数据自动同步
+   - 用户拖拽卡片到卡槽时，自动更新 CharacterData
+   - 无需额外代码，系统会自动处理
+
+3. 访问角色数据
+   # 数据会实时更新
+   print(character_data.left)   # 左手装备名称
+   print(character_data.bag1)   # 背包第1个物品名称
+
+【技术细节】
+
+1. 卡槽初始化（bag.gd）
+   - _initialize_slots() 为每个卡槽设置字段名和背包引用
+   - 自动建立卡槽与数据的映射关系
+
+2. 数据更新（bag_slot.gd）
+   - place_card() 和 remove_card() 会自动调用 update_character_data()
+   - 智能获取卡片名称，支持多种卡片结构
+
+3. 卡片交互（card.gd）
+   - 新增 parent_slot 变量追踪卡片所在卡槽
+   - find_closest_slot() 查找最近的空卡槽
+   - place_in_slot() 和 remove_from_slot() 处理卡槽操作
+
+【注意事项】
+
+1. 同一时间只显示一个背包面板
+2. 卡片必须有名称（从 Label 或 card_name 属性获取）
+3. 带有堆叠卡片的卡片不能放入背包槽
+4. 卡槽吸附距离为 80 像素（与卡片堆叠相同）
+5. 背包面板必须有 "BagPanel" 组标记
+
+【文件修改清单】
+
+1. card.gd - 新增卡槽相关变量和方法
+2. bag_slot.gd - 实现自动数据更新机制
+3. bag.gd - 初始化时为卡槽设置字段映射
+4. bag.tscn - 为 BagPanel 添加 "BagPanel" 组标记

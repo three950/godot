@@ -23,10 +23,7 @@ var bag_slots: Array[BagSlot] = []
 func _ready() -> void:
 	# 确保鼠标事件可以被检测
 	mouse_filter = Control.MOUSE_FILTER_STOP
-	
-	# 设置背包面板的 z_index，确保显示在合适的层级
-	z_index = 10  # 背包应该在较高层级，但卡槽内的卡片会更高
-	
+	z_index = 10 
 	# 获取所有卡槽的引用
 	_initialize_slots()
 
@@ -55,6 +52,14 @@ func _initialize_slots() -> void:
 	if left_slots:
 		left_slot = left_slots.get_node_or_null("Slot1")  # Slot1 对应 left（左手）
 		right_slot = left_slots.get_node_or_null("Slot2")  # Slot2 对应 right（右手）
+		
+		# 设置装备槽位的字段名和背包面板引用
+		if left_slot:
+			left_slot.slot_field_name = "left"
+			left_slot.bag_panel = self
+		if right_slot:
+			right_slot.slot_field_name = "right"
+			right_slot.bag_panel = self
 	
 	# 获取右侧的背包槽位（bag1-6）
 	var right_slots = get_node_or_null("HBoxContainer/RightSlots")
@@ -62,6 +67,10 @@ func _initialize_slots() -> void:
 		for i in range(3, 9):  # Slot3-8 对应 bag1-6
 			var slot = right_slots.get_node_or_null("Slot%d" % i)
 			if slot:
+				# 设置背包槽位的字段名（bag1-bag6）
+				var bag_index = i - 2  # Slot3->bag1, Slot4->bag2, ...
+				slot.slot_field_name = "bag%d" % bag_index
+				slot.bag_panel = self
 				bag_slots.append(slot)
 	
 	print("【背包】初始化了装备槽位: left=%s, right=%s" % [left_slot != null, right_slot != null])
@@ -73,13 +82,8 @@ func load_character_bag(character: CharacterData) -> void:
 	if not character:
 		push_error("【背包】无效的角色数据")
 		return
-	
-	print("【背包】正在加载角色 '%s' 的背包..." % character.character_name)
-	
 	# 清空当前背包
 	clear_bag()
-	
-	# 保存当前角色引用
 	current_character = character
 	
 	# 1. 加载装备槽位（left 和 right）
@@ -145,6 +149,16 @@ func _load_equipment_slot(slot: BagSlot, item_name: String, slot_name: String) -
 	# 使用 CardFactory 创建卡片
 	var card = CardFactory.create_by_card_scene(item_data, null, Vector2.ZERO, 3)
 	if card:
+		# 【关键修复】先将卡片添加到主场景的 CardManager 中
+		var card_manager = _get_card_manager()
+		if card_manager:
+			card_manager.add_child(card)
+			# 设置卡片的 original_parent
+			if "original_parent" in card:
+				card.original_parent = card_manager
+		else:
+			push_warning("【背包】找不到 CardManager，装备将直接添加到卡槽（可能导致拖出后消失）")
+		
 		# 确保卡片可以接收鼠标事件
 		if "mouse_filter" in card:
 			card.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -152,11 +166,13 @@ func _load_equipment_slot(slot: BagSlot, item_name: String, slot_name: String) -
 		# 将卡片放入槽位
 		if slot.place_card(card):
 			print("【背包】✓ 加载装备到%s槽位: %s" % [slot_name, item_name])
-		else:
-			push_error("【背包】✗ 无法将装备放入%s槽位: %s" % [slot_name, item_name])
-			card.queue_free()
-	else:
-		push_error("【背包】✗ 无法创建装备卡片: %s" % item_name)
+
+## 获取 CardManager 节点
+func _get_card_manager() -> Node:
+	var tree = get_tree()
+	# 尝试从场景树查找 CardManager
+	var card_manager = tree.root.find_child("CardManager", true, false)
+	return card_manager
 
 ## 从 GameData 获取物品数据（按名称）
 ## 尝试从资源、道具、装备数据库中查找
@@ -241,6 +257,7 @@ func _get_card_name_from_slot(slot: BagSlot) -> String:
 	# 尝试从卡片的 Label 获取名称
 	var label = card.get_node_or_null("Control/ColorRect/Label")
 	if label:
+		print("卡片的名称为"+label.text)
 		return label.text
 	
 	return ""
@@ -253,3 +270,37 @@ func get_item_count() -> int:
 			count += 1
 	return count
 
+## 遍历所有卡槽，更新角色数据
+func _update_character_data_from_all_slots() -> void:
+	if not current_character:
+		push_warning("【背包】没有关联的角色，无法更新数据")
+		return
+	
+	print("【背包】开始更新角色 '%s' 的装备和背包数据..." % current_character.character_name)
+	
+	# 1. 更新左右手装备槽位
+	if left_slot:
+		var card_name = _get_card_name_from_slot(left_slot)
+		current_character.left = card_name
+		print("  - 左手槽位: '%s'" % card_name)
+	
+	if right_slot:
+		var card_name = _get_card_name_from_slot(right_slot)
+		current_character.right = card_name
+		print("  - 右手槽位: '%s'" % card_name)
+	
+	# 2. 更新背包槽位 (bag1-bag6)
+	var bag_fields = ["bag1", "bag2", "bag3", "bag4", "bag5", "bag6"]
+	
+	for i in range(min(bag_slots.size(), bag_fields.size())):
+		var slot = bag_slots[i]
+		var field_name = bag_fields[i]
+		var card_name = _get_card_name_from_slot(slot)
+		current_character.set(field_name, card_name)
+		
+		if card_name != "":
+			print("  - %s: '%s'" % [field_name, card_name])
+		else:
+			print("  - %s: (空)" % field_name)
+	
+	print("【背包】角色数据更新完成！")
