@@ -1,354 +1,81 @@
 extends Panel
-class_name BagPanel
 
-# 信号：当鼠标进入背包区域
-signal mouse_entered_bag
-# 信号：当鼠标离开背包区域
-signal mouse_exited_bag
+# 背包面板脚本
 
-# 背包状态
-var is_mouse_over: bool = false
-var was_mouse_over: bool = false
-
-# 当前背包所属的角色
-var current_character: CharacterData = null
-
-# 装备槽位引用（左右手）
-var left_slot: BagSlot = null
-var right_slot: BagSlot = null
-
-# 背包槽位引用（bag1-6）
-var bag_slots: Array[BagSlot] = []
+@export var is_visible_on_start: bool = false  # 启动时是否可见
 
 func _ready() -> void:
-	# 确保鼠标事件可以被检测
-	mouse_filter = Control.MOUSE_FILTER_STOP
-	z_index = 10 
-	# 获取所有卡槽的引用
-	_initialize_slots()
+	visible = is_visible_on_start
+	
+	# 可以在这里添加更多初始化逻辑
+	print("背包面板 %s 初始化完成" % name)
 
-func _process(_delta: float) -> void:
-	# 使用矩形检测代替鼠标事件，更可靠
-	var mouse_pos = get_global_mouse_position()
-	var bag_rect = Rect2(global_position, size)
-	is_mouse_over = bag_rect.has_point(mouse_pos)
-	
-	# 检测状态变化并发射信号
-	if is_mouse_over and not was_mouse_over:
-		print("【背包】鼠标进入背包（矩形检测）")
-		mouse_entered_bag.emit()
-	elif not is_mouse_over and was_mouse_over:
-		print("【背包】鼠标离开背包（矩形检测）")
-		mouse_exited_bag.emit()
-	
-	was_mouse_over = is_mouse_over
+# 切换背包的显示/隐藏
+func toggle_visibility() -> void:
+	visible = !visible
+	print("背包面板 %s: %s" % [name, "显示" if visible else "隐藏"])
 
-## 初始化卡槽引用
-func _initialize_slots() -> void:
-	bag_slots.clear()
+# 显示背包
+func show_bag() -> void:
+	visible = true
+	print("背包面板 %s 已显示" % name)
+
+# 隐藏背包
+func hide_bag() -> void:
+	visible = false
+	print("背包面板 %s 已隐藏" % name)
+
+# 获取所有卡槽
+func get_all_slots() -> Array[Control]:
+	var slots: Array[Control] = []
 	
-	# 获取左侧的装备槽位（left 和 right）
+	# 获取左侧槽位
 	var left_slots = get_node_or_null("HBoxContainer/LeftSlots")
 	if left_slots:
-		left_slot = left_slots.get_node_or_null("Slot1")  # Slot1 对应 left（左手）
-		right_slot = left_slots.get_node_or_null("Slot2")  # Slot2 对应 right（右手）
-		
-		# 设置装备槽位的字段名和背包面板引用
-		if left_slot:
-			left_slot.slot_field_name = "left"
-			left_slot.bag_panel = self
-		if right_slot:
-			right_slot.slot_field_name = "right"
-			right_slot.bag_panel = self
+		for child in left_slots.get_children():
+			if child.is_class("Panel") and child.has_method("is_empty"):
+				slots.append(child)
 	
-	# 获取右侧的背包槽位（bag1-6）
+	# 获取右侧槽位
 	var right_slots = get_node_or_null("HBoxContainer/RightSlots")
 	if right_slots:
-		for i in range(3, 9):  # Slot3-8 对应 bag1-6
-			var slot = right_slots.get_node_or_null("Slot%d" % i)
-			if slot:
-				# 设置背包槽位的字段名（bag1-bag6）
-				var bag_index = i - 2  # Slot3->bag1, Slot4->bag2, ...
-				slot.slot_field_name = "bag%d" % bag_index
-				slot.bag_panel = self
-				bag_slots.append(slot)
+		for child in right_slots.get_children():
+			if child.is_class("Panel") and child.has_method("is_empty"):
+				slots.append(child)
 	
-	print("【背包】初始化了装备槽位: left=%s, right=%s" % [left_slot != null, right_slot != null])
-	print("【背包】初始化了 %d 个背包槽位" % bag_slots.size())
+	return slots
 
-## 加载指定角色的背包数据
-## @param character: 要加载背包的角色数据
-func load_character_bag(character: CharacterData) -> void:
-	if not character:
-		push_error("【背包】无效的角色数据")
-		return
-	# 清空当前背包
-	clear_bag()
-	current_character = character
+# 获取所有空卡槽
+func get_empty_slots() -> Array[Control]:
+	var empty_slots: Array[Control] = []
+	var all_slots = get_all_slots()
 	
-	# 1. 加载装备槽位（left 和 right）
-	_load_equipment_slot(left_slot, character.left, "左手")
-	_load_equipment_slot(right_slot, character.right, "右手")
+	for slot in all_slots:
+		if slot.is_empty():
+			empty_slots.append(slot)
 	
-	# 2. 获取角色的背包物品名称数组
-	var bag_items = [
-		character.bag1,
-		character.bag2,
-		character.bag3,
-		character.bag4,
-		character.bag5,
-		character.bag6
-	]
-	
-	# 3. 遍历每个背包槽位
-	for i in range(min(bag_items.size(), bag_slots.size())):
-		var item_name = bag_items[i]
-		
-		# 如果槽位为空，跳过
-		if item_name == "" or item_name == null:
-			continue
-		
-		# 从 GameData 获取物品数据
-		var item_data = _get_item_data_by_name(item_name)
-		if item_data.is_empty():
-			push_warning("【背包】未找到物品数据: %s" % item_name)
-			continue
-		
-		# 使用 CardFactory 创建卡片
-		var card = CardFactory.create_by_card_scene(item_data, null, Vector2.ZERO, 3)  # card_type=3 表示背包中的卡片
-		if card:
-			# 确保卡片可以接收鼠标事件
-			if "mouse_filter" in card:
-				card.mouse_filter = Control.MOUSE_FILTER_STOP
-			
-			# 将卡片放入对应的卡槽
-			if bag_slots[i].place_card(card):
-				print("【背包】✓ 加载物品到背包槽位 %d: %s" % [i + 1, item_name])
-			else:
-				push_error("【背包】✗ 无法将物品放入背包槽位 %d: %s" % [i + 1, item_name])
-				card.queue_free()  # 释放未使用的卡片
-		else:
-			push_error("【背包】✗ 无法创建卡片: %s" % item_name)
-	
-	print("【背包】加载完成！")
+	return empty_slots
 
-## 加载单个装备槽位
-func _load_equipment_slot(slot: BagSlot, item_name: String, slot_name: String) -> void:
-	if not slot:
-		return
+# 获取背包中所有卡片
+func get_all_cards() -> Array[Control]:
+	var cards: Array[Control] = []
+	var all_slots = get_all_slots()
 	
-	if item_name == "" or item_name == null:
-		return
+	for slot in all_slots:
+		if not slot.is_empty() and slot.contained_card != null:
+			cards.append(slot.contained_card)
 	
-	# 从 GameData 获取物品数据
-	var item_data = _get_item_data_by_name(item_name)
-	if item_data.is_empty():
-		push_warning("【背包】未找到装备数据: %s" % item_name)
-		return
-	
-	# 使用 CardFactory 创建卡片
-	var card = CardFactory.create_by_card_scene(item_data, null, Vector2.ZERO, 3)
-	if card:
-		# 【关键修复】先将卡片添加到主场景的 CardManager 中
-		var card_manager = _get_card_manager()
-		if card_manager:
-			card_manager.add_child(card)
-			# 设置卡片的 original_parent
-			if "original_parent" in card:
-				card.original_parent = card_manager
-		else:
-			push_warning("【背包】找不到 CardManager，装备将直接添加到卡槽（可能导致拖出后消失）")
-		
-		# 确保卡片可以接收鼠标事件
-		if "mouse_filter" in card:
-			card.mouse_filter = Control.MOUSE_FILTER_STOP
-		
-		# 将卡片放入槽位
-		if slot.place_card(card):
-			print("【背包】✓ 加载装备到%s槽位: %s" % [slot_name, item_name])
+	return cards
 
-## 获取 CardManager 节点
-func _get_card_manager() -> Node:
-	var tree = get_tree()
-	# 尝试从场景树查找 CardManager
-	var card_manager = tree.root.find_child("CardManager", true, false)
-	return card_manager
+# 检查背包是否已满
+func is_full() -> bool:
+	return get_empty_slots().is_empty()
 
-## 从 GameData 获取物品数据（按名称）
-## 尝试从资源、道具、装备数据库中查找
-func _get_item_data_by_name(item_name: String) -> Dictionary:
-	# 先尝试从资源数据库查找
-	var item_data = GameData.get_resource(item_name)
-	if not item_data.is_empty():
-		return item_data
-	
-	# 再尝试从道具数据库查找
-	item_data = GameData.get_item(item_name)
-	if not item_data.is_empty():
-		return item_data
-	
-	# 最后尝试从装备数据库查找
-	item_data = GameData.get_equipment(item_name)
-	if not item_data.is_empty():
-		return item_data
-	
-	# 都没找到，返回空字典
-	return {}
+# 背包被隐藏/销毁时的处理
+# 注意：使用 Drag & Drop 系统后，拖拽中的卡片不会被删除
+# 因为卡片数据是通过 get_drag_data 传递的，真正的卡片移动发生在 drop_data 中
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		print("背包面板 %s 即将被删除" % name)
+		# 由于使用了内建 Drag & Drop 系统，拖拽中的卡片不会受影响
 
-## 清空背包（移除所有卡片）
-func clear_bag() -> void:
-	print("【背包】正在清空背包...")
-	
-	# 清空装备槽位
-	if left_slot and not left_slot.is_empty():
-		var card = left_slot.remove_card()
-		if card:
-			card.queue_free()
-	
-	if right_slot and not right_slot.is_empty():
-		var card = right_slot.remove_card()
-		if card:
-			card.queue_free()
-	
-	# 清空背包槽位
-	for slot in bag_slots:
-		if not slot.is_empty():
-			var card = slot.remove_card()
-			if card:
-				card.queue_free()  # 释放卡片节点
-	
-	print("【背包】清空完成！")
-
-## 保存当前背包数据回角色
-## 将卡槽中的物品名称写回角色的背包字段
-func save_to_character() -> void:
-	if not current_character:
-		push_warning("【背包】没有关联的角色，无法保存")
-		return
-	
-	print("【背包】正在保存背包数据到角色 '%s'..." % current_character.character_name)
-	
-	# 1. 保存装备槽位数据
-	if left_slot:
-		current_character.left = _get_card_name_from_slot(left_slot)
-	if right_slot:
-		current_character.right = _get_card_name_from_slot(right_slot)
-	
-	# 2. 保存背包槽位数据
-	var bag_fields = ["bag1", "bag2", "bag3", "bag4", "bag5", "bag6"]
-	
-	# 遍历卡槽，提取物品名称
-	for i in range(min(bag_slots.size(), bag_fields.size())):
-		var slot = bag_slots[i]
-		var field_name = bag_fields[i]
-		current_character.set(field_name, _get_card_name_from_slot(slot))
-	
-	print("【背包】保存完成！")
-
-## 从卡槽中获取卡片名称
-func _get_card_name_from_slot(slot: BagSlot) -> String:
-	if not slot or slot.is_empty():
-		return ""
-	
-	var card = slot.get_card()
-	if not card:
-		return ""
-	
-	# 尝试从卡片的 Label 获取名称
-	var label = card.get_node_or_null("Control/ColorRect/Label")
-	if label:
-		print("卡片的名称为"+label.text)
-		return label.text
-	
-	return ""
-
-## 获取当前背包中的物品数量
-func get_item_count() -> int:
-	var count = 0
-	for slot in bag_slots:
-		if not slot.is_empty():
-			count += 1
-	return count
-
-## 遍历所有卡槽，更新角色数据
-func _update_character_data_from_all_slots() -> void:
-	if not current_character:
-		push_warning("【背包】没有关联的角色，无法更新数据")
-		return
-	
-	print("【背包】开始更新角色 '%s' 的装备和背包数据..." % current_character.character_name)
-	
-	# 1. 更新左右手装备槽位
-	if left_slot:
-		var card_name = _get_card_name_from_slot(left_slot)
-		current_character.left = card_name
-		print("  - 左手槽位: '%s'" % card_name)
-	
-	if right_slot:
-		var card_name = _get_card_name_from_slot(right_slot)
-		current_character.right = card_name
-		print("  - 右手槽位: '%s'" % card_name)
-	
-	# 2. 更新背包槽位 (bag1-bag6)
-	var bag_fields = ["bag1", "bag2", "bag3", "bag4", "bag5", "bag6"]
-	
-	for i in range(min(bag_slots.size(), bag_fields.size())):
-		var slot = bag_slots[i]
-		var field_name = bag_fields[i]
-		var card_name = _get_card_name_from_slot(slot)
-		current_character.set(field_name, card_name)
-		
-		if card_name != "":
-			print("  - %s: '%s'" % [field_name, card_name])
-		else:
-			print("  - %s: (空)" % field_name)
-	
-	print("【背包】角色数据更新完成！")
-
-## ==================== 面板销毁安全处理 ====================
-
-# 当背包面板即将退出场景树（被 queue_free）时调用
-func _exit_tree() -> void:
-	detach_all_cards_to_scene()
-
-# 将所有仍在卡槽中的卡片转移到 CardManager，避免随背包一起被删除
-func detach_all_cards_to_scene() -> void:
-	var card_manager = _get_card_manager()
-	if card_manager == null:
-		push_warning("【背包】找不到 CardManager，无法转移卡片，可能导致卡片被删除")
-		return
-	
-	# 处理左右手槽位
-	for slot in [left_slot, right_slot]:
-		if slot != null and not slot.is_empty():
-			_move_card_from_slot_to_parent(slot, card_manager)
-	
-	# 处理背包槽位
-	for slot in bag_slots:
-		if slot != null and not slot.is_empty():
-			_move_card_from_slot_to_parent(slot, card_manager)
-	
-	print("【背包】已将所有卡片安全转移到 CardManager")
-
-# 辅助函数：把槽位中的卡片移动到指定父节点
-func _move_card_from_slot_to_parent(slot: BagSlot, new_parent: Node) -> void:
-	var card = slot.get_card()
-	if card == null:
-		return
-	# 记录全局位置
-	var saved_global_pos = card.global_position
-	# 移除卡片但不 queue_free
-	slot.remove_card()
-	if card.get_parent() == slot:
-		slot.remove_child(card)
-	# 添加到新父节点
-	new_parent.add_child(card)
-	# 恢复位置和缩放
-	card.global_position = saved_global_pos
-	if "original_scale" in card:
-		card.scale = card.original_scale
-	else:
-		card.scale = Vector2.ONE
-	# 清理引用
-	if "parent_slot" in card:
-		card.parent_slot = null

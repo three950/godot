@@ -32,10 +32,9 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	match cardCurrentState:
 		cardState.dragging:
-			global_position = get_global_mouse_position() - size / 2
-			z_index = DRAG_TEMP_Z
-			# 同步更新子卡片层级与位置
-			update_stacked_cards()
+			# 旧的手动拖拽逻辑已弃用
+			# 现在由 Godot 内建 Drag & Drop 系统处理
+			pass
 		cardState.fixed:
 			pass
 		cardState.bestacked:
@@ -43,72 +42,162 @@ func _process(delta: float) -> void:
 			if parent_card != null:
 				position = parent_card.position + drag_offset_in_stack
 
-func _on_button_button_down() -> void:
+# ==================== Godot 内建 Drag & Drop 系统 ====================
+
+# 开始拖拽时调用，返回拖拽数据
+func _get_drag_data(_at_position: Vector2):
 	# architecture 类型不能拖拽
 	if card_type == cardType.architecture:
-		return
+		return null
 	
-	cardCurrentState = cardState.dragging
-	original_position = position
+	# 准备拖拽数据
+	var drag_data = {
+		"card": self,
+		"source_position": global_position,
+		"source_slot": parent_slot,
+		"source_parent_card": parent_card
+	}
 	
-	# 如果卡片在卡槽中，从卡槽中移除
+	# 创建拖拽预览
+	var preview = create_drag_preview()
+	set_drag_preview(preview)
+	
+	# 从原位置移除（但不删除节点）
 	if parent_slot != null:
-		remove_from_slot()
+		# 如果在卡槽中，只清除卡槽的引用，不移除节点
+		parent_slot.contained_card = null
+		parent_slot = null
 	
-	# 如果这张卡片堆叠在其他卡片上，从堆叠中移除
 	if parent_card != null:
+		# 如果堆叠在其他卡片上，从堆叠中移除
 		parent_card.remove_from_stack(self)
 		parent_card = null
 	
-	# 将当前卡片移动到父节点的子节点列表末尾，使其显示在最上层
-	get_parent().move_child(self, -1)
+	# 记录原始位置
+	original_position = global_position
 	
-	# 同时将所有子卡片也移到后面，保持堆叠顺序
-	move_stacked_cards_to_end()
+	print("开始拖拽卡片: %s" % name)
+	return drag_data
+
+# 创建拖拽预览
+func create_drag_preview() -> Control:
+	var preview = Control.new()
+	
+	# 创建卡片的视觉副本
+	var preview_panel = Panel.new()
+	preview_panel.custom_minimum_size = size
+	preview_panel.modulate = Color(1, 1, 1, 0.7)  # 半透明效果
+	
+	# 如果卡片有纹理或背景色，可以复制过来
+	# 这里简化处理，只创建一个半透明的面板
+	preview.add_child(preview_panel)
+	
+	# 可以添加更多视觉元素，比如卡片名称等
+	if has_node("Label"):
+		var label_copy = Label.new()
+		var original_label = get_node("Label")
+		label_copy.text = original_label.text
+		label_copy.position = original_label.position
+		preview_panel.add_child(label_copy)
+	
+	return preview
+
+# 判断是否可以将数据拖放到此卡片上（用于堆叠）
+func _can_drop_data(_at_position: Vector2, data) -> bool:
+	# 只接受字典类型的数据
+	if typeof(data) != TYPE_DICTIONARY:
+		return false
+	
+	if not data.has("card"):
+		return false
+	
+	var dragged_card = data["card"]
+	
+	# 不能堆叠到自己身上
+	if dragged_card == self:
+		return false
+	
+	# 不能堆叠到已经堆叠在自己身上的卡片
+	if is_card_in_stack(dragged_card):
+		return false
+	
+	# selling 类型不能作为堆叠目标
+	if card_type == cardType.selling:
+		return false
+	
+	# 检查是否允许堆叠
+	if not can_accept_stack:
+		return false
+	
+	# 如果只接受带 value 的卡片
+	if accept_value_only and not ("value" in dragged_card):
+		return false
+	
+	# 拖拽的卡片如果是 selling 或 architecture 类型，不能被堆叠
+	if "card_type" in dragged_card:
+		if dragged_card.card_type == cardType.selling or dragged_card.card_type == cardType.architecture:
+			return false
+	
+	return true
+
+# 执行拖放操作（堆叠）
+func _drop_data(_at_position: Vector2, data) -> void:
+	if typeof(data) != TYPE_DICTIONARY or not data.has("card"):
+		return
+	
+	var dragged_card = data["card"]
+	
+	# 堆叠到当前卡片上
+	stack_card_on_self(dragged_card)
+	
+	print("卡片 %s 被拖放到 %s 上" % [dragged_card.name, name])
+
+# 将拖拽的卡片堆叠到自己身上
+func stack_card_on_self(dragged_card: Control) -> void:
+	# 确保卡片在同一个父节点下
+	if dragged_card.get_parent() != get_parent():
+		var saved_global_pos = dragged_card.global_position
+		var old_parent = dragged_card.get_parent()
+		var target_parent = get_parent()
+		
+		if old_parent and target_parent:
+			old_parent.remove_child(dragged_card)
+			target_parent.add_child(dragged_card)
+			dragged_card.global_position = saved_global_pos
+	
+	# 设置堆叠关系
+	dragged_card.parent_card = self
+	dragged_card.cardCurrentState = cardState.bestacked
+	
+	# 计算堆叠偏移量
+	var stack_index = get_total_stack_size()
+	dragged_card.drag_offset_in_stack = stack_offset * (stack_index + 1)
+	
+	# 添加到堆叠列表
+	add_to_stack(dragged_card)
+	
+	# 设置位置和层级
+	dragged_card.position = position + dragged_card.drag_offset_in_stack
+	dragged_card.z_index = z_index + stack_index + 1
+	
+	# 更新子卡片
+	dragged_card.update_stacked_cards()
+	
+	# 调整场景树顺序
+	dragged_card.adjust_scene_tree_order()
+
+# ==================== 旧的按钮拖拽系统（已弃用，保留作为备用）====================
+
+func _on_button_button_down() -> void:
+	# 这个方法现在不再用于拖拽
+	# 拖拽由 _get_drag_data 处理
+	pass
 
 func _on_button_button_up() -> void:
-	z_index = 0
-	# 恢复所有子卡片的 z_index 与位置
-	update_stacked_cards()
-	
-	# selling 类型拖动后检测是否离开商店区域
-	if card_type == cardType.selling:
-		if is_outside_shop_area():
-			# 如果离开商店区域，尝试购买
-			if try_purchase():
-				# 购买成功，转为 normal 类型
-				card_type = cardType.normal
-				
-				# 从 slot 节点移除，添加到主场景中
-				move_to_main_scene()
-				
-				cardCurrentState = cardState.fixed
-				original_position = position
-				print("卡片 %s 购买成功，转为 normal 类型" % name)
-			else:
-				# 购买失败（金币不足），回到原始位置
-				position = original_position
-				cardCurrentState = cardState.fixed
-		else:
-			# 如果还在商店区域内，回到原始位置
-			position = original_position
-			cardCurrentState = cardState.fixed
-		return
-	
-	# 优先检测是否可以放入卡槽
-	var closest_slot = find_closest_slot()
-	if closest_slot != null:
-		place_in_slot(closest_slot)
-		return
-	
-	# 检测是否可以堆叠到其他卡片上
-	var closest_card = find_closest_card()
-	if closest_card != null:
-		stack_on_card(closest_card)
-	else:
-		# 如果没有找到可堆叠的卡片，设置为固定状态
-		cardCurrentState = cardState.fixed
-		original_position = position
+	# 这个方法现在不再用于拖拽
+	# 拖拽由 Drag & Drop 系统处理
+	# 保留用于其他按钮交互（如点击选择等）
+	pass
 
 # 查找最近的可堆叠卡片
 func find_closest_card() -> Control:

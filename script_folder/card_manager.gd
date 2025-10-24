@@ -27,6 +27,54 @@ func _ready() -> void:
 	generate_cards()
 	generate_scene_cards()
 
+# ==================== Drag & Drop 系统 - 处理拖拽到空白区域 ====================
+
+# 接受所有卡片拖放到主场景
+func _can_drop_data(_at_position: Vector2, data) -> bool:
+	# 只接受卡片拖放
+	if typeof(data) == TYPE_DICTIONARY and data.has("card"):
+		return true
+	return false
+
+# 将卡片放置到主场景的指定位置
+func _drop_data(at_position: Vector2, data) -> void:
+	if typeof(data) != TYPE_DICTIONARY or not data.has("card"):
+		return
+	
+	var card = data["card"]
+	
+	# 确保卡片在 CardManager 下
+	if card.get_parent() != self:
+		var saved_global_pos = card.global_position
+		var old_parent = card.get_parent()
+		
+		if old_parent:
+			old_parent.remove_child(card)
+		
+		add_child(card)
+		card.global_position = saved_global_pos
+		
+		print("卡片 %s 已从 %s 移动到 CardManager" % [card.name, old_parent.name if old_parent else "null"])
+	
+	# 将卡片移动到鼠标位置（转换为本地坐标）
+	card.position = at_position - card.size / 2
+	
+	# 设置卡片状态
+	if "cardCurrentState" in card and "cardState" in card:
+		card.cardCurrentState = card.cardState.fixed
+		card.original_position = card.position
+	
+	# 恢复卡片的正常缩放（可能从背包槽中缩放过）
+	if "original_scale" in card and card.original_scale != Vector2.ZERO:
+		card.scale = card.original_scale
+	else:
+		card.scale = Vector2.ONE
+	
+	# 重置 z_index
+	card.z_index = 0
+	
+	print("卡片 %s 被拖拽到主场景位置: %s" % [card.name, card.position])
+
 ## 生成所有角色卡片
 func generate_cards() -> void:
 	var all_characters = GameData.get_all_characters()
