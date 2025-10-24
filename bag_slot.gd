@@ -89,15 +89,22 @@ func remove_card() -> Control:
 		return null
 	
 	var card = stored_card
-	stored_card = null
+	# 若卡片已经不在此卡槽下（如拖出或移动到其他节点），仅清理引用并退出，避免误删
+	if card.get_parent() != self:
+		stored_card = null
+		card_removed.emit(card)
+		update_character_data()
+		print("【卡槽】检测到卡片已离开卡槽，仅清理引用，未移除节点")
+		return null
 	
+	# 正常流程：卡片仍在此卡槽
+	stored_card = null
 	# 清除卡片中的卡槽引用（如果卡片有这个属性）
 	if "parent_slot" in card:
 		card.parent_slot = null
 	
 	# 从卡槽移除卡片节点
-	if card.get_parent() == self:
-		remove_child(card)
+	remove_child(card)
 	
 	# 发射信号
 	card_removed.emit(card)
@@ -106,7 +113,6 @@ func remove_card() -> Control:
 	update_character_data()
 	
 	print("【卡槽】卡片已移除")
-	
 	return card
 
 # 获取卡槽中的卡片

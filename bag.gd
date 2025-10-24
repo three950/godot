@@ -304,3 +304,51 @@ func _update_character_data_from_all_slots() -> void:
 			print("  - %s: (空)" % field_name)
 	
 	print("【背包】角色数据更新完成！")
+
+## ==================== 面板销毁安全处理 ====================
+
+# 当背包面板即将退出场景树（被 queue_free）时调用
+func _exit_tree() -> void:
+	detach_all_cards_to_scene()
+
+# 将所有仍在卡槽中的卡片转移到 CardManager，避免随背包一起被删除
+func detach_all_cards_to_scene() -> void:
+	var card_manager = _get_card_manager()
+	if card_manager == null:
+		push_warning("【背包】找不到 CardManager，无法转移卡片，可能导致卡片被删除")
+		return
+	
+	# 处理左右手槽位
+	for slot in [left_slot, right_slot]:
+		if slot != null and not slot.is_empty():
+			_move_card_from_slot_to_parent(slot, card_manager)
+	
+	# 处理背包槽位
+	for slot in bag_slots:
+		if slot != null and not slot.is_empty():
+			_move_card_from_slot_to_parent(slot, card_manager)
+	
+	print("【背包】已将所有卡片安全转移到 CardManager")
+
+# 辅助函数：把槽位中的卡片移动到指定父节点
+func _move_card_from_slot_to_parent(slot: BagSlot, new_parent: Node) -> void:
+	var card = slot.get_card()
+	if card == null:
+		return
+	# 记录全局位置
+	var saved_global_pos = card.global_position
+	# 移除卡片但不 queue_free
+	slot.remove_card()
+	if card.get_parent() == slot:
+		slot.remove_child(card)
+	# 添加到新父节点
+	new_parent.add_child(card)
+	# 恢复位置和缩放
+	card.global_position = saved_global_pos
+	if "original_scale" in card:
+		card.scale = card.original_scale
+	else:
+		card.scale = Vector2.ONE
+	# 清理引用
+	if "parent_slot" in card:
+		card.parent_slot = null
