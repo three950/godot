@@ -1,25 +1,43 @@
 extends Panel
 class_name BagPanel
 
+## 背包面板 - 管理所有卡片和槽位逻辑
+
+# 预加载 BaggableCard 类以支持类型检查
+const BaggableCardScript = preload("res://baggable_card.gd")
+
 # 信号：请求关闭背包
 signal close_requested
+# 信号：当卡片被放入卡槽
+signal card_placed(card: Control, slot_index: int)
+# 信号：当卡片被移出卡槽
+signal card_removed(card: Control, slot_index: int)
 
 # 当前背包所属的角色
 var current_character: CharacterData = null
 
-# 装备槽位引用（左右手）
-var left_slot: BagSlot = null
-var right_slot: BagSlot = null
+# 卡槽引用（纯背景）
+var left_slot: BagSlot = null    # 索引 0
+var right_slot: BagSlot = null   # 索引 1
+var bag_slots: Array[BagSlot] = []  # 索引 2-7
 
-# 背包槽位引用（bag1-6）
-var bag_slots: Array[BagSlot] = []
+# 卡片数组（实际存储卡片引用）
+var cards: Array = []  # 总共 8 个槽位：[left, right, bag1-6]
 
 func _ready() -> void:
 	# 确保可以检测鼠标事件
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	
+	# 加入 BagPanel 组，方便查找
+	add_to_group("BagPanel")
+	
 	# 获取所有卡槽的引用
 	_initialize_slots()
+	
+	# 初始化卡片数组（8个槽位）
+	cards.resize(8)
+	for i in range(8):
+		cards[i] = null
 
 # 处理未处理的输入（用于检测点击背包外部）
 func _unhandled_input(event: InputEvent) -> void:
@@ -56,6 +74,159 @@ func _initialize_slots() -> void:
 	print("【背包】初始化了装备槽位: left=%s, right=%s" % [left_slot != null, right_slot != null])
 	print("【背包】初始化了 %d 个背包槽位" % bag_slots.size())
 
+## 根据索引获取卡槽
+func get_slot_by_index(index: int) -> BagSlot:
+	if index == 0:
+		return left_slot
+	elif index == 1:
+		return right_slot
+	elif index >= 2 and index < 8:
+		var bag_index = index - 2
+		if bag_index < bag_slots.size():
+			return bag_slots[bag_index]
+	return null
+
+## 根据卡槽获取索引
+func get_index_by_slot(slot: BagSlot) -> int:
+	if slot == left_slot:
+		return 0
+	elif slot == right_slot:
+		return 1
+	else:
+		for i in range(bag_slots.size()):
+			if bag_slots[i] == slot:
+				return i + 2
+	return -1
+
+## 判断指定槽位是否为空
+func is_slot_empty(index: int) -> bool:
+	if index < 0 or index >= cards.size():
+		return true
+	return cards[index] == null
+
+## 将卡片放入指定槽位
+func place_card_at_slot(card: Control, slot_index: int) -> bool:
+	# 检查索引有效性
+	if slot_index < 0 or slot_index >= cards.size():
+		push_error("【背包】无效的槽位索引: %d" % slot_index)
+		return false
+	
+	# 检查槽位是否已满
+	if not is_slot_empty(slot_index):
+		print("【背包】槽位 %d 已有卡片" % slot_index)
+		return false
+	
+	# 检查是否是可背包物品（BaggableCard）
+	var is_baggable = card.get_script() != null and _is_baggable_card(card.get_script())
+	if not is_baggable:
+		print("【背包】只能放入可背包物品（装备、道具、资源）")
+		return false
+	
+	# 检查卡片是否可以放入背包
+	if card.has_method("can_put_in_bag") and not card.can_put_in_bag():
+		print("【背包】该卡片当前状态不能放入背包")
+		return false
+	
+	# 获取对应的卡槽
+	var slot = get_slot_by_index(slot_index)
+	if not slot:
+		push_error("【背包】无法获取槽位 %d 的引用" % slot_index)
+		return false
+	
+	# 保存卡片引用
+	cards[slot_index] = card
+	
+	# 对齐卡片到卡槽中心位置
+	_align_card_to_slot(card, slot)
+	
+	# 设置卡片的 z_index，确保在卡槽之上
+	card.z_index = 10
+	
+	# 如果卡片有状态，设置为固定状态
+	if "cardCurrentState" in card:
+		card.cardCurrentState = card.cardState.fixed
+	
+	# 调用卡片的放入背包回调
+	if card.has_method("on_put_in_bag"):
+		card.on_put_in_bag(slot)
+	
+	# 发射信号
+	card_placed.emit(card, slot_index)
+	
+	print("【背包】卡片已放入槽位 %d" % slot_index)
+	return true
+
+## 从指定槽位移除卡片
+func remove_card_from_slot(slot_index: int) -> Control:
+	# 检查索引有效性
+	if slot_index < 0 or slot_index >= cards.size():
+		return null
+	
+	# 检查槽位是否为空
+	if is_slot_empty(slot_index):
+		return null
+	
+	var card = cards[slot_index]
+	cards[slot_index] = null
+	
+	# 重置卡片缩放
+	card.scale = Vector2(1.0, 1.0)
+	
+	# 重置 z_index
+	card.z_index = 0
+	
+	# 获取对应的卡槽
+	var slot = get_slot_by_index(slot_index)
+	
+	# 调用卡片的从背包取出回调
+	if card.has_method("on_take_out_from_bag"):
+		card.on_take_out_from_bag(slot)
+	
+	# 发射信号
+	card_removed.emit(card, slot_index)
+	
+	print("【背包】卡片已从槽位 %d 移除" % slot_index)
+	return card
+
+## 检查脚本是否继承自 BaggableCard
+func _is_baggable_card(script: Script) -> bool:
+	if script == null:
+		return false
+	
+	if script == BaggableCardScript:
+		return true
+	
+	var base = script.get_base_script()
+	while base != null:
+		if base == BaggableCardScript:
+			return true
+		base = base.get_base_script()
+	
+	return false
+
+## 对齐卡片到卡槽中心（等比缩放）
+func _align_card_to_slot(card: Control, slot: BagSlot) -> void:
+	# 计算缩放比例以适应卡槽
+	var card_size = card.size
+	var slot_size = slot.get_slot_size()
+	
+	print("【背包】对齐卡片 %s：卡片尺寸=%s，槽位尺寸=%s" % [card.name, card_size, slot_size])
+	
+	# 计算宽度和高度的缩放比例，取较小值以确保卡片完全适应
+	var scale_x = slot_size.x / card_size.x if card_size.x > 0 else 1.0
+	var scale_y = slot_size.y / card_size.y if card_size.y > 0 else 1.0
+	var scale_factor = min(scale_x, scale_y)
+	
+	# 应用等比缩放
+	card.scale = Vector2(scale_factor, scale_factor)
+	
+	# 对齐到卡槽中心
+	var center_pos = slot.get_center_global_position()
+	var scaled_card_size = card_size * scale_factor
+	card.global_position = center_pos - scaled_card_size / 2.0
+	
+	print("【背包】卡片 %s 已对齐：缩放=%f，中心位置=%s，最终位置=%s" % [card.name, scale_factor, center_pos, card.global_position])
+
 ## 加载指定角色的背包数据
 ## @param character: 要加载背包的角色数据
 func load_character_bag(character: CharacterData) -> void:
@@ -71,23 +242,21 @@ func load_character_bag(character: CharacterData) -> void:
 	# 保存当前角色引用
 	current_character = character
 	
-	# 1. 加载装备槽位（left 和 right）
-	_load_equipment_slot(left_slot, character.left, "左手")
-	_load_equipment_slot(right_slot, character.right, "右手")
-	
-	# 2. 获取角色的背包物品名称数组
-	var bag_items = [
-		character.bag1,
-		character.bag2,
-		character.bag3,
-		character.bag4,
-		character.bag5,
-		character.bag6
+	# 准备所有槽位的物品名称（索引 0-7）
+	var item_names = [
+		character.left,   # 索引 0
+		character.right,  # 索引 1
+		character.bag1,   # 索引 2
+		character.bag2,   # 索引 3
+		character.bag3,   # 索引 4
+		character.bag4,   # 索引 5
+		character.bag5,   # 索引 6
+		character.bag6    # 索引 7
 	]
 	
-	# 3. 遍历每个背包槽位
-	for i in range(min(bag_items.size(), bag_slots.size())):
-		var item_name = bag_items[i]
+	# 遍历所有槽位
+	for slot_index in range(item_names.size()):
+		var item_name = item_names[slot_index]
 		
 		# 如果槽位为空，跳过
 		if item_name == "" or item_name == null:
@@ -102,50 +271,34 @@ func load_character_bag(character: CharacterData) -> void:
 		# 使用 CardFactory 创建卡片（card_type=0 表示 normal 类型，可以放入背包）
 		var card = CardFactory.create_by_card_scene(item_data, null, Vector2.ZERO, 0)
 		if card:
+			# 将卡片添加为背包面板的直接子节点
+			add_child(card)
+			
 			# 确保卡片可以接收鼠标事件
 			if "mouse_filter" in card:
 				card.mouse_filter = Control.MOUSE_FILTER_STOP
 			
-			# 将卡片放入对应的卡槽
-			if bag_slots[i].place_card(card):
-				print("【背包】✓ 加载物品到背包槽位 %d: %s" % [i + 1, item_name])
+			# 等待下一帧，让 Godot 更新卡片的几何属性（size）
+			await get_tree().process_frame
+			
+			# 将卡片放入对应的槽位
+			if place_card_at_slot(card, slot_index):
+				var slot_name = _get_slot_name(slot_index)
+				print("【背包】✓ 加载物品到%s: %s" % [slot_name, item_name])
 			else:
-				push_error("【背包】✗ 无法将物品放入背包槽位 %d: %s" % [i + 1, item_name])
+				push_error("【背包】✗ 无法将物品放入槽位 %d: %s" % [slot_index, item_name])
 				card.queue_free()  # 释放未使用的卡片
 		else:
 			push_error("【背包】✗ 无法创建卡片: %s" % item_name)
 	
 	print("【背包】加载完成！")
 
-## 加载单个装备槽位
-func _load_equipment_slot(slot: BagSlot, item_name: String, slot_name: String) -> void:
-	if not slot:
-		return
-	
-	if item_name == "" or item_name == null:
-		return
-	
-	# 从 GameData 获取物品数据
-	var item_data = _get_item_data_by_name(item_name)
-	if item_data.is_empty():
-		push_warning("【背包】未找到装备数据: %s" % item_name)
-		return
-	
-	# 使用 CardFactory 创建卡片（card_type=0 表示 normal 类型，可以放入背包）
-	var card = CardFactory.create_by_card_scene(item_data, null, Vector2.ZERO, 0)
-	if card:
-		# 确保卡片可以接收鼠标事件
-		if "mouse_filter" in card:
-			card.mouse_filter = Control.MOUSE_FILTER_STOP
-		
-		# 将卡片放入槽位
-		if slot.place_card(card):
-			print("【背包】✓ 加载装备到%s槽位: %s" % [slot_name, item_name])
-		else:
-			push_error("【背包】✗ 无法将装备放入%s槽位: %s" % [slot_name, item_name])
-			card.queue_free()
-	else:
-		push_error("【背包】✗ 无法创建装备卡片: %s" % item_name)
+## 获取槽位名称（用于日志）
+func _get_slot_name(index: int) -> String:
+	match index:
+		0: return "左手"
+		1: return "右手"
+		_: return "背包槽位%d" % (index - 1)
 
 ## 从 GameData 获取物品数据（按名称）
 ## 尝试从资源、道具、装备数据库中查找
@@ -172,23 +325,22 @@ func _get_item_data_by_name(item_name: String) -> Dictionary:
 func clear_bag() -> void:
 	print("【背包】正在清空背包...")
 	
-	# 清空装备槽位
-	if left_slot and not left_slot.is_empty():
-		var card = left_slot.remove_card()
-		if card:
-			card.queue_free()
+	# 收集所有要删除的卡片
+	var cards_to_remove = []
 	
-	if right_slot and not right_slot.is_empty():
-		var card = right_slot.remove_card()
-		if card:
-			card.queue_free()
-	
-	# 清空背包槽位
-	for slot in bag_slots:
-		if not slot.is_empty():
-			var card = slot.remove_card()
+	# 遍历所有槽位
+	for slot_index in range(cards.size()):
+		if not is_slot_empty(slot_index):
+			var card = remove_card_from_slot(slot_index)
 			if card:
-				card.queue_free()  # 释放卡片节点
+				cards_to_remove.append(card)
+	
+	# 统一删除所有卡片
+	for card in cards_to_remove:
+		if is_instance_valid(card) and card.get_parent() == self:
+			remove_child(card)
+		if is_instance_valid(card):
+			card.queue_free()
 	
 	print("【背包】清空完成！")
 
@@ -201,29 +353,24 @@ func save_to_character() -> void:
 	
 	print("【背包】正在保存背包数据到角色 '%s'..." % current_character.character_name)
 	
-	# 1. 保存装备槽位数据
-	if left_slot:
-		current_character.left = _get_card_name_from_slot(left_slot)
-	if right_slot:
-		current_character.right = _get_card_name_from_slot(right_slot)
-	
-	# 2. 保存背包槽位数据
-	var bag_fields = ["bag1", "bag2", "bag3", "bag4", "bag5", "bag6"]
-	
-	# 遍历卡槽，提取物品名称
-	for i in range(min(bag_slots.size(), bag_fields.size())):
-		var slot = bag_slots[i]
-		var field_name = bag_fields[i]
-		current_character.set(field_name, _get_card_name_from_slot(slot))
+	# 保存所有槽位数据（索引 0-7 对应 left, right, bag1-6）
+	current_character.left = _get_card_name_from_index(0)
+	current_character.right = _get_card_name_from_index(1)
+	current_character.bag1 = _get_card_name_from_index(2)
+	current_character.bag2 = _get_card_name_from_index(3)
+	current_character.bag3 = _get_card_name_from_index(4)
+	current_character.bag4 = _get_card_name_from_index(5)
+	current_character.bag5 = _get_card_name_from_index(6)
+	current_character.bag6 = _get_card_name_from_index(7)
 	
 	print("【背包】保存完成！")
 
-## 从卡槽中获取卡片名称
-func _get_card_name_from_slot(slot: BagSlot) -> String:
-	if not slot or slot.is_empty():
+## 从指定索引获取卡片名称
+func _get_card_name_from_index(index: int) -> String:
+	if index < 0 or index >= cards.size():
 		return ""
 	
-	var card = slot.get_card()
+	var card = cards[index]
 	if not card:
 		return ""
 	
@@ -234,11 +381,12 @@ func _get_card_name_from_slot(slot: BagSlot) -> String:
 	
 	return ""
 
-## 获取当前背包中的物品数量
+## 获取当前背包中的物品数量（不包括装备槽）
 func get_item_count() -> int:
 	var count = 0
-	for slot in bag_slots:
-		if not slot.is_empty():
+	# 只统计背包槽位（索引 2-7）
+	for i in range(2, cards.size()):
+		if not is_slot_empty(i):
 			count += 1
 	return count
 
@@ -250,17 +398,13 @@ func preserve_cards_outside_bag() -> void:
 	# 获取背包的全局矩形区域
 	var bag_rect = Rect2(global_position, size)
 	
-	# 收集所有卡片（包括槽位中的和可能拖出的）
+	# 收集所有卡片
 	var all_cards: Array[Control] = []
 	
 	# 从所有槽位收集卡片
-	if left_slot and not left_slot.is_empty():
-		all_cards.append(left_slot.get_card())
-	if right_slot and not right_slot.is_empty():
-		all_cards.append(right_slot.get_card())
-	for slot in bag_slots:
-		if not slot.is_empty():
-			all_cards.append(slot.get_card())
+	for slot_index in range(cards.size()):
+		if not is_slot_empty(slot_index):
+			all_cards.append(cards[slot_index])
 	
 	# 也收集背包面板的直接子节点中的卡片（可能被拖出但还未归位）
 	for child in get_children():
@@ -302,13 +446,13 @@ func _move_card_to_main_scene(card: Control) -> void:
 		push_warning("【背包】找不到 CardManager，卡片将添加到根节点")
 		card_manager = tree.root.get_child(0)  # 使用主场景作为目标
 	
+	# 清除卡片在数组中的引用
+	var slot_index = _find_card_index(card)
+	if slot_index != -1:
+		cards[slot_index] = null
+	
 	# 从当前父节点移除
 	old_parent.remove_child(card)
-	
-	# 如果卡片在槽位中，需要清除槽位的引用
-	if old_parent is BagSlot:
-		if old_parent.stored_card == card:
-			old_parent.stored_card = null
 	
 	# 添加到目标父节点
 	card_manager.add_child(card)
@@ -327,3 +471,10 @@ func _move_card_to_main_scene(card: Control) -> void:
 	card.z_index = 0
 	
 	print("【背包】卡片 %s 已移动到主场景，位置: %s" % [card.name, card.global_position])
+
+## 查找卡片所在的槽位索引
+func _find_card_index(card: Control) -> int:
+	for i in range(cards.size()):
+		if cards[i] == card:
+			return i
+	return -1

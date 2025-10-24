@@ -1,7 +1,6 @@
 extends "res://card.gd"
 class_name BaggableCard
 
-# 可放入背包的物品卡片基类
 # 所有可以放入背包、在商店出售的卡片都继承此类
 # 包括：装备(EquipmentCard)、道具(ItemCard)、资源(ResourceCard)
 
@@ -11,6 +10,51 @@ class_name BaggableCard
 func _ready() -> void:
 	super._ready()
 	# 可背包物品的通用初始化
+
+# 重写按钮按下逻辑，添加背包槽位相关处理
+func _on_button_button_down() -> void:
+	# 先调用父类逻辑
+	super._on_button_button_down()
+	
+	# 如果卡片在背包槽位中，立即从槽位中移除引用
+	var current_info = _find_current_slot_info()
+	if current_info.has("bag_panel") and current_info.has("slot_index"):
+		var bag_panel = current_info.bag_panel
+		var slot_index = current_info.slot_index
+		
+		# 从槽位中清除引用（但不删除卡片）
+		bag_panel.cards[slot_index] = null
+		
+		# 重置缩放
+		scale = Vector2(1.0, 1.0)
+		z_index = 100  # 拖拽时提升 z_index，确保在最上层
+		
+		var slot = bag_panel.get_slot_by_index(slot_index)
+		print("【卡片】从背包槽位 %s（索引 %d）拖出，清除引用并重置缩放" % [slot.name if slot else "未知", slot_index])
+
+# 重写按钮释放逻辑，添加商店和背包卡槽相关处理
+func _on_button_button_up() -> void:
+	z_index = 0
+	# 恢复所有子卡片的 z_index 与位置
+	update_stacked_cards()
+	
+	# selling 类型拖动后检测是否离开商店区域
+	if card_type == cardType.selling:
+		if handle_shop_card_release():
+			return
+	
+	# 【新增】检测是否拖到背包卡槽上
+	if try_snap_to_bag_slot():
+		return
+	
+	# 调用父类的堆叠检测逻辑
+	var closest_card = find_closest_card()
+	if closest_card != null:
+		stack_on_card(closest_card)
+	else:
+		# 如果没有找到可堆叠的卡片，设置为固定状态
+		cardCurrentState = cardState.fixed
+		original_position = position
 
 # 判断是否可以放入背包
 func can_put_in_bag() -> bool:
@@ -158,3 +202,87 @@ func handle_shop_card_release() -> bool:
 		cardCurrentState = cardState.fixed
 		return true
 
+# ========== 背包卡槽相关功能 ==========
+
+# 尝试将卡片吸附到背包卡槽
+func try_snap_to_bag_slot() -> bool:
+	# 只有 normal 类型的可背包物品才能放入卡槽
+	if not can_put_in_bag():
+		return false
+	
+	# 查找所有背包面板
+	var bag_panels = get_tree().get_nodes_in_group("BagPanel")
+	if bag_panels.is_empty():
+		return false
+	
+	var card_center = global_position + size / 2.0
+	
+	# 遍历所有背包面板，查找其中的卡槽
+	for bag_panel in bag_panels:
+		if not is_instance_valid(bag_panel) or not bag_panel is BagPanel:
+			continue
+		
+		# 获取背包面板中的所有 BagSlot
+		var slots = _find_all_bag_slots(bag_panel)
+		
+		for slot in slots:
+			if not is_instance_valid(slot) or not slot is BagSlot:
+				continue
+			
+			# 检测卡片中心是否在卡槽内
+			if slot.contains_global_point(card_center):
+				# 获取槽位索引
+				var slot_index = bag_panel.get_index_by_slot(slot)
+				if slot_index == -1:
+					continue
+				
+				# 尝试放入槽位
+				# （注意：旧引用已在 _on_button_button_down 中清除）
+				if bag_panel.place_card_at_slot(self, slot_index):
+					print("【卡片】成功吸附到卡槽: %s（索引 %d）" % [slot.name, slot_index])
+					return true
+				else:
+					# 如果放入失败（卡槽已满），保持在当前位置
+					cardCurrentState = cardState.fixed
+					original_position = position
+					print("【卡片】槽位 %d 已满，无法放入" % slot_index)
+					return true
+	
+	# 如果没有找到合适的卡槽，卡片保持在新位置
+	# （引用已在拖动开始时清除，无需额外处理）
+	return false
+
+# 查找背包面板下的所有卡槽
+func _find_all_bag_slots(parent: Node) -> Array:
+	var slots = []
+	for child in parent.get_children():
+		if child is BagSlot:
+			slots.append(child)
+		# 递归查找子节点
+		slots.append_array(_find_all_bag_slots(child))
+	return slots
+
+# 查找当前卡片所在的背包面板和槽位索引
+func _find_current_slot_info() -> Dictionary:
+	# 遍历所有背包面板
+	var bag_panels = get_tree().get_nodes_in_group("BagPanel")
+	for bag_panel in bag_panels:
+		if not is_instance_valid(bag_panel) or not bag_panel is BagPanel:
+			continue
+		
+		# 查找卡片在该背包中的索引
+		var slot_index = bag_panel._find_card_index(self)
+		if slot_index != -1:
+			return {
+				"bag_panel": bag_panel,
+				"slot_index": slot_index
+			}
+	
+	return {}
+
+# 查找当前卡片所在的卡槽（向后兼容）
+func _find_current_bag_slot() -> BagSlot:
+	var info = _find_current_slot_info()
+	if info.has("bag_panel") and info.has("slot_index"):
+		return info.bag_panel.get_slot_by_index(info.slot_index)
+	return null

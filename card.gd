@@ -46,12 +46,6 @@ func _on_button_button_down() -> void:
 	cardCurrentState = cardState.dragging
 	original_position = position
 	
-	# 如果卡片在背包槽位中，重置缩放（槽位会缩放卡片）
-	var current_parent = get_parent()
-	if current_parent != null and current_parent is BagSlot:
-		scale = Vector2(1.0, 1.0)
-		print("【卡片】从背包槽位拖出，重置缩放")
-	
 	# 如果这张卡片堆叠在其他卡片上，从堆叠中移除
 	if parent_card != null:
 		parent_card.remove_from_stack(self)
@@ -67,18 +61,6 @@ func _on_button_button_up() -> void:
 	z_index = 0
 	# 恢复所有子卡片的 z_index 与位置
 	update_stacked_cards()
-	
-	# selling 类型拖动后检测是否离开商店区域（BaggableCard 处理）
-	if card_type == cardType.selling:
-		# 如果是可背包物品，调用其商店处理逻辑
-		if has_method("handle_shop_card_release"):
-			if call("handle_shop_card_release"):
-				return
-		else:
-			# 如果不是可背包物品但是 selling 类型，回到原位
-			position = original_position
-			cardCurrentState = cardState.fixed
-		return
 	
 	# 检测是否可以堆叠到其他卡片上
 	var closest_card = find_closest_card()
@@ -286,7 +268,3 @@ func get_total_stack_size() -> int:
 		if child.has_method("get_total_stack_size"):
 			total += child.get_total_stack_size()
 	return total
-
-# ========== 注意：商店相关的功能已移至 BaggableCard ==========
-# is_outside_shop_area(), try_purchase(), move_to_main_scene() 
-# 这些方法现在在 baggable_card.gd 中实现
