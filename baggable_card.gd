@@ -52,7 +52,10 @@ func _on_button_button_up() -> void:
 	if closest_card != null:
 		stack_on_card(closest_card)
 	else:
-		# 如果没有找到可堆叠的卡片，设置为固定状态
+		# 如果没有找到可堆叠的卡片，检查是否与背包区域重叠
+		push_card_outside_bag_if_overlapping()
+		
+		# 设置为固定状态
 		cardCurrentState = cardState.fixed
 		original_position = position
 

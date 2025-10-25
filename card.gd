@@ -67,7 +67,10 @@ func _on_button_button_up() -> void:
 	if closest_card != null:
 		stack_on_card(closest_card)
 	else:
-		# 如果没有找到可堆叠的卡片，设置为固定状态
+		# 如果没有找到可堆叠的卡片，检查是否与背包区域重叠
+		push_card_outside_bag_if_overlapping()
+		
+		# 设置为固定状态
 		cardCurrentState = cardState.fixed
 		original_position = position
 
@@ -268,3 +271,72 @@ func get_total_stack_size() -> int:
 		if child.has_method("get_total_stack_size"):
 			total += child.get_total_stack_size()
 	return total
+
+# 如果卡片与背包区域重叠，将其推到外面
+func push_card_outside_bag_if_overlapping() -> void:
+	# 查找所有背包面板
+	var bag_panels = get_tree().get_nodes_in_group("BagPanel")
+	if bag_panels.is_empty():
+		return
+	
+	# 获取卡片的全局矩形
+	var card_rect = Rect2(global_position, size)
+	
+	# 检查是否与任何背包面板重叠
+	for bag_panel in bag_panels:
+		if not is_instance_valid(bag_panel) or not bag_panel is Panel:
+			continue
+		
+		# 获取背包面板的全局矩形
+		var bag_rect = Rect2(bag_panel.global_position, bag_panel.size)
+		
+		# 如果卡片与背包区域重叠
+		if card_rect.intersects(bag_rect):
+			print("【卡片】检测到与背包重叠，正在移到外面...")
+			
+			# 计算需要移动的距离
+			var push_offset = _calculate_push_offset(card_rect, bag_rect)
+			
+			# 移动卡片
+			global_position += push_offset
+			
+			# 更新原始位置
+			original_position = position
+			
+			print("【卡片】已移到背包外，偏移量: %s，新位置: %s" % [push_offset, global_position])
+			break
+
+# 计算将卡片推到背包外的偏移量（选择最短的推出方向）
+func _calculate_push_offset(card_rect: Rect2, bag_rect: Rect2) -> Vector2:
+	# 计算四个方向需要移动的距离
+	var push_left = card_rect.end.x - bag_rect.position.x  # 向左推
+	var push_right = bag_rect.end.x - card_rect.position.x  # 向右推
+	var push_up = card_rect.end.y - bag_rect.position.y  # 向上推
+	var push_down = bag_rect.end.y - card_rect.position.y  # 向下推
+	
+	# 找出最小的推动距离（刚好贴边）
+	var margin = 1.0  # 最小间距，避免重叠
+	var min_distance = INF
+	var best_offset = Vector2.ZERO
+	
+	# 检查向左推
+	if push_left > 0 and push_left < min_distance:
+		min_distance = push_left
+		best_offset = Vector2(-push_left - margin, 0)
+	
+	# 检查向右推
+	if push_right > 0 and push_right < min_distance:
+		min_distance = push_right
+		best_offset = Vector2(push_right + margin, 0)
+	
+	# 检查向上推
+	if push_up > 0 and push_up < min_distance:
+		min_distance = push_up
+		best_offset = Vector2(0, -push_up - margin)
+	
+	# 检查向下推
+	if push_down > 0 and push_down < min_distance:
+		min_distance = push_down
+		best_offset = Vector2(0, push_down + margin)
+	
+	return best_offset

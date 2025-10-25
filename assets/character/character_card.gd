@@ -174,15 +174,15 @@ func open_bag() -> void:
 func close_bag() -> void:
 	print("【角色卡片】关闭背包")
 	if bag_instance and is_instance_valid(bag_instance):
-		# 先保留背包外的卡片（避免被删除）
-		if bag_instance.has_method("preserve_cards_outside_bag"):
-			bag_instance.preserve_cards_outside_bag()
-		
 		# 保存背包数据回角色
 		if bag_instance.has_method("save_to_character"):
 			bag_instance.save_to_character()
 		
-		# 释放背包实例
+		# 将槽位内的卡片移到背包面板下（让 queue_free 能自动删除它们）
+		if bag_instance.has_method("prepare_for_close"):
+			bag_instance.prepare_for_close()
+		
+		# 释放背包实例（会自动删除作为子节点的槽位内卡片）
 		bag_instance.queue_free()
 		bag_instance = null
 		

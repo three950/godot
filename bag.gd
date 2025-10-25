@@ -25,8 +25,8 @@ var bag_slots: Array[BagSlot] = []  # 索引 2-7
 var cards: Array = []  # 总共 8 个槽位：[left, right, bag1-6]
 
 func _ready() -> void:
-	# 确保可以检测鼠标事件
-	mouse_filter = Control.MOUSE_FILTER_STOP
+	# 背包面板不需要拦截鼠标事件，让事件传递到子节点（卡片）
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	
 	# 加入 BagPanel 组，方便查找
 	add_to_group("BagPanel")
@@ -104,6 +104,28 @@ func is_slot_empty(index: int) -> bool:
 		return true
 	return cards[index] == null
 
+## 将卡片移到背包面板下（确保能接收鼠标事件）
+func _move_card_to_bag_panel(card: Control) -> void:
+	# 如果卡片已经是背包面板的子节点，跳过
+	if card.get_parent() == self:
+		return
+	
+	# 保存卡片的全局位置
+	var saved_global_position = card.global_position
+	var old_parent = card.get_parent()
+	
+	# 从原父节点移除
+	if old_parent:
+		old_parent.remove_child(card)
+	
+	# 添加到背包面板下
+	add_child(card)
+	
+	# 恢复全局位置
+	card.global_position = saved_global_position
+	
+	print("【背包】卡片 %s 已移到背包面板下（原父节点: %s）" % [card.name, old_parent.name if old_parent else "无"])
+
 ## 将卡片放入指定槽位
 func place_card_at_slot(card: Control, slot_index: int) -> bool:
 	# 检查索引有效性
@@ -135,6 +157,9 @@ func place_card_at_slot(card: Control, slot_index: int) -> bool:
 	
 	# 保存卡片引用
 	cards[slot_index] = card
+	
+	# 【关键】将卡片移到背包面板下，确保能接收鼠标事件
+	_move_card_to_bag_panel(card)
 	
 	# 对齐卡片到卡槽中心位置
 	_align_card_to_slot(card, slot)
@@ -365,34 +390,19 @@ func save_to_character() -> void:
 	
 	print("【背包】保存完成！")
 
-## 从指定索引获取卡片名称
-func _get_card_name_from_index(index: int) -> String:
-	if index < 0 or index >= cards.size():
-		return ""
+## 关闭背包前的准备工作
+## 将背包外的卡片移到主场景（避免被删除）
+## 注意：槽位内的卡片在放入时就已经是背包面板的子节点了，会随背包一起被 queue_free 删除
+func prepare_for_close() -> void:
+	print("【背包】准备关闭，正在整理卡片...")
 	
-	var card = cards[index]
-	if not card:
-		return ""
+	# 保护背包外的卡片（移到主场景）
+	_preserve_cards_outside_bag()
 	
-	# 尝试从卡片的 Label 获取名称
-	var label = card.get_node_or_null("Control/ColorRect/Label")
-	if label:
-		return label.text
-	
-	return ""
+	print("【背包】卡片整理完成，槽位内的卡片将随背包一起被删除")
 
-## 获取当前背包中的物品数量（不包括装备槽）
-func get_item_count() -> int:
-	var count = 0
-	# 只统计背包槽位（索引 2-7）
-	for i in range(2, cards.size()):
-		if not is_slot_empty(i):
-			count += 1
-	return count
-
-## 在关闭背包前，将背包外的卡片移到主场景
-## 这样这些卡片就不会随着背包一起被删除
-func preserve_cards_outside_bag() -> void:
+## 保护背包外的卡片（避免被删除）
+func _preserve_cards_outside_bag() -> void:
 	print("【背包】正在检查并保留背包外的卡片...")
 	
 	# 获取背包的全局矩形区域
@@ -471,6 +481,31 @@ func _move_card_to_main_scene(card: Control) -> void:
 	card.z_index = 0
 	
 	print("【背包】卡片 %s 已移动到主场景，位置: %s" % [card.name, card.global_position])
+
+## 从指定索引获取卡片名称
+func _get_card_name_from_index(index: int) -> String:
+	if index < 0 or index >= cards.size():
+		return ""
+	
+	var card = cards[index]
+	if not card:
+		return ""
+	
+	# 尝试从卡片的 Label 获取名称
+	var label = card.get_node_or_null("Control/ColorRect/Label")
+	if label:
+		return label.text
+	
+	return ""
+
+## 获取当前背包中的物品数量（不包括装备槽）
+func get_item_count() -> int:
+	var count = 0
+	# 只统计背包槽位（索引 2-7）
+	for i in range(2, cards.size()):
+		if not is_slot_empty(i):
+			count += 1
+	return count
 
 ## 查找卡片所在的槽位索引
 func _find_card_index(card: Control) -> int:
