@@ -39,20 +39,6 @@ func _ready() -> void:
 	for i in range(8):
 		cards[i] = null
 
-# 处理未处理的输入（用于检测点击背包外部）
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			# 检查点击位置是否在背包外部
-			var mouse_pos = get_global_mouse_position()
-			var bag_rect = Rect2(global_position, size)
-			
-			if not bag_rect.has_point(mouse_pos):
-				# 点击在背包外部，发出关闭请求
-				print("【背包】检测到点击背包外部，请求关闭")
-				close_requested.emit()
-				get_viewport().set_input_as_handled()
-
 ## 初始化卡槽引用
 func _initialize_slots() -> void:
 	bag_slots.clear()

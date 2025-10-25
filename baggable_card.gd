@@ -190,10 +190,11 @@ func handle_shop_card_release() -> bool:
 			# 从 slot 节点移除，添加到主场景中
 			move_to_main_scene()
 			
-			cardCurrentState = cardState.fixed
-			original_position = position
-			print("卡片 %s 购买成功，转为 normal 类型" % name)
-			return true
+			print("卡片 %s 购买成功，转为 normal 类型，继续执行 normal 卡片的释放逻辑" % name)
+			
+			# 购买成功后，继续执行 normal 卡片的释放逻辑
+			# 不直接设为 fixed，而是让卡片继续寻找堆叠和背包卡槽
+			return false  # 返回 false，让后续的 normal 卡片逻辑继续执行
 		else:
 			# 购买失败（金币不足），回到原始位置
 			position = original_position

@@ -32,8 +32,13 @@ func _ready() -> void:
 			defense_label = right_stats.get_node_or_null("DEFLabel")
 	update_stat_labels()
 	
-	# 创建背包按钮
-	_create_bag_button()
+	# 获取背包按钮引用并连接信号
+	_setup_bag_button()
+
+func _process(delta: float) -> void:
+	super._process(delta)
+	# 更新背包位置，使其跟随角色卡片
+	update_bag_position()
 
 # 更新属性标签显示（使用Label动态显示，值可以随时改变）
 func update_stat_labels() -> void:
@@ -80,52 +85,17 @@ func set_stat_labels(hp_lbl: Label, atk_lbl: Label, def_lbl: Label) -> void:
 	defense_label = def_lbl
 	update_stat_labels()
 
-# 创建背包按钮
-func _create_bag_button() -> void:
-	# 创建按钮
-	bag_button = Button.new()
-	bag_button.text = "🎒"  # 使用背包emoji作为图标
-	bag_button.custom_minimum_size = Vector2(30, 30)
+# 设置背包按钮（从场景中获取）
+func _setup_bag_button() -> void:
+	# 获取场景中定义的背包按钮
+	bag_button = get_node_or_null("bagbutton")
 	
-	# 设置按钮样式
-	var style_normal = StyleBoxFlat.new()
-	style_normal.bg_color = Color(0.2, 0.3, 0.4, 0.8)  # 深蓝色背景
-	style_normal.corner_radius_top_left = 5
-	style_normal.corner_radius_top_right = 5
-	style_normal.corner_radius_bottom_left = 5
-	style_normal.corner_radius_bottom_right = 5
-	
-	var style_hover = StyleBoxFlat.new()
-	style_hover.bg_color = Color(0.3, 0.4, 0.5, 0.9)  # 悬停时稍亮
-	style_hover.corner_radius_top_left = 5
-	style_hover.corner_radius_top_right = 5
-	style_hover.corner_radius_bottom_left = 5
-	style_hover.corner_radius_bottom_right = 5
-	
-	var style_pressed = StyleBoxFlat.new()
-	style_pressed.bg_color = Color(0.1, 0.2, 0.3, 1.0)  # 按下时更深
-	style_pressed.corner_radius_top_left = 5
-	style_pressed.corner_radius_top_right = 5
-	style_pressed.corner_radius_bottom_left = 5
-	style_pressed.corner_radius_bottom_right = 5
-	
-	bag_button.add_theme_stylebox_override("normal", style_normal)
-	bag_button.add_theme_stylebox_override("hover", style_hover)
-	bag_button.add_theme_stylebox_override("pressed", style_pressed)
-	
-	# 设置按钮位置（在卡片右侧）
-	bag_button.position = Vector2(size.x + 5, 0)
-	
-	# 设置高层级，确保按钮在最上面
-	bag_button.z_index = 100
-	
-	# 添加到卡片
-	add_child(bag_button)
-	
-	# 连接按钮点击信号
-	bag_button.pressed.connect(toggle_bag)
-	
-	print("【角色卡片】背包按钮已创建")
+	if bag_button:
+		# 连接按钮点击信号
+		bag_button.pressed.connect(toggle_bag)
+		print("【角色卡片】背包按钮已连接")
+	else:
+		push_warning("【角色卡片】未找到 bagbutton 节点")
 
 # 切换背包显示状态
 func toggle_bag() -> void:
@@ -151,8 +121,7 @@ func open_bag() -> void:
 	root.add_child(bag_instance)
 	
 	# 设置背包位置（在卡片右侧）
-	var bag_pos = global_position + Vector2(size.x + 10, 0)
-	bag_instance.global_position = bag_pos
+	update_bag_position()
 	
 	# 加载角色的背包数据
 	if character_data:
@@ -169,6 +138,13 @@ func open_bag() -> void:
 	_update_bag_button_state(true)
 	
 	print("【角色卡片】背包显示完成")
+
+# 更新背包位置，使其跟随卡片
+func update_bag_position() -> void:
+	if bag_instance and is_instance_valid(bag_instance):
+		# 计算背包位置（在卡片右侧）
+		var bag_pos = global_position + Vector2(size.x + 5, 0)
+		bag_instance.global_position = bag_pos
 
 # 关闭背包
 func close_bag() -> void:
@@ -197,25 +173,11 @@ func _update_bag_button_state(is_open: bool) -> void:
 		return
 	
 	if is_open:
-		# 背包打开时的样式
-		bag_button.text = "✖"  # 改为关闭图标
-		var style_active = StyleBoxFlat.new()
-		style_active.bg_color = Color(0.8, 0.5, 0.2, 0.9)  # 橙色表示激活
-		style_active.corner_radius_top_left = 5
-		style_active.corner_radius_top_right = 5
-		style_active.corner_radius_bottom_left = 5
-		style_active.corner_radius_bottom_right = 5
-		bag_button.add_theme_stylebox_override("normal", style_active)
+		# 背包打开时，改为关闭图标
+		bag_button.text = "✖"
 	else:
-		# 背包关闭时的样式
-		bag_button.text = "🎒"  # 背包图标
-		var style_normal = StyleBoxFlat.new()
-		style_normal.bg_color = Color(0.2, 0.3, 0.4, 0.8)  # 深蓝色背景
-		style_normal.corner_radius_top_left = 5
-		style_normal.corner_radius_top_right = 5
-		style_normal.corner_radius_bottom_left = 5
-		style_normal.corner_radius_bottom_right = 5
-		bag_button.add_theme_stylebox_override("normal", style_normal)
+		# 背包关闭时，显示背包图标
+		bag_button.text = "🎒"
 
 # 当背包请求关闭时的回调
 func _on_bag_close_requested() -> void:

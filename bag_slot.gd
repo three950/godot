@@ -23,4 +23,3 @@ func contains_global_point(point: Vector2) -> bool:
 ## 获取卡槽的尺寸（用于计算缩放）
 func get_slot_size() -> Vector2:
 	return size
-
