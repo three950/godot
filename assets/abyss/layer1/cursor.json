@@ -1,0 +1,85 @@
+{
+    "exploration_layers": {
+      "500m": {
+        "scene_spawn_chance": 70,
+        "scenes": {
+          "洞穴": {
+            "spawn_chance": 50,
+            "max_count": 3,
+            "max_explorations": 5,
+            "loot_table": [
+              {
+                "category": "遗物",
+                "chance": 70,
+                "items": [
+                  {"name": "五级太阳石", "chance": 90},
+                  {"name": "四级太阳石", "chance": 10}
+                ]
+              },
+              {
+                "category": "资源", 
+                "chance": 30,
+                "items": [
+                  {"name": "蛋", "chance": 100}
+                ]
+              }
+            ]
+          },
+          "河流": {
+            "spawn_chance": 30,
+            "max_count": 1,
+            "max_explorations": -1,
+            "loot_table": [
+              {
+                "category": "资源",
+                "chance": 90,
+                "items": [
+                  {"name": "生鱼", "chance": 100}
+                ]
+              },
+              {
+                "category": "遗物",
+                "chance": 10,
+                "items": [
+                  {"name": "星之罗盘", "chance": 100, "unique": true}
+                ]
+              }
+            ]
+          }
+        },
+        "equipment_spawn": {
+          "chance": 30,
+          "items": [
+            {"name": "化石树的树枝", "chance": 100}
+          ]
+        }
+      },
+      "1000m": {
+        "scene_spawn_chance": 70,
+        "scenes": {
+          "平原": {
+            "spawn_chance": 80,
+            "max_count": 1,
+            "max_explorations": 5,
+            "loot_table": [
+              {
+                "category": "资源",
+                "chance": 100,
+                "items": [
+                  {"name": "永恒香", "chance": 50},
+                  {"name": "蛋", "chance": 50}
+                ]
+              }
+            ]
+          },
+          "下一层入口": {
+            "spawn_chance": 20,
+            "max_count": 1,
+            "max_explorations": 1,
+            "fixed_position": true,
+            "loot_table": []
+          }
+        }
+      }
+    }
+  }
