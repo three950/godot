@@ -8,7 +8,7 @@ enum cardType{normal, selling, architecture}  # 卡片类型
 @export var cardCurrentState = cardState.fixed
 @export var card_type: cardType = cardType.normal  # 默认为普通类型
 @export var follow_target: Label
-@export var snap_distance: float = 80.0  # 吸附检测的最大距离
+@export var snap_distance: float = 60.0  # 吸附检测的最大距离
 @export var stack_offset: Vector2 = Vector2(0, 15)  # 堆叠时的视觉偏移（Y轴留出label高度）
 @export var can_accept_stack: bool = true  # 是否允许其他卡片堆叠在上面
 @export var accept_value_only: bool = false  # 若为真，仅接受带有 value 属性的卡片

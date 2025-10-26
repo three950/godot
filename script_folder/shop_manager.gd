@@ -78,9 +78,11 @@ func load_shop_items() -> void:
 	if not GameData.is_data_loaded:
 		await get_tree().create_timer(0.1).timeout
 	
-	# 获取所有商品数据
-	all_shop_items = GameData.get_all_shop_items()
-	print("商店加载了 %d 个商品" % all_shop_items.size())
+	# 只获取资源和装备数据（排除道具）
+	all_shop_items = []
+	all_shop_items.append_array(GameData.get_all_resources())
+	all_shop_items.append_array(GameData.get_all_equipments())
+	print("商店加载了 %d 个商品（资源+装备）" % all_shop_items.size())
 
 # 清空商店
 func clear_shop() -> void:
