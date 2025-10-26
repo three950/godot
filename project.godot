@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 GameData="*res://script_folder/game_data.gd"
 CardFactory="*res://script_folder/card_factory.gd"
+CraftManager="*res://script_folder/craft_manager.gd"
 
 [display]
 

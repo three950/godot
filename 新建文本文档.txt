@@ -10,3 +10,7 @@ add_fight_active_skill()
 
 
 合成系统：字典统计材料次数+总卡片数量检查。
+script_folder\craft_manager.gd
+script_folder\stack_craft_detector.gd
+卡牌堆叠后会有父卡片，整个堆叠是一组卡牌，要始终检测整组卡牌。
+添加了 collect_all_stacked_cards() 递归函数，可以收集整个堆叠链上的所有卡片。

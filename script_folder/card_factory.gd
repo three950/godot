@@ -42,6 +42,10 @@ func create_by_card_scene(card_data: Dictionary, parent: Control = null, positio
 	# 7. 设置卡片数据（纹理和文本）
 	_setup_card_data(card_instance, card_name, card_data)
 	
+	# 7.5. 如果卡片支持 init_from_data，调用它
+	if card_instance.has_method("init_from_data"):
+		card_instance.init_from_data(card_data)
+	
 	# 8. 如果提供了父节点，则添加到场景树
 	if parent != null:
 		parent.add_child(card_instance)

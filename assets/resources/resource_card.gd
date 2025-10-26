@@ -13,9 +13,16 @@ var synthesis_timer: float = 0.0
 var synthesis_delay: float = 2.0  # 合成延迟时间
 var is_synthesizing: bool = false
 
+# 卡片数据
+var card_data: Dictionary = {}
+var card_name: String = ""
+
 func _ready() -> void:
 	super._ready()
 	# 资源继承自 BaggableCard，可以放入背包、在商店出售
+	
+	# 添加堆叠合成检测器
+	add_stack_craft_detector()
 
 func _process(delta: float) -> void:
 	super._process(delta)
@@ -89,3 +96,67 @@ func set_resource_stats(resource_value: int, is_food_type: bool = false, nutriti
 	value = resource_value
 	is_food = is_food_type
 	nutrition = nutrition_value
+
+# 添加堆叠合成检测器
+func add_stack_craft_detector() -> void:
+	# 检查是否已经添加过
+	if has_node("StackCraftDetector"):
+		return
+	
+	# 加载检测器脚本
+	var detector_script = load("res://script_folder/stack_craft_detector.gd")
+	if detector_script == null:
+		push_error("无法加载 StackCraftDetector 脚本")
+		return
+	
+	# 创建检测器节点
+	var detector = Node.new()
+	detector.name = "StackCraftDetector"
+	detector.set_script(detector_script)
+	
+	# 添加为子节点
+	add_child(detector)
+	print("【资源卡】已添加堆叠合成检测器: %s" % name)
+
+## 初始化卡片数据（从GameData加载）
+func init_from_data(data: Dictionary) -> void:
+	card_data = data
+	card_name = data.get("名称", "未知")
+	
+	# 设置基础属性
+	value = int(data.get("value", 1))
+	is_relic = data.get("是否是遗物", "FALSE") == "TRUE"
+	
+	# 设置资源特有属性
+	var type_str = data.get("类型", "")
+	is_food = (type_str == "食物")
+	is_seasoning = (type_str == "调料")
+	nutrition = int(data.get("food", 0))
+	
+	# 更新显示
+	update_display()
+
+## 更新卡片显示
+func update_display() -> void:
+	# 更新名称标签
+	var label = get_node_or_null("Control/ColorRect/Label")
+	if label:
+		label.text = card_name
+	
+	# 更新价值标签
+	var value_label = get_node_or_null("Control/ColorRect/ValueLabel")
+	if value_label:
+		value_label.text = "价值: %d" % value
+	
+	# 更新图片
+	var texture_rect = get_node_or_null("Control/ColorRect/TextureRect")
+	if texture_rect and card_data.has("地址"):
+		var texture_path = card_data["地址"]
+		if texture_path != "" and ResourceLoader.exists(texture_path + ".jpg"):
+			var texture = load(texture_path + ".jpg")
+			if texture:
+				texture_rect.texture = texture
+
+## 获取卡片名称（用于合成系统）
+func get_card_name() -> String:
+	return card_name
