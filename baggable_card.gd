@@ -55,6 +55,9 @@ func _on_button_button_up() -> void:
 		# 如果没有找到可堆叠的卡片，检查是否与背包区域重叠
 		push_card_outside_bag_if_overlapping()
 		
+		# 【关键修复】如果卡片在背包外，且父节点是背包面板，立即移到主场景
+		_move_to_main_scene_if_outside_bag()
+		
 		# 设置为固定状态
 		cardCurrentState = cardState.fixed
 		original_position = position
@@ -290,3 +293,18 @@ func _find_current_bag_slot() -> BagSlot:
 	if info.has("bag_panel") and info.has("slot_index"):
 		return info.bag_panel.get_slot_by_index(info.slot_index)
 	return null
+
+# 如果卡片在背包外，且父节点是背包面板，立即移到主场景
+func _move_to_main_scene_if_outside_bag() -> void:
+	var parent = get_parent()
+	if parent == null or not parent is BagPanel:
+		return
+	
+	# 检查卡片是否在背包外
+	var bag_rect = Rect2(parent.global_position, parent.size)
+	var card_rect = Rect2(global_position, size)
+	
+	if not card_rect.intersects(bag_rect):
+		# 在背包外，移到主场景
+		move_to_main_scene()
+		print("【卡片】已从背包移到主场景")
