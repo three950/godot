@@ -152,12 +152,11 @@ func execute_craft(card_list: Array) -> Node:
 	
 	print("合成成功：将生成 %s" % product_name)
 	
-	# 计算合成位置（所有卡片的中心位置）
+	# 计算合成位置（使用根卡片的位置，即第一张卡片的位置）
+	# 第一张卡片通常是堆叠组的底部卡片，新卡片将在此位置生成
 	var center_pos = Vector2.ZERO
-	for card in card_list:
-		if card is Node2D:
-			center_pos += card.global_position
-	center_pos /= card_list.size()
+	if card_list.size() > 0 and card_list[0] is Control:
+		center_pos = card_list[0].global_position
 	
 	# 删除所有材料卡片前，先解除堆叠关系
 	for card in card_list:
@@ -212,8 +211,8 @@ func create_card(card_name: String, position: Vector2) -> Node:
 	if card_instance.has_method("init_from_data"):
 		card_instance.init_from_data(card_data)
 	
-	# 设置位置
-	if card_instance is Node2D:
+	# 设置位置（Control 节点也有 global_position 属性）
+	if card_instance is Control:
 		card_instance.global_position = position
 	
 	# 添加到场景树
