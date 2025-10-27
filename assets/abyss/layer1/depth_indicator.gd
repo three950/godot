@@ -121,6 +121,8 @@ func load_config() -> void:
 
 ## 探索函数 - 每2秒触发一次
 func explore() -> void:
+	print("========== 开始探索 %s ==========" % layer_name)
+	
 	if layer_config.is_empty():
 		push_warning("配置为空，无法探索")
 		return
@@ -142,23 +144,38 @@ func explore() -> void:
 	# 等待动画
 	await get_tree().create_timer(0.3).timeout
 	
+	var scene_spawned = false
+	var equipment_spawned = false
+	
 	# 先判断是否生成场景
-	try_spawn_scene(layer_data)
+	scene_spawned = try_spawn_scene(layer_data)
 	
 	# 再判断是否生成装备
-	try_spawn_equipment(layer_data)
+	equipment_spawned = try_spawn_equipment(layer_data)
+	
+	if not scene_spawned and not equipment_spawned:
+		print("本次探索未生成任何物品")
+	
+	print("========== 探索结束 ==========\n")
 
 ## 尝试生成场景
-func try_spawn_scene(layer_data: Dictionary) -> void:
+func try_spawn_scene(layer_data: Dictionary) -> bool:
+	print("  [场景判定] 开始判定场景生成...")
+	
 	if not layer_data.has("scenes"):
-		return
+		print("  [场景判定] 配置中没有场景数据")
+		return false
 	
 	var scene_spawn_chance = layer_data.get("scene_spawn_chance", 100)
+	var roll = randf() * 100
+	print("  [场景判定] 场景生成概率: %d%%, 骰子: %.2f" % [scene_spawn_chance, roll])
 	
 	# 检查场景生成概率
-	if randf() * 100 > scene_spawn_chance:
-		return
+	if roll > scene_spawn_chance:
+		print("  [场景判定] 未通过场景生成概率检查")
+		return false
 	
+	print("  [场景判定] ✓ 通过场景生成概率检查")
 	var scenes = layer_data["scenes"]
 	
 	# 遍历所有场景类型
@@ -172,14 +189,26 @@ func try_spawn_scene(layer_data: Dictionary) -> void:
 		if spawned_scenes.has(scene_name):
 			current_count = spawned_scenes[scene_name]["cards"].size()
 		
+		print("  [场景判定] 检查场景 '%s': 当前数量 %d/%d, 生成概率 %d%%" % [scene_name, current_count, max_count, spawn_chance])
+		
 		# 如果已达到最大数量，跳过
 		if current_count >= max_count:
+			print("  [场景判定] '%s' 已达到最大数量，跳过" % scene_name)
 			continue
 		
 		# 根据概率判断是否生成
-		if randf() * 100 <= spawn_chance:
+		var scene_roll = randf() * 100
+		print("  [场景判定] '%s' 骰子: %.2f" % [scene_name, scene_roll])
+		
+		if scene_roll <= spawn_chance:
+			print("  [场景判定] ✓ '%s' 通过概率检查，开始生成" % scene_name)
 			spawn_exploration_scene(scene_name, scene_data)
-			break  # 每次只生成一个场景
+			return true  # 每次只生成一个场景
+		else:
+			print("  [场景判定] '%s' 未通过概率检查" % scene_name)
+	
+	print("  [场景判定] 所有场景都未能生成")
+	return false
 
 ## 生成探索场景卡片
 func spawn_exploration_scene(scene_name: String, scene_data: Dictionary) -> void:
@@ -209,9 +238,6 @@ func spawn_exploration_scene(scene_name: String, scene_data: Dictionary) -> void
 	# 添加到场景树
 	get_parent().add_child(card_instance)
 	
-	# 配置场景的掉落表和探索限制
-	setup_scene_card(card_instance, scene_name, scene_data)
-	
 	# 记录场景
 	if not spawned_scenes.has(scene_name):
 		spawned_scenes[scene_name] = {
@@ -219,6 +245,9 @@ func spawn_exploration_scene(scene_name: String, scene_data: Dictionary) -> void
 			"max_explorations": scene_data.get("max_explorations", -1)
 		}
 	spawned_scenes[scene_name]["cards"].append(card_instance)
+	
+	# 配置场景的掉落表和探索限制
+	setup_scene_card(card_instance, scene_name, scene_data)
 	
 	print("✓ 生成探索场景: %s" % scene_name)
 
@@ -228,77 +257,82 @@ func setup_scene_card(scene_card: Control, scene_name: String, scene_data: Dicti
 		return
 	
 	var loot_table = scene_data["loot_table"]
-	var max_explorations = scene_data.get("max_explorations", -1)
+	var max_explorations_value = scene_data.get("max_explorations", -1)
 	
-	# 记录探索次数
-	if not spawned_scenes[scene_name].has("explorations"):
-		spawned_scenes[scene_name]["explorations"] = {}
-	spawned_scenes[scene_name]["explorations"][scene_card] = 0
+	# 设置场景卡片的属性
+	if "max_explorations" in scene_card:
+		scene_card.max_explorations = max_explorations_value
+	if "current_explorations" in scene_card:
+		scene_card.current_explorations = 0
 	
-	# 覆盖场景卡片的 find 方法
-	scene_card.find = func():
-		# 检查探索次数限制
-		if max_explorations > 0:
-			var current_explorations = spawned_scenes[scene_name]["explorations"][scene_card]
-			if current_explorations >= max_explorations:
-				print("场景 %s 已达到最大探索次数 %d" % [scene_name, max_explorations])
-				return
-			
-			# 增加探索次数
-			spawned_scenes[scene_name]["explorations"][scene_card] = current_explorations + 1
-			print("场景 %s 探索: %d/%d" % [scene_name, current_explorations + 1, max_explorations])
-		
-		# 触发抖动动画
-		if scene_card.has_method("trigger_character_shake"):
-			scene_card.trigger_character_shake()
-		
-		await scene_card.get_tree().create_timer(0.5).timeout
-		
-		# 根据掉落表生成物品
-		roll_loot_table(scene_card, loot_table, scene_name)
+	# 设置自定义掉落回调
+	if "custom_loot_callback" in scene_card:
+		scene_card.custom_loot_callback = func(card: Control):
+			roll_loot_table(card, loot_table, scene_name)
 
 ## 根据掉落表掉落物品
 func roll_loot_table(scene_card: Control, loot_table: Array, scene_name: String) -> void:
+	print("    [掉落判定] 场景 '%s' 开始掉落判定" % scene_name)
+	
 	# 第一步：选择类别（category）
 	var roll = randf() * 100.0
 	var cumulative = 0.0
 	var selected_category = null
 	
+	print("    [掉落判定] 类别选择骰子: %.2f" % roll)
+	
 	for category_data in loot_table:
-		cumulative += category_data.get("chance", 0)
+		var category_name = category_data.get("category", "")
+		var category_chance = category_data.get("chance", 0)
+		cumulative += category_chance
+		print("    [掉落判定] 检查类别 '%s' (概率 %d%%, 累计 %.2f)" % [category_name, category_chance, cumulative])
+		
 		if roll <= cumulative:
 			selected_category = category_data
+			print("    [掉落判定] ✓ 选中类别: %s" % category_name)
 			break
 	
 	if not selected_category:
-		print("未掉落任何物品")
+		print("    [掉落判定] 未选中任何类别，不掉落物品")
 		return
 	
 	# 第二步：在选中的类别中选择物品
 	var items = selected_category.get("items", [])
 	if items.is_empty():
+		print("    [掉落判定] 类别 '%s' 中没有物品" % selected_category.get("category", ""))
 		return
 	
 	roll = randf() * 100.0
 	cumulative = 0.0
 	var selected_item = null
 	
+	print("    [掉落判定] 物品选择骰子: %.2f" % roll)
+	
 	for item_data in items:
-		cumulative += item_data.get("chance", 0)
+		var check_item_name = item_data.get("name", "")
+		var item_chance = item_data.get("chance", 0)
+		cumulative += item_chance
+		print("    [掉落判定] 检查物品 '%s' (概率 %d%%, 累计 %.2f)" % [check_item_name, item_chance, cumulative])
+		
 		if roll <= cumulative:
 			selected_item = item_data
+			print("    [掉落判定] ✓ 选中物品: %s" % check_item_name)
 			break
 	
 	if not selected_item:
+		print("    [掉落判定] 未选中任何物品")
 		return
 	
 	var item_name = selected_item.get("name", "")
 	var is_unique = selected_item.get("unique", false)
 	
 	# 检查唯一物品是否已经掉落过
-	if is_unique and item_name in dropped_unique_items:
-		print("唯一物品 %s 已经掉落过，本次不掉落" % item_name)
-		return
+	if is_unique:
+		if item_name in dropped_unique_items:
+			print("    [掉落判定] 唯一物品 '%s' 已经掉落过，本次不掉落" % item_name)
+			return
+		else:
+			print("    [掉落判定] '%s' 是唯一物品，首次掉落" % item_name)
 	
 	# 生成物品
 	var category = selected_category.get("category", "")
@@ -308,36 +342,57 @@ func roll_loot_table(scene_card: Control, loot_table: Array, scene_name: String)
 	if is_unique:
 		dropped_unique_items.append(item_name)
 	
-	print("场景 %s 掉落: %s (%s)" % [scene_name, item_name, category])
+	print("    [掉落判定] ✓✓✓ 场景 '%s' 掉落: %s (%s)" % [scene_name, item_name, category])
 
 ## 尝试生成装备
-func try_spawn_equipment(layer_data: Dictionary) -> void:
+func try_spawn_equipment(layer_data: Dictionary) -> bool:
+	print("  [装备判定] 开始判定装备生成...")
+	
 	if not layer_data.has("equipment_spawn"):
-		return
+		print("  [装备判定] 配置中没有装备数据")
+		return false
 	
 	var equipment_spawn = layer_data["equipment_spawn"]
 	var spawn_chance = equipment_spawn.get("chance", 100)
+	var roll = randf() * 100
+	print("  [装备判定] 装备生成概率: %d%%, 骰子: %.2f" % [spawn_chance, roll])
 	
 	# 检查是否生成装备
-	if randf() * 100 > spawn_chance:
-		return
+	if roll > spawn_chance:
+		print("  [装备判定] 未通过装备生成概率检查")
+		return false
+	
+	print("  [装备判定] ✓ 通过装备生成概率检查")
 	
 	var items = equipment_spawn.get("items", [])
 	if items.is_empty():
-		return
+		print("  [装备判定] 装备列表为空")
+		return false
+	
+	# 显示所有装备及其概率
+	print("  [装备判定] 可用装备:")
+	for item_data in items:
+		print("    - %s: %d%%" % [item_data.get("name", ""), item_data.get("chance", 0)])
 	
 	# 根据概率选择装备
-	var roll = randf() * 100.0
+	var equipment_roll = randf() * 100.0
 	var cumulative = 0.0
+	print("  [装备判定] 装备选择骰子: %.2f" % equipment_roll)
 	
 	for item_data in items:
-		cumulative += item_data.get("chance", 0)
-		if roll <= cumulative:
+		var item_chance = item_data.get("chance", 0)
+		cumulative += item_chance
+		print("  [装备判定] 检查 '%s' (概率 %d%%, 累计 %.2f)" % [item_data.get("name", ""), item_chance, cumulative])
+		
+		if equipment_roll <= cumulative:
 			var item_name = item_data.get("name", "")
 			var spawn_pos = find_random_empty_position()
 			spawn_equipment_card(item_name, spawn_pos)
-			print("✓ 生成装备: %s" % item_name)
-			break
+			print("  [装备判定] ✓ 生成装备: %s" % item_name)
+			return true
+	
+	print("  [装备判定] 未能选中任何装备")
+	return false
 
 ## 生成掉落的卡片
 func spawn_loot_card(item_name: String, category: String, scene_pos: Vector2) -> void:
@@ -511,4 +566,3 @@ func is_position_empty(test_pos: Vector2) -> bool:
 			return false
 	
 	return true
-
