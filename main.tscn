@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://r1lb3ajxfx1j"]
+[gd_scene load_steps=9 format=3 uid="uid://r1lb3ajxfx1j"]
 
 [ext_resource type="Script" uid="uid://b6gu1qtuwx15i" path="res://script_folder/card_manager.gd" id="1_card_mgr"]
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://card.tscn" id="2_card_scene"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://bbnp6ftl63g4m" path="res://script_folder/camera_controller.gd" id="4_camera"]
 [ext_resource type="PackedScene" path="res://assets/terrain小地形/scene_card.tscn" id="5_scene_card"]
 [ext_resource type="PackedScene" uid="uid://cq3m5h8qavw2k" path="res://assets/remains/remains_card.tscn" id="6_remains_card"]
+[ext_resource type="PackedScene" uid="uid://depth_indicator_500m" path="res://assets/abyss/layer1/depth_indicator.tscn" id="7_depth_indicator"]
 
 [node name="Main" type="Node2D"]
 
@@ -24,3 +25,6 @@ card_spacing = Vector2(120, 0)
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(576, 328)
 script = ExtResource("4_camera")
+
+[node name="DepthIndicator500m" parent="." instance=ExtResource("7_depth_indicator")]
+position = Vector2(1000, 150)
