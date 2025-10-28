@@ -1,4 +1,4 @@
-名称,类型,food,water,effect,合成配方,索引值,value,是否是遗物,picture_path
+﻿名称,类型,food,water,effect,合成配方,索引值,value,是否是遗物,picture_path
 鱼,食物,1,0,,,1,1,FALSE,res://assets/resources/fish
 肉,食物,1,0,,,2,1,FALSE,res://assets/resources/meat
 永恒香,调料,0,0,after_cook:food+2,,3,2,FALSE,res://icon.svg
@@ -6,8 +6,8 @@
 水,调料,0,2,,,5,0,FALSE,res://icon.svg
 烤鱼,食物,2,0,,鱼*火,6,5,FALSE,res://icon.svg
 烤肉,食物,2,0,,肉*火,7,5,FALSE,res://icon.svg
-熟蛋,食物,6,1,,蛋*水*火*便携锅,8,10,FALSE,res://icon.svg
-鱼汤,食物,3,2,,鱼*水*火*便携锅,9,5,FALSE,res://icon.svg
+熟蛋,食物,6,1,,鸡蛋*水*无尽火药*便携锅,8,10,FALSE,res://icon.svg
+鱼汤,食物,3,2,,鱼*水*无尽火药*便携锅,9,5,FALSE,res://icon.svg
 拟态水,食物,0,2,,,10,0,FALSE,res://icon.svg
-火,调料,0,0,,,11,100,TRUE,res://icon.svg
+无尽火药,调料,0,0,,,11,100,TRUE,res://icon.svg
 便携锅,调料,0,0,,,12,20,FALSE,res://icon.svg

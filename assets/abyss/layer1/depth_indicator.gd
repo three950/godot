@@ -246,27 +246,26 @@ func try_spawn_scene(layer_data: Dictionary) -> bool:
 
 ## 生成探索场景卡片
 func spawn_exploration_scene(scene_name: String, scene_data: Dictionary) -> void:
-	# 加载场景卡片场景
-	var scene_card_scene = load("res://assets/terrain小地形/scene_card.tscn")
-	if not scene_card_scene:
-		push_error("无法加载场景卡片场景")
+	# 从 GameData 获取场景数据
+	var card_data = GameData.get_scene(scene_name)
+	if card_data.is_empty():
+		push_error("未找到场景数据: " + scene_name)
 		return
 	
 	# 找到合适的生成位置
 	var spawn_pos = find_random_empty_position()
 	
-	# 实例化场景卡片
-	var card_instance = scene_card_scene.instantiate()
-	card_instance.name = "ExplorationScene_" + scene_name
-	card_instance.position = spawn_pos
+	# 使用 CardFactory 创建场景卡片（architecture 类型）
+	var card_instance = CardFactory.create_by_card_scene(
+		card_data,
+		get_parent(),
+		spawn_pos,
+		0  # cardType.architecture
+	)
 	
-	# 设置标签显示
-	var label = card_instance.get_node_or_null("Control/ColorRect/Label")
-	if label:
-		label.text = scene_name
-	
-	# 添加到场景树
-	get_parent().add_child(card_instance)
+	if not card_instance:
+		push_error("CardFactory 创建场景卡片失败: " + scene_name)
+		return
 	
 	# 记录场景
 	if not spawned_scenes.has(scene_name):

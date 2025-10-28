@@ -9,7 +9,7 @@ extends Node
 # @param position: 卡片的位置（默认 Vector2.ZERO）
 # @param card_type: 卡片类型（可选，默认为 1 即 selling）
 # @return: 创建的卡片实例，如果失败则返回 null
-func create_by_card_scene(card_data: Dictionary, parent: Control = null, position: Vector2 = Vector2.ZERO, card_type: int = 1) -> Control:
+func create_by_card_scene(card_data: Dictionary, parent: Node = null, position: Vector2 = Vector2.ZERO, card_type: int = 1) -> Control:
 	# 1. 获取并验证卡片场景路径
 	var card_scene_path = card_data.get("card_scene", "")
 	if card_scene_path == "":

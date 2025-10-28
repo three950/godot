@@ -189,7 +189,9 @@ func load_scene_data_from_csv() -> void:
 			"picture_path": line[1] if line.size() > 1 else "",
 			"产物名": line[2] if line.size() > 2 else "",
 			"出现概率": line[3] if line.size() > 3 else "",
-			"产物": line[4] if line.size() > 4 else ""
+			"产物": line[4] if line.size() > 4 else "",
+			"地址": line[1] if line.size() > 1 else "",  # 图片路径（用于CardFactory）
+			"card_scene": "res://assets/terrain小地形/scene_card.tscn"  # 场景卡片场景路径
 		}
 		
 		# 存储到数据库

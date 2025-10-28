@@ -43,6 +43,12 @@ func _ready() -> void:
 		progress_bar.value = 0.0
 	time_since_last_produce = 0.0
 	
+	# 如果场景名称为空，尝试从Label读取
+	if scene_name == "":
+		var label = get_node_or_null("Control/ColorRect/Label")
+		if label and label.text != "" and label.text != "场景":
+			scene_name = label.text
+	
 	# 等待CardManager加载
 	await get_tree().process_frame
 	# 获取CardManager引用
@@ -259,12 +265,22 @@ func setup_from_config(config: Dictionary) -> void:
 		var depth_ind = config.get("depth_indicator", null)
 		setup_exploration_loot(loot_table, max_exp, depth_ind)
 
-# 从场景数据初始化
+# 从场景数据初始化（用于从CSV数据创建）
 func initialize_from_scene_data(data: Dictionary) -> void:
 	if data.has("名称"):
 		scene_name = data["名称"]
 	
 	# 解析产物字段
+	if data.has("产物") and data["产物"] != "":
+		parse_produce_data(data["产物"])
+
+# init_from_data 方法（CardFactory 会调用）
+func init_from_data(data: Dictionary) -> void:
+	# 设置场景名称
+	if data.has("名称"):
+		scene_name = data["名称"]
+	
+	# 如果有产物数据，解析它
 	if data.has("产物") and data["产物"] != "":
 		parse_produce_data(data["产物"])
 
