@@ -1,9 +1,9 @@
-extends "res://card.gd"
+extends "res://baggable_card.gd"
 class_name ItemCard
 
 # 道具卡片特有属性
 # 道具卡片：具有各种特殊效果，是物品
-@export var value: int = 1  # 道具价值
+# value 和 is_relic 已在父类 BaggableCard 中定义
 @export var effect_type: String = ""  # 效果类型（如 "heal", "buff", "debuff" 等）
 @export var effect_power: int = 0  # 效果强度
 @export var is_consumable: bool = false  # 是否是消耗品
@@ -14,7 +14,7 @@ var effect_label: Label = null
 
 func _ready() -> void:
 	super._ready()
-	# 道具是物品，可以放入背包、在商店出售
+	# 道具继承自 BaggableCard，可以放入背包、在商店出售
 	# 获取效果标签
 	var effect_lbl = get_node_or_null("Control/ColorRect/EffectLabel")
 	if effect_lbl:

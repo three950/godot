@@ -62,34 +62,39 @@ func load_character_data_from_csv() -> void:
 		if line.size() < 2 or line[0] == "":
 			continue
 		
-		if line[0] == "character":
-			var char_dict = {
-				"type": line[0],
-				"name": line[1],
-				"hp": int(line[2]) if line.size() > 2 and line[2] != "" else 10,
-				"atk": int(line[3]) if line.size() > 3 and line[3] != "" else 1,
-				"defense": int(line[4]) if line.size() > 4 and line[4] != "" else 0,
-				"equipment": line[5] if line.size() > 5 else "",
-				"texture_path": line[7] if line.size() > 6 else ""
-			}
-			
-			# 使用 CharacterData 的静态方法创建资源
-			var char_data = CharacterData.from_dict(char_dict)
-			
-			# 初始化时给角色配备钓鱼竿
-			char_data.left = "钓鱼竿"
-			char_data.bag4 = "钓鱼竿"
-			
-			# 存储到数据库
-			character_database[char_data.character_name] = char_data
-			loaded_count += 1
-			
-			print("  加载角色: %s (HP:%d ATK:%d DEF:%d)" % [
-				char_data.character_name, 
-				char_data.max_hp, 
-				char_data.atk, 
-				char_data.defense
-			])
+		# 新的CSV格式：name,HP,ATK,DEF,left,right,bag1,bag2,bag3,bag4,bag5,bag6,picture_path
+		var char_dict = {
+			"type": "character",
+			"name": line[0],  # name
+			"hp": int(line[1]) if line.size() > 1 and line[1] != "" else 10,  # HP
+			"atk": int(line[2]) if line.size() > 2 and line[2] != "" else 1,  # ATK
+			"defense": int(line[3]) if line.size() > 3 and line[3] != "" else 0,  # DEF
+			"left": line[4] if line.size() > 4 and line[4] != "" else "",  # left
+			"right": line[5] if line.size() > 5 and line[5] != "" else "",  # right
+			"bag1": line[6] if line.size() > 6 and line[6] != "" else "",  # bag1
+			"bag2": line[7] if line.size() > 7 and line[7] != "" else "",  # bag2
+			"bag3": line[8] if line.size() > 8 and line[8] != "" else "",  # bag3
+			"bag4": line[9] if line.size() > 9 and line[9] != "" else "",  # bag4
+			"bag5": line[10] if line.size() > 10 and line[10] != "" else "",  # bag5
+			"bag6": line[11] if line.size() > 11 and line[11] != "" else "",  # bag6
+			"texture_path": line[12] if line.size() > 12 and line[12] != "" else ""  # picture_path
+		}
+		
+		# 使用 CharacterData 的静态方法创建资源
+		var char_data = CharacterData.from_dict(char_dict)
+		
+		# 存储到数据库
+		character_database[char_data.character_name] = char_data
+		loaded_count += 1
+		
+		print("  加载角色: %s (HP:%d ATK:%d DEF:%d 左手:%s 右手:%s)" % [
+			char_data.character_name, 
+			char_data.max_hp, 
+			char_data.atk, 
+			char_data.defense,
+			char_data.left,
+			char_data.right
+		])
 	
 	file.close()
 	print("从CSV加载了 %d 个角色" % loaded_count)
@@ -236,14 +241,15 @@ func load_resource_data_from_csv() -> void:
 		
 		var resource_dict = {
 			"名称": line[0],
-			"地址": line[1] if line.size() > 1 else "",
-			"类型": line[2] if line.size() > 2 else "",
-			"food": line[3] if line.size() > 3 else "0",
-			"water": line[4] if line.size() > 4 else "0",
-			"effect": line[5] if line.size() > 5 else "",
-			"合成配方": line[6] if line.size() > 6 else "",
+			"类型": line[1] if line.size() > 1 else "",
+			"food": line[2] if line.size() > 2 else "0",
+			"water": line[3] if line.size() > 3 else "0",
+			"effect": line[4] if line.size() > 4 else "",
+			"合成配方": line[5] if line.size() > 5 else "",
+			"索引值": line[6] if line.size() > 6 else "",
 			"value": line[7] if line.size() > 7 else "0",
 			"是否是遗物": line[8] if line.size() > 8 else "FALSE",
+			"地址": line[9] if line.size() > 9 else "",  # picture_path
 			"card_scene": "res://assets/resources/resource_card.tscn"
 		}
 		
@@ -328,12 +334,13 @@ func load_equipment_data_from_csv() -> void:
 		
 		var equipment_dict = {
 			"名称": line[0],
-			"效果": line[1] if line.size() > 1 else "",
-			"类型": line[2] if line.size() > 2 else "",
-			"地址": line[3] if line.size() > 3 else "",
-			"出现场景与概率": line[4] if line.size() > 4 else "",
+			"类型": line[1] if line.size() > 1 else "",
+			"效果": line[2] if line.size() > 2 else "",
+			"索引值": line[3] if line.size() > 3 else "",
+			"合成配方": line[4] if line.size() > 4 else "",
 			"value": line[5] if line.size() > 5 else "0",
 			"是否是遗物": line[6] if line.size() > 6 else "FALSE",
+			"地址": line[7] if line.size() > 7 else "",  # picture_path
 			"card_scene": "res://assets/equipment/equipment_card.tscn"
 		}
 		

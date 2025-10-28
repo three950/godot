@@ -13,6 +13,12 @@ var can_produce: bool = false  # 是否可以产出（需要有人物堆叠）
 var progress_bar: ProgressBar = null  # 进度条引用
 var card_manager: Node2D = null  # CardManager引用
 
+# 自定义掉落表配置（用于深渊探索等）
+var custom_loot_table: Array = []  # 掉落表配置
+var custom_loot_callback: Callable  # 自定义掉落回调函数
+var max_explorations: int = -1  # 最大探索次数（-1表示无限）
+var current_explorations: int = 0  # 当前探索次数
+
 func _ready() -> void:
 	super._ready()
 	# 场景卡片类型设置为 architecture（固定在地图上）
@@ -68,12 +74,26 @@ func check_character_stacked() -> void:
 
 # find() 函数：根据概率生成新卡片
 func find() -> void:
+	# 检查探索次数限制
+	if max_explorations > 0:
+		if current_explorations >= max_explorations:
+			print("场景 %s 已达到最大探索次数 %d" % [scene_name, max_explorations])
+			return
+		current_explorations += 1
+		print("场景 %s 探索: %d/%d" % [scene_name, current_explorations, max_explorations])
+	
 	# 先触发人物抖动动画
 	trigger_character_shake()
 	
 	# 等待动画完成后再生成卡片
 	await get_tree().create_timer(0.5).timeout
 	
+	# 如果有自定义掉落回调，优先使用
+	if custom_loot_callback.is_valid():
+		custom_loot_callback.call(self)
+		return
+	
+	# 否则使用默认的产物系统
 	if produce_items.is_empty() or produce_probabilities.is_empty():
 		return
 	
