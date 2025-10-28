@@ -2,8 +2,8 @@
     "exploration_layers": {
       "500m": {
         "generation_types": {
-          "场景": 70,
-          "装备": 30
+          "场景": 50,
+          "装备": 50
         },
         "scenes": {
           "小洞穴": {
