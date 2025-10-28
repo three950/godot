@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" load_steps=30 format=3 uid="uid://dt8vkn0ht7opo"]
+[gd_resource type="VisualShader" load_steps=15 format=3 uid="uid://dt8vkn0ht7opo"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_sts0n"]
 
@@ -13,66 +13,11 @@ texture = SubResource("NoiseTexture2D_sts0n")
 [sub_resource type="VisualShaderNodeVectorCompose" id="VisualShaderNodeVectorCompose_o12aa"]
 op_type = 0
 
-[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_uv"]
-input_name = "uv"
-
-[sub_resource type="VisualShaderNodeVec2Parameter" id="VisualShaderNodeVec2Parameter_circle1"]
-parameter_name = "circle1_pos"
-default_value_enabled = true
-default_value = Vector2(0.5, 0.5)
-
-[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_radius1"]
-parameter_name = "circle1_radius"
-default_value_enabled = true
-default_value = 0.3
-
-[sub_resource type="VisualShaderNodeVectorDistance" id="VisualShaderNodeVectorDistance_circle1"]
-default_input_values = [0, Vector2(0, 0), 1, Vector2(0, 0)]
-op_type = 0
-
-[sub_resource type="VisualShaderNodeStep" id="VisualShaderNodeStep_circle1"]
-
-[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_invert"]
-default_input_values = [0, 1.0, 1, 0.0]
-operator = 1
-
-[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_softness"]
-parameter_name = "circle_softness"
-default_value_enabled = true
-default_value = 0.05
-
-[sub_resource type="VisualShaderNodeMultiplyAdd" id="VisualShaderNodeMultiplyAdd_mask"]
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_sts0n"]
+input_name = "color"
 
 [sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_sts0n"]
 parameter_name = "WaterColor"
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_mask"]
-noise_type = 3
-seed = 42
-frequency = 0.08
-fractal_octaves = 3
-fractal_gain = 0.6
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mask"]
-noise = SubResource("FastNoiseLite_mask")
-
-[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_mask"]
-texture = SubResource("NoiseTexture2D_mask")
-
-[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_seed"]
-parameter_name = "mask_seed"
-default_value_enabled = true
-
-[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_offset"]
-default_input_values = [0, Vector2(0, 0), 1, Vector2(0, 0)]
-op_type = 0
-
-[sub_resource type="VisualShaderNodeVectorCompose" id="VisualShaderNodeVectorCompose_seed"]
-op_type = 0
-
-[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_threshold"]
-default_input_values = [0, 1.0, 1, 0.0]
-operator = 1
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_o12aa"]
 noise_type = 5
@@ -103,9 +48,6 @@ default_input_values = [0, Quaternion(0, 0, 0, 0), 1, Quaternion(1, 1, 1, 1), 2,
 expanded_output_ports = [0]
 op_type = 5
 
-[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_sts0n"]
-input_name = "color"
-
 [sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_o12aa"]
 default_input_values = [0, Quaternion(0, 0, 0, 0), 1, Quaternion(1, 1, 1, 1), 2, Quaternion(0.5, 0.5, 0.5, 0.5)]
 expanded_output_ports = [0]
@@ -113,20 +55,19 @@ op_type = 5
 
 [resource]
 code = "shader_type canvas_item;
-render_mode blend_mix;
+render_mode blend_add;
 
 uniform vec4 WaterColor : source_color;
 uniform vec4 wet_colorwhite : source_color = vec4(1.000000, 1.000000, 1.000000, 1.000000);
 uniform float wetting_degree = 0.10000000149012;
 uniform sampler2D tex_frg_10;
 uniform sampler2D tex_frg_3;
-uniform float circle1_radius = 0.30000001192093;
 
 
 
 void fragment() {
-// Input:8
-	vec4 n_out8p0 = COLOR;
+// Input:12
+	vec4 n_out12p0 = COLOR;
 
 
 // ColorParameter:2
@@ -164,12 +105,8 @@ void fragment() {
 	float n_out7p4 = n_out7p0.a;
 
 
-// FloatParameter:14
-	float n_out14p0 = circle1_radius;
-
-
 // Mix:9
-	vec4 n_out9p0 = mix(n_out8p0, n_out7p0, vec4(n_out14p0));
+	vec4 n_out9p0 = mix(n_out12p0, n_out7p0, vec4(n_out7p4));
 	float n_out9p4 = n_out9p0.a;
 
 
@@ -181,11 +118,12 @@ void fragment() {
 }
 "
 mode = 1
+modes/blend = 1
 flags/light_only = false
 nodes/vertex/0/position = Vector2(1020, 220)
 nodes/fragment/0/position = Vector2(2140, 640)
 nodes/fragment/2/node = SubResource("VisualShaderNodeColorParameter_sts0n")
-nodes/fragment/2/position = Vector2(1040, 460)
+nodes/fragment/2/position = Vector2(1040, 400)
 nodes/fragment/3/node = SubResource("VisualShaderNodeTexture_o12aa")
 nodes/fragment/3/position = Vector2(460, 800)
 nodes/fragment/4/node = SubResource("VisualShaderNodeStep_y6fc4")
@@ -196,38 +134,12 @@ nodes/fragment/6/node = SubResource("VisualShaderNodeColorParameter_faptx")
 nodes/fragment/6/position = Vector2(1040, 640)
 nodes/fragment/7/node = SubResource("VisualShaderNodeMix_ijlu1")
 nodes/fragment/7/position = Vector2(1500, 940)
-nodes/fragment/8/node = SubResource("VisualShaderNodeInput_sts0n")
-nodes/fragment/8/position = Vector2(320, 260)
 nodes/fragment/9/node = SubResource("VisualShaderNodeMix_o12aa")
-nodes/fragment/9/position = Vector2(1880, 440)
+nodes/fragment/9/position = Vector2(1900, 580)
 nodes/fragment/10/node = SubResource("VisualShaderNodeTexture_y6fc4")
 nodes/fragment/10/position = Vector2(-40, 800)
 nodes/fragment/11/node = SubResource("VisualShaderNodeVectorCompose_o12aa")
 nodes/fragment/11/position = Vector2(220, 880)
-nodes/fragment/12/node = SubResource("VisualShaderNodeInput_uv")
-nodes/fragment/12/position = Vector2(-200, 100)
-nodes/fragment/13/node = SubResource("VisualShaderNodeVec2Parameter_circle1")
-nodes/fragment/13/position = Vector2(340, 220)
-nodes/fragment/14/node = SubResource("VisualShaderNodeFloatParameter_radius1")
-nodes/fragment/14/position = Vector2(620, 100)
-nodes/fragment/15/node = SubResource("VisualShaderNodeVectorDistance_circle1")
-nodes/fragment/15/position = Vector2(800, 100)
-nodes/fragment/16/node = SubResource("VisualShaderNodeStep_circle1")
-nodes/fragment/16/position = Vector2(320, 100)
-nodes/fragment/17/node = SubResource("VisualShaderNodeFloatOp_invert")
-nodes/fragment/17/position = Vector2(560, 100)
-nodes/fragment/18/node = SubResource("VisualShaderNodeFloatParameter_softness")
-nodes/fragment/18/position = Vector2(1500, 600)
-nodes/fragment/19/node = SubResource("VisualShaderNodeMultiplyAdd_mask")
-nodes/fragment/19/position = Vector2(1720, 620)
-nodes/fragment/20/node = SubResource("VisualShaderNodeTexture_mask")
-nodes/fragment/20/position = Vector2(200, 100)
-nodes/fragment/21/node = SubResource("VisualShaderNodeFloatParameter_seed")
-nodes/fragment/21/position = Vector2(-600, 200)
-nodes/fragment/22/node = SubResource("VisualShaderNodeVectorOp_offset")
-nodes/fragment/22/position = Vector2(-200, 0)
-nodes/fragment/23/node = SubResource("VisualShaderNodeVectorCompose_seed")
-nodes/fragment/23/position = Vector2(-400, 200)
-nodes/fragment/24/node = SubResource("VisualShaderNodeFloatOp_threshold")
-nodes/fragment/24/position = Vector2(460, 220)
-nodes/fragment/connections = PackedInt32Array(5, 0, 4, 0, 3, 0, 4, 1, 6, 0, 7, 1, 4, 0, 7, 2, 2, 0, 7, 0, 7, 0, 9, 1, 8, 0, 9, 0, 7, 4, 9, 2, 9, 0, 0, 0, 9, 4, 0, 1, 10, 1, 11, 0, 10, 2, 11, 1, 11, 0, 3, 0, 12, 0, 15, 0, 13, 0, 15, 1, 14, 0, 16, 1, 15, 0, 16, 0, 16, 0, 17, 1, 7, 4, 19, 0, 17, 0, 19, 1, 18, 0, 19, 2, 19, 0, 9, 2, 15, 0, 19, 1, 12, 0, 22, 0, 21, 0, 23, 0, 21, 0, 23, 1, 23, 0, 22, 1, 22, 0, 20, 0, 14, 0, 15, 1, 13, 0, 24, 1, 14, 0, 19, 1, 14, 0, 9, 2)
+nodes/fragment/12/node = SubResource("VisualShaderNodeInput_sts0n")
+nodes/fragment/12/position = Vector2(1400, 480)
+nodes/fragment/connections = PackedInt32Array(5, 0, 4, 0, 3, 0, 4, 1, 6, 0, 7, 1, 4, 0, 7, 2, 2, 0, 7, 0, 7, 0, 9, 1, 7, 4, 9, 2, 9, 0, 0, 0, 9, 4, 0, 1, 10, 1, 11, 0, 10, 2, 11, 1, 11, 0, 3, 0, 12, 0, 9, 0)
