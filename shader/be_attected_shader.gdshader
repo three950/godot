@@ -6,7 +6,7 @@ uniform float min_radius : hint_range(0.02, 0.2) = 0.05; // 最小半径
 uniform float max_radius : hint_range(0.05, 0.4) = 0.15; // 最大半径
 uniform float edge_smoothness : hint_range(0.001, 0.1) = 0.03; // 边缘平滑度
 uniform float random_seed : hint_range(0.0, 100.0) = 1.3; // 随机种子（改变可重新生成布局）
-uniform float center_bias : hint_range(0.0, 1.0) = 0.7; // 中心聚集度（0=完全随机，1=集中在中心）
+uniform float center_bias : hint_range(0.0, 1.0) = 0.44; // 中心聚集度（0=完全随机，1=集中在中心）
 
 // 不规则效果参数
 uniform float ellipse_variation : hint_range(0.0, 0.8) = 0.4; // 椭圆变化程度（0=圆形，1=可能很扁）
