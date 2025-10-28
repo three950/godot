@@ -1,4 +1,17 @@
-[gd_resource type="VisualShader" load_steps=9 format=3 uid="uid://dt8vkn0ht7opo"]
+[gd_resource type="VisualShader" load_steps=15 format=3 uid="uid://dt8vkn0ht7opo"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_sts0n"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_sts0n"]
+noise = SubResource("FastNoiseLite_sts0n")
+as_normal_map = true
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_y6fc4"]
+expanded_output_ports = [0]
+texture = SubResource("NoiseTexture2D_sts0n")
+
+[sub_resource type="VisualShaderNodeVectorCompose" id="VisualShaderNodeVectorCompose_o12aa"]
+op_type = 0
 
 [sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_sts0n"]
 expanded_output_ports = [0]
@@ -10,8 +23,10 @@ frequency = 0.0182
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_y6fc4"]
 noise = SubResource("FastNoiseLite_o12aa")
+in_3d_space = true
 
 [sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_o12aa"]
+expanded_output_ports = [0]
 texture = SubResource("NoiseTexture2D_y6fc4")
 
 [sub_resource type="VisualShaderNodeStep" id="VisualShaderNodeStep_y6fc4"]
@@ -20,7 +35,7 @@ output_port_for_preview = 0
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_4hbtk"]
 parameter_name = "wetting_degree"
 default_value_enabled = true
-default_value = 0.6
+default_value = 0.1
 
 [sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_faptx"]
 parameter_name = "wet_colorwhite"
@@ -31,18 +46,31 @@ default_input_values = [0, Quaternion(0, 0, 0, 0), 1, Quaternion(1, 1, 1, 1), 2,
 expanded_output_ports = [0]
 op_type = 5
 
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_sts0n"]
+input_name = "color"
+
+[sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_o12aa"]
+default_input_values = [0, Quaternion(0, 0, 0, 0), 1, Quaternion(1, 1, 1, 1), 2, Quaternion(0.5, 0.5, 0.5, 0.5)]
+expanded_output_ports = [0]
+op_type = 5
+
 [resource]
 code = "shader_type canvas_item;
-render_mode blend_mix;
+render_mode blend_add;
 
 uniform vec4 WaterColor : source_color;
 uniform vec4 wet_colorwhite : source_color = vec4(1.000000, 1.000000, 1.000000, 1.000000);
-uniform float wetting_degree = 0.60000002384186;
+uniform float wetting_degree = 0.10000000149012;
+uniform sampler2D tex_frg_10;
 uniform sampler2D tex_frg_3;
 
 
 
 void fragment() {
+// Input:8
+	vec4 n_out8p0 = COLOR;
+
+
 // ColorParameter:2
 	vec4 n_out2p0 = WaterColor;
 
@@ -55,8 +83,18 @@ void fragment() {
 	float n_out5p0 = wetting_degree;
 
 
+// Texture2D:10
+	vec4 n_out10p0 = texture(tex_frg_10, UV);
+	float n_out10p1 = n_out10p0.r;
+	float n_out10p2 = n_out10p0.g;
+
+
+// VectorCompose:11
+	vec2 n_out11p0 = vec2(n_out10p1, n_out10p2);
+
+
 // Texture2D:3
-	vec4 n_out3p0 = texture(tex_frg_3, UV);
+	vec4 n_out3p0 = texture(tex_frg_3, n_out11p0);
 
 
 // Step:4
@@ -68,30 +106,41 @@ void fragment() {
 	float n_out7p4 = n_out7p0.a;
 
 
+// Mix:9
+	vec4 n_out9p0 = mix(n_out8p0, n_out7p0, vec4(n_out7p4));
+	float n_out9p4 = n_out9p0.a;
+
+
 // Output:0
-	COLOR.rgb = vec3(n_out7p0.xyz);
-	COLOR.a = n_out7p4;
+	COLOR.rgb = vec3(n_out9p0.xyz);
+	COLOR.a = n_out9p4;
 
 
 }
 "
 mode = 1
+modes/blend = 1
 flags/light_only = false
-preview_params/WaterColor = "Color(0, 0.24705882, 0.42352942, 0.7882353)"
-preview_params/wet_colorwhite = "Color(0, 0.12941177, 0.23529412, 0.81960785)"
-preview_params/tex_frg_3 = "Resource(\"uid://b11wupevcdiwd\", \"res://assets/character/人物_莉可.png\")"
 nodes/vertex/0/position = Vector2(1020, 220)
-nodes/fragment/0/position = Vector2(1900, 720)
+nodes/fragment/0/position = Vector2(2140, 640)
 nodes/fragment/2/node = SubResource("VisualShaderNodeColorParameter_sts0n")
 nodes/fragment/2/position = Vector2(1000, 280)
 nodes/fragment/3/node = SubResource("VisualShaderNodeTexture_o12aa")
-nodes/fragment/3/position = Vector2(544.93335, 770.1)
+nodes/fragment/3/position = Vector2(460, 800)
 nodes/fragment/4/node = SubResource("VisualShaderNodeStep_y6fc4")
 nodes/fragment/4/position = Vector2(947.3334, 845.5)
 nodes/fragment/5/node = SubResource("VisualShaderNodeFloatParameter_4hbtk")
 nodes/fragment/5/position = Vector2(484.93335, 550.1)
 nodes/fragment/6/node = SubResource("VisualShaderNodeColorParameter_faptx")
-nodes/fragment/6/position = Vector2(1144.9333, 690.1)
+nodes/fragment/6/position = Vector2(1040, 640)
 nodes/fragment/7/node = SubResource("VisualShaderNodeMix_ijlu1")
-nodes/fragment/7/position = Vector2(1564.9333, 870.1)
-nodes/fragment/connections = PackedInt32Array(5, 0, 4, 0, 3, 0, 4, 1, 6, 0, 7, 1, 4, 0, 7, 2, 2, 0, 7, 0, 7, 0, 0, 0, 7, 4, 0, 1)
+nodes/fragment/7/position = Vector2(1500, 940)
+nodes/fragment/8/node = SubResource("VisualShaderNodeInput_sts0n")
+nodes/fragment/8/position = Vector2(1480, 420)
+nodes/fragment/9/node = SubResource("VisualShaderNodeMix_o12aa")
+nodes/fragment/9/position = Vector2(1880, 440)
+nodes/fragment/10/node = SubResource("VisualShaderNodeTexture_y6fc4")
+nodes/fragment/10/position = Vector2(380, 1280)
+nodes/fragment/11/node = SubResource("VisualShaderNodeVectorCompose_o12aa")
+nodes/fragment/11/position = Vector2(680, 1240)
+nodes/fragment/connections = PackedInt32Array(5, 0, 4, 0, 3, 0, 4, 1, 6, 0, 7, 1, 4, 0, 7, 2, 2, 0, 7, 0, 7, 0, 9, 1, 8, 0, 9, 0, 7, 4, 9, 2, 9, 0, 0, 0, 9, 4, 0, 1, 10, 1, 11, 0, 10, 2, 11, 1, 11, 0, 3, 0)
