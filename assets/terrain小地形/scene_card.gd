@@ -1,8 +1,20 @@
 extends "res://card.gd"
 class_name SceneCard
 
-# 场景卡片特有属性
-# 场景卡片：获取资源的途径，固定在地图上，只有人物能堆叠，堆叠后每过五秒会根据概率出现一个产物
+## 场景卡片
+## 场景卡片：获取资源的途径，固定在地图上，只有人物能堆叠
+## 
+## 两种使用模式：
+## 1. 静态场景模式：使用 produce_items 和 produce_probabilities 配置固定产物
+##    适用于地图上预设的场景，产物在场景配置中定义
+## 
+## 2. 动态掉落模式：使用 setup_exploration_loot() 配置掉落表
+##    适用于探索生成的场景，掉落内容由创建者（如深度指示器）动态传入
+##    示例：
+##      var scene = scene_card_scene.instantiate()
+##      scene.setup_exploration_loot(loot_table, max_explorations, depth_indicator)
+##
+## 场景卡片特有属性:
 @export var produce_interval: float = 5.0  # 产出间隔（秒）
 @export var produce_items: Array[String] = []  # 可生成的卡片类型数组
 @export var produce_probabilities: Array[float] = []  # 对应的生成概率数组
@@ -18,6 +30,7 @@ var custom_loot_table: Array = []  # 掉落表配置
 var custom_loot_callback: Callable  # 自定义掉落回调函数
 var max_explorations: int = -1  # 最大探索次数（-1表示无限）
 var current_explorations: int = 0  # 当前探索次数
+var depth_indicator: Node = null  # 深度指示器引用（用于调用掉落函数）
 
 func _ready() -> void:
 	super._ready()
@@ -188,6 +201,63 @@ func is_position_empty(test_pos: Vector2) -> bool:
 func set_produce_config(items: Array[String], probabilities: Array[float]) -> void:
 	produce_items = items
 	produce_probabilities = probabilities
+
+# 配置探索掉落（用于深度指示器等动态场景）
+func setup_exploration_loot(loot_table: Array, max_explorations_count: int, depth_ind: Node = null) -> void:
+	"""
+	配置场景的探索掉落系统
+	参数:
+		loot_table: 掉落表数组，格式参考 JSON 配置
+		             [
+		               {
+						 "category": "遗物",
+						 "chance": 70,
+						 "items": [
+						   {"name": "五级太阳石", "chance": 90},
+						   {"name": "四级太阳石", "chance": 10}
+		                 ]
+		               },
+		               ...
+		             ]
+		max_explorations_count: 最大探索次数（-1 表示无限）
+		depth_ind: 深度指示器引用（用于调用掉落生成函数）
+	"""
+	custom_loot_table = loot_table
+	max_explorations = max_explorations_count
+	depth_indicator = depth_ind
+	
+	# 设置自定义掉落回调
+	custom_loot_callback = func(card: Control):
+		if depth_indicator and depth_indicator.has_method("roll_loot_table"):
+			depth_indicator.roll_loot_table(card, custom_loot_table, scene_name)
+		else:
+			push_warning("深度指示器未设置或缺少 roll_loot_table 方法")
+	
+	print("✓ 场景 '%s' 配置掉落表，最大探索次数: %d" % [scene_name, max_explorations])
+
+# 通用初始化方法 - 从配置字典创建场景
+func setup_from_config(config: Dictionary) -> void:
+	"""
+	从配置字典初始化场景卡片（更灵活的配置方式）
+	config 可包含:
+		- scene_name: 场景名称
+		- loot_table: 掉落表
+		- max_explorations: 最大探索次数
+		- depth_indicator: 深度指示器引用
+		- produce_interval: 产出间隔
+	"""
+	if config.has("scene_name"):
+		scene_name = config["scene_name"]
+	
+	if config.has("produce_interval"):
+		produce_interval = config["produce_interval"]
+	
+	# 如果有掉落表配置，使用动态掉落模式
+	if config.has("loot_table"):
+		var loot_table = config["loot_table"]
+		var max_exp = config.get("max_explorations", -1)
+		var depth_ind = config.get("depth_indicator", null)
+		setup_exploration_loot(loot_table, max_exp, depth_ind)
 
 # 从场景数据初始化
 func initialize_from_scene_data(data: Dictionary) -> void:

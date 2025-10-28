@@ -1,10 +1,13 @@
 {
     "exploration_layers": {
       "500m": {
-        "scene_spawn_chance": 70,
+        "generation_types": {
+          "场景": 70,
+          "装备": 30
+        },
         "scenes": {
-          "洞穴": {
-            "spawn_chance": 50,
+          "小洞穴": {
+            "spawn_chance": 70,
             "max_count": 3,
             "max_explorations": 5,
             "loot_table": [
@@ -34,7 +37,7 @@
                 "category": "资源",
                 "chance": 90,
                 "items": [
-                  {"name": "生鱼", "chance": 100}
+                  {"name": "鱼", "chance": 100}
                 ]
               },
               {
@@ -48,7 +51,6 @@
           }
         },
         "equipment_spawn": {
-          "chance": 30,
           "items": [
             {"name": "化石树的树枝", "chance": 30},
             {"name": "祈愿者的盖子", "chance": 20},
