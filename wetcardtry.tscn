@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://ye1oo0ktukjd"]
+
+[ext_resource type="Shader" uid="uid://dt8vkn0ht7opo" path="res://water.tres" id="1_34fv5"]
+[ext_resource type="Texture2D" uid="uid://b11wupevcdiwd" path="res://assets/character/人物_莉可.png" id="2_card"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lhsk1"]
+shader = ExtResource("1_34fv5")
+shader_parameter/WaterColor = Color(0, 0.247059, 0.423529, 0.788235)
+shader_parameter/wet_colorwhite = Color(0, 0.129412, 0.235294, 0.819608)
+shader_parameter/wetting_degree = 0.6
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_lhsk1")
+texture = ExtResource("2_card")

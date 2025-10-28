@@ -1,0 +1,97 @@
+[gd_resource type="VisualShader" load_steps=9 format=3 uid="uid://dt8vkn0ht7opo"]
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_sts0n"]
+expanded_output_ports = [0]
+parameter_name = "WaterColor"
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_o12aa"]
+noise_type = 5
+frequency = 0.0182
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_y6fc4"]
+noise = SubResource("FastNoiseLite_o12aa")
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_o12aa"]
+texture = SubResource("NoiseTexture2D_y6fc4")
+
+[sub_resource type="VisualShaderNodeStep" id="VisualShaderNodeStep_y6fc4"]
+output_port_for_preview = 0
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_4hbtk"]
+parameter_name = "wetting_degree"
+default_value_enabled = true
+default_value = 0.6
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_faptx"]
+parameter_name = "wet_colorwhite"
+default_value_enabled = true
+
+[sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_ijlu1"]
+default_input_values = [0, Quaternion(0, 0, 0, 0), 1, Quaternion(1, 1, 1, 1), 2, Quaternion(0.5, 0.5, 0.5, 0.5)]
+expanded_output_ports = [0]
+op_type = 5
+
+[resource]
+code = "shader_type canvas_item;
+render_mode blend_mix;
+
+uniform vec4 WaterColor : source_color;
+uniform vec4 wet_colorwhite : source_color = vec4(1.000000, 1.000000, 1.000000, 1.000000);
+uniform float wetting_degree = 0.60000002384186;
+uniform sampler2D tex_frg_3;
+
+
+
+void fragment() {
+// ColorParameter:2
+	vec4 n_out2p0 = WaterColor;
+
+
+// ColorParameter:6
+	vec4 n_out6p0 = wet_colorwhite;
+
+
+// FloatParameter:5
+	float n_out5p0 = wetting_degree;
+
+
+// Texture2D:3
+	vec4 n_out3p0 = texture(tex_frg_3, UV);
+
+
+// Step:4
+	float n_out4p0 = step(n_out5p0, n_out3p0.x);
+
+
+// Mix:7
+	vec4 n_out7p0 = mix(n_out2p0, n_out6p0, vec4(n_out4p0));
+	float n_out7p4 = n_out7p0.a;
+
+
+// Output:0
+	COLOR.rgb = vec3(n_out7p0.xyz);
+	COLOR.a = n_out7p4;
+
+
+}
+"
+mode = 1
+flags/light_only = false
+preview_params/WaterColor = "Color(0, 0.24705882, 0.42352942, 0.7882353)"
+preview_params/wet_colorwhite = "Color(0, 0.12941177, 0.23529412, 0.81960785)"
+preview_params/tex_frg_3 = "Resource(\"uid://b11wupevcdiwd\", \"res://assets/character/人物_莉可.png\")"
+nodes/vertex/0/position = Vector2(1020, 220)
+nodes/fragment/0/position = Vector2(1900, 720)
+nodes/fragment/2/node = SubResource("VisualShaderNodeColorParameter_sts0n")
+nodes/fragment/2/position = Vector2(1000, 280)
+nodes/fragment/3/node = SubResource("VisualShaderNodeTexture_o12aa")
+nodes/fragment/3/position = Vector2(544.93335, 770.1)
+nodes/fragment/4/node = SubResource("VisualShaderNodeStep_y6fc4")
+nodes/fragment/4/position = Vector2(947.3334, 845.5)
+nodes/fragment/5/node = SubResource("VisualShaderNodeFloatParameter_4hbtk")
+nodes/fragment/5/position = Vector2(484.93335, 550.1)
+nodes/fragment/6/node = SubResource("VisualShaderNodeColorParameter_faptx")
+nodes/fragment/6/position = Vector2(1144.9333, 690.1)
+nodes/fragment/7/node = SubResource("VisualShaderNodeMix_ijlu1")
+nodes/fragment/7/position = Vector2(1564.9333, 870.1)
+nodes/fragment/connections = PackedInt32Array(5, 0, 4, 0, 3, 0, 4, 1, 6, 0, 7, 1, 4, 0, 7, 2, 2, 0, 7, 0, 7, 0, 0, 0, 7, 4, 0, 1)
