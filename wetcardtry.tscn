@@ -1,18 +1,28 @@
-[gd_scene load_steps=4 format=3 uid="uid://ye1oo0ktukjd"]
+[gd_scene load_steps=6 format=3 uid="uid://ye1oo0ktukjd"]
 
 [ext_resource type="Shader" uid="uid://dt8vkn0ht7opo" path="res://water.tres" id="1_34fv5"]
 [ext_resource type="Texture2D" uid="uid://b11wupevcdiwd" path="res://assets/character/人物_莉可.png" id="2_card"]
+[ext_resource type="Texture2D" uid="uid://yhr14dughpmr" path="res://assets/resources/meat.png" id="3_j2uaq"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_lhsk1"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4bd20"]
 shader = ExtResource("1_34fv5")
-shader_parameter/WaterColor = Color(0, 0.247059, 0.423529, 0.788235)
-shader_parameter/wet_colorwhite = Color(8.7236984e-08, 0.07291011, 0.1463514, 0.81960785)
+shader_parameter/WaterColor = Color(1, 1, 1, 0.21960784)
+shader_parameter/wet_colorwhite = Color(0.11372549, 0.12156863, 0.1254902, 0)
 shader_parameter/wetting_degree = 0.6
+shader_parameter/circle1_radius = 0.3
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_j2uaq"]
 
 [node name="Node2D" type="Node2D"]
 
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_4bd20")
+position = Vector2(153.5, 258.5)
+scale = Vector2(1.006329, 1.0232068)
+texture = ExtResource("3_j2uaq")
+
 [node name="Sprite2D" type="Sprite2D" parent="."]
-material = SubResource("ShaderMaterial_lhsk1")
-position = Vector2(611.375, 320.54688)
-scale = Vector2(0.41378525, 0.41378525)
+material = SubResource("CanvasItemMaterial_j2uaq")
+position = Vector2(576, 264)
+scale = Vector2(0.31073704, 0.31073704)
 texture = ExtResource("2_card")
