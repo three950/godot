@@ -92,4 +92,3 @@ func _on_button_button_down() -> void:
 func _on_button_button_up() -> void:
 	# 建筑卡片不响应拖拽
 	pass
-

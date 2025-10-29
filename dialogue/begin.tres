@@ -1,17 +1,61 @@
-[gd_resource type="Resource" script_class="DialogueGroup" load_steps=5 format=3 uid="uid://d4aa5f3i4v3iu"]
+[gd_resource type="Resource" script_class="DialogueGroup" load_steps=13 format=3 uid="uid://d4aa5f3i4v3iu"]
 
 [ext_resource type="Script" uid="uid://d3vcooff5fnad" path="res://dialogue/dialogue_groups.gd" id="1_nmqrw"]
 [ext_resource type="Script" uid="uid://buw2twuekfpx3" path="res://dialogue/dialogue.gd" id="2_dialogue"]
 
 [sub_resource type="Resource" id="Resource_16oli"]
 script = ExtResource("2_dialogue")
+content = "你没事吧！"
 metadata/_custom_type_script = "uid://buw2twuekfpx3"
 
 [sub_resource type="Resource" id="Resource_2jrmo"]
 script = ExtResource("2_dialogue")
+content = "真没想到有人能在深渊边上睡着"
+metadata/_custom_type_script = "uid://buw2twuekfpx3"
+
+[sub_resource type="Resource" id="Resource_so0q1"]
+script = ExtResource("2_dialogue")
+type = "reply"
+content = "哪里有什么深渊?"
+metadata/_custom_type_script = "uid://buw2twuekfpx3"
+
+[sub_resource type="Resource" id="Resource_lyenp"]
+script = ExtResource("2_dialogue")
+content = "就是你身后那个!"
+metadata/_custom_type_script = "uid://buw2twuekfpx3"
+
+[sub_resource type="Resource" id="Resource_jpauw"]
+script = ExtResource("2_dialogue")
+content = "哈哈，你的表情像是第一次见到深渊"
+metadata/_custom_type_script = "uid://buw2twuekfpx3"
+
+[sub_resource type="Resource" id="Resource_pcm58"]
+script = ExtResource("2_dialogue")
+type = "reply"
+content = "我什么都不记得了。。"
+metadata/_custom_type_script = "uid://buw2twuekfpx3"
+
+[sub_resource type="Resource" id="Resource_tpjft"]
+script = ExtResource("2_dialogue")
+content = "。。。这真是不可思议"
+metadata/_custom_type_script = "uid://buw2twuekfpx3"
+
+[sub_resource type="Resource" id="Resource_fucja"]
+script = ExtResource("2_dialogue")
+content = "我们最勇敢的探窟家正在探索这个深渊的最深处。。。据说，他们目击到了和你类似的生物"
+metadata/_custom_type_script = "uid://buw2twuekfpx3"
+
+[sub_resource type="Resource" id="Resource_3gegh"]
+script = ExtResource("2_dialogue")
+content = "也许。。你来自深渊的最底层。"
+metadata/_custom_type_script = "uid://buw2twuekfpx3"
+
+[sub_resource type="Resource" id="Resource_jkfr8"]
+script = ExtResource("2_dialogue")
+content = "先清理一下我们的对话吧，把对话卡片拖到探窟者协会那"
 metadata/_custom_type_script = "uid://buw2twuekfpx3"
 
 [resource]
 script = ExtResource("1_nmqrw")
-dialogue_list = Array[ExtResource("2_dialogue")]([SubResource("Resource_16oli"), SubResource("Resource_2jrmo")])
+dialogue_list = Array[ExtResource("2_dialogue")]([SubResource("Resource_16oli"), SubResource("Resource_2jrmo"), SubResource("Resource_so0q1"), SubResource("Resource_lyenp"), SubResource("Resource_jpauw"), SubResource("Resource_pcm58"), SubResource("Resource_tpjft"), SubResource("Resource_fucja"), SubResource("Resource_3gegh"), SubResource("Resource_jkfr8")])
 metadata/_custom_type_script = "uid://d3vcooff5fnad"

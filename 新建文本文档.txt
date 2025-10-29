@@ -14,3 +14,8 @@ script_folder\craft_manager.gd
 script_folder\stack_craft_detector.gd
 卡牌堆叠后会有父卡片，整个堆叠是一组卡牌，要始终检测整组卡牌。
 添加了 collect_all_stacked_cards() 递归函数，可以收集整个堆叠链上的所有卡片。
+
+对话卡可以卖但是不能放背包吗？
+
+卡片生成动画
+card_manager.create_remains_card_with_animation(item_name, position, spawn_position)
