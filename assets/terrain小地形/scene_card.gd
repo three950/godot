@@ -151,57 +151,17 @@ func shake_card(card: Control) -> void:
 	tween.tween_property(card, "position", original_pos + Vector2(-5, 0), 0.05)
 	tween.tween_property(card, "position", original_pos, 0.05)
 
-# 生成新卡片（需要配合 CardManager 使用）
+# 生成新卡片（使用通用卡片生成系统）
 func spawn_item(item_name: String) -> void:
 	if not card_manager:
 		push_warning("CardManager未找到，无法生成卡片")
 		return
 	
-	# 查找随机的空闲位置
-	var spawn_position = find_random_empty_position()
-	if spawn_position == Vector2.ZERO:
-		push_warning("未找到合适的生成位置")
-		return
-	
-	# 调用CardManager生成遗物卡片
-	if card_manager.has_method("create_remains_card_with_animation"):
-		card_manager.create_remains_card_with_animation(item_name, position, spawn_position)
-	else:
-		push_warning("CardManager 没有 create_remains_card_with_animation 方法")
-
-# 查找场景周围随机的空闲位置
-func find_random_empty_position() -> Vector2:
-	var max_attempts = 20
-	var min_distance = 100.0  # 最小距离
-	var max_distance = 200.0  # 最大距离
-	
-	for i in range(max_attempts):
-		# 随机角度和距离
-		var angle = randf() * TAU  # 0 到 2π
-		var distance = randf_range(min_distance, max_distance)
-		
-		var test_position = position + Vector2(cos(angle), sin(angle)) * distance
-		
-		# 检查该位置是否有其他卡片
-		if is_position_empty(test_position):
-			return test_position
-	
-	# 如果没有找到合适位置，返回默认位置
-	return position + Vector2(0, 150)
-
-# 检查位置是否为空（没有卡片）
-func is_position_empty(test_pos: Vector2) -> bool:
-	var cards = get_tree().get_nodes_in_group("Cards")
-	var safe_distance = 90.0  # 安全距离
-	
-	for card in cards:
-		if card == self:
-			continue
-		var distance = card.position.distance_to(test_pos)
-		if distance < safe_distance:
-			return false
-	
-	return true
+	# 使用 CardManager 的射出卡片函数
+	# shoot_card 会自动处理：创建卡片、查找落点、播放动画
+	var spawned_card = card_manager.shoot_card(item_name, position)
+	if spawned_card:
+		print("✓ 场景 %s 产出了 %s" % [scene_name, item_name])
 
 # 设置产出配置
 func set_produce_config(items: Array[String], probabilities: Array[float]) -> void:

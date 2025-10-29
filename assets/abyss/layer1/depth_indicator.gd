@@ -25,6 +25,9 @@ var spawned_scenes: Dictionary = {}  # key: 场景名, value: {cards: Array, exp
 # 唯一物品跟踪
 var dropped_unique_items: Array[String] = []
 
+# CardManager 引用
+var card_manager: Node2D = null
+
 func _ready() -> void:
 	super._ready()
 	

@@ -222,69 +222,118 @@ func create_scene_card(scene_name: String, spawn_pos: Vector2) -> void:
 	
 	print("✓ 生成场景卡片: %s 在位置 %s" % [scene_name, spawn_pos])
 
-## 创建遗物卡片
-func create_remains_card(remains_name: String, spawn_pos: Vector2) -> Control:
-	if not remains_card_scene:
-		push_error("遗物卡片场景未设置！")
-		return null
-	
-	# 获取遗物数据
-	var remains_data = GameData.get_remains(remains_name)
-	if remains_data.is_empty():
-		push_error("未找到遗物数据: " + remains_name)
-		return null
-	
-	# 实例化遗物卡片
-	var card_instance = remains_card_scene.instantiate()
-	card_instance.name = "RemainsCard_" + remains_name
-	card_instance.position = spawn_pos
-	
-	# 添加到场景树
-	add_child(card_instance)
-	
-	# 设置遗物数据
-	if card_instance.has_method("initialize_from_csv"):
-		card_instance.initialize_from_csv(remains_data)
-	
-	print("✓ 生成遗物卡片: %s 在位置 %s" % [remains_name, spawn_pos])
-	return card_instance
+## ==================== 通用卡片生成系统 ====================
 
-## 创建遗物卡片（带射出动画）
-func create_remains_card_with_animation(remains_name: String, start_pos: Vector2, end_pos: Vector2) -> void:
-	# 创建卡片在起始位置
-	var card = create_remains_card(remains_name, start_pos)
+## 射出卡片（自动处理：创建卡片、确定落点、播放动画）
+## 参数:
+##   card_name: 卡片名称（自动识别遗物/场景/角色等类型）
+##   start_pos: 起始位置
+##   end_pos: 目标位置（留空则自动在起始位置周围查找空闲位置）
+## 返回: 创建的卡片实例
+func shoot_card(card_name: String, start_pos: Vector2, end_pos: Vector2 = Vector2.ZERO) -> Control:
+	# 1. 根据名称创建卡片
+	var card = _create_card_by_name(card_name)
 	if not card:
-		return
+		push_error("卡片创建失败: " + card_name)
+		return null
 	
-	# 初始缩放为0
+	# 2. 确定目标位置（如果未提供，自动查找空闲位置）
+	if end_pos == Vector2.ZERO:
+		end_pos = find_empty_position(start_pos)
+	
+	# 3. 设置初始位置和缩放
+	card.position = start_pos
 	card.scale = Vector2.ZERO
 	
-	# 创建动画
-	var tween = create_tween()
-	tween.set_parallel(true)
+	# 4. 添加到场景树
+	add_child(card)
 	
-	# 缩放动画（从中心放大）
-	tween.tween_property(card, "scale", Vector2.ONE * 0.5, 0.2).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	# 5. 播放射出动画
+	_play_shoot_animation(card, end_pos)
 	
-	# 等待缩放完成
-	await tween.finished
+	return card
+
+## 根据卡片名称创建卡片实例（内部辅助函数）
+func _create_card_by_name(card_name: String) -> Control:
+	# 在 GameData 中统一查找（只查询一次）
+	var result = GameData.find_card_data(card_name)
 	
-	# 射出动画
+	if result.is_empty():
+		push_warning("未找到卡片数据: " + card_name)
+		return null
+	
+	var card_data = result["data"]
+	var card_type = result["type"]
+	
+	# 根据类型创建对应的卡片
+	if card_type == "remains" and remains_card_scene:
+		var card = remains_card_scene.instantiate()
+		if card.has_method("initialize_from_csv"):
+			card.initialize_from_csv(card_data)
+		return card
+	
+	if card_type == "scene" and scene_card_scene:
+		var card = scene_card_scene.instantiate()
+		if card.has_method("initialize_from_scene_data"):
+			card.initialize_from_scene_data(card_data)
+		return card
+	
+	if card_type == "character" and character_card_scene:
+		return character_card_scene.instantiate()
+	
+	return null
+
+## 查找空闲位置
+func find_empty_position(reference_pos: Vector2, search_radius: float = 200.0) -> Vector2:
+	var max_attempts = 30
+	var min_distance = 100.0
+	var max_distance = search_radius
+	
+	for i in range(max_attempts):
+		var angle = randf() * TAU
+		var distance = randf_range(min_distance, max_distance)
+		var test_position = reference_pos + Vector2(cos(angle), sin(angle)) * distance
+		
+		if is_position_empty(test_position):
+			return test_position
+	
+	# 如果没有找到合适位置，返回参考位置下方
+	return reference_pos + Vector2(0, 150)
+
+## 检查位置是否为空
+func is_position_empty(test_pos: Vector2, safe_distance: float = 90.0) -> bool:
+	var cards = get_tree().get_nodes_in_group("Cards")
+	
+	for card in cards:
+		if not is_instance_valid(card):
+			continue
+		var distance = card.global_position.distance_to(test_pos)
+		if distance < safe_distance:
+			return false
+	
+	return true
+
+## 播放射出动画（内部辅助函数）
+func _play_shoot_animation(card: Control, end_pos: Vector2) -> void:
+	# 第一阶段：缩放出现
+	var tween1 = create_tween()
+	tween1.set_trans(Tween.TRANS_BACK)
+	tween1.set_ease(Tween.EASE_OUT)
+	tween1.tween_property(card, "scale", Vector2.ONE * 0.5, 0.2)
+	
+	await tween1.finished
+	
+	# 第二阶段：射出到目标位置
 	var tween2 = create_tween()
 	tween2.set_parallel(true)
 	tween2.set_trans(Tween.TRANS_CUBIC)
 	tween2.set_ease(Tween.EASE_OUT)
-	
-	# 位置动画（快速射出）
 	tween2.tween_property(card, "position", end_pos, 0.5)
-	# 同时恢复正常大小
 	tween2.tween_property(card, "scale", Vector2.ONE, 0.5)
 	
 	await tween2.finished
 	
-	# 到达目标位置后的反弹效果
+	# 第三阶段：反弹效果
 	var tween3 = create_tween()
 	tween3.tween_property(card, "scale", Vector2.ONE * 1.1, 0.1)
 	tween3.tween_property(card, "scale", Vector2.ONE, 0.1)
-	
-	print("遗物卡片 %s 射出动画完成" % remains_name)

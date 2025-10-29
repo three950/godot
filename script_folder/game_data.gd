@@ -422,3 +422,35 @@ func reload_data() -> void:
 	equipment_database.clear()
 	is_data_loaded = false
 	load_all_game_data()
+
+## 通用查找方法：在所有数据库中查找卡片数据
+## 返回: {"data": 数据, "type": 类型字符串} 或空字典
+func find_card_data(card_name: String) -> Dictionary:
+	# 优先级顺序：遗物 > 资源 > 装备 > 场景 > 道具 > 角色
+	
+	# 1. 查找遗物
+	if remains_database.has(card_name):
+		return {"data": remains_database[card_name], "type": "remains"}
+	
+	# 2. 查找资源
+	if resource_database.has(card_name):
+		return {"data": resource_database[card_name], "type": "resource"}
+	
+	# 3. 查找装备
+	if equipment_database.has(card_name):
+		return {"data": equipment_database[card_name], "type": "equipment"}
+	
+	# 4. 查找场景
+	if scene_database.has(card_name):
+		return {"data": scene_database[card_name], "type": "scene"}
+	
+	# 5. 查找道具
+	if item_database.has(card_name):
+		return {"data": item_database[card_name], "type": "item"}
+	
+	# 6. 查找角色
+	if character_database.has(card_name):
+		return {"data": character_database[card_name], "type": "character"}
+	
+	# 未找到
+	return {}
