@@ -159,7 +159,7 @@ func spawn_item(item_name: String) -> void:
 	
 	# 使用 CardManager 的射出卡片函数
 	# shoot_card 会自动处理：创建卡片、查找落点、播放动画
-	var spawned_card = card_manager.shoot_card(item_name, position)
+	var spawned_card =await card_manager.shoot_card(item_name, position)
 	if spawned_card:
 		print("✓ 场景 %s 产出了 %s" % [scene_name, item_name])
 

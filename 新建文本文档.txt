@@ -20,3 +20,5 @@ script_folder\stack_craft_detector.gd
 卡片生成动画（统一使用 shoot_card）
 card_manager.shoot_card(item_name, start_pos)  # 自动查找落点
 card_manager.shoot_card(item_name, start_pos, end_pos)  # 指定落点
+
+还有一个问题：只要检测一组卡片的最后一个卡片就行了，没必要全部检测

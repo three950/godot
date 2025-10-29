@@ -224,7 +224,7 @@ func create_scene_card(scene_name: String, spawn_pos: Vector2) -> void:
 
 ## ==================== 通用卡片生成系统 ====================
 
-## 射出卡片（自动处理：创建卡片、确定落点、播放动画）
+## 射出卡片（自动处理：创建卡片、确定落点、播放动画、自动堆叠）
 ## 参数:
 ##   card_name: 卡片名称（自动识别遗物/场景/角色等类型）
 ##   start_pos: 起始位置
@@ -237,19 +237,38 @@ func shoot_card(card_name: String, start_pos: Vector2, end_pos: Vector2 = Vector
 		push_error("卡片创建失败: " + card_name)
 		return null
 	
-	# 2. 确定目标位置（如果未提供，自动查找空闲位置）
-	if end_pos == Vector2.ZERO:
-		end_pos = find_empty_position(start_pos)
-	
-	# 3. 设置初始位置和缩放
+	# 2. 设置初始位置和缩放
 	card.position = start_pos
 	card.scale = Vector2.ZERO
 	
-	# 4. 添加到场景树
+	# 3. 添加到场景树（这样 _ready() 才会被调用，卡片才能完全初始化）
 	add_child(card)
 	
-	# 5. 播放射出动画
-	_play_shoot_animation(card, end_pos)
+	# 4. 等待一帧，确保 _ready() 完成，Label 已更新
+	await get_tree().process_frame
+	
+	# 5. 在区域内查找同类型同名的卡片（用于自动堆叠）
+	var target_stack_card = find_same_type_and_label_card(card, start_pos)
+	
+	# 6. 确定目标位置
+	if target_stack_card:
+		# 如果找到可堆叠的卡片，目标位置设为该卡片的位置
+		end_pos = target_stack_card.global_position
+	elif end_pos == Vector2.ZERO:
+		# 否则自动查找空闲位置
+		end_pos = find_empty_position(start_pos)
+	
+	# 7. 播放射出动画
+	await _play_shoot_animation(card, end_pos)
+	
+	# 8. 动画完成后，如果找到可堆叠的卡片，执行堆叠
+	if target_stack_card and is_instance_valid(target_stack_card):
+		card.stack_on_card(target_stack_card)
+	else:
+		# 否则设置为固定状态
+		if "cardCurrentState" in card and "cardState" in card:
+			card.cardCurrentState = card.cardState.fixed
+			card.original_position = card.position
 	
 	return card
 
@@ -312,6 +331,74 @@ func is_position_empty(test_pos: Vector2, safe_distance: float = 90.0) -> bool:
 			return false
 	
 	return true
+
+## 查找同类型且同名的卡片（用于自动堆叠）
+func find_same_type_and_label_card(new_card: Control, reference_pos: Vector2, search_radius: float = 300.0) -> Control:
+	# 获取新卡片的类型（使用脚本路径作为类型标识）
+	var new_card_script = new_card.get_script()
+	if not new_card_script:
+		return null
+	
+	# 获取新卡片的 label 文本
+	var new_card_label = ""
+	var label_node = new_card.get_node_or_null("Control/ColorRect/Label")
+	if label_node and label_node is Label:
+		new_card_label = label_node.text
+	
+	# 如果没有 label，无法匹配
+	if new_card_label == "":
+		return null
+	
+	# 在搜索范围内查找所有卡片
+	var cards = get_tree().get_nodes_in_group("Cards")
+	var matching_cards: Array[Control] = []
+	
+	for card in cards:
+		if not is_instance_valid(card) or card == new_card:
+			continue
+		
+		# 检查距离
+		var distance = card.global_position.distance_to(reference_pos)
+		if distance > search_radius:
+			continue
+		
+		# 检查类型是否相同（比较脚本路径）
+		var card_script = card.get_script()
+		if not card_script or card_script.resource_path != new_card_script.resource_path:
+			continue
+		
+		# 检查 label 是否相同
+		var card_label_node = card.get_node_or_null("Control/ColorRect/Label")
+		if not card_label_node or not card_label_node is Label:
+			continue
+		
+		var card_label_text = card_label_node.text
+		if card_label_text == new_card_label:
+			# 检查卡片是否允许堆叠
+			if "can_accept_stack" in card and not card.can_accept_stack:
+				continue
+			
+			# 检查卡片类型（不能堆叠到 selling 或 architecture 类型上）
+			if "card_type" in card and "cardType" in card:
+				if card.card_type == card.cardType.selling or card.card_type == card.cardType.architecture:
+					continue
+			
+			matching_cards.append(card)
+	
+	# 如果找到匹配的卡片，返回最近的一张
+	if matching_cards.size() > 0:
+		var closest_card: Control = matching_cards[0]
+		var closest_distance = closest_card.global_position.distance_to(reference_pos)
+		
+		for card in matching_cards:
+			var dist = card.global_position.distance_to(reference_pos)
+			if dist < closest_distance:
+				closest_distance = dist
+				closest_card = card
+		
+		return closest_card
+	
+	return null
 
 ## 播放射出动画（内部辅助函数）
 func _play_shoot_animation(card: Control, end_pos: Vector2) -> void:

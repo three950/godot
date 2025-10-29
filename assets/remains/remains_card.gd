@@ -18,7 +18,7 @@ func _ready() -> void:
 	# 自动获取标签引用
 	var color_rect = get_node_or_null("Control/ColorRect")
 	if color_rect:
-		name_label = color_rect.get_node_or_null("NameLabel")
+		name_label = color_rect.get_node_or_null("Label")
 		var info_container = color_rect.get_node_or_null("InfoContainer")
 		if info_container:
 			grade_label = info_container.get_node_or_null("GradeLabel")
