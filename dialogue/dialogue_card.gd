@@ -26,3 +26,4 @@ func set_dialogue(content: String, type: String = "normal") -> void:
 	dialogue_type = type
 	update_content()
 
+

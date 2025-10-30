@@ -252,8 +252,11 @@ func shoot_card(card_name: String, start_pos: Vector2, end_pos: Vector2 = Vector
 	
 	# 6. 确定目标位置
 	if target_stack_card:
-		# 如果找到可堆叠的卡片，目标位置设为该卡片的位置
-		end_pos = target_stack_card.global_position
+		# 如果找到可堆叠的卡片，计算堆叠后的实际位置
+		var stack_index = target_stack_card.get_total_stack_size() if target_stack_card.has_method("get_total_stack_size") else 0
+		var stack_offset = card.stack_offset if "stack_offset" in card else Vector2(0, 15)
+		var final_offset = stack_offset * (stack_index + 1)
+		end_pos = target_stack_card.global_position + final_offset
 	elif end_pos == Vector2.ZERO:
 		# 否则自动查找空闲位置
 		end_pos = find_empty_position(start_pos)
@@ -263,12 +266,14 @@ func shoot_card(card_name: String, start_pos: Vector2, end_pos: Vector2 = Vector
 	
 	# 8. 动画完成后，如果找到可堆叠的卡片，执行堆叠
 	if target_stack_card and is_instance_valid(target_stack_card):
+		# 堆叠时，z_index 由 stack_on_card 函数设置
 		card.stack_on_card(target_stack_card)
 	else:
-		# 否则设置为固定状态
+		# 否则设置为固定状态，恢复正常 z_index
 		if "cardCurrentState" in card and "cardState" in card:
 			card.cardCurrentState = card.cardState.fixed
 			card.original_position = card.position
+		card.z_index = 0
 	
 	return card
 
@@ -357,6 +362,10 @@ func find_same_type_and_label_card(new_card: Control, reference_pos: Vector2, se
 		if not is_instance_valid(card) or card == new_card:
 			continue
 		
+		# 只检测牌堆最上面的卡片（即没有其他卡片堆叠在其上的卡片）
+		if "stacked_cards" in card and not card.stacked_cards.is_empty():
+			continue
+		
 		# 检查距离
 		var distance = card.global_position.distance_to(reference_pos)
 		if distance > search_radius:
@@ -402,6 +411,9 @@ func find_same_type_and_label_card(new_card: Control, reference_pos: Vector2, se
 
 ## 播放射出动画（内部辅助函数）
 func _play_shoot_animation(card: Control, end_pos: Vector2) -> void:
+	# 设置高z_index，避免被其他卡片遮挡
+	card.z_index = 100
+	
 	# 第一阶段：缩放出现
 	var tween1 = create_tween()
 	tween1.set_trans(Tween.TRANS_BACK)
@@ -424,3 +436,7 @@ func _play_shoot_animation(card: Control, end_pos: Vector2) -> void:
 	var tween3 = create_tween()
 	tween3.tween_property(card, "scale", Vector2.ONE * 1.1, 0.1)
 	tween3.tween_property(card, "scale", Vector2.ONE, 0.1)
+	
+	await tween3.finished
+	
+	# 注意：z_index 的恢复在 shoot_card 中根据是否堆叠来决定

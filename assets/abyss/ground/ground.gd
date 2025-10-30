@@ -92,4 +92,3 @@ func generate_first_dialogue() -> void:
 	tween3.tween_property(dialogue_card, "scale", Vector2.ONE, 0.1)
 	
 	print("已生成对话卡片：", first_dialogue.content)
-
