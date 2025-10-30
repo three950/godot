@@ -26,6 +26,14 @@ func _ready() -> void:
 		parent_card.card_stacked_on.connect(_on_card_stacked)
 	else:
 		push_error("父卡片缺少 card_stacked_on 信号")
+	
+	# 连接卡片移除信号（当有卡片从堆叠中被拖走）
+	if parent_card.has_signal("card_removed_from_stack"):
+		parent_card.card_removed_from_stack.connect(_on_card_removed)
+	
+	# 连接卡片固定信号（当这张卡片被拖动后固定）
+	if parent_card.has_signal("card_fixed"):
+		parent_card.card_fixed.connect(_on_card_fixed)
 
 func _process(delta: float) -> void:
 	if need_check:
@@ -130,5 +138,19 @@ func play_craft_sound() -> void:
 
 ## 手动触发检测（可选，用于外部调用）
 func trigger_check() -> void:
+	need_check = true
+	check_timer = 0.0
+
+## 当有卡片从堆叠中被移除时触发
+func _on_card_removed(_removed_card: Control) -> void:
+	print("【合成检测】卡片被移除，触发检测")
+	# 延迟检测原地剩余的卡片
+	need_check = true
+	check_timer = 0.0
+
+## 当卡片被拖动后固定时触发
+func _on_card_fixed() -> void:
+	print("【合成检测】卡片固定，触发检测")
+	# 延迟检测固定后的卡片组
 	need_check = true
 	check_timer = 0.0

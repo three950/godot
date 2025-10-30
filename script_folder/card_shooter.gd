@@ -54,14 +54,17 @@ func shoot_card(card_name: Variant, start_pos: Vector2, end_pos: Vector2 = Vecto
 	
 	# 5. 在区域内查找同类型同名的卡片（用于自动堆叠）
 	var target_stack_card = find_same_type_and_label_card(card, start_pos)
+	var target_original_position: Vector2 = Vector2.ZERO  # 记录目标卡片的原始位置
 	
 	# 6. 确定目标位置
 	if target_stack_card:
-		# 如果找到可堆叠的卡片，计算堆叠后的实际位置
+		# 如果找到可堆叠的卡片，记录其当前位置
+		target_original_position = target_stack_card.global_position
+		# 计算堆叠后的实际位置
 		var stack_index = target_stack_card.get_total_stack_size() if target_stack_card.has_method("get_total_stack_size") else 0
 		var stack_offset = card.stack_offset if "stack_offset" in card else Vector2(0, 15)
 		var final_offset = stack_offset * (stack_index + 1)
-		end_pos = target_stack_card.global_position + final_offset
+		end_pos = target_original_position + final_offset
 	elif end_pos == Vector2.ZERO:
 		# 否则自动查找空闲位置
 		end_pos = find_empty_position(start_pos)
@@ -69,8 +72,18 @@ func shoot_card(card_name: Variant, start_pos: Vector2, end_pos: Vector2 = Vecto
 	# 7. 播放射出动画
 	await _play_shoot_animation(card, end_pos)
 	
-	# 8. 动画完成后，如果找到可堆叠的卡片，执行堆叠
+	# 8. 动画完成后，再次检查堆叠目标卡片是否还在原位
+	var should_stack = false
 	if target_stack_card and is_instance_valid(target_stack_card):
+		# 检查目标卡片是否还在原位（允许一定的误差范围，比如5像素）
+		var position_changed = target_stack_card.global_position.distance_to(target_original_position)
+		if position_changed < 5.0:
+			should_stack = true
+		else:
+			# 目标卡片已经移动，不执行堆叠
+			push_warning("堆叠目标卡片已移动，取消堆叠操作")
+	
+	if should_stack:
 		# 堆叠时，z_index 由 stack_on_card 函数设置
 		card.stack_on_card(target_stack_card)
 	else:

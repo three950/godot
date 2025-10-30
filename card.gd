@@ -2,6 +2,10 @@ extends Control
 
 # 信号：当有卡片堆叠到此卡片上时触发
 signal card_stacked_on(stacked_card: Control)
+# 信号：当卡片从堆叠中被移除时触发
+signal card_removed_from_stack(removed_card: Control)
+# 信号：当卡片固定位置时触发（拖动结束）
+signal card_fixed()
 
 enum cardState{fixed, dragging, bestacked}
 enum cardType{normal, selling, architecture}  # 卡片类型
@@ -73,6 +77,9 @@ func _on_button_button_up() -> void:
 		# 设置为固定状态
 		cardCurrentState = cardState.fixed
 		original_position = position
+		
+		# 发射卡片固定信号
+		card_fixed.emit()
 
 # 查找最近的可堆叠卡片
 func find_closest_card() -> Control:
@@ -186,6 +193,9 @@ func remove_from_stack(card: Control) -> void:
 		
 		# 重新排列剩余堆叠的卡片
 		rearrange_stacked_cards()
+		
+		# 发射卡片移除信号
+		card_removed_from_stack.emit(card)
 
 # 重新排列堆叠的卡片
 func rearrange_stacked_cards() -> void:
