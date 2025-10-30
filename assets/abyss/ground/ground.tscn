@@ -29,8 +29,8 @@ anchor_mode = 0
 zoom = Vector2(2.2, 2.2)
 
 [node name="Card_莉可2" parent="." instance=ExtResource("2_2bq1q")]
-offset_left = 984.0
-offset_top = 459.0
-offset_right = 1072.0
-offset_bottom = 574.0
+offset_left = 1000.0
+offset_top = 456.0
+offset_right = 1088.0
+offset_bottom = 571.0
 metadata/_edit_use_anchors_ = true
