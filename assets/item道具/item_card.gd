@@ -14,6 +14,8 @@ var equip_effects: Dictionary = {}  # {"ATK": 100, "DEF": 5, "HP": -5, "special"
 
 # 效果标签引用
 var effect_label: Label = null
+# 价值标签引用
+var value_label: Label = null
 
 # 信号：装备到角色时
 signal item_equipped(character: CharacterCard, item: ItemCard)
@@ -28,6 +30,12 @@ func _ready() -> void:
 	if effect_lbl:
 		effect_label = effect_lbl
 		update_effect_label()
+	
+	# 获取价值标签
+	var val_lbl = get_node_or_null("Control/ColorRect/ValueLabel")
+	if val_lbl:
+		value_label = val_lbl
+		update_value_label()
 
 # 从数据初始化（CardFactory会调用）
 func init_from_data(data: Dictionary) -> void:
@@ -39,6 +47,7 @@ func init_from_data(data: Dictionary) -> void:
 		if value_str.is_valid_int():
 			value = int(value_str)
 			print("【道具卡片】设置 VALUE = %d" % value)
+			update_value_label()
 	
 	# 设置是否是遗物
 	if data.has("是否是遗物"):
@@ -61,6 +70,11 @@ func init_from_data(data: Dictionary) -> void:
 func update_effect_label() -> void:
 	if effect_label and not effect_type.is_empty():
 		effect_label.text = "%s +%d" % [effect_type, effect_power]
+
+# 更新价值标签显示
+func update_value_label() -> void:
+	if value_label:
+		value_label.text = "价值: %d" % value
 
 # 使用道具（触发效果）
 func use_item(target: Node = null) -> bool:
