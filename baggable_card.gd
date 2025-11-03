@@ -16,7 +16,7 @@ func _on_button_button_down() -> void:
 	# 先调用父类逻辑
 	super._on_button_button_down()
 	
-	# 如果卡片在背包槽位中，立即从槽位中移除引用
+	# 如果卡片在背包槽位中，立即从槽位中移除引用和效果
 	var current_info = _find_current_slot_info()
 	if current_info.has("bag_panel") and current_info.has("slot_index"):
 		var bag_panel = current_info.bag_panel
@@ -24,6 +24,12 @@ func _on_button_button_down() -> void:
 		
 		# 从槽位中清除引用（但不删除卡片）
 		bag_panel.cards[slot_index] = null
+		
+		# 【装备系统】移除装备效果（如果是道具卡片）
+		if bag_panel._is_item_card(self) and bag_panel.current_character_card != null:
+			if has_method("remove_equip_effects"):
+				print("【卡片】从背包拖出 %s，移除装备效果" % name)
+				call("remove_equip_effects", bag_panel.current_character_card)
 		
 		# 重置缩放
 		scale = Vector2(1.0, 1.0)

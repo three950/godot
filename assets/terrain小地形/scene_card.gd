@@ -32,6 +32,9 @@ var max_explorations: int = -1  # 最大探索次数（-1表示无限）
 var current_explorations: int = 0  # 当前探索次数
 var depth_indicator: Node = null  # 深度指示器引用（用于调用掉落函数）
 
+# 缓存的实际产出间隔（考虑特殊效果后）
+var cached_produce_interval: float = 5.0
+
 func _ready() -> void:
 	super._ready()
 	# 场景卡片类型设置为 architecture（固定在地图上）
@@ -43,11 +46,18 @@ func _ready() -> void:
 		progress_bar.value = 0.0
 	time_since_last_produce = 0.0
 	
+	# 初始化缓存的产出间隔
+	cached_produce_interval = produce_interval
+	
 	# 如果场景名称为空，尝试从Label读取
 	if scene_name == "":
 		var label = get_node_or_null("Control/ColorRect/Label")
 		if label and label.text != "" and label.text != "场景":
 			scene_name = label.text
+	
+	# 连接堆叠信号
+	card_stacked_on.connect(_on_card_stacked)
+	card_removed_from_stack.connect(_on_card_removed)
 	
 	# 等待CardManager加载
 	await get_tree().process_frame
@@ -66,17 +76,14 @@ func _process(delta: float) -> void:
 	if can_produce and cardCurrentState == cardState.fixed:
 		time_since_last_produce += delta
 		
-		# 获取实际产出间隔（考虑特殊效果）
-		var actual_interval = get_actual_produce_interval()
-		
-		# 更新进度条
+		# 更新进度条（使用缓存的间隔值）
 		if progress_bar:
 			progress_bar.visible = true
-			progress_bar.max_value = actual_interval  # 动态设置最大值
+			progress_bar.max_value = cached_produce_interval
 			progress_bar.value = time_since_last_produce
 		
 		# 计时到达时触发产出
-		if time_since_last_produce >= actual_interval:
+		if time_since_last_produce >= cached_produce_interval:
 			find()  # 触发产出
 			time_since_last_produce = 0.0
 			if progress_bar:
@@ -95,8 +102,18 @@ func check_character_stacked() -> void:
 			can_produce = true
 			break
 
-# 获取实际产出间隔（考虑角色的特殊效果）
-func get_actual_produce_interval() -> float:
+# 当有卡片堆叠上来时触发
+func _on_card_stacked(stacked_card: Control) -> void:
+	# 更新产出间隔缓存
+	update_produce_interval()
+
+# 当卡片从堆叠中移除时触发
+func _on_card_removed(removed_card: Control) -> void:
+	# 更新产出间隔缓存
+	update_produce_interval()
+
+# 更新实际产出间隔（考虑角色的特殊效果）
+func update_produce_interval() -> void:
 	var interval = produce_interval
 	
 	# 检查堆叠的角色是否有 fast_fish 效果（仅对河流场景有效）
@@ -108,7 +125,7 @@ func get_actual_produce_interval() -> float:
 					print("【场景卡片】角色 %s 拥有 fast_fish 效果，产出间隔减半: %.1f -> %.1f" % [card.name, produce_interval, interval])
 					break  # 只需要一个角色有该效果即可
 	
-	return interval
+	cached_produce_interval = interval
 
 # 检查是否是河流场景
 func is_river_scene() -> bool:

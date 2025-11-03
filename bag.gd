@@ -18,6 +18,9 @@ signal card_removed(card: Control, slot_index: int)
 var current_character: CharacterData = null
 var current_character_card: CharacterCard = null  # 角色卡片引用（用于装备效果）
 
+# 是否正在初次加载背包（用于避免重复应用装备效果）
+var is_initial_load: bool = false
+
 # 卡槽引用（纯背景）
 var left_slot: BagSlot = null    # 索引 0
 var right_slot: BagSlot = null   # 索引 1
@@ -164,11 +167,13 @@ func place_card_at_slot(card: Control, slot_index: int) -> bool:
 		card.on_put_in_bag(slot)
 	
 	# 【装备系统】如果是道具卡片，应用装备效果
-	if _is_item_card(card) and current_character_card != null:
-		print("【背包】检测到道具卡片 %s，准备应用装备效果" % card.name)
-		card.apply_equip_effects(current_character_card)
-	elif _is_item_card(card):
-		print("【背包】检测到道具卡片 %s，但角色卡片引用为空，无法应用效果" % card.name)
+	# 注意：初次加载背包时不应用效果（因为角色卡片初始化时已经应用过了）
+	if not is_initial_load:
+		if _is_item_card(card) and current_character_card != null:
+			print("【背包】检测到道具卡片 %s，准备应用装备效果" % card.name)
+			card.apply_equip_effects(current_character_card)
+		elif _is_item_card(card):
+			print("【背包】检测到道具卡片 %s，但角色卡片引用为空，无法应用效果" % card.name)
 	
 	# 发射信号
 	card_placed.emit(card, slot_index)
@@ -284,6 +289,9 @@ func load_character_bag(character: CharacterData, character_card: CharacterCard 
 	
 	print("【背包】正在加载角色 '%s' 的背包..." % character.character_name)
 	
+	# 设置初次加载标志（避免重复应用装备效果）
+	is_initial_load = true
+	
 	# 清空当前背包
 	clear_bag()
 	
@@ -339,6 +347,9 @@ func load_character_bag(character: CharacterData, character_card: CharacterCard 
 				card.queue_free()  # 释放未使用的卡片
 		else:
 			push_error("【背包】✗ 无法创建卡片: %s" % item_name)
+	
+	# 重置初次加载标志
+	is_initial_load = false
 	
 	print("【背包】加载完成！")
 
