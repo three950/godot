@@ -66,13 +66,17 @@ func _process(delta: float) -> void:
 	if can_produce and cardCurrentState == cardState.fixed:
 		time_since_last_produce += delta
 		
+		# 获取实际产出间隔（考虑特殊效果）
+		var actual_interval = get_actual_produce_interval()
+		
 		# 更新进度条
 		if progress_bar:
 			progress_bar.visible = true
+			progress_bar.max_value = actual_interval  # 动态设置最大值
 			progress_bar.value = time_since_last_produce
 		
 		# 计时到达时触发产出
-		if time_since_last_produce >= produce_interval:
+		if time_since_last_produce >= actual_interval:
 			find()  # 触发产出
 			time_since_last_produce = 0.0
 			if progress_bar:
@@ -90,6 +94,26 @@ func check_character_stacked() -> void:
 		if card is CharacterCard:
 			can_produce = true
 			break
+
+# 获取实际产出间隔（考虑角色的特殊效果）
+func get_actual_produce_interval() -> float:
+	var interval = produce_interval
+	
+	# 检查堆叠的角色是否有 fast_fish 效果（仅对河流场景有效）
+	if is_river_scene():
+		for card in stacked_cards:
+			if card is CharacterCard:
+				if card.has_method("has_special_effect") and card.has_special_effect("fast_fish"):
+					interval = interval / 2.0  # 速度翻倍（间隔减半）
+					print("【场景卡片】角色 %s 拥有 fast_fish 效果，产出间隔减半: %.1f -> %.1f" % [card.name, produce_interval, interval])
+					break  # 只需要一个角色有该效果即可
+	
+	return interval
+
+# 检查是否是河流场景
+func is_river_scene() -> bool:
+	# 检查场景名称是否包含"河流"等关键字
+	return "河流" in scene_name or "river" in scene_name.to_lower()
 
 # find() 函数：根据概率生成新卡片
 func find() -> void:

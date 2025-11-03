@@ -289,14 +289,18 @@ func load_item_data_from_csv() -> void:
 		if line.size() < 2 or line[0] == "":
 			continue
 		
+		# CSV列顺序: 名称,描述文本,使用次数限制,是否是遗物,VALUE,picture_path,装备时,战斗中使用,使用效果,使用对象
 		var item_dict = {
 			"名称": line[0],
 			"描述文本": line[1] if line.size() > 1 else "",
 			"使用次数限制": line[2] if line.size() > 2 else "",
-			"道具类型": line[3] if line.size() > 3 else "",
-			"是否是遗物": line[4] if line.size() > 4 else "FALSE",
-			"VALUE": line[5] if line.size() > 5 else "0",
-			"地址": line[6] if line.size() > 6 else "",
+			"是否是遗物": line[3] if line.size() > 3 else "FALSE",
+			"VALUE": line[4] if line.size() > 4 else "0",
+			"地址": line[5] if line.size() > 5 else "",  # picture_path
+			"装备时": line[6] if line.size() > 6 else "",
+			"战斗中使用": line[7] if line.size() > 7 else "",
+			"使用效果": line[8] if line.size() > 8 else "",
+			"使用对象": line[9] if line.size() > 9 else "",
 			"card_scene": "res://assets/item道具/item_card.tscn"
 		}
 		
@@ -304,10 +308,10 @@ func load_item_data_from_csv() -> void:
 		item_database[item_dict["名称"]] = item_dict
 		loaded_count += 1
 		
-		print("  加载道具: %s (类型:%s 价值:%s)" % [
+		print("  加载道具: %s (价值:%s 装备时:%s)" % [
 			item_dict["名称"], 
-			item_dict["道具类型"], 
-			item_dict["VALUE"]
+			item_dict["VALUE"],
+			item_dict["装备时"]
 		])
 	
 	file.close()

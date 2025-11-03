@@ -10,6 +10,9 @@ class_name CharacterCard
 # 角色数据引用
 var character_data: CharacterData = null
 
+# 特殊效果管理（装备道具后获得的效果）
+var special_effects: Array[String] = []  # 例如: ["fast_fish", "water_breathing"]
+
 # 属性标签引用
 var hp_label: Label = null
 var atk_label: Label = null
@@ -126,7 +129,7 @@ func open_bag() -> void:
 	# 加载角色的背包数据
 	if character_data:
 		print("【角色卡片】加载角色背包数据：", character_data.character_name)
-		bag_instance.load_character_bag(character_data)
+		bag_instance.load_character_bag(character_data, self)  # 传递角色卡片引用
 	else:
 		push_warning("【角色卡片】角色卡片没有关联的角色数据，背包将为空")
 	
@@ -183,3 +186,25 @@ func _update_bag_button_state(is_open: bool) -> void:
 func _on_bag_close_requested() -> void:
 	print("【角色卡片】收到背包关闭请求")
 	close_bag()
+
+# ========== 特殊效果管理 ==========
+
+# 添加特殊效果
+func add_special_effect(effect: String) -> void:
+	if effect not in special_effects:
+		special_effects.append(effect)
+		print("【角色卡片】%s 获得特殊效果: %s" % [name, effect])
+
+# 移除特殊效果
+func remove_special_effect(effect: String) -> void:
+	if effect in special_effects:
+		special_effects.erase(effect)
+		print("【角色卡片】%s 失去特殊效果: %s" % [name, effect])
+
+# 检查是否拥有特殊效果
+func has_special_effect(effect: String) -> bool:
+	return effect in special_effects
+
+# 获取所有特殊效果
+func get_special_effects() -> Array[String]:
+	return special_effects.duplicate()

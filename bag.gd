@@ -3,8 +3,9 @@ class_name BagPanel
 
 ## 背包面板 - 管理所有卡片和槽位逻辑
 
-# 预加载 BaggableCard 类以支持类型检查
+# 预加载类以支持类型检查
 const BaggableCardScript = preload("res://baggable_card.gd")
+const ItemCardScript = preload("res://assets/item道具/item_card.gd")
 
 # 信号：请求关闭背包
 signal close_requested
@@ -15,6 +16,7 @@ signal card_removed(card: Control, slot_index: int)
 
 # 当前背包所属的角色
 var current_character: CharacterData = null
+var current_character_card: CharacterCard = null  # 角色卡片引用（用于装备效果）
 
 # 卡槽引用（纯背景）
 var left_slot: BagSlot = null    # 索引 0
@@ -161,6 +163,13 @@ func place_card_at_slot(card: Control, slot_index: int) -> bool:
 	if card.has_method("on_put_in_bag"):
 		card.on_put_in_bag(slot)
 	
+	# 【装备系统】如果是道具卡片，应用装备效果
+	if _is_item_card(card) and current_character_card != null:
+		print("【背包】检测到道具卡片 %s，准备应用装备效果" % card.name)
+		card.apply_equip_effects(current_character_card)
+	elif _is_item_card(card):
+		print("【背包】检测到道具卡片 %s，但角色卡片引用为空，无法应用效果" % card.name)
+	
 	# 发射信号
 	card_placed.emit(card, slot_index)
 	
@@ -189,6 +198,11 @@ func remove_card_from_slot(slot_index: int) -> Control:
 	# 获取对应的卡槽
 	var slot = get_slot_by_index(slot_index)
 	
+	# 【装备系统】如果是道具卡片，移除装备效果
+	if _is_item_card(card) and current_character_card != null:
+		print("【背包】检测到道具卡片 %s，准备移除装备效果" % card.name)
+		card.remove_equip_effects(current_character_card)
+	
 	# 调用卡片的从背包取出回调
 	if card.has_method("on_take_out_from_bag"):
 		card.on_take_out_from_bag(slot)
@@ -210,6 +224,28 @@ func _is_baggable_card(script: Script) -> bool:
 	var base = script.get_base_script()
 	while base != null:
 		if base == BaggableCardScript:
+			return true
+		base = base.get_base_script()
+	
+	return false
+
+## 检查卡片是否是道具卡片
+func _is_item_card(card: Control) -> bool:
+	if card == null:
+		return false
+	
+	var script = card.get_script()
+	if script == null:
+		return false
+	
+	# 直接检查脚本
+	if script == ItemCardScript:
+		return true
+	
+	# 检查继承链
+	var base = script.get_base_script()
+	while base != null:
+		if base == ItemCardScript:
 			return true
 		base = base.get_base_script()
 	
@@ -240,7 +276,8 @@ func _align_card_to_slot(card: Control, slot: BagSlot) -> void:
 
 ## 加载指定角色的背包数据
 ## @param character: 要加载背包的角色数据
-func load_character_bag(character: CharacterData) -> void:
+## @param character_card: 角色卡片引用（可选）
+func load_character_bag(character: CharacterData, character_card: CharacterCard = null) -> void:
 	if not character:
 		push_error("【背包】无效的角色数据")
 		return
@@ -252,6 +289,7 @@ func load_character_bag(character: CharacterData) -> void:
 	
 	# 保存当前角色引用
 	current_character = character
+	current_character_card = character_card
 	
 	# 准备所有槽位的物品名称（索引 0-7）
 	var item_names = [
