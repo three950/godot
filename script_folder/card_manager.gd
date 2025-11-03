@@ -11,6 +11,10 @@ extends Node2D
 @export var scene_card_scene: PackedScene
 # 遗物卡片预制体场景
 @export var remains_card_scene: PackedScene
+# 装备卡片预制体场景
+@export var equipment_card_scene: PackedScene
+# 资源卡片预制体场景
+@export var resource_card_scene: PackedScene
 # 卡片生成的起始位置
 @export var start_position: Vector2 = Vector2(50, 50)
 # 卡片之间的间距
@@ -304,6 +308,18 @@ func _create_card_by_name(card_name: String) -> Control:
 	
 	if card_type == "character" and character_card_scene:
 		return character_card_scene.instantiate()
+	
+	if card_type == "equipment" and equipment_card_scene:
+		var card = equipment_card_scene.instantiate()
+		if card.has_method("init_from_data"):
+			card.init_from_data(card_data)
+		return card
+	
+	if card_type == "resource" and resource_card_scene:
+		var card = resource_card_scene.instantiate()
+		if card.has_method("init_from_data"):
+			card.init_from_data(card_data)
+		return card
 	
 	return null
 

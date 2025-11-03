@@ -39,6 +39,14 @@ func _ready() -> void:
 	
 	# 加载 JSON 配置
 	load_config()
+	
+	# 等待一帧后获取 CardManager 引用
+	await get_tree().process_frame
+	var main = get_tree().root.get_node_or_null("Main")
+	if main:
+		card_manager = main.get_node_or_null("CardManager")
+		if card_manager:
+			print("✓ 深度指示器已获取 CardManager 引用")
 
 func _process(delta: float) -> void:
 	super._process(delta)
@@ -409,22 +417,23 @@ func try_spawn_equipment(layer_data: Dictionary) -> bool:
 	var cumulative = 0.0
 	print("  [装备判定] 装备选择骰子: %.2f (范围: 0-%.2f)" % [roll, total_chance])
 	
+	var selected_item_data = null
 	for item_data in items:
 		var item_chance = item_data.get("chance", 0)
 		cumulative += item_chance
 		print("  [装备判定] 检查 '%s' (概率 %d%%, 累计 %.2f)" % [item_data.get("name", ""), item_chance, cumulative])
 		
 		if roll <= cumulative:
-			var item_name = item_data.get("name", "")
-			var spawn_pos = find_random_empty_position()
-			spawn_equipment_card(item_name, spawn_pos)
-			print("  [装备判定] ✓ 生成装备: %s" % item_name)
-			return true
+			selected_item_data = item_data
+			break
 	
 	# 如果由于浮点误差没有选中，选择最后一个装备
-	print("  [装备判定] 由于浮点误差，强制选择最后一个装备")
-	var last_item = items[-1]
-	var item_name = last_item.get("name", "")
+	if not selected_item_data:
+		print("  [装备判定] 由于浮点误差，强制选择最后一个装备")
+		selected_item_data = items[-1]
+	
+	# 生成选中的装备
+	var item_name = selected_item_data.get("name", "")
 	var spawn_pos = find_random_empty_position()
 	spawn_equipment_card(item_name, spawn_pos)
 	print("  [装备判定] ✓ 生成装备: %s" % item_name)
@@ -446,6 +455,13 @@ func spawn_loot_card(item_name: String, category: String, scene_pos: Vector2) ->
 
 ## 生成遗物卡片
 func spawn_remains_card(remains_name: String, start_pos: Vector2, end_pos: Vector2) -> void:
+	# 如果找到 CardManager，使用统一的射出系统（支持自动堆叠）
+	if card_manager and card_manager.has_method("shoot_card"):
+		await card_manager.shoot_card(remains_name, start_pos, end_pos)
+		return
+	
+	# 否则使用旧的生成方式（无自动堆叠）
+	
 	var remains_data = GameData.get_remains(remains_name)
 	if remains_data.is_empty():
 		push_error("未找到遗物数据: " + remains_name)
@@ -472,6 +488,13 @@ func spawn_remains_card(remains_name: String, start_pos: Vector2, end_pos: Vecto
 
 ## 生成资源卡片
 func spawn_resource_card(resource_name: String, start_pos: Vector2, end_pos: Vector2) -> void:
+	# 如果找到 CardManager，使用统一的射出系统（支持自动堆叠）
+	if card_manager and card_manager.has_method("shoot_card"):
+		await card_manager.shoot_card(resource_name, start_pos, end_pos)
+		return
+	
+	# 否则使用旧的生成方式（无自动堆叠）
+	
 	var resource_data = GameData.get_resource(resource_name)
 	if resource_data.is_empty():
 		push_error("未找到资源数据: " + resource_name)
@@ -498,6 +521,13 @@ func spawn_resource_card(resource_name: String, start_pos: Vector2, end_pos: Vec
 
 ## 生成装备卡片
 func spawn_equipment_card(equipment_name: String, spawn_pos: Vector2) -> void:
+	# 如果找到 CardManager，使用统一的射出系统（支持自动堆叠）
+	if card_manager and card_manager.has_method("shoot_card"):
+		await card_manager.shoot_card(equipment_name, position, spawn_pos)
+		return
+	
+	# 否则使用旧的生成方式（无自动堆叠）
+	
 	var equipment_data = GameData.get_equipment(equipment_name)
 	if equipment_data.is_empty():
 		push_error("未找到装备数据: " + equipment_name)

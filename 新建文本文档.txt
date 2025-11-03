@@ -21,4 +21,6 @@ script_folder\stack_craft_detector.gd
 card_manager.shoot_card(item_name, start_pos)  # 自动查找落点
 card_manager.shoot_card(item_name, start_pos, end_pos)  # 指定落点
 
-还有一个问题：只要检测一组卡片的最后一个卡片就行了，没必要全部检测
+卡片自动堆叠问题修复：
+核心问题：CardManager 的 _create_card_by_name 方法只支持创建遗物、场景和角色卡片，缺少装备和资源卡片的创建逻辑，导致探索系统调用 shoot_card 时无法创建装备/资源卡片。
+解决方案：在 CardManager 中添加了 equipment_card_scene 和 resource_card_scene 两个导出变量，并在 _create_card_by_name 方法中添加了装备和资源类型的处理分支。

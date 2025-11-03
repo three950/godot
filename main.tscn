@@ -1,13 +1,15 @@
-[gd_scene load_steps=9 format=3 uid="uid://r1lb3ajxfx1j"]
+[gd_scene load_steps=11 format=3 uid="uid://r1lb3ajxfx1j"]
 
 [ext_resource type="Script" uid="uid://b6gu1qtuwx15i" path="res://script_folder/card_manager.gd" id="1_card_mgr"]
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://card.tscn" id="2_card_scene"]
 [ext_resource type="PackedScene" uid="uid://dmy86nwd2147t" path="res://assets/character/character_card.tscn" id="2_character_card"]
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://background.tscn" id="3_h2yge"]
 [ext_resource type="Script" uid="uid://bbnp6ftl63g4m" path="res://script_folder/camera_controller.gd" id="4_camera"]
-[ext_resource type="PackedScene" path="res://assets/terrain小地形/scene_card.tscn" id="5_scene_card"]
+[ext_resource type="PackedScene" uid="uid://srp4c4d5hm2c" path="res://assets/terrain小地形/scene_card.tscn" id="5_scene_card"]
 [ext_resource type="PackedScene" uid="uid://cq3m5h8qavw2k" path="res://assets/remains/remains_card.tscn" id="6_remains_card"]
 [ext_resource type="PackedScene" path="res://assets/abyss/layer1/depth_indicator.tscn" id="7_depth_indicator"]
+[ext_resource type="PackedScene" path="res://assets/resources/resource_card.tscn" id="8_resource_card"]
+[ext_resource type="PackedScene" path="res://assets/equipment/equipment_card.tscn" id="10_equipment_card"]
 
 [node name="Main" type="Node2D"]
 
@@ -19,6 +21,8 @@ card_scene = ExtResource("2_card_scene")
 character_card_scene = ExtResource("2_character_card")
 scene_card_scene = ExtResource("5_scene_card")
 remains_card_scene = ExtResource("6_remains_card")
+equipment_card_scene = ExtResource("10_equipment_card")
+resource_card_scene = ExtResource("8_resource_card")
 start_position = Vector2(100, 100)
 card_spacing = Vector2(120, 0)
 
