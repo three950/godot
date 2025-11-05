@@ -39,6 +39,7 @@ offset_bottom = 265.0
 
 [node name="Enemy_PoisonWorm" parent="." instance=ExtResource("9_enemy_card")]
 position = Vector2(300, 300)
+card_name = "毒针线虫"
 enemy_hp = 30
 enemy_atk = 6
 enemy_def = 3

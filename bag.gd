@@ -167,13 +167,13 @@ func place_card_at_slot(card: Control, slot_index: int) -> bool:
 	if card.has_method("on_put_in_bag"):
 		card.on_put_in_bag(slot)
 	
-	# 【装备系统】如果是道具卡片或装备卡片，应用装备效果
+	# 【装备系统】如果是可背包卡片且有装备效果，应用装备效果
 	# 注意：初次加载背包时不应用效果（因为角色卡片初始化时已经应用过了）
 	if not is_initial_load:
-		if (_is_item_card(card) or _is_equipment_card(card)) and current_character_card != null:
+		if _has_equip_effects(card) and current_character_card != null:
 			print("【背包】检测到装备/道具卡片 %s，准备应用装备效果" % card.name)
 			card.apply_equip_effects(current_character_card)
-		elif (_is_item_card(card) or _is_equipment_card(card)):
+		elif _has_equip_effects(card):
 			print("【背包】检测到装备/道具卡片 %s，但角色卡片引用为空，无法应用效果" % card.name)
 	
 	# 发射信号
@@ -204,8 +204,8 @@ func remove_card_from_slot(slot_index: int) -> Control:
 	# 获取对应的卡槽
 	var slot = get_slot_by_index(slot_index)
 	
-	# 【装备系统】如果是道具卡片或装备卡片，移除装备效果
-	if (_is_item_card(card) or _is_equipment_card(card)) and current_character_card != null:
+	# 【装备系统】如果是可背包卡片且有装备效果，移除装备效果
+	if _has_equip_effects(card) and current_character_card != null:
 		print("【背包】检测到装备/道具卡片 %s，准备移除装备效果" % card.name)
 		card.remove_equip_effects(current_character_card)
 	
@@ -278,6 +278,19 @@ func _is_equipment_card(card: Control) -> bool:
 		base = base.get_base_script()
 	
 	return false
+
+## 检查卡片是否有装备效果（统一检测方法）
+## 适用于所有继承自 BaggableCard 且有装备效果的卡片
+func _has_equip_effects(card: Control) -> bool:
+	if card == null:
+		return false
+	
+	# 检查卡片是否是可背包卡片
+	if not _is_baggable_card(card.get_script()):
+		return false
+	
+	# 检查卡片是否有装备效果方法
+	return card.has_method("apply_equip_effects") and card.has_method("remove_equip_effects")
 
 ## 对齐卡片到卡槽中心（等比缩放）
 func _align_card_to_slot(card: Control, slot: BagSlot) -> void:
