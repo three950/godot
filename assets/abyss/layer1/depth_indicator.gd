@@ -17,7 +17,7 @@ var time_since_last_exploration: float = 0.0
 var can_explore: bool = false  # 是否可以探索（需要有人物堆叠）
 
 # 进度条引用
-var progress_bar: ProgressBar = null
+var progress_bar: CardProgressBar = null
 
 # 已生成的场景跟踪（用于限制场景数量和探索次数）
 var spawned_scenes: Dictionary = {}  # key: 场景名, value: {cards: Array, explorations: Dictionary}
@@ -60,42 +60,22 @@ func _process(delta: float) -> void:
 		
 		# 更新进度条
 		if progress_bar:
-			progress_bar.visible = true
-			progress_bar.value = (time_since_last_exploration / exploration_interval) * 100.0
+			progress_bar.update_progress(time_since_last_exploration, exploration_interval)
 		
 		# 计时到达时触发探索
 		if time_since_last_exploration >= exploration_interval:
 			explore()
 			time_since_last_exploration = 0.0
-			if progress_bar:
-				progress_bar.value = 0.0
 	else:
 		# 没有人物堆叠时隐藏进度条并重置计时
 		if progress_bar:
-			progress_bar.visible = false
+			progress_bar.update_progress(0.0, 0.0)
 		time_since_last_exploration = 0.0
 
 ## 设置进度条
 func setup_progress_bar() -> void:
-	# 查找已有的进度条
+	# 获取进度条引用（现在已经在 tscn 中预设好了）
 	progress_bar = get_node_or_null("Control/ProgressBar")
-	
-	# 如果没有，创建一个
-	if not progress_bar:
-		progress_bar = ProgressBar.new()
-		progress_bar.name = "ProgressBar"
-		progress_bar.size = Vector2(82, 10)
-		progress_bar.position = Vector2(0, 102)
-		progress_bar.max_value = 100.0
-		progress_bar.value = 0.0
-		progress_bar.show_percentage = false
-		
-		var control = get_node_or_null("Control/ColorRect")
-		if control:
-			control.add_child(progress_bar)
-	
-	if progress_bar:
-		progress_bar.visible = false
 
 ## 检查是否有人物卡片堆叠在上面
 func check_character_stacked() -> void:

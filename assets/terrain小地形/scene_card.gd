@@ -22,7 +22,7 @@ class_name SceneCard
 
 var time_since_last_produce: float = 0.0
 var can_produce: bool = false  # 是否可以产出（需要有人物堆叠）
-var progress_bar: ProgressBar = null  # 进度条引用
+var progress_bar: CardProgressBar = null  # 进度条引用
 var card_manager: Node2D = null  # CardManager引用
 
 # 自定义掉落表配置（用于深渊探索等）
@@ -41,9 +41,6 @@ func _ready() -> void:
 	card_type = cardType.architecture
 	# 获取进度条引用
 	progress_bar = get_node_or_null("Control/ProgressBar")
-	if progress_bar:
-		progress_bar.visible = false
-		progress_bar.value = 0.0
 	time_since_last_produce = 0.0
 	
 	# 初始化缓存的产出间隔
@@ -78,20 +75,16 @@ func _process(delta: float) -> void:
 		
 		# 更新进度条（使用缓存的间隔值）
 		if progress_bar:
-			progress_bar.visible = true
-			progress_bar.max_value = cached_produce_interval
-			progress_bar.value = time_since_last_produce
+			progress_bar.update_progress(time_since_last_produce, cached_produce_interval)
 		
 		# 计时到达时触发产出
 		if time_since_last_produce >= cached_produce_interval:
 			find()  # 触发产出
 			time_since_last_produce = 0.0
-			if progress_bar:
-				progress_bar.value = 0.0
 	else:
 		# 没有人物堆叠时隐藏进度条
 		if progress_bar:
-			progress_bar.visible = false
+			progress_bar.update_progress(0.0, 0.0)
 		time_since_last_produce = 0.0
 
 # 检查是否有人物卡片堆叠在上面

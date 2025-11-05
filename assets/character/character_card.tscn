@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://dmy86nwd2147t"]
+[gd_scene load_steps=6 format=3 uid="uid://dmy86nwd2147t"]
 
 [ext_resource type="Script" uid="uid://b2cxcy1nlt5ej" path="res://assets/character/character_card.gd" id="1_character"]
 [ext_resource type="Texture2D" uid="uid://b11wupevcdiwd" path="res://assets/character/人物_莉可.png" id="2_texture"]
 [ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="3_font"]
+[ext_resource type="PackedScene" uid="uid://ctbm5kxn88esl" path="res://ui/attribute_labels.tscn" id="4_attribute_labels"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_normal"]
 bg_color = Color(1, 1, 1, 1)
@@ -58,40 +59,11 @@ theme_override_fonts/font = ExtResource("3_font")
 theme_override_font_sizes/font_size = 10
 text = "莉可"
 
-[node name="StatsContainer" type="HBoxContainer" parent="Control/ColorRect"]
+[node name="AttributeLabels" parent="Control/ColorRect" instance=ExtResource("4_attribute_labels")]
 layout_mode = 0
 offset_top = 93.0
 offset_right = 82.0
 offset_bottom = 124.0
-
-[node name="HPLabel" type="Label" parent="Control/ColorRect/StatsContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.8, 0.2, 0.2, 1)
-theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 9
-text = "10"
-vertical_alignment = 1
-
-[node name="RightStats" type="VBoxContainer" parent="Control/ColorRect/StatsContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ATKLabel" type="Label" parent="Control/ColorRect/StatsContainer/RightStats"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.6, 0.1, 1)
-theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 9
-text = "1"
-horizontal_alignment = 2
-
-[node name="DEFLabel" type="Label" parent="Control/ColorRect/StatsContainer/RightStats"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.5, 0.8, 1)
-theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 9
-text = "0"
-horizontal_alignment = 2
 
 [node name="Button" type="Button" parent="."]
 self_modulate = Color(1, 1, 1, 0)

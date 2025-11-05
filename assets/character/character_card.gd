@@ -16,10 +16,8 @@ var _initial_effects_applied: bool = false
 # 特殊效果管理（装备道具后获得的效果）
 var special_effects: Array[String] = []  # 例如: ["fast_fish", "water_breathing"]
 
-# 属性标签引用
-var hp_label: Label = null
-var atk_label: Label = null
-var defense_label: Label = null
+# 属性标签组件引用
+var attribute_labels: AttributeLabels = null
 
 # 背包相关
 var bag_instance: Panel = null  # 背包实例
@@ -28,14 +26,8 @@ var bag_button: Button = null  # 背包按钮
 
 func _ready() -> void:
 	super._ready()
-	# 自动获取标签引用
-	var stats_container = get_node_or_null("Control/ColorRect/StatsContainer")
-	if stats_container:
-		hp_label = stats_container.get_node_or_null("HPLabel")
-		var right_stats = stats_container.get_node_or_null("RightStats")
-		if right_stats:
-			atk_label = right_stats.get_node_or_null("ATKLabel")
-			defense_label = right_stats.get_node_or_null("DEFLabel")
+	# 自动获取属性标签组件引用
+	attribute_labels = get_node_or_null("Control/ColorRect/AttributeLabels")
 	update_stat_labels()
 	
 	# 获取背包按钮引用并连接信号
@@ -48,12 +40,8 @@ func _process(delta: float) -> void:
 
 # 更新属性标签显示（使用Label动态显示，值可以随时改变）
 func update_stat_labels() -> void:
-	if hp_label:
-		hp_label.text = "%d" % hp
-	if atk_label:
-		atk_label.text = "%d" % atk
-	if defense_label:
-		defense_label.text = "%d" % defense
+	if attribute_labels:
+		attribute_labels.update_labels(hp, atk, defense)
 
 # 设置角色属性
 func set_character_stats(char_hp: int, char_atk: int, char_defense: int, char_equipment: String = "") -> void:
@@ -89,11 +77,9 @@ func modify_defense(amount: int) -> void:
 		defense = 0
 	update_stat_labels()
 
-# 设置标签引用（手动设置）
-func set_stat_labels(hp_lbl: Label, atk_lbl: Label, def_lbl: Label) -> void:
-	hp_label = hp_lbl
-	atk_label = atk_lbl
-	defense_label = def_lbl
+# 设置属性标签组件引用（手动设置）
+func set_attribute_labels(labels: AttributeLabels) -> void:
+	attribute_labels = labels
 	update_stat_labels()
 
 # 设置背包按钮（从场景中获取）
