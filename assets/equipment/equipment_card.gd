@@ -11,6 +11,9 @@ enum EquipmentType { WEAPON, ARMOR, RELIC }
 @export var hp_bonus: int = 0  # 生命值加成
 @export var special_effect: String = ""  # 特殊效果描述
 
+# 装备时效果（从CSV的"装备时"列解析）
+var equip_effects: Dictionary = {}  # {"ATK": 100, "DEF": 5, "HP": -5, "special": "fast_fish"}
+
 # 装备标签引用
 var stats_label: Label = null
 var equipped_character: CharacterCard = null  # 装备在哪个角色上
@@ -18,6 +21,11 @@ var equipped_character: CharacterCard = null  # 装备在哪个角色上
 # 卡片数据
 var card_data: Dictionary = {}
 var card_name: String = ""
+
+# 信号：装备到角色时
+signal equipment_equipped(character: CharacterCard, equipment: EquipmentCard)
+# 信号：从角色卸下时
+signal equipment_unequipped(character: CharacterCard, equipment: EquipmentCard)
 
 func _ready() -> void:
 	super._ready()
@@ -145,14 +153,30 @@ func init_from_data(data: Dictionary) -> void:
 	card_data = data
 	card_name = data.get("名称", "未知")
 	
+	print("【装备卡片】init_from_data 被调用，数据: %s" % str(data.keys()))
+	
 	# 设置基础属性
 	value = int(data.get("value", 1))
 	is_relic = data.get("是否是遗物", "FALSE") == "TRUE"
 	
-	# 解析效果（如 "ATK+10" 或 "DEF+5"）
-	var effect_str = data.get("效果", "")
-	if effect_str != "":
-		parse_effect(effect_str)
+	# 解析装备时效果
+	if data.has("装备时"):
+		var equip_str = str(data["装备时"])
+		print("【装备卡片】找到'装备时'字段: '%s'" % equip_str)
+		if not equip_str.is_empty():
+			# 使用统一的装备效果解析（支持 ATK+10, DEF+5 等格式）
+			parse_equip_effects(equip_str)
+			# 同时更新旧的 bonus 字段（用于显示）
+			if equip_effects.has("ATK"):
+				atk_bonus = equip_effects["ATK"]
+			if equip_effects.has("DEF"):
+				def_bonus = equip_effects["DEF"]
+			if equip_effects.has("HP"):
+				hp_bonus = equip_effects["HP"]
+		else:
+			print("【装备卡片】警告：'装备时'字段为空")
+	else:
+		print("【装备卡片】警告：数据中没有'装备时'字段")
 	
 	# 设置装备类型
 	var type_str = data.get("类型", "")
@@ -220,3 +244,114 @@ func update_display() -> void:
 ## 获取卡片名称（用于合成系统）
 func get_card_name() -> String:
 	return card_name
+
+# ========== 装备效果系统 ==========
+
+# 解析装备时效果（从CSV的"装备时"列）
+# 格式: "ATK+100,DEF+5.一次性:HP-5" 或 "为角色添加fast_fish属性"
+func parse_equip_effects(effect_string: String) -> void:
+	if effect_string.is_empty():
+		return
+	
+	equip_effects.clear()
+	
+	# 检查是否是特殊效果（如 fast_fish）
+	if "fast_fish" in effect_string:
+		equip_effects["special"] = "fast_fish"
+		print("装备 %s 解析特殊效果: fast_fish" % name)
+		return
+	
+	# 解析属性修改效果
+	# 先移除"一次性:"前缀，然后分割
+	var cleaned = effect_string.replace("一次性:", "")
+	# 分割主要部分（用逗号和句号分隔）
+	var parts = cleaned.replace(".", ",").split(",")
+	
+	for part in parts:
+		part = part.strip_edges()
+		
+		if part.is_empty():
+			continue
+		
+		# 解析 ATK+100, DEF+5, HP-5 格式
+		if "ATK" in part:
+			var value_str = part.replace("ATK", "").strip_edges()
+			if value_str.is_valid_int():
+				equip_effects["ATK"] = int(value_str)
+		elif "DEF" in part:
+			var value_str = part.replace("DEF", "").strip_edges()
+			if value_str.is_valid_int():
+				equip_effects["DEF"] = int(value_str)
+		elif "HP" in part:
+			var value_str = part.replace("HP", "").strip_edges()
+			if value_str.is_valid_int():
+				equip_effects["HP"] = int(value_str)
+	
+	print("装备 %s 解析装备效果: %s" % [name, str(equip_effects)])
+
+# 应用装备效果到角色
+func apply_equip_effects(character: CharacterCard) -> void:
+	if character == null:
+		return
+	
+	print("装备 %s 装备到角色 %s" % [name, character.name])
+	print("  当前装备效果字典: %s" % str(equip_effects))
+	
+	# 应用属性修改
+	if equip_effects.has("ATK"):
+		character.modify_atk(equip_effects["ATK"])
+		print("  ATK %+d" % equip_effects["ATK"])
+	
+	if equip_effects.has("DEF"):
+		character.modify_defense(equip_effects["DEF"])
+		print("  DEF %+d" % equip_effects["DEF"])
+	
+	if equip_effects.has("HP"):
+		character.modify_hp(equip_effects["HP"])
+		print("  HP %+d" % equip_effects["HP"])
+	
+	# 应用特殊效果
+	if equip_effects.has("special"):
+		var special_effect_str = equip_effects["special"]
+		if character.has_method("add_special_effect"):
+			character.add_special_effect(special_effect_str)
+			print("  添加特殊效果: %s" % special_effect_str)
+	
+	# 更新装备角色引用
+	equipped_character = character
+	
+	# 发射装备信号
+	equipment_equipped.emit(character, self)
+
+# 移除装备效果
+func remove_equip_effects(character: CharacterCard) -> void:
+	if character == null:
+		return
+	
+	print("装备 %s 从角色 %s 卸下" % [name, character.name])
+	
+	# 移除属性修改（反向应用）
+	if equip_effects.has("ATK"):
+		character.modify_atk(-equip_effects["ATK"])
+		print("  ATK %+d" % (-equip_effects["ATK"]))
+	
+	if equip_effects.has("DEF"):
+		character.modify_defense(-equip_effects["DEF"])
+		print("  DEF %+d" % (-equip_effects["DEF"]))
+	
+	if equip_effects.has("HP"):
+		character.modify_hp(-equip_effects["HP"])
+		print("  HP %+d" % (-equip_effects["HP"]))
+	
+	# 移除特殊效果
+	if equip_effects.has("special"):
+		var special_effect_str = equip_effects["special"]
+		if character.has_method("remove_special_effect"):
+			character.remove_special_effect(special_effect_str)
+			print("  移除特殊效果: %s" % special_effect_str)
+	
+	# 清空装备角色引用
+	equipped_character = null
+	
+	# 发射卸下信号
+	equipment_unequipped.emit(character, self)

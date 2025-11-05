@@ -6,6 +6,7 @@ class_name BagPanel
 # 预加载类以支持类型检查
 const BaggableCardScript = preload("res://baggable_card.gd")
 const ItemCardScript = preload("res://assets/item道具/item_card.gd")
+const EquipmentCardScript = preload("res://assets/equipment/equipment_card.gd")
 
 # 信号：请求关闭背包
 signal close_requested
@@ -166,14 +167,14 @@ func place_card_at_slot(card: Control, slot_index: int) -> bool:
 	if card.has_method("on_put_in_bag"):
 		card.on_put_in_bag(slot)
 	
-	# 【装备系统】如果是道具卡片，应用装备效果
+	# 【装备系统】如果是道具卡片或装备卡片，应用装备效果
 	# 注意：初次加载背包时不应用效果（因为角色卡片初始化时已经应用过了）
 	if not is_initial_load:
-		if _is_item_card(card) and current_character_card != null:
-			print("【背包】检测到道具卡片 %s，准备应用装备效果" % card.name)
+		if (_is_item_card(card) or _is_equipment_card(card)) and current_character_card != null:
+			print("【背包】检测到装备/道具卡片 %s，准备应用装备效果" % card.name)
 			card.apply_equip_effects(current_character_card)
-		elif _is_item_card(card):
-			print("【背包】检测到道具卡片 %s，但角色卡片引用为空，无法应用效果" % card.name)
+		elif (_is_item_card(card) or _is_equipment_card(card)):
+			print("【背包】检测到装备/道具卡片 %s，但角色卡片引用为空，无法应用效果" % card.name)
 	
 	# 发射信号
 	card_placed.emit(card, slot_index)
@@ -203,9 +204,9 @@ func remove_card_from_slot(slot_index: int) -> Control:
 	# 获取对应的卡槽
 	var slot = get_slot_by_index(slot_index)
 	
-	# 【装备系统】如果是道具卡片，移除装备效果
-	if _is_item_card(card) and current_character_card != null:
-		print("【背包】检测到道具卡片 %s，准备移除装备效果" % card.name)
+	# 【装备系统】如果是道具卡片或装备卡片，移除装备效果
+	if (_is_item_card(card) or _is_equipment_card(card)) and current_character_card != null:
+		print("【背包】检测到装备/道具卡片 %s，准备移除装备效果" % card.name)
 		card.remove_equip_effects(current_character_card)
 	
 	# 调用卡片的从背包取出回调
@@ -251,6 +252,28 @@ func _is_item_card(card: Control) -> bool:
 	var base = script.get_base_script()
 	while base != null:
 		if base == ItemCardScript:
+			return true
+		base = base.get_base_script()
+	
+	return false
+
+## 检查卡片是否是装备卡片
+func _is_equipment_card(card: Control) -> bool:
+	if card == null:
+		return false
+	
+	var script = card.get_script()
+	if script == null:
+		return false
+	
+	# 直接检查脚本
+	if script == EquipmentCardScript:
+		return true
+	
+	# 检查继承链
+	var base = script.get_base_script()
+	while base != null:
+		if base == EquipmentCardScript:
 			return true
 		base = base.get_base_script()
 	

@@ -1,4 +1,4 @@
-﻿名称,类型,effect,索引值,合成配方,value,是否是遗物,picture_path
+﻿名称,类型,装备时,索引值,合成配方,value,是否是遗物,picture_path
 石板,防具,DEF+10,13,,5,FLASE,res://assets\equipment\armour防具\盾牌
 石块,武器,ATK+2,14,,6,FLASE,res://assets\equipment\weapon\锥
 骨头,武器,ATK+1,15,,7,FLASE,res://assets\equipment\weapon\锥

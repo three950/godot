@@ -25,8 +25,8 @@ func _on_button_button_down() -> void:
 		# 从槽位中清除引用（但不删除卡片）
 		bag_panel.cards[slot_index] = null
 		
-		# 【装备系统】移除装备效果（如果是道具卡片）
-		if bag_panel._is_item_card(self) and bag_panel.current_character_card != null:
+		# 【装备系统】移除装备效果（如果是道具卡片或装备卡片）
+		if (bag_panel._is_item_card(self) or bag_panel._is_equipment_card(self)) and bag_panel.current_character_card != null:
 			if has_method("remove_equip_effects"):
 				print("【卡片】从背包拖出 %s，移除装备效果" % name)
 				call("remove_equip_effects", bag_panel.current_character_card)

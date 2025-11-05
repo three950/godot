@@ -341,7 +341,7 @@ func load_equipment_data_from_csv() -> void:
 		var equipment_dict = {
 			"名称": line[0],
 			"类型": line[1] if line.size() > 1 else "",
-			"效果": line[2] if line.size() > 2 else "",
+			"装备时": line[2] if line.size() > 2 else "",
 			"索引值": line[3] if line.size() > 3 else "",
 			"合成配方": line[4] if line.size() > 4 else "",
 			"value": line[5] if line.size() > 5 else "0",
@@ -354,9 +354,10 @@ func load_equipment_data_from_csv() -> void:
 		equipment_database[equipment_dict["名称"]] = equipment_dict
 		loaded_count += 1
 		
-		print("  加载装备: %s (类型:%s 价值:%s)" % [
+		print("  加载装备: %s (类型:%s 装备时:%s 价值:%s)" % [
 			equipment_dict["名称"], 
-			equipment_dict["类型"], 
+			equipment_dict["类型"],
+			equipment_dict["装备时"], 
 			equipment_dict["value"]
 		])
 	

@@ -1,3 +1,13 @@
-名称,出现地点,特性,掉落物,,攻击模式,HP,ATK,DEF,
-毒针线虫 ,layer1,领地意识,蛛丝,毒液,"[{“单体””伤害”:6},{“单体”“施加效果”:吐蛛丝}]",30,6,3
-
+名称,类型,装备时,索引值,合成配方,value,是否是遗物,picture_path
+石板,防具,DEF+10,13,,5,FLASE,res://assets\equipment\armour防具\盾牌
+石块,武器,ATK+2,14,,6,FLASE,res://assets\equipment\weapon\锥
+骨头,武器,ATK+1,15,,7,FLASE,res://assets\equipment\weapon\锥
+探窟稿,武器,ATK+5,16,化石树的树枝*石块,8,FLASE,res://assets\equipment\weapon\锥
+骨弓,武器,ATK+9,17,骨头*骨头*蛛丝,90,FLASE,res://assets\equipment\weapon\锥
+祈愿者的盖子,防具,DEF+5,18,,10,FLASE,res://assets\equipment\armour防具\盾牌
+化石树的树枝,武器,ATK+3,20,,1,FLASE,res://assets\equipment\weapon\锥
+“无尽锤”,武器,ATK+30,21,双手稿*无尽火药,150,TRUE,res://assets\equipment\weapon\锥
+太阳稿,武器,ATK+8,22,探窟稿*四级太阳石,100,FLASE,res://assets\equipment\weapon\锥
+双手稿,武器,ATK+10,23,探窟稿*化石树的树枝*五级太阳石,200,FLASE,res://assets\equipment\weapon\锥
+石斧,武器,ATK+12,24,化石树的树枝*石板,60,FLASE,res://assets\equipment\weapon\锥
+鳞石伞,防具,DEF+15,25,,120,TRUE,res://assets\equipment\armour防具\盾牌
