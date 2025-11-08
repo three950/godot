@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://bkflydah8kasa"]
+[gd_scene load_steps=4 format=3 uid="uid://bkflydah8kasa"]
 
-[ext_resource type="Script" uid="uid://64jap16yehx" path="res://bag.gd" id="1_bag"]
-[ext_resource type="Script" uid="uid://cw80ymunf8dnw" path="res://bag_slot.gd" id="2_slot"]
+[ext_resource type="Script" uid="uid://47jqjxp2hu76" path="res://bag.gd" id="1_bag"]
+[ext_resource type="Script" uid="uid://b6qdcc1812p6c" path="res://bag_slot.gd" id="2_slot"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_76wf2"]
+size = Vector2(186, 126)
 
 [node name="BagPanel" type="Panel"]
 offset_right = 188.0
@@ -179,3 +182,9 @@ offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.2, 0.2, 0.2, 0.5)
+
+[node name="BagAreaDetector" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BagAreaDetector"]
+position = Vector2(93, 65)
+shape = SubResource("RectangleShape2D_76wf2")

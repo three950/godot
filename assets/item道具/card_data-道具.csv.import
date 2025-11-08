@@ -3,11 +3,13 @@
 importer="csv_translation"
 type="Translation"
 uid="uid://bmq1lbcvx74kt"
-valid=false
 
 [deps]
 
+files=["res://assets/item道具/card_data-道具.描述文本.translation", "res://assets/item道具/card_data-道具.使用次数限制.translation", "res://assets/item道具/card_data-道具.是否是遗物.translation", "res://assets/item道具/card_data-道具.VALUE.translation", "res://assets/item道具/card_data-道具.picture.translation", "res://assets/item道具/card_data-道具.装备时.translation", "res://assets/item道具/card_data-道具.战斗中使用.translation", "res://assets/item道具/card_data-道具.使用效果.translation", "res://assets/item道具/card_data-道具.使用对象.translation"]
+
 source_file="res://assets/item道具/card_data-道具.csv"
+dest_files=["res://assets/item道具/card_data-道具.描述文本.translation", "res://assets/item道具/card_data-道具.使用次数限制.translation", "res://assets/item道具/card_data-道具.是否是遗物.translation", "res://assets/item道具/card_data-道具.VALUE.translation", "res://assets/item道具/card_data-道具.picture.translation", "res://assets/item道具/card_data-道具.装备时.translation", "res://assets/item道具/card_data-道具.战斗中使用.translation", "res://assets/item道具/card_data-道具.使用效果.translation", "res://assets/item道具/card_data-道具.使用对象.translation"]
 
 [params]
 

@@ -24,3 +24,23 @@ card_manager.shoot_card(item_name, start_pos, end_pos)  # 指定落点
 卡片自动堆叠问题修复：
 核心问题：CardManager 的 _create_card_by_name 方法只支持创建遗物、场景和角色卡片，缺少装备和资源卡片的创建逻辑，导致探索系统调用 shoot_card 时无法创建装备/资源卡片。
 解决方案：在 CardManager 中添加了 equipment_card_scene 和 resource_card_scene 两个导出变量，并在 _create_card_by_name 方法中添加了装备和资源类型的处理分支。
+
+查找最近的可堆叠卡片不需要查找，但是检测合成需要检测所有卡片。
+使用area2d重构卡片堆叠检测和附件自动堆叠机制。
+sort+哈希表重构合成系统。先排序，木头，木头，石头。
+## 最佳实践：简洁高效的迭代版本。线性堆叠：单链表 + 数组
+func collect_cards(root_card: Control) -> Array:
+	var result: Array = []
+	var queue: Array = [root_card]
+	
+	while not queue.is_empty():
+		var card = queue.pop_front()
+		result.append(card)
+		
+		if "stacked_cards" in card:
+			var stacked = card.stacked_cards
+			if stacked != null:
+				for child in stacked:
+					queue.append(child)
+	
+	return result
