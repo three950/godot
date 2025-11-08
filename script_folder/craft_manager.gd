@@ -3,8 +3,12 @@ extends Node
 ## 合成管理器
 ## 负责处理卡片合成逻辑，类似《堆叠大陆》的合成系统
 
-# 合成配方字典 - key: 产物名称, value: {materials: {材料名: 数量}, total_count: 总材料数}
-var craft_recipes: Dictionary = {}
+# 合成配方字典 - key: 排序后的材料组合字符串, value: 产物名称
+# 例如: "化石树的树枝*1*石块*1" -> "探窟稿"
+var craft_recipes_by_materials: Dictionary = {}
+
+# 配方详细信息 - key: 产物名称, value: {materials: {材料名: 数量}, total_count: 总材料数}
+var craft_recipes_info: Dictionary = {}
 
 func _ready() -> void:
 	print("CraftManager 初始化...")
@@ -18,26 +22,55 @@ func _ready() -> void:
 
 ## 构建所有合成配方
 func build_craft_recipes() -> void:
-	craft_recipes.clear()
+	craft_recipes_by_materials.clear()
+	craft_recipes_info.clear()
 	
 	# 从资源数据库构建配方
 	for resource_name in GameData.resource_database.keys():
 		var resource_data = GameData.resource_database[resource_name]
 		if resource_data.has("合成配方") and resource_data["合成配方"] != "":
 			var recipe = parse_recipe(resource_data["合成配方"])
-			if recipe != null:
-				craft_recipes[resource_name] = recipe
+			if recipe != null and recipe.size() > 0:
+				_register_recipe(resource_name, recipe)
 	
 	# 从装备数据库构建配方
 	for equipment_name in GameData.equipment_database.keys():
 		var equipment_data = GameData.equipment_database[equipment_name]
 		if equipment_data.has("合成配方") and equipment_data["合成配方"] != "":
 			var recipe = parse_recipe(equipment_data["合成配方"])
-			if recipe != null:
-				craft_recipes[equipment_name] = recipe
+			if recipe != null and recipe.size() > 0:
+				_register_recipe(equipment_name, recipe)
 	
-	print("合成配方加载完成，共 %d 个配方" % craft_recipes.size())
+	print("合成配方加载完成，共 %d 个配方" % craft_recipes_by_materials.size())
 	print_all_recipes()
+
+## 注册一个配方到哈希表
+func _register_recipe(product_name: String, recipe: Dictionary) -> void:
+	# 保存配方详细信息
+	craft_recipes_info[product_name] = recipe
+	
+	# 生成排序后的材料key
+	var materials_key = _generate_materials_key(recipe["materials"])
+	
+	# 注册到哈希表
+	craft_recipes_by_materials[materials_key] = product_name
+	
+	print("  注册配方: %s -> %s" % [materials_key, product_name])
+
+## 根据材料字典生成排序后的key
+## materials: {材料名: 数量}
+## 返回: "材料名1*数量*材料名2*数量*..." (按材料名排序)
+func _generate_materials_key(materials: Dictionary) -> String:
+	# 获取所有材料名并排序
+	var material_names = materials.keys()
+	material_names.sort()
+	
+	# 构建key字符串
+	var key_parts: Array = []
+	for material_name in material_names:
+		key_parts.append("%s*%d" % [material_name, materials[material_name]])
+	
+	return "*".join(key_parts)
 
 ## 解析合成配方字符串
 ## 格式: "材料1*材料2*材料3" 或 "材料1*材料2数量*材料3"
@@ -112,32 +145,17 @@ func check_craft(card_list: Array) -> String:
 	
 	print("  统计结果: %s" % str(card_counts))
 	
-	# 遍历所有配方，检查是否匹配
-	for product_name in craft_recipes.keys():
-		var recipe = craft_recipes[product_name]
-		
-		# 检查1: 卡片总数必须等于配方要求的总数
-		if card_list.size() != recipe["total_count"]:
-			continue
-		
-		# 检查2: 每种材料的数量必须完全匹配
-		var materials = recipe["materials"]
-		if materials.size() != card_counts.size():
-			continue  # 材料种类数不匹配
-		
-		var is_match = true
-		for material_name in materials.keys():
-			if not card_counts.has(material_name):
-				is_match = false
-				break
-			if card_counts[material_name] != materials[material_name]:
-				is_match = false
-				break
-		
-		if is_match:
-			# 找到匹配的配方
-			return product_name
+	# 生成排序后的材料key
+	var materials_key = _generate_materials_key(card_counts)
+	print("  生成材料key: %s" % materials_key)
 	
+	# 直接从哈希表查找配方（O(1)复杂度）
+	if craft_recipes_by_materials.has(materials_key):
+		var product_name = craft_recipes_by_materials[materials_key]
+		print("  找到匹配配方: %s" % product_name)
+		return product_name
+	
+	print("  没有找到匹配的配方")
 	return ""  # 没有找到匹配的配方
 
 ## 执行合成
@@ -225,23 +243,36 @@ func create_card(card_name: String, position: Vector2) -> Node:
 ## 打印所有配方（调试用）
 func print_all_recipes() -> void:
 	print("========== 合成配方列表 ==========")
-	for product_name in craft_recipes.keys():
-		var recipe = craft_recipes[product_name]
+	for materials_key in craft_recipes_by_materials.keys():
+		var product_name = craft_recipes_by_materials[materials_key]
+		var recipe = craft_recipes_info[product_name]
 		var materials = recipe["materials"]
 		var material_str = ""
-		for material_name in materials.keys():
+		
+		# 按字母顺序排序材料名
+		var sorted_material_names = materials.keys()
+		sorted_material_names.sort()
+		
+		for material_name in sorted_material_names:
 			if material_str != "":
 				material_str += " + "
 			material_str += "%s×%d" % [material_name, materials[material_name]]
-		print("  %s = %s (共%d张)" % [product_name, material_str, recipe["total_count"]])
+		print("  %s = %s (共%d张) [key: %s]" % [product_name, material_str, recipe["total_count"], materials_key])
 	print("================================")
 
 ## 获取指定产物的配方信息
 func get_recipe(product_name: String) -> Dictionary:
-	if craft_recipes.has(product_name):
-		return craft_recipes[product_name]
+	if craft_recipes_info.has(product_name):
+		return craft_recipes_info[product_name]
 	return {}
 
-## 获取所有配方
+## 获取所有配方（返回配方详细信息）
 func get_all_recipes() -> Dictionary:
-	return craft_recipes
+	return craft_recipes_info
+
+## 根据材料组合查找产物
+func find_product_by_materials(materials: Dictionary) -> String:
+	var materials_key = _generate_materials_key(materials)
+	if craft_recipes_by_materials.has(materials_key):
+		return craft_recipes_by_materials[materials_key]
+	return ""
