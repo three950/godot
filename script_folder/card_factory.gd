@@ -90,4 +90,3 @@ func _load_texture_with_extensions(base_path: String) -> Texture2D:
 			return texture
 	
 	return null
-

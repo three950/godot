@@ -15,7 +15,7 @@ var target_container: Node = null
 func _ready() -> void:
 	# 预加载卡片场景
 	remains_card_scene = load("res://assets/remains/remains_card.tscn")
-	scene_card_scene = load("res://assets/terrain小地形/terrain_card.tscn")
+	scene_card_scene = load("res://assets/terrain小地形/scene_card.tscn")
 	character_card_scene = load("res://assets/character/character_card.tscn")
 	dialogue_card_scene = load("res://dialogue/dialogue_card.tscn")
 
@@ -268,6 +268,3 @@ func _play_shoot_animation(card: Control, end_pos: Vector2) -> void:
 	tween3.tween_property(card, "scale", Vector2.ONE, 0.1)
 	
 	await tween3.finished
-
-
-

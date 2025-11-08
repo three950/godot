@@ -12,7 +12,6 @@ enum cardType{normal, selling, architecture}  # 卡片类型
 @export var cardCurrentState = cardState.fixed
 @export var card_type: cardType = cardType.normal  # 默认为普通类型
 @export var follow_target: Label
-@export var snap_distance: float = 60.0  # 吸附检测的最大距离
 @export var stack_offset: Vector2 = Vector2(0, 15)  # 堆叠时的视觉偏移（Y轴留出label高度）
 @export var can_accept_stack: bool = true  # 是否允许其他卡片堆叠在上面
 @export var accept_value_only: bool = false  # 若为真，仅接受带有 value 属性的卡片
@@ -23,10 +22,19 @@ var parent_card: Control = null  # 如果这张卡片堆叠在其他卡片上，
 var original_position: Vector2 = Vector2.ZERO  # 开始拖拽时的原始位置
 var drag_offset_in_stack: Vector2 = Vector2.ZERO  # 在堆叠中的偏移量
 
+# Area2D 重叠检测
+var overlapping_cards: Array[Control] = []  # 当前与此卡片 Area2D 重叠的其他卡片
+
 const DRAG_TEMP_Z := 100
 
 func _ready() -> void:
 	original_position = position
+	
+	# 连接 Area2D 信号
+	var area2d = get_node_or_null("Area2D")
+	if area2d:
+		area2d.area_entered.connect(_on_area_entered)
+		area2d.area_exited.connect(_on_area_exited)
 
 func _process(_delta: float) -> void:
 	match cardCurrentState:
@@ -81,14 +89,33 @@ func _on_button_button_up() -> void:
 		# 发射卡片固定信号
 		card_fixed.emit()
 
-# 查找最近的可堆叠卡片
-func find_closest_card() -> Control:
-	var cards = get_tree().get_nodes_in_group("Cards")
-	var closest_card: Control = null
-	var snap_distance_sq: float = snap_distance * snap_distance
-	var closest_distance_sq: float = snap_distance_sq
+# Area2D 信号处理：当有 Area 进入时
+func _on_area_entered(area: Area2D) -> void:
+	# 获取 Area2D 所属的卡片节点
+	var other_card = area.get_parent()
 	
-	for card in cards:
+	# 确保是有效的卡片节点且不是自己
+	if other_card and other_card != self and other_card.is_in_group("Cards"):
+		if other_card not in overlapping_cards:
+			overlapping_cards.append(other_card)
+			print("【Area2D】卡片 %s 进入重叠区域，当前重叠数: %d" % [other_card.name, overlapping_cards.size()])
+
+# Area2D 信号处理：当有 Area 离开时
+func _on_area_exited(area: Area2D) -> void:
+	# 获取 Area2D 所属的卡片节点
+	var other_card = area.get_parent()
+	
+	if other_card and other_card in overlapping_cards:
+		overlapping_cards.erase(other_card)
+		print("【Area2D】卡片 %s 离开重叠区域，当前重叠数: %d" % [other_card.name, overlapping_cards.size()])
+
+# 查找最近的可堆叠卡片（从重叠的卡片中查找）
+func find_closest_card() -> Control:
+	# 只从当前重叠的卡片中查找
+	var closest_card: Control = null
+	var closest_distance_sq: float = INF
+	
+	for card in overlapping_cards:
 		if card == self or card == parent_card:
 			continue
 		
@@ -111,6 +138,7 @@ func find_closest_card() -> Control:
 			if not ("value" in self):
 				continue
 		
+		# 从重叠的卡片中找最近的一个
 		var dist_sq = global_position.distance_squared_to(card.global_position)
 		if dist_sq < closest_distance_sq:
 			closest_distance_sq = dist_sq
