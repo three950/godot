@@ -192,6 +192,18 @@ func move_to_main_scene() -> void:
 	
 	print("卡片 %s 已从 %s 移动到 %s" % [name, old_parent.name, target_parent.name])
 
+# 从商店管理器的追踪数组中移除
+func remove_from_shop_tracking() -> void:
+	var shop_manager = get_tree().get_first_node_in_group("ShopManager")
+	if shop_manager == null:
+		var root = get_tree().root
+		shop_manager = root.find_child("ShopManager", true, false)
+	
+	if shop_manager and "shop_selling_cards" in shop_manager:
+		if self in shop_manager.shop_selling_cards:
+			shop_manager.shop_selling_cards.erase(self)
+			print("【商店】卡片 %s 已从商店追踪中移除" % name)
+
 # 处理商店卡片的按钮释放逻辑（selling 类型）
 func handle_shop_card_release() -> bool:
 	# 只有 selling 类型才需要特殊处理
@@ -204,10 +216,10 @@ func handle_shop_card_release() -> bool:
 			# 购买成功，转为 normal 类型
 			card_type = cardType.normal
 			
-			# 从 slot 节点移除，添加到主场景中
-			move_to_main_scene()
+			# 从商店管理器的追踪数组中移除（已经在主场景中，无需移动）
+			remove_from_shop_tracking()
 			
-			print("卡片 %s 购买成功，转为 normal 类型，继续执行 normal 卡片的释放逻辑" % name)
+			print("卡片 %s 购买成功，转为 normal 类型，继续检测堆叠" % name)
 			
 			# 购买成功后，继续执行 normal 卡片的释放逻辑
 			# 不直接设为 fixed，而是让卡片继续寻找堆叠和背包卡槽
