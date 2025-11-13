@@ -114,4 +114,3 @@ func set_item_stats(item_value: int, eff_type: String, power: int, consumable: b
 	effect_power = power
 	is_consumable = consumable
 	update_effect_label()
-

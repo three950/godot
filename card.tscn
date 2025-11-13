@@ -16,18 +16,14 @@ anchors_preset = 0
 offset_right = 88.0
 offset_bottom = 115.0
 script = ExtResource("1_q5obu")
-cardCurrentState = null
-card_type = null
-follow_target = NodePath("ColorRect/Label")
-stack_offset = null
-can_accept_stack = null
-accept_value_only = null
+follow_target = null
 metadata/_edit_lock_ = true
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 0
 offset_right = 88.0
 offset_bottom = 114.0
+mouse_filter = 2
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 0
@@ -35,6 +31,7 @@ offset_left = 3.0
 offset_top = 3.0
 offset_right = 85.0
 offset_bottom = 112.0
+mouse_filter = 2
 
 [node name="Label" type="Label" parent="ColorRect"]
 layout_mode = 0
@@ -50,6 +47,7 @@ layout_mode = 0
 offset_top = 13.0
 offset_right = 82.0
 offset_bottom = 85.0
+mouse_filter = 2
 texture = ExtResource("2_e484p")
 expand_mode = 1
 
@@ -57,6 +55,7 @@ expand_mode = 1
 anchors_preset = 0
 offset_right = 88.0
 offset_bottom = 115.0
+mouse_filter = 2
 
 [node name="CardLabel" type="Area2D" parent="Control"]
 position = Vector2(3, 3)

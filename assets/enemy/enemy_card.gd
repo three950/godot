@@ -105,4 +105,3 @@ func update_display() -> void:
 ## 获取卡片名称（用于合成系统等）
 func get_card_name() -> String:
 	return card_name
-
