@@ -66,9 +66,9 @@ func _process(_delta: float) -> void:
 			if closest_card_falling != null:
 					print("卡片 %s 找到最近的卡片 %s 进行堆叠" % [name, closest_card_falling.name])
 					stack_on_card(closest_card_falling)
-			if cardStackState & STACK_STATE_BESTACKED:
+			if cardStackState & STACK_STATE_STACKING:
 				print("卡片 %s 已堆叠到最顶部" % name)
-				cardCurrentState = follow_target.cardCurrentState
+				cardCurrentState = follow_target.cardCurrentState##这个地方没有切换到其他状态的代码，导致卡片每帧都会检测堆叠，并没有一个让他跟随目标的状态切换
 			else:
 				card_fixed.emit()
 				print("卡片 %s 已固定" % name)
