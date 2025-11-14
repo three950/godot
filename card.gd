@@ -204,59 +204,16 @@ func stack_on_card(target_card: Control) -> void:
 	# 设置层级
 	z_index = target_card.z_index + 1
 	print("卡片 %s 堆叠完成，层级设置为 %d" % [name, z_index])
-# 将卡片移动到父节点的子节点列表末尾（确保渲染在顶层）
-func move_to_parent_end() -> void:
-	var parent_node = get_parent()
-	if parent_node == null:
-		return
-	
-	var last_index = parent_node.get_child_count() - 1
-	var current_index = get_index()
-	if current_index < last_index:
-		parent_node.move_child(self, last_index)
-
-# 将当前卡片移动到目标卡片后面（子节点列表末尾）
+# 将当前卡片移动到目标卡片后面（目标卡片总是在队列末尾）
 func move_after_card(target_card: Control) -> void:
 	var parent_node = get_parent()
 	if parent_node == null:
 		return
 
-	# 找到目标卡片及其所有堆叠子卡片中最后一张的位置
-	var stack_end = find_stack_end(target_card)
-	var last_index = stack_end.get_index()
-	var current_index = get_index()
-	
-	# 如果当前卡片在目标卡片堆叠链之前或之间，移动到堆叠链最后一张卡片后面
-	if current_index <= last_index:
-		parent_node.move_child(self, last_index + 1)
-		print("卡片 %s 移动到卡片 %s 的堆叠链后面（索引 %d）" % [name, target_card.name, last_index + 1])
-	else:
-		# 若已在堆叠链之后，仍确保位于父节点末尾，维持视觉顺序
-		move_to_parent_end()
-
-# 查找堆叠链的最后一张卡片（查找所有 follow_target 指向指定卡片的卡片链）
-func find_stack_end(card: Control) -> Control:
-	var parent_node = card.get_parent()
-	if parent_node == null:
-		return card
-	
-	var card_index = card.get_index()
-	var last_card = card
-	
-	# 遍历父节点的子节点，找到所有 follow_target 指向当前卡片或其堆叠链的卡片
-	for i in range(card_index + 1, parent_node.get_child_count()):
-		var child = parent_node.get_child(i)
-		# 检查子节点是否是卡片类型，并且 follow_target 指向当前卡片或堆叠链中的卡片
-		if child is Card or ("follow_target" in child):
-			var child_follow_target = child.get("follow_target") if "follow_target" in child else null
-			# 如果子卡片的 follow_target 指向当前卡片或堆叠链中的任何卡片
-			if child_follow_target == card or child_follow_target == last_card:
-				last_card = child
-			else:
-				# 如果遇到不相关的卡片，停止查找
-				break
-	
-	return last_card
+	# 目标卡片总是在队列末尾，直接移动到目标卡片后面
+	var target_index = target_card.get_index()
+	parent_node.move_child(self, target_index + 1)
+	print("卡片 %s 移动到卡片 %s 后面（索引 %d）" % [name, target_card.name, target_index + 1])
 
 # 获取当前卡片之上的所有跟随堆叠卡片（按堆叠顺序）
 func get_stack_followers(card: Card) -> Array[Card]:
