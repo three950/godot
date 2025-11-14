@@ -80,14 +80,5 @@ offset_right = 88.0
 offset_bottom = 115.0
 theme_override_fonts/font = ExtResource("2_q5obu")
 
-[node name="LabelButton" type="Button" parent="."]
-self_modulate = Color(1, 1, 1, 0)
-layout_mode = 0
-offset_right = 88.0
-offset_bottom = 16.0
-theme_override_fonts/font = ExtResource("2_q5obu")
-
 [connection signal="button_down" from="CardButton" to="." method="_on_cardbutton_button_down"]
 [connection signal="button_up" from="CardButton" to="." method="_on_cardbutton_button_up"]
-[connection signal="button_down" from="LabelButton" to="." method="_on_cardbutton_button_down"]
-[connection signal="button_up" from="LabelButton" to="." method="_on_cardbutton_button_up"]

@@ -44,20 +44,17 @@ func _process(_delta: float) -> void:
 			if follow_target == null:#第一张卡，跟随鼠标移动
 				global_position = get_global_mouse_position() - drag_offset
 			z_index = DRAG_TEMP_Z
-			# 确保拖拽的卡片在父节点的子节点列表末尾（渲染在顶层）
-			move_to_parent_end()
 
 		cardState.pickingup:
 			# 计算鼠标相对于卡片的偏移量，保持拖拽时的相对位置不变
 			drag_offset = get_global_mouse_position() - global_position
 			if cardStackState & STACK_STATE_STACKING and follow_target != null:#被拿起时，断开与前一张卡的连接
 				print("卡片 %s 断开与目标 %s 的连接" % [name, follow_target.name])
-				follow_target.cardStackState = 0
+				follow_target.cardStackState &= ~STACK_STATE_BESTACKED
 				follow_target = null
 				cardStackState = 0
 			cardCurrentState = cardState.dragging
-			# 确保拾取的卡片在父节点的子节点列表末尾（渲染在顶层）
-			move_to_parent_end()
+
 		cardState.falling:##先根据当前所属位置，变换场景父节点
 			print("卡片 %s 处于下落状态" % name)
 			z_index = 0
@@ -84,10 +81,6 @@ func _process(_delta: float) -> void:
 					var label_size = label_node.size
 					global_position = Vector2(follow_target.global_position.x, label_pos.y + label_size.y)
 					z_index = follow_target.z_index + 1
-	
-
-
-
 func _on_cardbutton_button_down() -> void:
 	# architecture 类型不能拖拽
 	if card_type == cardType.architecture:
@@ -183,7 +176,7 @@ func stack_on_card(target_card: Control) -> void:
 		global_position = saved_global_pos
 		print("卡片 %s 移动到与 %s 相同的父节点" % [name, target_card.name])
 	
-	# 将当前卡片移动到目标卡片后面（子节点列表末尾）
+	# 堆叠时需确保当前卡片紧跟在目标卡片堆叠链之后
 	move_after_card(target_card)
 	
 	# 设置初始位置：跟随目标卡片的Label节点正下方
@@ -197,33 +190,23 @@ func stack_on_card(target_card: Control) -> void:
 	# 设置层级
 	z_index = target_card.z_index + 1
 	print("卡片 %s 堆叠完成，层级设置为 %d" % [name, z_index])
-
 # 将卡片移动到父节点的子节点列表末尾（确保渲染在顶层）
 func move_to_parent_end() -> void:
 	var parent_node = get_parent()
 	if parent_node == null:
 		return
 	
-	# 获取父节点的最后一个子节点的索引
 	var last_index = parent_node.get_child_count() - 1
 	var current_index = get_index()
-	
-	# 如果当前不是最后一个，则移动到末尾
 	if current_index < last_index:
 		parent_node.move_child(self, last_index)
-		# 只在调试时打印，避免每帧都打印
-		# print("卡片 %s 移动到父节点子节点列表末尾" % name)
 
 # 将当前卡片移动到目标卡片后面（子节点列表末尾）
 func move_after_card(target_card: Control) -> void:
 	var parent_node = get_parent()
 	if parent_node == null:
 		return
-	
-	# 如果目标卡片和当前卡片不在同一个父节点下，先确保它们在同一个父节点
-	if target_card.get_parent() != parent_node:
-		return
-	
+
 	# 找到目标卡片及其所有堆叠子卡片中最后一张的位置
 	var stack_end = find_stack_end(target_card)
 	var last_index = stack_end.get_index()
@@ -234,7 +217,7 @@ func move_after_card(target_card: Control) -> void:
 		parent_node.move_child(self, last_index + 1)
 		print("卡片 %s 移动到卡片 %s 的堆叠链后面（索引 %d）" % [name, target_card.name, last_index + 1])
 	else:
-		# 如果已经在后面，确保在最后
+		# 若已在堆叠链之后，仍确保位于父节点末尾，维持视觉顺序
 		move_to_parent_end()
 
 # 查找堆叠链的最后一张卡片（查找所有 follow_target 指向指定卡片的卡片链）
