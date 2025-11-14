@@ -6,6 +6,10 @@ signal card_fixed()
 signal card_label_entered_stack_area(entering_card: Control)
 # 信号：当一个卡片的CardLabel离开此卡片的CardStackDetectorArea时触发
 signal card_label_exited_stack_area(exiting_card: Control)
+# 信号：当此卡片作为堆叠领头（有跟随者）时位置或层级变化
+signal position_change_start(stacking_card: Control)
+# 信号：当此卡片作为堆叠领头（有跟随者）时位置或层级变化结束
+signal position_change_end(stacking_card: Control)
 
 enum cardState{fixed, pickingup, dragging, falling,instack}
 var CAN_STACK_ON: bool = false
@@ -50,6 +54,8 @@ func _process(_delta: float) -> void:
 				follow_target = null
 				cardStackState = 0
 			cardCurrentState = cardState.dragging
+			if cardStackState & STACK_STATE_BESTACKED:
+				position_change_start.emit()
 
 		cardState.falling:##先根据当前所属位置，变换场景父节点
 			print("卡片 %s 处于下落状态" % name)
@@ -65,9 +71,9 @@ func _process(_delta: float) -> void:
 			else:
 				card_fixed.emit()
 				print("卡片 %s 已固定" % name)
-				cardCurrentState = cardState.fixed##		
-		cardState.fixed:
-			pass
+				cardCurrentState = cardState.fixed
+			if cardStackState & STACK_STATE_BESTACKED:
+				position_change_end.emit()		
 		cardState.instack:
 			# 当卡片处于stacking状态且有follow_target时，卡片的cardState完全按照follow_target来
 			if cardStackState & STACK_STATE_STACKING and follow_target != null:
