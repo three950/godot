@@ -1,10 +1,10 @@
 [gd_scene load_steps=3 format=3 uid="uid://bgelpw48a6s82"]
 
-[ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="1_base"]
-[ext_resource type="Script" uid="uid://bhmyggn7sc5wt" path="res://assets/固定场景建筑/探窟者协会/building_card.gd" id="2_building"]
+[ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="1_3q2x2"]
+[ext_resource type="Script" uid="uid://bhmyggn7sc5wt" path="res://assets/固定场景建筑/探窟者协会/building_card.gd" id="2_224m6"]
 
-[node name="BuildingCard" instance=ExtResource("1_base")]
-script = ExtResource("2_building")
+[node name="BuildingCard" instance=ExtResource("1_3q2x2")]
+script = ExtResource("2_224m6")
 card_type = 2
 follow_target = NodePath("Control/ColorRect/Label")
 
