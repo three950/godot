@@ -27,3 +27,7 @@ CardShooter="*res://script_folder/card_shooter.gd"
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/vsync/vsync_mode=0
+
+[layer_names]
+
+2d_physics/layer_1="StackDetectorArea"

@@ -1,70 +1,28 @@
-[gd_scene load_steps=4 format=3 uid="uid://resource_card_template"]
+[gd_scene load_steps=3 format=3 uid="uid://resource_card_template"]
 
-[ext_resource type="Script" path="res://assets/resources/resource_card.gd" id="1_resource"]
-[ext_resource type="Texture2D" uid="uid://bsbqnbq8u2rvd" path="res://assets/resources/fish.jpg" id="2_texture"]
-[ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="3_font"]
+[ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://card.tscn" id="1_base"]
+[ext_resource type="Script" path="res://assets/resources/resource_card.gd" id="2_resource"]
 
-[node name="ResourceCard" type="Control" node_paths=PackedStringArray("follow_target") groups=["Cards"]]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 88.0
-offset_bottom = 115.0
-script = ExtResource("1_resource")
+[node name="ResourceCard" instance=ExtResource("1_base")]
+script = ExtResource("2_resource")
 follow_target = NodePath("Control/ColorRect/Label")
 
-[node name="Control" type="Control" parent="."]
-anchors_preset = 0
-offset_right = 88.0
-offset_bottom = 115.0
-
-[node name="Panel" type="Panel" parent="Control"]
-layout_mode = 0
-offset_right = 88.0
-offset_bottom = 115.0
-
-[node name="ColorRect" type="ColorRect" parent="Control"]
-layout_mode = 0
-offset_left = 3.0
-offset_top = 3.0
-offset_right = 85.0
-offset_bottom = 112.0
+[node name="ColorRect" parent="Control" index="1"]
 color = Color(0.8, 0.9, 0.7, 1)
 
-[node name="TextureRect" type="TextureRect" parent="Control/ColorRect"]
-layout_mode = 0
+[node name="TextureRect" parent="Control/ColorRect" index="0"]
 offset_top = 14.0
-offset_right = 82.0
 offset_bottom = 95.0
-texture = ExtResource("2_texture")
-expand_mode = 1
 
-[node name="Label" type="Label" parent="Control/ColorRect"]
-layout_mode = 0
-offset_right = 82.0
-offset_bottom = 14.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 10
+[node name="Label" parent="Control/ColorRect" index="1"]
 text = "资源"
 
-[node name="ValueLabel" type="Label" parent="Control/ColorRect"]
+[node name="ValueLabel" type="Label" parent="Control/ColorRect" index="2"]
 layout_mode = 0
 offset_top = 95.0
 offset_right = 82.0
 offset_bottom = 109.0
 theme_override_colors/font_color = Color(0.8, 0.6, 0.2, 1)
-theme_override_fonts/font = ExtResource("3_font")
 theme_override_font_sizes/font_size = 9
 text = "价值: 1"
 horizontal_alignment = 1
-
-[node name="Button" type="Button" parent="."]
-self_modulate = Color(1, 1, 1, 0)
-layout_mode = 0
-offset_right = 88.0
-offset_bottom = 115.0
-theme_override_fonts/font = ExtResource("3_font")
-
-[connection signal="button_down" from="Button" to="." method="_on_button_button_down"]
-[connection signal="button_up" from="Button" to="." method="_on_button_button_up"]
-

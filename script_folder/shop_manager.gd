@@ -21,6 +21,9 @@ var coins: int = 0
 # 探窟者协会卡片引用
 var association_card: Control = null
 
+# 当前商店中的 selling 类型卡片引用
+var shop_selling_cards: Array[Control] = []
+
 func _ready() -> void:
 	if slot_container == null:
 		push_error("slot_container 未设置！")
@@ -52,6 +55,9 @@ func generate_shop() -> void:
 		var slot = create_slot(i)
 		slots.append(slot)
 		slot_container.add_child(slot)
+	
+	# 等待一帧，让布局系统计算 slot 的正确位置
+	await get_tree().process_frame
 	
 	# 第一个卡槽：固定的建筑卡片（architecture 类型）
 	create_architecture_card(slots[0], "探窟家协会", "res://assets/neutral_buildings/Association_of_Grotters.png")
@@ -99,22 +105,17 @@ func _on_refresh_button_pressed() -> void:
 
 # 刷新商店中的 selling 类型卡片
 func refresh_selling_cards() -> void:
-	# 遍历所有卡槽，找到并立即删除 selling 类型的卡片
-	for slot in slots:
-		# 获取卡槽中的所有子节点（复制数组以避免修改时出错）
-		var children = slot.get_children().duplicate()
-		for child in children:
-			# 跳过Panel和ColorRect（卡槽的视觉效果）
-			if child is Panel or child is ColorRect:
-				continue
-			
-			# 检查是否是 selling 类型的卡片
-			if "card_type" in child and child.card_type == 1:  # cardType.selling
-				print("  删除 selling 卡片: " + child.name)
-				slot.remove_child(child)  # 立即从父节点移除
-				child.queue_free()  # 然后释放内存
+	# 删除所有追踪的 selling 类型卡片（只删除未被购买的）
+	for card in shop_selling_cards:
+		if is_instance_valid(card) and "card_type" in card and card.card_type == 1:
+			print("  删除 selling 卡片: " + card.name)
+			card.queue_free()
 	
-	# 不需要等待，因为已经从场景树中移除了
+	# 清空追踪数组
+	shop_selling_cards.clear()
+	
+	# 等待一帧，确保删除的卡片已经清理完毕，并且布局已更新
+	await get_tree().process_frame
 	
 	# 创建新的随机商品卡片
 	var shuffled_items = all_shop_items.duplicate()
@@ -128,19 +129,8 @@ func refresh_selling_cards() -> void:
 		
 		var slot = slots[i]
 		
-		# 检查该卡槽是否有architecture类型的卡片（不应该有，但以防万一）
-		var has_architecture = false
-		for child in slot.get_children():
-			if child is Panel or child is ColorRect:
-				continue
-			# 只有architecture类型的卡片才跳过
-			if "card_type" in child and child.card_type == 2:  # cardType.architecture
-				has_architecture = true
-				print("  卡槽 %d 有architecture卡片 %s，跳过" % [i, child.name])
-				break
-		
-		# 如果卡槽没有architecture卡片且还有商品可填充，就填充
-		if not has_architecture and item_index < shuffled_items.size():
+		# 直接填充新卡片（卡片现在不是 slot 的子节点了）
+		if item_index < shuffled_items.size():
 			var item_data = shuffled_items[item_index]
 			create_selling_card(slot, item_data)
 			print("  卡槽 %d 填充新商品: %s" % [i, item_data.get("名称", "未知")])
@@ -207,8 +197,27 @@ func create_architecture_card(slot: Control, card_name: String, texture_path: St
 
 # 创建商品类型卡片（可拖拽，但会回到原位）
 func create_selling_card(slot: Control, card_data: Dictionary) -> void:
-	# 使用 CardFactory 统一创建卡片
-	CardFactory.create_by_card_scene(card_data, slot, Vector2.ZERO, 1)
+	# 查找 CardManager 作为卡片的父节点
+	var card_manager = get_tree().root.find_child("CardManager", true, false)
+	if card_manager == null:
+		push_error("找不到 CardManager 节点")
+		return
+	
+	# 计算卡片应该显示的全局位置（在 slot 的位置）
+	var slot_global_pos = slot.global_position
+	print("【商店】Slot %s 全局位置: %s" % [slot.name, slot_global_pos])
+	
+	# 使用 CardFactory 创建卡片，添加到 CardManager（主场景）
+	var card_instance = CardFactory.create_by_card_scene(card_data, card_manager, Vector2.ZERO, 1)
+	
+	if card_instance:
+		# 设置卡片的全局位置（显示在 slot 位置）
+		card_instance.global_position = slot_global_pos
+		# 重要：设置 original_position 为相对于 CardManager 的位置
+		card_instance.original_position = card_instance.position
+		# 添加到商店卡片追踪数组
+		shop_selling_cards.append(card_instance)
+		print("【商店】创建商店卡片: %s 在全局位置 %s (相对位置 %s)" % [card_instance.name, slot_global_pos, card_instance.position])
 
 # 设置建筑卡片内容（纹理和文本）
 func setup_card_content(card_instance: Control, card_name: String, texture_path: String) -> void:
