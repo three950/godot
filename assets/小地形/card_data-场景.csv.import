@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://csiihpxu084gc"
+
+[deps]
+
+files=["res://assets/小地形/card_data-场景.picture.translation", "res://assets/小地形/card_data-场景.产物.translation", "res://assets/小地形/card_data-场景.出现概率.translation", "res://assets/小地形/card_data-场景.产物.translation"]
+
+source_file="res://assets/小地形/card_data-场景.csv"
+dest_files=["res://assets/小地形/card_data-场景.picture.translation", "res://assets/小地形/card_data-场景.产物.translation", "res://assets/小地形/card_data-场景.出现概率.translation", "res://assets/小地形/card_data-场景.产物.translation"]
+
+[params]
+
+compress=true
+delimiter=0

@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://bghrawg2wa0mf"]
+
+[ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="1_2r54s"]
+
+[node name="探窟者协会Card" instance=ExtResource("1_2r54s")]
+
+[node name="ColorRect" parent="." index="1"]
+color = Color(0.5698276, 0.5537272, 0.49723613, 1)
+
+[node name="Label" parent="ColorRect" index="0"]
+text = "固定场景建筑"

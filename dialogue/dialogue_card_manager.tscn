@@ -1,8 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://8t6basnvo8ix"]
-
-[ext_resource type="Script" path="res://dialogue/dialogue_card_manager.gd" id="1_manager"]
-[ext_resource type="Resource" uid="uid://d4aa5f3i4v3iu" path="res://dialogue/begin.tres" id="2_dialogue_group"]
-
-[node name="DialogueCardManager" type="Node2D"]
-script = ExtResource("1_manager")
-dialogue_group = ExtResource("2_dialogue_group")

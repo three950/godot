@@ -1,0 +1,84 @@
+[gd_scene load_steps=6 format=3 uid="uid://cxgk8a5mjy27v"]
+
+[ext_resource type="Script" uid="uid://ut5tbn2q80gh" path="res://assets/card.gd" id="1_q5obu"]
+[ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="2_e484p"]
+[ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="2_q5obu"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q5obu"]
+size = Vector2(88, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e484p"]
+size = Vector2(88, 64)
+
+[node name="Card" type="Control" groups=["Cards"]]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 88.0
+offset_bottom = 115.0
+script = ExtResource("1_q5obu")
+metadata/_edit_lock_ = true
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 88.0
+offset_bottom = 114.0
+mouse_filter = 2
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 85.0
+offset_bottom = 112.0
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="ColorRect"]
+layout_mode = 0
+offset_right = 82.0
+offset_bottom = 14.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_q5obu")
+theme_override_font_sizes/font_size = 10
+text = "莉可"
+
+[node name="TextureRect" type="TextureRect" parent="ColorRect"]
+layout_mode = 0
+offset_top = 13.0
+offset_right = 82.0
+offset_bottom = 85.0
+mouse_filter = 2
+texture = ExtResource("2_e484p")
+expand_mode = 1
+
+[node name="Control" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 88.0
+offset_bottom = 115.0
+mouse_filter = 2
+
+[node name="CardLabel" type="Area2D" parent="Control"]
+position = Vector2(3, 3)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Control/CardLabel"]
+position = Vector2(41, 5)
+shape = SubResource("RectangleShape2D_q5obu")
+
+[node name="CardStackDetectorArea" type="Area2D" parent="Control"]
+position = Vector2(3, 3)
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Control/CardStackDetectorArea"]
+position = Vector2(41, 46)
+shape = SubResource("RectangleShape2D_e484p")
+
+[node name="CardButton" type="Button" parent="."]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_right = 88.0
+offset_bottom = 115.0
+theme_override_fonts/font = ExtResource("2_q5obu")
+
+[connection signal="button_down" from="CardButton" to="." method="_on_cardbutton_button_down"]
+[connection signal="button_up" from="CardButton" to="." method="_on_cardbutton_button_up"]

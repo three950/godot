@@ -1,16 +1,16 @@
 [gd_scene load_steps=12 format=3 uid="uid://r1lb3ajxfx1j"]
 
 [ext_resource type="Script" uid="uid://b6gu1qtuwx15i" path="res://script_folder/card_manager.gd" id="1_card_mgr"]
-[ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://card.tscn" id="2_card_scene"]
-[ext_resource type="PackedScene" uid="uid://dmy86nwd2147t" path="res://assets/character/character_card.tscn" id="2_character_card"]
+[ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="2_card_scene"]
+[ext_resource type="PackedScene" uid="uid://dmy86nwd2147t" path="res://assets/人物与敌人/Character/character_card.tscn" id="2_character_card"]
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://background.tscn" id="3_h2yge"]
 [ext_resource type="Script" uid="uid://bbnp6ftl63g4m" path="res://script_folder/camera_controller.gd" id="4_camera"]
-[ext_resource type="PackedScene" uid="uid://srp4c4d5hm2c" path="res://assets/terrain小地形/scene_card.tscn" id="5_scene_card"]
-[ext_resource type="PackedScene" uid="uid://cq3m5h8qavw2k" path="res://assets/remains/remains_card.tscn" id="6_remains_card"]
-[ext_resource type="PackedScene" path="res://assets/abyss/layer1/depth_indicator.tscn" id="7_depth_indicator"]
-[ext_resource type="PackedScene" path="res://assets/resources/resource_card.tscn" id="8_resource_card"]
-[ext_resource type="PackedScene" uid="uid://b1n4d84218ejx" path="res://assets/enemy/enemy_card.tscn" id="9_enemy_card"]
-[ext_resource type="PackedScene" path="res://assets/equipment/equipment_card.tscn" id="10_equipment_card"]
+[ext_resource type="PackedScene" path="res://assets/小地形/scene_card.tscn" id="5_scene_card"]
+[ext_resource type="PackedScene" uid="uid://cq3m5h8qavw2k" path="res://assets/物品/遗物/remains_card.tscn" id="6_remains_card"]
+[ext_resource type="PackedScene" path="res://assets/AbyssLayer/layer1/depth_indicator.tscn" id="7_depth_indicator"]
+[ext_resource type="PackedScene" path="res://assets/物品/资源/resource_card.tscn" id="8_resource_card"]
+[ext_resource type="PackedScene" uid="uid://b1n4d84218ejx" path="res://assets/人物与敌人/Enemy/enemy_card.tscn" id="9_enemy_card"]
+[ext_resource type="PackedScene" path="res://assets/物品/装备/equipment_card.tscn" id="10_equipment_card"]
 
 [node name="Main" type="Node2D"]
 
@@ -38,8 +38,16 @@ offset_right = 1088.0
 offset_bottom = 265.0
 
 [node name="Enemy_PoisonWorm" parent="." instance=ExtResource("9_enemy_card")]
-position = Vector2(300, 300)
-card_name = "毒针线虫"
+offset_left = 300.0
+offset_top = 300.0
+offset_right = 388.0
+offset_bottom = 430.0
+cardStackState = null
+cardCurrentState = null
+card_type = null
+can_accept_stack = null
+accept_value_only = null
 enemy_hp = 30
 enemy_atk = 6
 enemy_def = 3
+card_name = "毒针线虫"

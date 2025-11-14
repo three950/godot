@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="1_base"]
+[ext_resource type="Script" uid="uid://cof2oajhsugri" path="res://assets/物品/资源/resource_card.gd" id="2_resource"]
+
+[node name="ResourceCard" instance=ExtResource("1_base")]
+script = ExtResource("2_resource")
+follow_target = NodePath("Control/ColorRect/Label")
+
+[node name="ColorRect" parent="Control" index="1"]
+color = Color(0.8, 0.9, 0.7, 1)
+
+[node name="TextureRect" parent="Control/ColorRect" index="0"]
+offset_top = 14.0
+offset_bottom = 95.0
+
+[node name="Label" parent="Control/ColorRect" index="1"]
+text = "资源"
+
+[node name="ValueLabel" type="Label" parent="Control/ColorRect" index="2"]
+layout_mode = 0
+offset_top = 95.0
+offset_right = 82.0
+offset_bottom = 109.0
+theme_override_colors/font_color = Color(0.8, 0.6, 0.2, 1)
+theme_override_font_sizes/font_size = 9
+text = "价值: 1"
+horizontal_alignment = 1

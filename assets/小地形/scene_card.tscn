@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="1_base"]
+[ext_resource type="Script" uid="uid://cemfiiymj2it" path="res://assets/小地形/scene_card.gd" id="2_scene"]
+[ext_resource type="Texture2D" uid="uid://bl8gwcgn5svup" path="res://assets/小地形/小洞穴.png" id="3_texture"]
+[ext_resource type="PackedScene" path="res://ui/card_progress_bar.tscn" id="4_progressbar"]
+
+[node name="SceneCard" instance=ExtResource("1_base")]
+script = ExtResource("2_scene")
+follow_target = NodePath("Control/ColorRect/Label")
+card_type = 2
+
+[node name="ColorRect" parent="Control" index="1"]
+color = Color(0.6, 0.8, 0.6, 1)
+
+[node name="TextureRect" parent="Control/ColorRect" index="0"]
+offset_top = 14.0
+offset_bottom = 109.0
+texture = ExtResource("3_texture")
+
+[node name="Label" parent="Control/ColorRect" index="1"]
+text = "场景"
+
+[node name="ProgressBar" parent="Control" index="2" instance=ExtResource("4_progressbar")]

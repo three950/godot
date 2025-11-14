@@ -1,0 +1,56 @@
+[gd_scene load_steps=4 format=3 uid="uid://b1oqblyvspkqi"]
+
+[ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="1_3c02q"]
+[ext_resource type="Script" uid="uid://cq4u5v6w7x80a" path="res://assets/人物与敌人/attribute_labels.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="2_font"]
+
+[node name="BiologyCard" instance=ExtResource("1_3c02q")]
+
+[node name="Label" parent="ColorRect" index="0"]
+text = "生物"
+
+[node name="AttributeLabels" type="HBoxContainer" parent="ColorRect" index="2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.03409091
+anchor_top = 1.0106102
+anchor_right = 1.0340909
+anchor_bottom = 0.973913
+offset_left = -2.7954547
+offset_top = -24.94783
+offset_right = -2.795456
+offset_bottom = 3.0521698
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
+script = ExtResource("1_script")
+metadata/_edit_use_anchors_ = true
+
+[node name="HPLabel" type="Label" parent="ColorRect/AttributeLabels" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.8, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 9
+text = "10"
+vertical_alignment = 1
+
+[node name="RightStats" type="VBoxContainer" parent="ColorRect/AttributeLabels" index="1"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="ATKLabel" type="Label" parent="ColorRect/AttributeLabels/RightStats" index="0"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.6, 0.1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 9
+text = "1"
+horizontal_alignment = 2
+
+[node name="DEFLabel" type="Label" parent="ColorRect/AttributeLabels/RightStats" index="1"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.5, 0.8, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 9
+text = "0"
+horizontal_alignment = 2
