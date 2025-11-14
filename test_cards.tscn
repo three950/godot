@@ -7,8 +7,17 @@
 [node name="Card1" parent="." instance=ExtResource("1_q5obu")]
 position = Vector2(200, 200)
 
+[node name="Label" parent="Card1/ColorRect" index="1"]
+text = "卡片1"
+
 [node name="Card2" parent="." instance=ExtResource("1_q5obu")]
 position = Vector2(300, 200)
 
+[node name="Label" parent="Card2/ColorRect" index="1"]
+text = "卡片2"
+
 [node name="Card3" parent="." instance=ExtResource("1_q5obu")]
 position = Vector2(400, 200)
+
+[node name="Label" parent="Card3/ColorRect" index="1"]
+text = "卡片3"

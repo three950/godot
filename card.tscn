@@ -10,13 +10,12 @@ size = Vector2(88, 16)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e484p"]
 size = Vector2(88, 64)
 
-[node name="Card_莉可" type="Control" node_paths=PackedStringArray("follow_target") groups=["Cards"]]
+[node name="Card_莉可" type="Control" groups=["Cards"]]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 88.0
 offset_bottom = 115.0
 script = ExtResource("1_q5obu")
-follow_target = null
 metadata/_edit_lock_ = true
 
 [node name="Panel" type="Panel" parent="."]
@@ -74,12 +73,21 @@ collision_mask = 2
 position = Vector2(41, 46)
 shape = SubResource("RectangleShape2D_e484p")
 
-[node name="Button" type="Button" parent="."]
+[node name="CardButton" type="Button" parent="."]
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 offset_right = 88.0
 offset_bottom = 115.0
 theme_override_fonts/font = ExtResource("2_q5obu")
 
-[connection signal="button_down" from="Button" to="." method="_on_button_button_down"]
-[connection signal="button_up" from="Button" to="." method="_on_button_button_up"]
+[node name="LabelButton" type="Button" parent="."]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_right = 88.0
+offset_bottom = 16.0
+theme_override_fonts/font = ExtResource("2_q5obu")
+
+[connection signal="button_down" from="CardButton" to="." method="_on_cardbutton_button_down"]
+[connection signal="button_up" from="CardButton" to="." method="_on_cardbutton_button_up"]
+[connection signal="button_down" from="LabelButton" to="." method="_on_cardbutton_button_down"]
+[connection signal="button_up" from="LabelButton" to="." method="_on_cardbutton_button_up"]
