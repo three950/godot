@@ -163,7 +163,7 @@ func stack_on_card(target_card: Control) -> void:
 	# 设置目标卡片的堆叠状态为bestacked（使用位或操作保留原有状态）
 	target_card.cardStackState |= STACK_STATE_BESTACKED
 	print("目标卡片 %s 的堆叠状态设置为bestacked" % target_card.name)
-	
+	var follower_chain: Array[Card] = get_stack_followers(self)
 	# 将当前卡片的父节点设为和目标卡片相同
 	var target_parent = target_card.get_parent()
 	if target_parent and get_parent() != target_parent:
@@ -178,6 +178,20 @@ func stack_on_card(target_card: Control) -> void:
 	
 	# 堆叠时需确保当前卡片紧跟在目标卡片堆叠链之后
 	move_after_card(target_card)
+	# 重新挂接跟随当前卡片的堆叠链，保持父节点一致与渲染顺序
+	var previous_card: Card = self
+	for follower in follower_chain:
+		if follower == null:
+			continue
+		var follower_parent = follower.get_parent()
+		if target_parent and follower_parent != target_parent:
+			var follower_saved_pos = follower.global_position
+			if follower_parent:
+				follower_parent.remove_child(follower)
+			target_parent.add_child(follower)
+			follower.global_position = follower_saved_pos
+		follower.move_after_card(previous_card)
+		previous_card = follower
 	
 	# 设置初始位置：跟随目标卡片的Label节点正下方
 	var label_node = target_card.get_node_or_null("ColorRect/Label")
@@ -243,3 +257,19 @@ func find_stack_end(card: Control) -> Control:
 				break
 	
 	return last_card
+
+# 获取当前卡片之上的所有跟随堆叠卡片（按堆叠顺序）
+func get_stack_followers(card: Card) -> Array[Card]:
+	var followers: Array[Card] = []
+	if card == null:
+		return followers
+	var parent_node = card.get_parent()
+	if parent_node == null:
+		return followers
+	for child in parent_node.get_children():
+		if child is Card:
+			var child_card: Card = child
+			if child_card.follow_target == card:
+				followers.append(child_card)
+				followers.append_array(get_stack_followers(child_card))
+	return followers
