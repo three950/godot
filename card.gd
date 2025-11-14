@@ -1,9 +1,5 @@
 extends Control
 class_name Card
-# 信号：当有卡片堆叠到此卡片上时触发
-signal card_stacked_on(stacked_card: Control)
-# 信号：当卡片从堆叠中被移除时触发
-signal card_removed_from_stack(removed_card: Control)
 # 信号：当卡片固定位置时触发（拖动结束）
 signal card_fixed()
 # 信号：当一个卡片的CardLabel进入此卡片的CardStackDetectorArea时触发
