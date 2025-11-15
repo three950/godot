@@ -1,5 +1,8 @@
 extends CardState
-	
+func enter() -> void:
+	print("instack状态")	
+	if card.follow_target == null:
+		print("没有目标兄弟")
 func _process(_delta: float) -> void:
 	if card.follow_target != null:
 		# 当卡片有follow_target时，卡片的cardState完全按照follow_target来

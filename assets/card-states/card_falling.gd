@@ -61,7 +61,7 @@ func stack_on_card(target_card: Card) -> void:
 	if target_card.card_state_machine and target_card.card_state_machine.current_state:
 		target_card.card_state_machine.current_state.cardStackState |= CardState.STACK_STATE_BESTACKED
 		print("目标卡片 %s 的堆叠状态设置为bestacked" % target_card.name)
-	var follower_chain: Array[Card] = get_stack_followers(card.self)
+	var follower_chain: Array[Card] = get_stack_followers(card)
 	# 将当前卡片的父节点设为和目标卡片相同
 	var target_parent = target_card.get_parent()
 	if target_parent and get_parent() != target_parent:
@@ -77,7 +77,7 @@ func stack_on_card(target_card: Card) -> void:
 	# 堆叠时需确保当前卡片紧跟在目标卡片堆叠链之后
 	move_after_card(target_card)
 	# 重新挂接跟随当前卡片的堆叠链，保持父节点一致与渲染顺序
-	var previous_card: Card = card.self
+	var previous_card: Card = card
 	for follower in follower_chain:
 		if follower == null:
 			continue
