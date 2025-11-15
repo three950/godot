@@ -36,59 +36,65 @@ func _ready() -> void:
 	
 
 func _process(_delta: float) -> void:
-	match cardCurrentState:
-		cardState.dragging:
-			if follow_target == null:#第一张卡，跟随鼠标移动
-				global_position = get_global_mouse_position() - drag_offset
-			z_index = DRAG_TEMP_Z
-
-		cardState.pickingup:
-			# 计算鼠标相对于卡片的偏移量，保持拖拽时的相对位置不变
-			drag_offset = get_global_mouse_position() - global_position
-			if cardStackState & STACK_STATE_STACKING and follow_target != null:#被拿起时，断开与前一张卡的连接
-				print("卡片 %s 断开与目标 %s 的连接" % [name, follow_target.name])
-				follow_target.cardStackState &= ~STACK_STATE_BESTACKED
-				follow_target = null
-				cardStackState = 0
-			cardCurrentState = cardState.dragging
-
-		cardState.falling:##先根据当前所属位置，变换场景父节点
-			print("卡片 %s 处于下落状态" % name)
-			z_index = 0
-			# 检测是否可以堆叠到其他卡片上
-			var closest_card_falling = find_closest_card()
-			if closest_card_falling != null:
-					print("卡片 %s 找到最近的卡片 %s 进行堆叠" % [name, closest_card_falling.name])
-					stack_on_card(closest_card_falling)
-			if cardStackState & STACK_STATE_STACKING:
-				print("卡片 %s 已堆叠到最顶部" % name)
-				cardCurrentState = cardState.instack
-			else:
-				card_fixed.emit()
-				print("卡片 %s 已固定" % name)
-				cardCurrentState = cardState.fixed	
-		cardState.instack:
-			# 当卡片处于stacking状态且有follow_target时，卡片的cardState完全按照follow_target来
-			if cardStackState & STACK_STATE_STACKING and follow_target != null:
-				var label_node = follow_target.get_node_or_null("ColorRect/Label")
-				if label_node:
-					var label_pos = label_node.global_position
-					var label_size = label_node.size
-					global_position = Vector2(follow_target.global_position.x, label_pos.y + label_size.y)
-					z_index = follow_target.z_index + 1
+	if follow_target != null and cardCurrentState == cardState.instack:
+		# 当卡片处于stacking状态且有follow_target时，卡片的cardState完全按照follow_target来
+		if cardStackState & STACK_STATE_STACKING:
+			var label_node = follow_target.get_node_or_null("ColorRect/Label")
+			if label_node:
+				var label_pos = label_node.global_position
+				var label_size = label_node.size
+				global_position = Vector2(follow_target.global_position.x, label_pos.y + label_size.y)
+				z_index = follow_target.z_index + 1
 func _on_cardbutton_button_down() -> void:
 	# architecture 类型不能拖拽
 	if card_type == cardType.architecture:
 		return	
 	print("按钮按下，卡片 %s 开始拾取" % name)
-	cardCurrentState = cardState.pickingup
 	original_position = position	
+	
+	
 
 func _on_cardbutton_button_up() -> void:	
 		# 设置为固定状态
 		print("按钮释放，卡片 %s 开始下落" % name)
 		cardCurrentState = cardState.falling
 		original_position = position
+
+func _on_control_gui_input(event: InputEvent) -> void:
+	# 只有LMB点击后才判断这些状态
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		match cardCurrentState:
+			cardState.dragging:
+				if follow_target == null:#第一张卡，跟随鼠标移动
+					global_position = get_global_mouse_position() - drag_offset
+				z_index = DRAG_TEMP_Z
+
+			cardState.pickingup:
+				# 计算鼠标相对于卡片的偏移量，保持拖拽时的相对位置不变
+				drag_offset = get_global_mouse_position() - global_position
+				if cardStackState & STACK_STATE_STACKING and follow_target != null:#被拿起时，断开与前一张卡的连接
+					print("卡片 %s 断开与目标 %s 的连接" % [name, follow_target.name])
+					follow_target.cardStackState &= ~STACK_STATE_BESTACKED
+					follow_target = null
+					cardStackState = 0
+				cardCurrentState = cardState.dragging
+
+			cardState.falling:##先根据当前所属位置，变换场景父节点
+				print("卡片 %s 处于下落状态" % name)
+				z_index = 0
+				# 检测是否可以堆叠到其他卡片上
+				var closest_card_falling = find_closest_card()
+				if closest_card_falling != null:
+						print("卡片 %s 找到最近的卡片 %s 进行堆叠" % [name, closest_card_falling.name])
+						stack_on_card(closest_card_falling)
+				if cardStackState & STACK_STATE_STACKING:
+					print("卡片 %s 已堆叠到最顶部" % name)
+					cardCurrentState = cardState.instack
+				else:
+					card_fixed.emit()
+					print("卡片 %s 已固定" % name)
+					cardCurrentState = cardState.fixed	
+
 # CardStackDetectorArea 信号处理：当有 Area 进入时
 func _on_stack_detector_area_entered(area: Area2D) -> void:
 	# 找到进入区域的Area2D所属的卡片实例
@@ -225,3 +231,4 @@ func get_stack_followers(card: Card) -> Array[Card]:
 				followers.append(child_card)
 				followers.append_array(get_stack_followers(child_card))
 	return followers
+
