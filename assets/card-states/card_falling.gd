@@ -4,56 +4,63 @@ signal card_fixed()
 func enter() -> void:
 	print("卡片 %s 处于下落状态" % name)
 	card.z_index = 0
+	# 延迟到下一帧再处理状态转换，确保状态机已准备好
+	await get_tree().process_frame
 	# 检测是否可以堆叠到其他卡片上
 	var closest_card_falling = find_closest_card()
 	if closest_card_falling != null:
 		print("卡片 %s 找到最近的卡片 %s 进行堆叠" % [name, closest_card_falling.name])
 		stack_on_card(closest_card_falling)
-	if card.cardStackState & CardState.STACK_STATE_STACKING:
+	if cardStackState & CardState.STACK_STATE_STACKING:
 		print("卡片 %s 已堆叠到最顶部" % name)
 		transition_requested.emit(self, CardState.State.instack)
 	else:
 		card_fixed.emit()
 		print("卡片 %s 已固定" % name)
 		transition_requested.emit(self, CardState.State.fixed)
-func find_closest_card() -> Control:
+func find_closest_card() -> Card:
 	# 只从当前重叠的卡片中查找
 	print("卡片 %s 开始查找最近的可堆叠卡片" % name)
-	var closest_card: Control = null
+	var closest_card: Card = null
 	var closest_distance_sq: float = INF	
 	for cards in card.overlapping_cards:
+		var target_card = cards as Card
+		if target_card == null:
+			continue
 		# 查找状态为fixed的卡片，或者instack状态且未被堆叠的卡片
-		var is_bestacked = ("cardCurrentState" in cards and cards.cardCurrentState == card.cardState.instack) and \
-									   ("cardStackState" in cards and cards.cardStackState & CardState.STACK_STATE_BESTACKED)
+		var target_state = target_card.card_state_machine.current_state if target_card.card_state_machine else null
+		var is_bestacked = (target_state != null and target_state.state == CardState.State.instack) and \
+									   (target_state != null and target_state.cardStackState & CardState.STACK_STATE_BESTACKED)
 		
 		if !is_bestacked:
 			# 检查卡片是否未被堆叠
-			var not_bestacked = not ("cardStackState" in cards and (cards.cardStackState & CardState.STACK_STATE_BESTACKED))
+			var not_bestacked = target_state == null or not (target_state.cardStackState & CardState.STACK_STATE_BESTACKED)
 			# 检查目标卡片不是 selling 类型
-			var not_selling = not ("card_type" in cards and cards.card_type == cardType.selling)
+			var not_selling = target_card.card_type != Card.cardType.selling
 			# 检查目标卡片是否允许堆叠
-			var can_accept = not ("can_accept_stack" in cards) or cards.can_accept_stack
+			var can_accept = target_card.can_accept_stack
 			# 如果目标卡片只接受带 value 的卡片，检查当前卡片是否有 value 属性
-			var value_check_passed = not ("accept_value_only" in cards and cards.accept_value_only) or ("value" in self)
+			var value_check_passed = not target_card.accept_value_only or ("value" in card)
 			
 			if not_bestacked and not_selling and can_accept and value_check_passed:
 				# 从重叠的卡片中找最近的一个
-				var dist_sq = card.global_position.distance_squared_to(card.global_position)
+				var dist_sq = card.global_position.distance_squared_to(target_card.global_position)
 				if dist_sq < closest_distance_sq:
 					closest_distance_sq = dist_sq
-					closest_card = card	
+					closest_card = target_card	
 	return closest_card
 
 # 堆叠到目标卡片上
-func stack_on_card(target_card: Control) -> void:
+func stack_on_card(target_card: Card) -> void:
 	# 设置当前卡片的堆叠状态为stacking
 	print("卡片 %s 开始堆叠到卡片 %s 上" % [name, target_card.name])
-	card.cardStackState = CardState.STACK_STATE_STACKING
+	cardStackState = CardState.STACK_STATE_STACKING
 	# 设置跟随目标
 	card.follow_target = target_card
 	# 设置目标卡片的堆叠状态为bestacked（使用位或操作保留原有状态）
-	target_card.cardStackState |= CardState.STACK_STATE_BESTACKED
-	print("目标卡片 %s 的堆叠状态设置为bestacked" % target_card.name)
+	if target_card.card_state_machine and target_card.card_state_machine.current_state:
+		target_card.card_state_machine.current_state.cardStackState |= CardState.STACK_STATE_BESTACKED
+		print("目标卡片 %s 的堆叠状态设置为bestacked" % target_card.name)
 	var follower_chain: Array[Card] = get_stack_followers(card.self)
 	# 将当前卡片的父节点设为和目标卡片相同
 	var target_parent = target_card.get_parent()
@@ -96,7 +103,7 @@ func stack_on_card(target_card: Control) -> void:
 	card.z_index = target_card.z_index + 1
 	print("卡片 %s 堆叠完成")
 # 将当前卡片移动到目标卡片后面（目标卡片总是在队列末尾）
-func move_after_card(target_card: Control) -> void:
+func move_after_card(target_card: Card) -> void:
 	var parent_node = get_parent()
 	if parent_node == null:
 		return

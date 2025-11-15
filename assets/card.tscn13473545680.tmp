@@ -1,0 +1,111 @@
+[gd_scene load_steps=12 format=3 uid="uid://cxgk8a5mjy27v"]
+
+[ext_resource type="Script" uid="uid://ut5tbn2q80gh" path="res://assets/card.gd" id="1_q5obu"]
+[ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="2_e484p"]
+[ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="2_q5obu"]
+[ext_resource type="Script" uid="uid://b6yrrsooe1is3" path="res://assets/card_state_machine.gd" id="4_rjwbx"]
+[ext_resource type="Script" uid="uid://blwo6u4at8188" path="res://assets/card-states/card_fixed.gd" id="5_xi8kn"]
+[ext_resource type="Script" uid="uid://d3wrnnerhh2i0" path="res://assets/card-states/card_pickingup.gd" id="6_e6854"]
+[ext_resource type="Script" uid="uid://dw2dcs08at733" path="res://assets/card-states/crad_dragging.gd" id="7_a3cqy"]
+[ext_resource type="Script" uid="uid://bgkton1xcycf" path="res://assets/card-states/card_falling.gd" id="8_ram0e"]
+[ext_resource type="Script" uid="uid://sxc0f1pavh3f" path="res://assets/card-states/card_instack.gd" id="9_kvflh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q5obu"]
+size = Vector2(88, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e484p"]
+size = Vector2(88, 64)
+
+[node name="Card" type="Control" groups=["Cards"]]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 88.0
+offset_bottom = 115.0
+mouse_filter = 2
+script = ExtResource("1_q5obu")
+metadata/_edit_lock_ = true
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 88.0
+offset_bottom = 114.0
+mouse_filter = 2
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 85.0
+offset_bottom = 112.0
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="ColorRect"]
+layout_mode = 0
+offset_right = 82.0
+offset_bottom = 14.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_q5obu")
+theme_override_font_sizes/font_size = 10
+text = "莉可"
+
+[node name="TextureRect" type="TextureRect" parent="ColorRect"]
+layout_mode = 0
+offset_top = 13.0
+offset_right = 82.0
+offset_bottom = 85.0
+mouse_filter = 2
+texture = ExtResource("2_e484p")
+expand_mode = 1
+
+[node name="Control" type="Control" parent="." node_paths=PackedStringArray("shortcut_context")]
+anchors_preset = 0
+offset_right = 88.0
+offset_bottom = 115.0
+shortcut_context = NodePath(".")
+
+[node name="CardLabel" type="Area2D" parent="Control"]
+position = Vector2(3, 3)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Control/CardLabel"]
+position = Vector2(41, 5)
+shape = SubResource("RectangleShape2D_q5obu")
+
+[node name="CardStackDetectorArea" type="Area2D" parent="Control"]
+position = Vector2(3, 3)
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Control/CardStackDetectorArea"]
+position = Vector2(41, 46)
+shape = SubResource("RectangleShape2D_e484p")
+
+[node name="CardStateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
+script = ExtResource("4_rjwbx")
+initial_state = NodePath("CardFixed")
+
+[node name="CardFixed" type="Node" parent="CardStateMachine"]
+script = ExtResource("5_xi8kn")
+
+[node name="CardPickingup" type="Node" parent="CardStateMachine"]
+script = ExtResource("6_e6854")
+state = 1
+
+[node name="CradDragging" type="Node" parent="CardStateMachine"]
+script = ExtResource("7_a3cqy")
+state = 2
+
+[node name="CardFalling" type="Node" parent="CardStateMachine"]
+script = ExtResource("8_ram0e")
+state = 3
+
+[node name="CardInstack" type="Node" parent="CardStateMachine"]
+script = ExtResource("9_kvflh")
+state = 4
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
+[connection signal="gui_input" from="." to="CardStateMachine/CardFixed" method="_on_card_gui_input"]
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
+[connection signal="gui_input" from="Control" to="." method="_on_control_gui_input"]
+[connection signal="gui_input" from="Control" to="CardStateMachine/CardFixed" method="_on_control_gui_input"]

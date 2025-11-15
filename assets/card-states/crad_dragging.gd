@@ -8,6 +8,8 @@ extends CardState
 
 func on_input(event: InputEvent) -> void:
 	print("drag1")
-	if event.is_action_released("left_mouse"):
+	card.global_position = card.get_global_mouse_position() - card.drag_offset
+	card.z_index = 100
+	if event.is_action_released("LMB"):
 		print("drag2")
 		transition_requested.emit(self, CardState.State.falling)
