@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://b6gu1qtuwx15i" path="res://script_folder/card_manager.gd" id="1_card_mgr"]
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="2_card_scene"]
-[ext_resource type="PackedScene" uid="uid://dmy86nwd2147t" path="res://assets/人物与敌人/Character/character_card.tscn" id="2_character_card"]
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://background.tscn" id="3_h2yge"]
 [ext_resource type="Script" uid="uid://bbnp6ftl63g4m" path="res://script_folder/camera_controller.gd" id="4_camera"]
 [ext_resource type="PackedScene" path="res://assets/小地形/scene_card.tscn" id="5_scene_card"]
@@ -12,6 +11,9 @@
 [ext_resource type="PackedScene" uid="uid://b1n4d84218ejx" path="res://assets/人物与敌人/Enemy/enemy_card.tscn" id="9_enemy_card"]
 [ext_resource type="PackedScene" path="res://assets/物品/装备/equipment_card.tscn" id="10_equipment_card"]
 
+[sub_resource type="Resource" id="Resource_4c57u"]
+metadata/__load_path__ = "res://assets/人物与敌人/Character/character_card.tscn"
+
 [node name="Main" type="Node2D"]
 
 [node name="backgroundUi" parent="." instance=ExtResource("3_h2yge")]
@@ -19,7 +21,7 @@
 [node name="CardManager" type="Node2D" parent="."]
 script = ExtResource("1_card_mgr")
 card_scene = ExtResource("2_card_scene")
-character_card_scene = ExtResource("2_character_card")
+character_card_scene = SubResource("Resource_4c57u")
 scene_card_scene = ExtResource("5_scene_card")
 remains_card_scene = ExtResource("6_remains_card")
 equipment_card_scene = ExtResource("10_equipment_card")
@@ -42,12 +44,9 @@ offset_left = 300.0
 offset_top = 300.0
 offset_right = 388.0
 offset_bottom = 430.0
-cardStackState = null
-cardCurrentState = null
-card_type = null
-can_accept_stack = null
-accept_value_only = null
 enemy_hp = 30
 enemy_atk = 6
 enemy_def = 3
+cardStackState = null
+cardCurrentState = null
 card_name = "毒针线虫"

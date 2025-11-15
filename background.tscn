@@ -43,6 +43,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme_override_constants/separation = 10
+alignment = 1
 
 [node name="RefreshButton" type="Button" parent="ShopManager"]
 offset_left = 820.0

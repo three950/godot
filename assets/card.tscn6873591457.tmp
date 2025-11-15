@@ -93,7 +93,6 @@ state = 1
 
 [node name="CradDragging" type="Node" parent="CardStateMachine"]
 script = ExtResource("7_a3cqy")
-state = 2
 
 [node name="CardFalling" type="Node" parent="CardStateMachine"]
 script = ExtResource("8_ram0e")
