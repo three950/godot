@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CharacterCard" load_steps=2 format=3 uid="uid://dsjxxvme1bq2n"]
+
+[ext_resource type="Script" uid="uid://c4lf65wbktjbc" path="res://assets/人物与敌人/Character/CharacterCard.gd" id="1_v0w5s"]
+
+[resource]
+script = ExtResource("1_v0w5s")
+ATK = 10
+"意识" = 20
+"速度" = 40
+HP = 50
+DEF = 100
+metadata/_custom_type_script = "uid://c4lf65wbktjbc"

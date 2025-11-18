@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CharacterCard" load_steps=2 format=3 uid="uid://dfpw7xhnxtvgh"]
+
+[ext_resource type="Script" uid="uid://c4lf65wbktjbc" path="res://assets/人物与敌人/Character/CharacterCard.gd" id="1_33mer"]
+
+[resource]
+script = ExtResource("1_33mer")
+ATK = 2
+"意识" = 80
+"速度" = 5
+HP = 10
+right = "探窟稿"
+slot_1 = "便携锅"
+metadata/_custom_type_script = "uid://c4lf65wbktjbc"

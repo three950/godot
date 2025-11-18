@@ -1,6 +1,6 @@
 extends Control
 class_name Card
-
+@export var character:CharacterCard#引用characters的资源
 # 信号：当一个卡片的CardLabel进入此卡片的CardStackDetectorArea时触发
 signal card_label_entered_stack_area(entering_card: Control)
 # 信号：当一个卡片的CardLabel离开此卡片的CardStackDetectorArea时触发
