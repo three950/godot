@@ -21,7 +21,6 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 88.0
 offset_bottom = 115.0
-mouse_filter = 2
 script = ExtResource("1_q5obu")
 metadata/_edit_lock_ = true
 
@@ -57,26 +56,20 @@ mouse_filter = 2
 texture = ExtResource("2_e484p")
 expand_mode = 1
 
-[node name="Control" type="Control" parent="." node_paths=PackedStringArray("shortcut_context")]
-anchors_preset = 0
-offset_right = 88.0
-offset_bottom = 115.0
-shortcut_context = NodePath(".")
-
-[node name="CardLabel" type="Area2D" parent="Control"]
+[node name="CardLabel" type="Area2D" parent="."]
 position = Vector2(3, 3)
 collision_layer = 2
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Control/CardLabel"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CardLabel"]
 position = Vector2(41, 5)
 shape = SubResource("RectangleShape2D_q5obu")
 
-[node name="CardStackDetectorArea" type="Area2D" parent="Control"]
+[node name="CardStackDetectorArea" type="Area2D" parent="."]
 position = Vector2(3, 3)
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Control/CardStackDetectorArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CardStackDetectorArea"]
 position = Vector2(41, 46)
 shape = SubResource("RectangleShape2D_e484p")
 
@@ -104,8 +97,9 @@ script = ExtResource("9_kvflh")
 state = 4
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
+[connection signal="gui_input" from="." to="CardStateMachine/CardFixed" method="_on_control_gui_input"]
 [connection signal="gui_input" from="." to="CardStateMachine/CardFixed" method="_on_card_gui_input"]
+[connection signal="gui_input" from="." to="CardStateMachine/CardInstack" method="_on_control_gui_input"]
+[connection signal="gui_input" from="." to="CardStateMachine/CardInstack" method="_on_cpntrol_gui_input"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
-[connection signal="gui_input" from="Control" to="." method="_on_control_gui_input"]
-[connection signal="gui_input" from="Control" to="CardStateMachine/CardFixed" method="_on_control_gui_input"]
