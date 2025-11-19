@@ -1,6 +1,6 @@
 extends CardState
 
-#func enter() -> void:#背包和商店的卡片可以用这个方法重新父化
+#func enter() -> void:#背包和商店的卡片可以用这个方法重新父化S1-03状态机
 #	var ui_layer := get_tree().get_first_node_in_group("ui_layer")
 #	if ui_layer:
 #		card_ui.reparent(ui_layer)
