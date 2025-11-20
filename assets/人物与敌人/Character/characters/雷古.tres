@@ -1,9 +1,18 @@
-[gd_resource type="Resource" script_class="CharacterCard" load_steps=2 format=3 uid="uid://dsjxxvme1bq2n"]
+[gd_resource type="Resource" script_class="CharacterCard" load_steps=5 format=3 uid="uid://dsjxxvme1bq2n"]
 
+[ext_resource type="Texture2D" uid="uid://22losaghkkco" path="res://assets/人物与敌人/Character/人物_雷古.png" id="1_lxq8p"]
 [ext_resource type="Script" uid="uid://c4lf65wbktjbc" path="res://assets/人物与敌人/Character/CharacterCard.gd" id="1_v0w5s"]
+[ext_resource type="Script" uid="uid://chvrc588f7156" path="res://ui/CardInfo.gd" id="2_y4pxm"]
+
+[sub_resource type="Resource" id="Resource_2u3qq"]
+script = ExtResource("2_y4pxm")
+name = "雷古"
+portrait = ExtResource("1_lxq8p")
+metadata/_custom_type_script = "uid://chvrc588f7156"
 
 [resource]
 script = ExtResource("1_v0w5s")
+info = SubResource("Resource_2u3qq")
 ATK = 10
 "意识" = 20
 "速度" = 40

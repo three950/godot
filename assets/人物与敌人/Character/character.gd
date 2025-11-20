@@ -4,7 +4,7 @@ extends "res://assets/card.gd"
 var _needs_initial_update := false
 
 @onready var name_label: Label = $Panel/Label
-@onready var attribute_labels: AttributeLabels = $ColorRect/AttributeLabels
+@onready var attribute_labels: AttributeLabels = $AttributeLabels
 @onready var portrait_rect: TextureRect = $TextureRect
 
 

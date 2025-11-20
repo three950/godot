@@ -1,9 +1,18 @@
-[gd_resource type="Resource" script_class="CharacterCard" load_steps=2 format=3 uid="uid://dfpw7xhnxtvgh"]
+[gd_resource type="Resource" script_class="CharacterCard" load_steps=5 format=3 uid="uid://dfpw7xhnxtvgh"]
 
 [ext_resource type="Script" uid="uid://c4lf65wbktjbc" path="res://assets/人物与敌人/Character/CharacterCard.gd" id="1_33mer"]
+[ext_resource type="Texture2D" uid="uid://b11wupevcdiwd" path="res://assets/人物与敌人/Character/人物_莉可.png" id="1_e6vqo"]
+[ext_resource type="Script" uid="uid://chvrc588f7156" path="res://ui/CardInfo.gd" id="2_vm5mx"]
+
+[sub_resource type="Resource" id="Resource_fm1wk"]
+script = ExtResource("2_vm5mx")
+name = "莉可"
+portrait = ExtResource("1_e6vqo")
+metadata/_custom_type_script = "uid://chvrc588f7156"
 
 [resource]
 script = ExtResource("1_33mer")
+info = SubResource("Resource_fm1wk")
 ATK = 2
 "意识" = 80
 "速度" = 5
