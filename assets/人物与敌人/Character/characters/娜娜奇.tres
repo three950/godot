@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://c4lf65wbktjbc" path="res://assets/人物与敌人/Character/CharacterCard.gd" id="1_i00u1"]
 
 [resource]
+resource_name = "娜娜奇"
 script = ExtResource("1_i00u1")
 ATK = 20
 "意识" = 100

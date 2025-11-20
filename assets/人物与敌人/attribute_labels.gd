@@ -5,26 +5,15 @@ class_name AttributeLabels
 ## 封装 HP、ATK、DEF 三个属性的显示
 
 # 标签引用
-var hp_label: Label = null
-var atk_label: Label = null
-var def_label: Label = null
-
-func _ready() -> void:
-	# 获取标签引用
-	hp_label = get_node_or_null("HPLabel")
-	var right_stats = get_node_or_null("RightStats")
-	if right_stats:
-		atk_label = right_stats.get_node_or_null("ATKLabel")
-		def_label = right_stats.get_node_or_null("DEFLabel")
+@onready var hp_label: Label = $HPLabel
+@onready var atk_label: Label = $RightStats/ATKLabel
+@onready var def_label: Label = $RightStats/DEFLabel
 
 # 更新所有属性标签显示
 func update_labels(hp_value: int, atk_value: int, def_value: int) -> void:
-	if hp_label:
-		hp_label.text = "%d" % hp_value
-	if atk_label:
-		atk_label.text = "%d" % atk_value
-	if def_label:
-		def_label.text = "%d" % def_value
+	hp_label.text = "%d" % hp_value
+	atk_label.text = "%d" % atk_value
+	def_label.text = "%d" % def_value
 
 # 单独更新HP
 func update_hp(value: int) -> void:
