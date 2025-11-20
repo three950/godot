@@ -8,6 +8,9 @@ signal stats_changed
 @export var HP:int
 @export var DEF:int
 
+@export var name: String = ""
+@export var portrait: Texture2D
+
 @export_group("左右手")
 @export var left: String = ""
 @export var right: String = ""
