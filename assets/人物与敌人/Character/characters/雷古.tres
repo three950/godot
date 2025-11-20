@@ -1,6 +1,5 @@
-[gd_resource type="Resource" script_class="CharacterCard" load_steps=3 format=3 uid="uid://dsjxxvme1bq2n"]
+[gd_resource type="Resource" script_class="CharacterCard" load_steps=2 format=3 uid="uid://dsjxxvme1bq2n"]
 
-[ext_resource type="Texture2D" uid="uid://22losaghkkco" path="res://assets/人物与敌人/Character/人物_雷古.png" id="1_lxq8p"]
 [ext_resource type="Script" uid="uid://c4lf65wbktjbc" path="res://assets/人物与敌人/Character/CharacterCard.gd" id="1_v0w5s"]
 
 [resource]
@@ -10,6 +9,4 @@ ATK = 10
 "速度" = 40
 HP = 50
 DEF = 100
-name = "雷古"
-portrait = ExtResource("1_lxq8p")
 metadata/_custom_type_script = "uid://c4lf65wbktjbc"

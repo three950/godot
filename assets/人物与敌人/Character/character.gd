@@ -3,9 +3,9 @@ extends "res://assets/card.gd"
 @export var character: CharacterCard : set = set_character_stats# 引用 characters 目录下的资源
 var _needs_initial_update := false
 
-@onready var name_label: Label = $ColorRect/Label
+@onready var name_label: Label = $Panel/Label
 @onready var attribute_labels: AttributeLabels = $ColorRect/AttributeLabels
-@onready var portrait_rect: TextureRect = $ColorRect/TextureRect
+@onready var portrait_rect: TextureRect = $TextureRect
 
 
 func _ready() -> void:
@@ -29,8 +29,9 @@ func set_character_stats(value: CharacterCard) -> void:
 func _update_character() -> void:
 	if character == null:
 		return
-	name_label.text = character.name
-	portrait_rect.texture = character.portrait
+	name_label.text = character.info.name
+	portrait_rect.texture = character.info.portrait
+
 	update_stats()
 	
 func update_stats() -> void:

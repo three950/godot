@@ -2,14 +2,13 @@ class_name CharacterCard
 extends Resource
 signal stats_changed
 
+@export var info: CardInfo = CardInfo.new()
+
 @export var ATK:int
 @export var 意识:int
 @export var 速度:int
 @export var HP:int
 @export var DEF:int
-
-@export var name: String = ""
-@export var portrait: Texture2D
 
 @export_group("左右手")
 @export var left: String = ""
