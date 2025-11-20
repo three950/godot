@@ -1,72 +1,39 @@
 extends "res://assets/card.gd"
 
-@export var character: CharacterCard # 引用 characters 目录下的资源
+@export var character: CharacterCard : set = set_character_stats# 引用 characters 目录下的资源
+var _needs_initial_update := false
 
 @onready var name_label: Label = $ColorRect/Label
 @onready var attribute_labels: AttributeLabels = $ColorRect/AttributeLabels
 @onready var portrait_rect: TextureRect = $ColorRect/TextureRect
 
+
 func _ready() -> void:
 	super._ready()
-	_apply_character_data()
-	_connect_character_signals()
+	if _needs_initial_update:
+		_needs_initial_update = false
+		_update_character()
 
-func _apply_character_data() -> void:
-	if not character:
-		push_warning("【CharacterCard】未分配角色资源")
+
+func set_character_stats(value: CharacterCard) -> void:
+	character = value
+	if character == null:
 		return
-	_update_stats()
-
-func _connect_character_signals() -> void:
-	if character and not character.stats_changed.is_connected(_on_character_stats_changed):
-		character.stats_changed.connect(_on_character_stats_changed)
-
-func _on_character_stats_changed() -> void:
-	if not is_inside_tree():
-		await ready
-	_update_stats()
-
-func _update_attribute_labels() -> void:
-	if not attribute_labels or not character:
-		return
-
-	attribute_labels.update_labels(character.HP, character.ATK, character.DEF)
-
-func _update_stats() -> void:
-	_update_attribute_labels()
-	_update_name_label()
-	_update_portrait()
-
-func _update_name_label() -> void:
-	if not name_label or not character:
-		return
-
-	var raw_name = _get_character_property("name")
-	var display_name := ""
-
-	if raw_name != null and str(raw_name).strip_edges() != "":
-		display_name = str(raw_name)
-	elif character.resource_name != "":
-		display_name = character.resource_name
+	if not character.stats_changed.is_connected(update_stats):
+		character.stats_changed.connect(update_stats)
+	if is_node_ready():
+		_update_character()
 	else:
-		display_name = name
+		_needs_initial_update = true
 
-	name_label.text = str(display_name)
-
-func _update_portrait() -> void:
-	if not portrait_rect or not character:
+func _update_character() -> void:
+	if character == null:
 		return
-
-	var portrait_texture: Texture2D = _get_character_property("portrait")
-	if portrait_texture:
-		portrait_rect.texture = portrait_texture
-
-func _get_character_property(prop_name: String):
-	if not character:
-		return null
-
-	for prop in character.get_property_list():
-		if prop.has("name") and prop["name"] == prop_name:
-			return character.get(prop_name)
-
-	return null
+	name_label.text = character.name
+	portrait_rect.texture = character.portrait
+	update_stats()
+	
+func update_stats() -> void:
+	if character == null:
+		return
+	attribute_labels.update_labels(character.HP, character.ATK, character.DEF)
