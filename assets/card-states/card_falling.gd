@@ -1,6 +1,7 @@
 extends CardState
 # 信号：当卡片固定位置时触发（拖动结束）
 signal card_fixed()
+
 func enter() -> void:
 	print("卡片 %s 处于下落状态" % card.name)
 	card.z_index = 0
@@ -24,7 +25,6 @@ func find_closest_card() -> Card:
 	var closest_card: Card = null
 	var closest_distance_sq: float = INF	
 	for cards in card.overlapping_cards:
-		print("11")
 		var target_card = cards as Card
 		if target_card == null:
 			print("卡片 %s 重叠的卡片为空" % name)
@@ -35,17 +35,8 @@ func find_closest_card() -> Card:
 									   (target_card.stack_state & CardState.STACK_STATE_BESTACKED)
 		
 		if !is_bestacked:
-			print("卡片 %s 状态为 %s" % [target_card.name, target_state.state])
-			# 检查卡片是否未被堆叠
-			var not_bestacked = target_card.stack_state & CardState.STACK_STATE_BESTACKED == 0
-			# 检查目标卡片不是 selling 类型
-			var not_selling = target_card.card_type != Card.cardType.selling
-			# 检查目标卡片是否允许堆叠
-			var can_accept = target_card.can_accept_stack
-			# 如果目标卡片只接受带 value 的卡片，检查当前卡片是否有 value 属性
-			var value_check_passed = not target_card.accept_value_only or ("value" in card)
-			
-			if not_bestacked and not_selling and can_accept and value_check_passed:
+			print("卡片 %s 状态为 %s" % [target_card.name, target_state.state])			
+			if target_card.能被堆叠==true:
 				# 从重叠的卡片中找最近的一个
 				var dist_sq = card.global_position.distance_squared_to(target_card.global_position)
 				if dist_sq < closest_distance_sq:
@@ -60,9 +51,7 @@ func stack_on_card(target_card: Card) -> void:
 	card.stack_state = CardState.STACK_STATE_STACKING
 	# 设置跟随目标
 	card.follow_target = target_card
-	# 设置目标卡片的堆叠状态为bestacked（使用位或操作保留原有状态）
-	target_card.stack_state |= CardState.STACK_STATE_BESTACKED
-	print("目标卡片 %s 的堆叠状态设置为bestacked" % target_card.name)
+	target_card.stacking_on_you.emit(self)
 	var follower_chain: Array[Card] = get_stack_followers(card)
 	# 将当前卡片的父节点设为和目标卡片相同
 	var target_parent = target_card.get_parent()

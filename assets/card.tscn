@@ -35,10 +35,6 @@ anchors_preset = 0
 offset_right = 88.0
 offset_bottom = 115.0
 script = ExtResource("1_q5obu")
-CAN_STACK_ON = null
-card_type = null
-can_accept_stack = null
-accept_value_only = null
 metadata/_edit_lock_ = true
 
 [node name="CardPanel" type="Panel" parent="."]
@@ -120,7 +116,7 @@ state = 4
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="gui_input" from="." to="CardStateMachine/CardFixed" method="_on_card_gui_input"]
 [connection signal="gui_input" from="." to="CardStateMachine/CardFixed" method="_on_control_gui_input"]
-[connection signal="gui_input" from="." to="CardStateMachine/CardInstack" method="_on_control_gui_input"]
 [connection signal="gui_input" from="." to="CardStateMachine/CardInstack" method="_on_cpntrol_gui_input"]
+[connection signal="gui_input" from="." to="CardStateMachine/CardInstack" method="_on_control_gui_input"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

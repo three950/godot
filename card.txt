@@ -55,9 +55,9 @@ func _process(_delta: float) -> void:
 			if cardStackState == cardStackState.bestacked:
 				fixed.emit(parent_card)#修改：向父卡片发送信号，状态改为fixed
 				# 检测是否可以堆叠到其他卡片上
-				var closest_card_falling = find_stackable_card()
-				if closest_card_falling != null:
-					stack_on_card(closest_card_falling)
+				var closest_card = find_stackable_card()
+				if closest_card != null:
+					stack_on_card(closest_card)
 				else:
 				# 如果没有找到可堆叠的卡片，检查是否与背包区域重叠
 					push_card_outside_bag_if_overlapping_falling()

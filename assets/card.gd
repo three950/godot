@@ -4,6 +4,7 @@ class_name Card
 signal card_label_entered_stack_area(entering_card: Control)
 # 信号：当一个卡片的CardLabel离开此卡片的CardStackDetectorArea时触发
 signal card_label_exited_stack_area(exiting_card: Control)
+signal stacking_on_you(children_card: Card)
 # 信号：请求重新设置父节点
 signal reparent_requested(which_card: Card)
 @export var CAN_STACK_ON: bool = false
@@ -19,7 +20,7 @@ var overlapping_cards: Array[Control] = []  # 当前与此卡片 Area2D 重叠�
 const DRAG_TEMP_Z := 100
 var follow_target: Card = null  # 目标卡片，若为null则不跟随
 var stack_state: int = 0  # 堆叠状态位标记，参照 CardState.STACK_STATE_*
-
+var children_cards: Card = null# 堆叠在卡片上的子卡片
 func _ready() -> void:
 	card_state_machine.init(self)
 	original_position = position	
@@ -28,11 +29,7 @@ func _ready() -> void:
 	if stack_detector:
 		stack_detector.area_entered.connect(_on_stack_detector_area_entered)
 		stack_detector.area_exited.connect(_on_stack_detector_area_exited)
-	var card_panel := get_node("Panel")
-	if card_panel:
-		position = card_panel.position
-		size = card_panel.size
-
+	stacking_on_you.connect(bestacked_on_me)
 
 # CardStackDetectorArea 信号处理：当有 Area 进入时
 func _on_stack_detector_area_entered(area: Area2D) -> void:
@@ -62,6 +59,13 @@ func _on_stack_detector_area_exited(area: Area2D) -> void:
 		# 发送信号通知
 		card_label_exited_stack_area.emit(exiting_card)
 
+func bestacked_on_me(children_card: Card) -> void:
+	stack_state |= CardState.STACK_STATE_BESTACKED
+	children_cards = children_card
+	var card_panel := get_node("Panel")
+	if card_panel:
+		position = card_panel.position
+		size = card_panel.size
 func _input(event: InputEvent) -> void:
 	card_state_machine.on_input(event)
 
