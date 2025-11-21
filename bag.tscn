@@ -1,14 +1,18 @@
-[gd_scene load_steps=4 format=3 uid="uid://bkflydah8kasa"]
+[gd_scene load_steps=5 format=3 uid="uid://bkflydah8kasa"]
 
 [ext_resource type="Script" uid="uid://47jqjxp2hu76" path="res://bag.gd" id="1_bag"]
 [ext_resource type="Script" uid="uid://b6qdcc1812p6c" path="res://bag_slot.gd" id="2_slot"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_76wf2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_76wf2"]
 size = Vector2(186, 126)
 
 [node name="BagPanel" type="Panel"]
-offset_right = 188.0
-offset_bottom = 130.0
+offset_left = 116.0
+offset_top = 95.0
+offset_right = 304.0
+offset_bottom = 225.0
 script = ExtResource("1_bag")
 
 [node name="ColorRect" type="ColorRect" parent="."]
@@ -35,6 +39,7 @@ theme_override_constants/separation = 1
 [node name="Slot1" type="Panel" parent="HBoxContainer/LeftSlots"]
 custom_minimum_size = Vector2(44, 59)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_76wf2")
 script = ExtResource("2_slot")
 
 [node name="ColorRect" type="ColorRect" parent="HBoxContainer/LeftSlots/Slot1"]

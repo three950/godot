@@ -8,4 +8,3 @@ func update_progress(current: float, total: float) -> void:
 	max_value = total
 	value = current
 	visible = current > 0 and total > 0
-
