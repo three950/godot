@@ -50,6 +50,7 @@ offset_left = 2.0
 offset_top = 2.0
 offset_right = 86.0
 offset_bottom = 16.0
+mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_a3cqy")
 
 [node name="Label" type="Label" parent="Panel"]
@@ -82,7 +83,6 @@ position = Vector2(41, 5)
 shape = SubResource("RectangleShape2D_q5obu")
 
 [node name="CardStackDetectorArea" type="Area2D" parent="."]
-visible = false
 position = Vector2(3, 3)
 collision_mask = 2
 
@@ -116,7 +116,7 @@ state = 4
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="gui_input" from="." to="CardStateMachine/CardFixed" method="_on_card_gui_input"]
 [connection signal="gui_input" from="." to="CardStateMachine/CardFixed" method="_on_control_gui_input"]
-[connection signal="gui_input" from="." to="CardStateMachine/CardInstack" method="_on_cpntrol_gui_input"]
 [connection signal="gui_input" from="." to="CardStateMachine/CardInstack" method="_on_control_gui_input"]
+[connection signal="gui_input" from="." to="CardStateMachine/CardInstack" method="_on_cpntrol_gui_input"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

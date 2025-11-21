@@ -18,12 +18,13 @@ var drag_offset: Vector2 = Vector2.ZERO  # 拖拽时鼠标相对于卡片的偏�
 var overlapping_cards: Array[Control] = []  # 当前与此卡片 Area2D 重叠的其他卡片
 const DRAG_TEMP_Z := 100
 var follow_target: Card = null  # 目标卡片，若为null则不跟随
+var stack_state: int = 0  # 堆叠状态位标记，参照 CardState.STACK_STATE_*
 
 func _ready() -> void:
 	card_state_machine.init(self)
 	original_position = position	
 	# 连接 CardStackDetectorArea 信号
-	var stack_detector = get_node_or_null("Control/CardStackDetectorArea")
+	var stack_detector = get_node("CardStackDetectorArea")
 	if stack_detector:
 		stack_detector.area_entered.connect(_on_stack_detector_area_entered)
 		stack_detector.area_exited.connect(_on_stack_detector_area_exited)
@@ -32,7 +33,7 @@ func _ready() -> void:
 # CardStackDetectorArea 信号处理：当有 Area 进入时
 func _on_stack_detector_area_entered(area: Area2D) -> void:
 	# 找到进入区域的Area2D所属的卡片实例
-	var entering_card = area.get_parent().get_parent() as Card
+	var entering_card = area.get_parent() as Card
 	if entering_card:
 		print("卡片 %s 可以堆叠到卡片 %s 上" % [entering_card.name, name])
 		entering_card.CAN_STACK_ON = true
@@ -46,7 +47,7 @@ func _on_stack_detector_area_entered(area: Area2D) -> void:
 # CardStackDetectorArea 信号处理：当有 Area 离开时
 func _on_stack_detector_area_exited(area: Area2D) -> void:
 	# 找到离开区域的Area2D所属的卡片实例
-	var exiting_card = area.get_parent().get_parent() as Card
+	var exiting_card = area.get_parent() as Card
 	if exiting_card:
 		print("卡片 %s 不能堆叠到卡片 %s 上" % [exiting_card.name, name])
 		exiting_card.CAN_STACK_ON = false

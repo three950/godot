@@ -6,8 +6,8 @@ func enter() -> void:
 func _process(_delta: float) -> void:
 	if card.follow_target != null:
 		# 当卡片有follow_target时，卡片的cardState完全按照follow_target来
-		if cardStackState & CardState.STACK_STATE_STACKING:
-			var label_node = card.follow_target.get_node_or_null("ColorRect/Label")
+		if card.stack_state & CardState.STACK_STATE_STACKING:
+			var label_node = card.follow_target.get_node("Panel/Label")
 			if label_node:
 				var label_pos = label_node.global_position
 				var label_size = label_node.size

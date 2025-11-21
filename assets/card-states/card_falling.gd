@@ -2,7 +2,7 @@ extends CardState
 # 信号：当卡片固定位置时触发（拖动结束）
 signal card_fixed()
 func enter() -> void:
-	print("卡片 %s 处于下落状态" % name)
+	print("卡片 %s 处于下落状态" % card.name)
 	card.z_index = 0
 	# 延迟到下一帧再处理状态转换，确保状态机已准备好
 	await get_tree().process_frame
@@ -11,7 +11,7 @@ func enter() -> void:
 	if closest_card_falling != null:
 		print("卡片 %s 找到最近的卡片 %s 进行堆叠" % [name, closest_card_falling.name])
 		stack_on_card(closest_card_falling)
-	if cardStackState & CardState.STACK_STATE_STACKING:
+	if card.stack_state & CardState.STACK_STATE_STACKING:
 		print("卡片 %s 已堆叠到最顶部" % name)
 		transition_requested.emit(self, CardState.State.instack)
 	else:
@@ -20,21 +20,24 @@ func enter() -> void:
 		transition_requested.emit(self, CardState.State.fixed)
 func find_closest_card() -> Card:
 	# 只从当前重叠的卡片中查找
-	print("卡片 %s 开始查找最近的可堆叠卡片" % name)
+	print("卡片 %s 开始查找最近的可堆叠卡片" % card.name)
 	var closest_card: Card = null
 	var closest_distance_sq: float = INF	
 	for cards in card.overlapping_cards:
+		print("11")
 		var target_card = cards as Card
 		if target_card == null:
+			print("卡片 %s 重叠的卡片为空" % name)
 			continue
 		# 查找状态为fixed的卡片，或者instack状态且未被堆叠的卡片
 		var target_state = target_card.card_state_machine.current_state if target_card.card_state_machine else null
 		var is_bestacked = (target_state != null and target_state.state == CardState.State.instack) and \
-									   (target_state != null and target_state.cardStackState & CardState.STACK_STATE_BESTACKED)
+									   (target_card.stack_state & CardState.STACK_STATE_BESTACKED)
 		
 		if !is_bestacked:
+			print("卡片 %s 状态为 %s" % [target_card.name, target_state.state])
 			# 检查卡片是否未被堆叠
-			var not_bestacked = target_state == null or not (target_state.cardStackState & CardState.STACK_STATE_BESTACKED)
+			var not_bestacked = target_card.stack_state & CardState.STACK_STATE_BESTACKED == 0
 			# 检查目标卡片不是 selling 类型
 			var not_selling = target_card.card_type != Card.cardType.selling
 			# 检查目标卡片是否允许堆叠
@@ -53,14 +56,13 @@ func find_closest_card() -> Card:
 # 堆叠到目标卡片上
 func stack_on_card(target_card: Card) -> void:
 	# 设置当前卡片的堆叠状态为stacking
-	print("卡片 %s 开始堆叠到卡片 %s 上" % [name, target_card.name])
-	cardStackState = CardState.STACK_STATE_STACKING
+	print("卡片 %s 开始堆叠到卡片 %s 上" % [card.name, target_card.name])
+	card.stack_state = CardState.STACK_STATE_STACKING
 	# 设置跟随目标
 	card.follow_target = target_card
 	# 设置目标卡片的堆叠状态为bestacked（使用位或操作保留原有状态）
-	if target_card.card_state_machine and target_card.card_state_machine.current_state:
-		target_card.card_state_machine.current_state.cardStackState |= CardState.STACK_STATE_BESTACKED
-		print("目标卡片 %s 的堆叠状态设置为bestacked" % target_card.name)
+	target_card.stack_state |= CardState.STACK_STATE_BESTACKED
+	print("目标卡片 %s 的堆叠状态设置为bestacked" % target_card.name)
 	var follower_chain: Array[Card] = get_stack_followers(card)
 	# 将当前卡片的父节点设为和目标卡片相同
 	var target_parent = target_card.get_parent()
@@ -72,7 +74,7 @@ func stack_on_card(target_card: Card) -> void:
 			old_parent.remove_child(self)
 		target_parent.add_child(self)
 		card.global_position = saved_global_pos
-		print("卡片 %s 移动到与 %s 相同的父节点" % [name, target_card.name])
+		print("卡片 %s 移动到与 %s 相同的父节点" % [card.name, target_card.name])
 	
 	# 堆叠时需确保当前卡片紧跟在目标卡片堆叠链之后
 	move_after_card(target_card)
@@ -101,7 +103,7 @@ func stack_on_card(target_card: Card) -> void:
 	
 	# 设置层级
 	card.z_index = target_card.z_index + 1
-	print("卡片 %s 堆叠完成")
+	print("卡片 %s 堆叠完成" % card.name)
 # 将当前卡片移动到目标卡片后面（目标卡片总是在队列末尾）
 func move_after_card(target_card: Card) -> void:
 	var parent_node = get_parent()
@@ -111,7 +113,7 @@ func move_after_card(target_card: Card) -> void:
 	# 目标卡片总是在队列末尾，直接移动到目标卡片后面
 	var target_index = target_card.get_index()
 	parent_node.move_child(self, target_index + 1)
-	print("卡片 %s 移动到卡片 %s 后面（索引 %d）" % [name, target_card.name, target_index + 1])
+	print("卡片 %s 移动到卡片 %s 后面（索引 %d）" % [card.name, target_card.name, target_index + 1])
 
 # 获取当前卡片之上的所有跟随堆叠卡片（按堆叠顺序）
 func get_stack_followers(target_card: Card) -> Array[Card]:
