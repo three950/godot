@@ -1,7 +1,6 @@
 class_name CharacterCard
 extends CardInfo
 signal stats_changed
-
 @export var POW:int
 @export var aware:int
 @export var speed:int

@@ -1,4 +1,5 @@
 extends CardState
+const CHARACTER_SCRIPT := preload("res://assets/人物与敌人/Character/character.gd")
 # 信号：当卡片固定位置时触发（拖动结束）
 signal card_fixed()
 
@@ -35,8 +36,8 @@ func find_closest_card() -> Card:
 									   (target_card.stack_state & CardState.STACK_STATE_BESTACKED)
 		
 		if !is_bestacked:
-			print("卡片 %s 状态为 %s" % [target_card.name, target_state.state])			
-			if target_card.能被堆叠==true:
+			print("卡片 %s 状态为 %s" % [target_card.name, target_state.state])
+			if target_card.can_stack:
 				# 从重叠的卡片中找最近的一个
 				var dist_sq = card.global_position.distance_squared_to(target_card.global_position)
 				if dist_sq < closest_distance_sq:
@@ -52,7 +53,6 @@ func stack_on_card(target_card: Card) -> void:
 	# 设置跟随目标
 	card.follow_target = target_card
 	target_card.stacking_on_you.emit(self)
-	var follower_chain: Array[Card] = get_stack_followers(card)
 	# 将当前卡片的父节点设为和目标卡片相同
 	var target_parent = target_card.get_parent()
 	if target_parent and get_parent() != target_parent:
@@ -65,25 +65,8 @@ func stack_on_card(target_card: Card) -> void:
 		card.global_position = saved_global_pos
 		print("卡片 %s 移动到与 %s 相同的父节点" % [card.name, target_card.name])
 	
-	# 堆叠时需确保当前卡片紧跟在目标卡片堆叠链之后
-	move_after_card(target_card)
-	# 重新挂接跟随当前卡片的堆叠链，保持父节点一致与渲染顺序
-	var previous_card: Card = card
-	for follower in follower_chain:
-		if follower == null:
-			continue
-		var follower_parent = follower.get_parent()
-		if target_parent and follower_parent != target_parent:
-			var follower_saved_pos = follower.global_position
-			if follower_parent:
-				follower_parent.remove_child(follower)
-			target_parent.add_child(follower)
-			follower.global_position = follower_saved_pos
-		follower.move_after_card(previous_card)
-		previous_card = follower
-	
 	# 设置初始位置：跟随目标卡片的Label节点正下方
-	var label_node = target_card.get_node_or_null("ColorRect/Label")
+	var label_node = target_card.get_node("Panel")
 	if label_node:
 		var label_pos = label_node.global_position
 		var label_size = label_node.size
@@ -93,29 +76,3 @@ func stack_on_card(target_card: Card) -> void:
 	# 设置层级
 	card.z_index = target_card.z_index + 1
 	print("卡片 %s 堆叠完成" % card.name)
-# 将当前卡片移动到目标卡片后面（目标卡片总是在队列末尾）
-func move_after_card(target_card: Card) -> void:
-	var parent_node = get_parent()
-	if parent_node == null:
-		return
-
-	# 目标卡片总是在队列末尾，直接移动到目标卡片后面
-	var target_index = target_card.get_index()
-	parent_node.move_child(self, target_index + 1)
-	print("卡片 %s 移动到卡片 %s 后面（索引 %d）" % [card.name, target_card.name, target_index + 1])
-
-# 获取当前卡片之上的所有跟随堆叠卡片（按堆叠顺序）
-func get_stack_followers(target_card: Card) -> Array[Card]:
-	var followers: Array[Card] = []
-	if target_card == null:
-		return followers
-	var parent_node = target_card.get_parent()
-	if parent_node == null:
-		return followers
-	for child in parent_node.get_children():
-		if child is Card:
-			var child_card: Card = child
-			if child_card.follow_target == target_card:
-				followers.append(child_card)
-				followers.append_array(get_stack_followers(child_card))
-	return followers

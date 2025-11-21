@@ -7,10 +7,11 @@ signal card_label_exited_stack_area(exiting_card: Control)
 signal stacking_on_you(children_card: Card)
 # 信号：请求重新设置父节点
 signal reparent_requested(which_card: Card)
+@export var info: CardInfo
 @export var CAN_STACK_ON: bool = false
 enum cardType{normal, selling, architecture}  # 卡片类型
 @export var card_type: cardType = cardType.normal  # 默认为普通类型
-@export var can_accept_stack: bool = true  # 是否允许其他卡片堆叠在上面
+@export var can_stack: bool = true  # 是否允许其他卡片堆叠在上面
 @export var accept_value_only: bool = false  # 若为真，仅接受带有 value 属性的卡片
 var original_position: Vector2 = Vector2.ZERO  # 开始拖拽时的原始位置
 var drag_offset: Vector2 = Vector2.ZERO  # 拖拽时鼠标相对于卡片的偏移量
@@ -24,6 +25,8 @@ var children_cards: Card = null# 堆叠在卡片上的子卡片
 func _ready() -> void:
 	card_state_machine.init(self)
 	original_position = position	
+	if info:
+		can_stack = info.能被堆叠
 	# 连接 CardStackDetectorArea 信号
 	var stack_detector = get_node("CardStackDetectorArea")
 	if stack_detector:
