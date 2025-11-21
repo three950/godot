@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="EquipmentCard" load_steps=2 format=3 uid="uid://bptle7yhbwdk8"]
+
+[ext_resource type="Script" uid="uid://b6vcycxqwdmqc" path="res://assets/物品/装备/EquipmentCard.gd" id="1_onpdw"]
+
+[resource]
+script = ExtResource("1_onpdw")
+metadata/_custom_type_script = "uid://b6vcycxqwdmqc"

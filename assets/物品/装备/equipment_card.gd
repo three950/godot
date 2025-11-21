@@ -1,5 +1,5 @@
 extends "res://baggable_card.gd"
-class_name EquipmentCard
+class_name Equipment
 
 # 装备卡片特有属性
 # 装备卡片：有防具和武器，可以和遗物合成新的装备，本身可以是遗物
