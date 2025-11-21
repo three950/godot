@@ -29,12 +29,12 @@ func set_character_stats(value: CharacterCard) -> void:
 func _update_character() -> void:
 	if character == null:
 		return
-	name_label.text = character.info.name
-	portrait_rect.texture = character.info.portrait
+	name_label.text = character.name
+	portrait_rect.texture = character.portrait
 
 	update_stats()
 	
 func update_stats() -> void:
 	if character == null:
 		return
-	attribute_labels.update_labels(character.HP, character.ATK, character.DEF)
+	attribute_labels.update_labels(character.MAX_HP, character.POW, character.DEF)

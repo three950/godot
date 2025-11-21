@@ -1,23 +1,17 @@
-[gd_resource type="Resource" script_class="CharacterCard" load_steps=5 format=3 uid="uid://tk1nuwcbk0u2"]
+[gd_resource type="Resource" script_class="CharacterCard" load_steps=3 format=3 uid="uid://tk1nuwcbk0u2"]
 
 [ext_resource type="Script" uid="uid://c4lf65wbktjbc" path="res://assets/人物与敌人/Character/CharacterCard.gd" id="1_i00u1"]
 [ext_resource type="Texture2D" uid="uid://2cp8gr68qu5g" path="res://assets/人物与敌人/Character/人物_娜娜奇.png" id="1_t1jnm"]
-[ext_resource type="Script" uid="uid://chvrc588f7156" path="res://ui/CardInfo.gd" id="2_jpc52"]
-
-[sub_resource type="Resource" id="Resource_jpc52"]
-script = ExtResource("2_jpc52")
-name = "娜娜奇"
-portrait = ExtResource("1_t1jnm")
-metadata/_custom_type_script = "uid://chvrc588f7156"
 
 [resource]
 resource_name = "娜娜奇"
 script = ExtResource("1_i00u1")
-info = SubResource("Resource_jpc52")
-ATK = 20
-"意识" = 100
-"速度" = 15
-HP = 30
+POW = 8
+aware = 100
+speed = 15
+MAX_HP = 30
 DEF = 5
 left = "钓鱼竿"
+name = " 娜娜奇"
+portrait = ExtResource("1_t1jnm")
 metadata/_custom_type_script = "uid://c4lf65wbktjbc"

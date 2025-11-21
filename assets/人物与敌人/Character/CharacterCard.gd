@@ -1,13 +1,11 @@
 class_name CharacterCard
-extends Resource
+extends CardInfo
 signal stats_changed
 
-@export var info: CardInfo = CardInfo.new()
-
-@export var ATK:int
-@export var 意识:int
-@export var 速度:int
-@export var HP:int
+@export var POW:int
+@export var aware:int
+@export var speed:int
+@export var MAX_HP:int
 @export var DEF:int
 
 @export_group("左右手")
