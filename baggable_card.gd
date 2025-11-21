@@ -1,11 +1,10 @@
 extends "res://card.gd"
 class_name BaggableCard
 
-# 所有可以放入背包、在商店出售的卡片都继承此类
-# 包括：装备(EquipmentCard)、道具(ItemCard)、资源(ResourceCard)
+# 所有有价值的，可放入背包、在商店出售的卡片都继承此类
+# 包括：装备(EquipmentCard)、道具(ItemCard)、资源(ResourceCard)、遗物
 
 @export var value: int = 1  # 物品价值（用于商店出售/购买）
-@export var is_relic: bool = false  # 是否是遗物
 
 # ========== 装备效果系统 ==========
 # 装备时效果（从CSV的"装备时"列解析）
