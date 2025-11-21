@@ -28,6 +28,10 @@ func _ready() -> void:
 	if stack_detector:
 		stack_detector.area_entered.connect(_on_stack_detector_area_entered)
 		stack_detector.area_exited.connect(_on_stack_detector_area_exited)
+	var card_panel := get_node("Panel")
+	if card_panel:
+		position = card_panel.position
+		size = card_panel.size
 
 
 # CardStackDetectorArea 信号处理：当有 Area 进入时

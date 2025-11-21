@@ -35,6 +35,10 @@ anchors_preset = 0
 offset_right = 88.0
 offset_bottom = 115.0
 script = ExtResource("1_q5obu")
+CAN_STACK_ON = null
+card_type = null
+can_accept_stack = null
+accept_value_only = null
 metadata/_edit_lock_ = true
 
 [node name="CardPanel" type="Panel" parent="."]
