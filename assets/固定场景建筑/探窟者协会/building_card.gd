@@ -8,7 +8,7 @@ class_name BuildingCard
 @export var hp_restore_per_night: int = 5  # 每晚恢复的生命值
 @export var requires_food: bool = true  # 是否需要食物补给
 @export var requires_water: bool = true  # 是否需要水源补给
-
+@export var accept_value_only: bool = false  # 若为真，仅接受带有 value 属性的卡片
 var resting_characters: Array[CharacterCard] = []  # 正在休息的角色
 
 func _ready() -> void:

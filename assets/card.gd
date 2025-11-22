@@ -12,7 +12,6 @@ signal reparent_requested(which_card: Card)
 enum cardType{normal, selling, architecture}  # 卡片类型
 @export var card_type: cardType = cardType.normal  # 默认为普通类型
 @export var can_stack: bool = true  # 是否允许其他卡片堆叠在上面
-@export var accept_value_only: bool = false  # 若为真，仅接受带有 value 属性的卡片
 var original_position: Vector2 = Vector2.ZERO  # 开始拖拽时的原始位置
 var drag_offset: Vector2 = Vector2.ZERO  # 拖拽时鼠标相对于卡片的偏移量
 @onready var card_state_machine:CardStateMachine=$CardStateMachine as CardStateMachine
