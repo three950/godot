@@ -19,8 +19,6 @@ border_color = Color(0, 0, 0, 1)
 [node name="EnemyCard" instance=ExtResource("1_yl3u4")]
 script = ExtResource("2_bbcg6")
 enemy = null
-card_type = null
-can_stack = null
 
 [node name="CardPanel" parent="." index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_44hyf")

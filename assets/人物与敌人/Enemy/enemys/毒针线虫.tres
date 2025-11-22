@@ -5,9 +5,9 @@
 
 [resource]
 script = ExtResource("1_fvscb")
-ATK = 5
-speed = 8
 MAX_HP = 30
+ATK = 6
+speed = 8
 DEF = 3
 name = "毒针线虫"
 portrait = ExtResource("1_ft5gs")

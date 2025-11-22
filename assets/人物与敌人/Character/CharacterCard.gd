@@ -1,13 +1,14 @@
 class_name CharacterCard
-extends CardInfo
-signal stats_changed
-@export var POW:int
+extends BattleStates
+
+@export var POW:int : set = set_POW
 @export var aware:int
-@export var speed:int
-@export var MAX_HP:int
-@export var DEF:int
-@export var ATK:int
-var HP:int
+
+
+func set_POW(value: int) -> void:
+	POW = value
+func set_ATK(value: int) -> void:
+	ATK = POW
 
 @export_group("左右手")
 @export var left: String = ""
