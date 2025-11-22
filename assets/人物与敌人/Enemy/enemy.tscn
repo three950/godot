@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://b1n4d84218ejx"]
+[gd_scene load_steps=5 format=3 uid="uid://b1n4d84218ejx"]
 
 [ext_resource type="PackedScene" uid="uid://b1oqblyvspkqi" path="res://assets/人物与敌人/biology.tscn" id="1_yl3u4"]
+[ext_resource type="Script" uid="uid://cr4xcgnxahlhf" path="res://assets/人物与敌人/Enemy/enemy.gd" id="2_bbcg6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_44hyf"]
 bg_color = Color(0.8831649, 0.3872493, 0.34170684, 1)
@@ -16,9 +17,16 @@ border_width_bottom = 1
 border_color = Color(0, 0, 0, 1)
 
 [node name="EnemyCard" instance=ExtResource("1_yl3u4")]
+script = ExtResource("2_bbcg6")
+enemy = null
+card_type = null
+can_stack = null
 
 [node name="CardPanel" parent="." index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_44hyf")
 
 [node name="Panel" parent="." index="1"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_6u40f")
+
+[node name="Label" parent="Panel" index="0"]
+text = "敌对生物"

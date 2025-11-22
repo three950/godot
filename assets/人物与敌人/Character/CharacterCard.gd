@@ -6,6 +6,8 @@ signal stats_changed
 @export var speed:int
 @export var MAX_HP:int
 @export var DEF:int
+@export var ATK:int
+var HP:int
 
 @export_group("左右手")
 @export var left: String = ""

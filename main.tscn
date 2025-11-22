@@ -7,8 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://cs4aojjehfrjt" path="res://assets/小地形/scene_card.tscn" id="5_scene_card"]
 [ext_resource type="PackedScene" uid="uid://cq3m5h8qavw2k" path="res://assets/物品/遗物/remains_card.tscn" id="6_remains_card"]
 [ext_resource type="PackedScene" path="res://assets/AbyssLayer/layer1/depth_indicator.tscn" id="7_depth_indicator"]
-[ext_resource type="PackedScene" path="res://assets/物品/资源/resource_card.tscn" id="8_resource_card"]
-[ext_resource type="PackedScene" uid="uid://b1n4d84218ejx" path="res://assets/人物与敌人/Enemy/enemy_card.tscn" id="9_enemy_card"]
+[ext_resource type="PackedScene" uid="uid://cvn5scyib1276" path="res://assets/物品/资源/resource_card.tscn" id="8_resource_card"]
+[ext_resource type="PackedScene" uid="uid://b1n4d84218ejx" path="res://assets/人物与敌人/Enemy/enemy.tscn" id="9_enemy_card"]
 [ext_resource type="PackedScene" path="res://assets/物品/装备/equipment_card.tscn" id="10_equipment_card"]
 
 [sub_resource type="Resource" id="Resource_4c57u"]

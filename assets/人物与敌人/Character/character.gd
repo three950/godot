@@ -31,10 +31,18 @@ func _update_character() -> void:
 		return
 	name_label.text = character.name
 	portrait_rect.texture = character.portrait
-
+	character.ATK=character.POW
+	character.HP=character.MAX_HP
 	update_stats()
 	
 func update_stats() -> void:
 	if character == null:
 		return
-	attribute_labels.update_labels(character.MAX_HP, character.POW, character.DEF)
+	attribute_labels.update_labels(character.HP, character.ATK, character.DEF)
+
+func take_damage(damage:int) -> void:
+	if character.HP <= 0:
+		return
+	character.take_damage(damage)
+	if character.HP <=0:
+		queue_free()
