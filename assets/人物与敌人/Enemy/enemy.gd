@@ -1,3 +1,4 @@
+class_name Enemy
 extends "res://assets/人物与敌人/battle_card.gd"
 @export var enemy: EnemyCard : set = set_enemy_stats# 引用 enemys 目录下的资源
 

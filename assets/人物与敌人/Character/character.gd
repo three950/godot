@@ -1,3 +1,4 @@
+class_name  Character
 extends "res://assets/人物与敌人/battle_card.gd"
 
 @export var character: CharacterCard : set = set_character_stats# 引用 characters 目录下的资源

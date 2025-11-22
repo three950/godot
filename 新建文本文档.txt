@@ -1,3 +1,4 @@
+S1-10获取所有在统一场景中的元素tree.get_nodes_in_group("Character")
 没有跟随，点到了panel
 
 S1-09最后卡片不同状态应用不同样式
