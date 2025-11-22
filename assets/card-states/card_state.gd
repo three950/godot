@@ -1,7 +1,7 @@
 class_name CardState
 extends Node
 
-enum State{fixed, pickingup, dragging, falling,instack}
+enum State{fixed, pickingup, dragging, falling, instack, instackdragging}
 enum cardType{normal, selling, architecture}  # 卡片类型
 signal transition_requested(from: CardState, to: State)
 const STACK_STATE_BESTACKED = 1

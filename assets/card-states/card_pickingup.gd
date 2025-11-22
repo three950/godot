@@ -14,3 +14,6 @@ func on_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		print("pick2")
 		transition_requested.emit(self, CardState.State.dragging)
+		if card.children_card:
+			card.children_card.follow_me.emit()
+			

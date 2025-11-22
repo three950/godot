@@ -11,15 +11,17 @@ func enter() -> void:
 	# 检测是否可以堆叠到其他卡片上
 	var closest_card_falling = find_closest_card()
 	if closest_card_falling != null:
-		print("卡片 %s 找到最近的卡片 %s 进行堆叠" % [name, closest_card_falling.name])
+		print("卡片 %s 找到最近的卡片 %s 进行堆叠" % [card.name, closest_card_falling.name])
 		stack_on_card(closest_card_falling)
-	if card.stack_state & CardState.STACK_STATE_STACKING:
-		print("卡片 %s 已堆叠到最顶部" % name)
+	if card.stack_state & CardState.STACK_STATE_STACKING:#堆叠在其他卡片上，不是头卡
+		print("卡片 %s 已堆叠到最顶部" % card.name)
 		transition_requested.emit(self, CardState.State.instack)
-	else:
+	elif card.children_card==null:#单张卡片，没有堆叠
 		card_fixed.emit()
-		print("卡片 %s 已固定" % name)
+		print("卡片 %s 已固定" % card.name)
 		transition_requested.emit(self, CardState.State.fixed)
+	else :card.children_card.stop_follow_me.emit()
+	
 func find_closest_card() -> Card:
 	# 只从当前重叠的卡片中查找
 	print("卡片 %s 开始查找最近的可堆叠卡片" % card.name)
@@ -28,7 +30,7 @@ func find_closest_card() -> Card:
 	for cards in card.overlapping_cards:
 		var target_card = cards as Card
 		if target_card == null:
-			print("卡片 %s 重叠的卡片为空" % name)
+			print("卡片 %s 重叠的卡片为空" % card.name)
 			continue
 		# 查找状态为fixed的卡片，或者instack状态且未被堆叠的卡片
 		var target_state = target_card.card_state_machine.current_state if target_card.card_state_machine else null
@@ -36,7 +38,7 @@ func find_closest_card() -> Card:
 									   (target_card.stack_state & CardState.STACK_STATE_BESTACKED)
 		
 		if !is_bestacked:
-			print("卡片 %s 状态为 %s" % [target_card.name, target_state.state])
+			print("卡片 %s 状态为 %s, can_stack=%s" % [target_card.name, target_state.state, target_card.can_stack])
 			if target_card.can_stack:
 				# 从重叠的卡片中找最近的一个
 				var dist_sq = card.global_position.distance_squared_to(target_card.global_position)
@@ -52,7 +54,7 @@ func stack_on_card(target_card: Card) -> void:
 	card.stack_state = CardState.STACK_STATE_STACKING
 	# 设置跟随目标
 	card.follow_target = target_card
-	target_card.stacking_on_you.emit(self)
+	target_card.stacking_on_you.emit(card)
 	# 将当前卡片的父节点设为和目标卡片相同
 	var target_parent = target_card.get_parent()
 	if target_parent and get_parent() != target_parent:
