@@ -13,14 +13,19 @@ func enter() -> void:
 	if closest_card_falling != null:
 		print("卡片 %s 找到最近的卡片 %s 进行堆叠" % [card.name, closest_card_falling.name])
 		stack_on_card(closest_card_falling)
+	if card.children_card!=null:#是头卡，有children就提醒，没有就不提醒，但是都回到fixed属性
+		print("有children_card")
+		if card.children_card and card.children_card.card_state_machine and card.children_card.card_state_machine.current_state:
+			card.children_card.card_state_machine.current_state.stop_follow_me.emit()
+		card_fixed.emit()
 	if card.stack_state & CardState.STACK_STATE_STACKING:#堆叠在其他卡片上，不是头卡
 		print("卡片 %s 已堆叠到最顶部" % card.name)
 		transition_requested.emit(self, CardState.State.instack)
-	elif card.children_card==null:#单张卡片，没有堆叠
-		card_fixed.emit()
+	else:	
 		print("卡片 %s 已固定" % card.name)
 		transition_requested.emit(self, CardState.State.fixed)
-	else :card.children_card.stop_follow_me.emit()
+
+			
 	
 func find_closest_card() -> Card:
 	# 只从当前重叠的卡片中查找

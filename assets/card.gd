@@ -5,7 +5,8 @@ signal card_label_entered_stack_area(entering_card: Control)
 # 信号：当一个卡片的CardLabel离开此卡片的CardStackDetectorArea时触发
 signal card_label_exited_stack_area(exiting_card: Control)
 # 由堆叠在此卡上的其他卡发出，让此卡设置control区域和状态转换
-signal stacking_on_you(children_card: Card)
+signal stacking_on_you(children: Card)
+signal stop_stacking_on_you()
 # 信号：请求重新设置父节点
 signal reparent_requested(which_card: Card)
 @export var info: CardInfo
@@ -32,7 +33,7 @@ func _ready() -> void:
 		stack_detector.area_entered.connect(_on_stack_detector_area_entered)
 		stack_detector.area_exited.connect(_on_stack_detector_area_exited)
 	stacking_on_you.connect(bestacked_on_me)
-
+	stop_stacking_on_you.connect(stop_stacking_on_me)
 # CardStackDetectorArea 信号处理：当有 Area 进入时
 func _on_stack_detector_area_entered(area: Area2D) -> void:
 	# 找到进入区域的Area2D所属的卡片实例
@@ -59,13 +60,20 @@ func _on_stack_detector_area_exited(area: Area2D) -> void:
 		# 发送信号通知
 		card_label_exited_stack_area.emit(exiting_card)
 
-func bestacked_on_me(children_card: Card) -> void:
+func bestacked_on_me(children: Card) -> void:
 	stack_state |= CardState.STACK_STATE_BESTACKED
-	children_card = children_card
-	var card_panel := get_node("Panel")
+	children_card = children
+	print("一宿你")
+	var label_panel := get_node("Panel")
+	if label_panel:
+		size = label_panel.size
+func stop_stacking_on_me() -> void:
+	stack_state &= ~CardState.STACK_STATE_BESTACKED
+	children_card = null
+	print("不要走")
+	var card_panel:= get_node("CardPanel")
 	if card_panel:
-		position = card_panel.position
-		size = card_panel.size
+		size=card_panel.size
 func _input(event: InputEvent) -> void:
 	card_state_machine.on_input(event)
 
