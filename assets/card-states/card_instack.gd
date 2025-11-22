@@ -5,7 +5,7 @@ func enter() -> void:
 	if card.follow_target == null:
 		print("没有目标兄弟")
 	follow_me.connect(follow_you)
-	
+
 func follow_you():
 	if card.children_card and card.children_card.card_state_machine and card.children_card.card_state_machine.current_state:
 		card.children_card.card_state_machine.current_state.follow_me.emit()

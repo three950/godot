@@ -7,6 +7,7 @@ signal card_label_exited_stack_area(exiting_card: Control)
 # 由堆叠在此卡上的其他卡发出，让此卡设置control区域和状态转换
 signal stacking_on_you(children: Card)
 signal stop_stacking_on_you()
+signal leave_you()
 # 信号：请求重新设置父节点
 signal reparent_requested(which_card: Card)
 @export var info: CardInfo
@@ -74,6 +75,7 @@ func stop_stacking_on_me() -> void:
 	var card_panel:= get_node("CardPanel")
 	if card_panel:
 		size=card_panel.size
+
 func _input(event: InputEvent) -> void:
 	card_state_machine.on_input(event)
 
