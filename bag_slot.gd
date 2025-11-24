@@ -1,6 +1,6 @@
 extends Panel
 class_name BagSlot
-signal show_card(cardscene:PackedScene)
+signal show_card(card_scene:PackedScene, card_data:CharacterCard)
 func _ready() -> void:
 	show_card.connect(show_owned_card)
 ## 获取卡槽的中心全局位置（用于卡片对齐）
@@ -15,9 +15,14 @@ func contains_global_point(point: Vector2) -> bool:
 ## 获取卡槽的尺寸（用于计算缩放）
 func get_slot_size() -> Vector2:
 	return size
-func show_owned_card(cardscene:PackedScene) -> void:
-	if not cardscene:
+func show_owned_card(card_scene:PackedScene, card_data:CharacterCard) -> void:
+	if not card_scene:
 		push_error("没有卡片场景")
-	var card = cardscene.instance()
+		return
+	var card = card_scene.instance()
+	if card.has_method("set_character_stats"):
+		card.set_character_stats(card_data)
+	elif "character" in card:
+		card.character = card_data
 	add_child(card)
 	print("生成卡片")

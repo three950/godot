@@ -1,21 +1,17 @@
 extends Button
 
 # 背包相关
-var bag: Node2D = null  # 背包实例
-
-# 角色卡片引用（父节点）
-var character_card: CharacterCard = null
+var bag: Node = null  # 背包实例
+var character_node: Character = null
 
 func _ready() -> void:
-	# 获取父节点（CharacterCard）引用
 	var parent_node = get_parent()
-	if parent_node is CharacterCard:
-		character_card = parent_node
+	if parent_node is Character:
+		character_node = parent_node
 	else:
-		push_warning("【背包按钮】未找到父节点 CharacterCard")
+		push_warning("【背包按钮】未找到 Character 节点")
 		return
-	
-	bag = character_card.get_node("Bag") as Node2D
+	bag = character_node.get_node_or_null("Bag")
 	if not bag:
 		push_warning("【背包按钮】未找到 Bag 节点")
 		return

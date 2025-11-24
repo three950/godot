@@ -19,14 +19,17 @@ signal bag_item_changed
 	$HBoxContainer/背包/Slot6,
 ]
 
-# 当前背包所属的角色
-var character: CharacterCard = null  # 角色卡片引用（用于装备效果）
+# 当前背包所属的角色（在编辑器或运行时注入）
+@export var character: CharacterCard = null
 func _ready() -> void:
 	_load_all_cards()
 	
 func _load_all_cards():
-	_load_card(character.左右手,hand_slots)
-	_load_card(character.背包,backpack_slots)
+	if character == null:
+		push_error("BagPanel 未设置 character 资源")
+		return
+	_load_card(character.左右手, hand_slots)
+	_load_card(character.背包, backpack_slots)
 	
 func _load_card(卡牌:Array,卡槽:Array[BagSlot]) -> void:
 	for index in range(卡槽.size()):
@@ -35,4 +38,4 @@ func _load_card(卡牌:Array,卡槽:Array[BagSlot]) -> void:
 		if card_resource == null:
 			continue
 		if card_resource != null and card_resource.card_scene:
-			slot.show_card.emit(card_resource.card_scene)
+			slot.show_card.emit(card_resource.card_scene, card_resource)

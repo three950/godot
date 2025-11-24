@@ -10,6 +10,7 @@ func get_battle_resource() -> BattleStates:
 func set_character_stats(value: CharacterCard) -> void:
 	character = value
 	_connect_and_update(character)
+	_update_bag_panel()
 
 func _update_battle_card() -> void:
 	if character == null:
@@ -19,3 +20,8 @@ func _update_battle_card() -> void:
 	# ATK 会自动从 POW 初始化，无需手动设置
 	character.HP = character.MAX_HP
 	update_stats()
+
+func _update_bag_panel() -> void:
+	var bag_panel := get_node_or_null("Bag")
+	if bag_panel:
+		bag_panel.character = character
