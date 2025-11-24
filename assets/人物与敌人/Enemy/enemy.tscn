@@ -16,7 +16,7 @@ bg_color = Color(0.74368256, 0.27023113, 0.23480722, 1)
 border_width_bottom = 1
 border_color = Color(0, 0, 0, 1)
 
-[node name="EnemyCard" instance=ExtResource("1_yl3u4")]
+[node name="EnemyCard" groups=["BattleCharacter", "BattleEnemy"] instance=ExtResource("1_yl3u4")]
 script = ExtResource("2_bbcg6")
 enemy = null
 

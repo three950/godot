@@ -1,5 +1,5 @@
 extends "res://baggable_card.gd"
-class_name ItemCard
+class_name Item
 
 # 道具卡片特有属性
 # 道具卡片：具有各种特殊效果，是物品
