@@ -46,4 +46,3 @@ func take_damage(damage: int) -> void:
 	resource.take_damage(damage)
 	if resource.HP <= 0:
 		queue_free()
-

@@ -12,6 +12,7 @@ offset_left = 2.0
 offset_top = 88.0
 offset_right = 86.0
 offset_bottom = 112.0
+mouse_filter = 2
 alignment = 1
 script = ExtResource("1_script")
 
@@ -26,6 +27,7 @@ vertical_alignment = 1
 
 [node name="RightStats" type="VBoxContainer" parent="AttributeLabels" index="1"]
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/separation = 0
 
 [node name="ATKLabel" type="Label" parent="AttributeLabels/RightStats" index="0"]

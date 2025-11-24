@@ -9,7 +9,7 @@
 [ext_resource type="Script" uid="uid://dw2dcs08at733" path="res://assets/card-states/crad_dragging.gd" id="7_a3cqy"]
 [ext_resource type="Script" uid="uid://bgkton1xcycf" path="res://assets/card-states/card_falling.gd" id="8_ram0e"]
 [ext_resource type="Script" uid="uid://sxc0f1pavh3f" path="res://assets/card-states/card_instack.gd" id="9_kvflh"]
-[ext_resource type="Script" uid="uid://bwf2g3aljfb72" path="res://assets/card-states/card_instack_dragging.gd" id="10_a3cqy"]
+[ext_resource type="Script" path="res://assets/card-states/card_instack_dragging.gd" id="10_a3cqy"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e6854"]
 bg_color = Color(0.89353544, 0.8712141, 0.789065, 1)

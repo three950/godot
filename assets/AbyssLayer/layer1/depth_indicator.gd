@@ -1,4 +1,4 @@
-extends "res://card.gd"
+extends "res://assets/card.gd"
 
 ## 深度指示器卡片
 ## 只能被人物卡堆叠，堆叠后每2秒根据JSON配置的概率生成场景或装备卡片

@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="1_base"]
 [ext_resource type="Script" uid="uid://cemfiiymj2it" path="res://assets/小地形/scene_card.gd" id="2_scene"]
 [ext_resource type="Texture2D" uid="uid://bl8gwcgn5svup" path="res://assets/小地形/小洞穴.png" id="3_texture"]
-[ext_resource type="PackedScene" path="res://ui/card_progress_bar.tscn" id="4_progressbar"]
+[ext_resource type="PackedScene" uid="uid://m6rrjkc625gk" path="res://ui/card_progress_bar.tscn" id="4_progressbar"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t20ro"]
 bg_color = Color(0.6915994, 0.43541315, 0.580634, 1)
@@ -34,6 +34,10 @@ text = "小场景"
 
 [node name="ProgressBar" parent="." index="2" instance=ExtResource("4_progressbar")]
 layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 78.0
+offset_bottom = 27.0
 
 [node name="TextureRect" parent="." index="3"]
 offset_left = 9.0

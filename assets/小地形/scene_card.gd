@@ -1,4 +1,4 @@
-extends "res://card.gd"
+extends "res://assets/card.gd"
 class_name SceneCard
 
 ## 场景卡片

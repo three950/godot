@@ -36,5 +36,3 @@ offset_top = 101.0
 offset_right = 647.0
 offset_bottom = 216.0
 enemy = ExtResource("6_wxwn5")
-card_type = 0
-can_stack = true

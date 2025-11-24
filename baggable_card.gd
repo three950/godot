@@ -1,4 +1,4 @@
-extends "res://card.gd"
+extends "res://assets/card.gd"
 class_name BaggableCard
 
 # 所有有价值的，可放入背包、在商店出售的卡片都继承此类

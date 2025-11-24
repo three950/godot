@@ -1,4 +1,4 @@
-extends "res://card.gd"
+extends "res://assets/card.gd"
 class_name DialogueCard
 
 # 对话卡片特有属性

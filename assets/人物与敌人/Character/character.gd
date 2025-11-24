@@ -1,3 +1,4 @@
+@tool
 class_name  Character
 extends "res://assets/人物与敌人/battle_card.gd"
 

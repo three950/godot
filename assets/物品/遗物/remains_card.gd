@@ -1,5 +1,16 @@
-extends "res://card.gd"
+extends "res://assets/card.gd"
 class_name RemainsCard
+################################################
+enum Rarity {COMMON,FORTH,THRID,SECOND,FRIST,SUPER}
+const RARITY_COLORS:={
+	Rarity.COMMON:Color("cbcac7ff"),
+	Rarity.FORTH:Color("d2c7caff"),
+	Rarity.THRID:Color("d9c3d1ff"),
+	Rarity.SECOND:Color("dfc0d2ff"),
+	Rarity.FRIST:Color("e6bbd9ff"),
+	Rarity.SUPER:Color("eeb6deff"),
+}
+
 
 # 遗物卡片特有属性
 @export var remains_name: String = ""  # 遗物名称
