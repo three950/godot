@@ -10,8 +10,6 @@ size = Vector2(186, 126)
 offset_right = 188.0
 offset_bottom = 130.0
 script = ExtResource("1_bag")
-slot_card_scene = null
-auto_load_on_ready = null
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 0
