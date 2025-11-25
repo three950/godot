@@ -3,21 +3,11 @@ extends BattleStates
 
 @export var POW:int : set = set_POW
 @export var aware:int
-
+@export var card_scene:PackedScene = load("res://assets/人物与敌人/Character/character.tscn")
 
 func set_POW(value: int) -> void:
 	POW = value
-func set_ATK(value: int) -> void:
+func set_ATK(_value: int) -> void:
 	ATK = POW
-
-@export_group("左右手")
-@export var left: String = ""
-@export var right: String = ""
-
-@export_group("背包")
-@export var slot_1: String = ""
-@export var slot_2: String = ""
-@export var slot_3: String = ""
-@export var slot_4: String = ""
-@export var slot_5: String = ""
-@export var slot_6: String = ""
+@export var 左右手: Array[CharacterCard] = [null, null]
+@export var 背包: Array[CharacterCard] = [null, null, null, null, null, null]

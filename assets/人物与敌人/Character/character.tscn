@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://di7barbrn42cy"]
+[gd_scene load_steps=6 format=3 uid="uid://di7barbrn42cy"]
 
 [ext_resource type="PackedScene" uid="uid://b1oqblyvspkqi" path="res://assets/人物与敌人/biology.tscn" id="1_p58c1"]
 [ext_resource type="Script" uid="uid://blvsy21y0f4uy" path="res://assets/人物与敌人/Character/character.gd" id="2_dm7l3"]
 [ext_resource type="Script" uid="uid://cijuakdd8g5rt" path="res://assets/人物与敌人/Character/bagbutton.gd" id="3_dm7l3"]
+[ext_resource type="PackedScene" uid="uid://bkflydah8kasa" path="res://bag.tscn" id="4_ig4cw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p58c1"]
 bg_color = Color(1, 1, 1, 1)
@@ -37,3 +38,11 @@ autowrap_mode = 3
 autowrap_trim_flags = 64
 clip_text = true
 script = ExtResource("3_dm7l3")
+
+[node name="Bag" parent="." index="5" groups=["Cards"] instance=ExtResource("4_ig4cw")]
+layout_mode = 0
+offset_left = 94.0
+offset_top = -7.0
+offset_right = 282.0
+offset_bottom = 123.0
+mouse_filter = 2

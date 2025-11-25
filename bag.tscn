@@ -1,18 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://bkflydah8kasa"]
+[gd_scene load_steps=4 format=3 uid="uid://bkflydah8kasa"]
 
 [ext_resource type="Script" uid="uid://47jqjxp2hu76" path="res://bag.gd" id="1_bag"]
 [ext_resource type="Script" uid="uid://b6qdcc1812p6c" path="res://bag_slot.gd" id="2_slot"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_76wf2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_76wf2"]
 size = Vector2(186, 126)
 
 [node name="BagPanel" type="Panel"]
-offset_left = 116.0
-offset_top = 95.0
-offset_right = 304.0
-offset_bottom = 225.0
+offset_right = 188.0
+offset_bottom = 130.0
 script = ExtResource("1_bag")
 
 [node name="ColorRect" type="ColorRect" parent="."]
@@ -32,17 +28,17 @@ offset_bottom = 127.0
 localize_numeral_system = false
 theme_override_constants/separation = 2
 
-[node name="LeftSlots" type="VBoxContainer" parent="HBoxContainer"]
+[node name="左右手" type="VBoxContainer" parent="HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 1
 
-[node name="Slot1" type="Panel" parent="HBoxContainer/LeftSlots"]
+[node name="left" type="Panel" parent="HBoxContainer/左右手"]
 custom_minimum_size = Vector2(44, 59)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_76wf2")
 script = ExtResource("2_slot")
 
-[node name="ColorRect" type="ColorRect" parent="HBoxContainer/LeftSlots/Slot1"]
+[node name="ColorRect" type="ColorRect" parent="HBoxContainer/左右手/left"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -55,12 +51,13 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.2, 0.2, 0.2, 0.5)
 
-[node name="Slot2" type="Panel" parent="HBoxContainer/LeftSlots"]
+[node name="right" type="Panel" parent="HBoxContainer/左右手"]
 custom_minimum_size = Vector2(44, 59)
 layout_mode = 2
 script = ExtResource("2_slot")
 
-[node name="ColorRect" type="ColorRect" parent="HBoxContainer/LeftSlots/Slot2"]
+[node name="ColorRect" type="ColorRect" parent="HBoxContainer/左右手/right"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -73,19 +70,20 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.2, 0.2, 0.2, 0.5)
 
-[node name="RightSlots" type="GridContainer" parent="HBoxContainer"]
+[node name="背包" type="GridContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/h_separation = 1
 theme_override_constants/v_separation = 1
 columns = 3
 
-[node name="Slot3" type="Panel" parent="HBoxContainer/RightSlots"]
+[node name="Slot1" type="Panel" parent="HBoxContainer/背包"]
 custom_minimum_size = Vector2(44, 59)
 layout_mode = 2
 script = ExtResource("2_slot")
 
-[node name="ColorRect" type="ColorRect" parent="HBoxContainer/RightSlots/Slot3"]
+[node name="ColorRect" type="ColorRect" parent="HBoxContainer/背包/Slot1"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -98,12 +96,13 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.2, 0.2, 0.2, 0.5)
 
-[node name="Slot4" type="Panel" parent="HBoxContainer/RightSlots"]
+[node name="Slot2" type="Panel" parent="HBoxContainer/背包"]
 custom_minimum_size = Vector2(44, 59)
 layout_mode = 2
 script = ExtResource("2_slot")
 
-[node name="ColorRect" type="ColorRect" parent="HBoxContainer/RightSlots/Slot4"]
+[node name="ColorRect" type="ColorRect" parent="HBoxContainer/背包/Slot2"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -116,12 +115,13 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.2, 0.2, 0.2, 0.5)
 
-[node name="Slot5" type="Panel" parent="HBoxContainer/RightSlots"]
+[node name="Slot3" type="Panel" parent="HBoxContainer/背包"]
 custom_minimum_size = Vector2(44, 59)
 layout_mode = 2
 script = ExtResource("2_slot")
 
-[node name="ColorRect" type="ColorRect" parent="HBoxContainer/RightSlots/Slot5"]
+[node name="ColorRect" type="ColorRect" parent="HBoxContainer/背包/Slot3"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -134,12 +134,13 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.2, 0.2, 0.2, 0.5)
 
-[node name="Slot6" type="Panel" parent="HBoxContainer/RightSlots"]
+[node name="Slot4" type="Panel" parent="HBoxContainer/背包"]
 custom_minimum_size = Vector2(44, 59)
 layout_mode = 2
 script = ExtResource("2_slot")
 
-[node name="ColorRect" type="ColorRect" parent="HBoxContainer/RightSlots/Slot6"]
+[node name="ColorRect" type="ColorRect" parent="HBoxContainer/背包/Slot4"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -152,12 +153,13 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.2, 0.2, 0.2, 0.5)
 
-[node name="Slot7" type="Panel" parent="HBoxContainer/RightSlots"]
+[node name="Slot5" type="Panel" parent="HBoxContainer/背包"]
 custom_minimum_size = Vector2(44, 59)
 layout_mode = 2
 script = ExtResource("2_slot")
 
-[node name="ColorRect" type="ColorRect" parent="HBoxContainer/RightSlots/Slot7"]
+[node name="ColorRect" type="ColorRect" parent="HBoxContainer/背包/Slot5"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -170,12 +172,13 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.2, 0.2, 0.2, 0.5)
 
-[node name="Slot8" type="Panel" parent="HBoxContainer/RightSlots"]
+[node name="Slot6" type="Panel" parent="HBoxContainer/背包"]
 custom_minimum_size = Vector2(44, 59)
 layout_mode = 2
 script = ExtResource("2_slot")
 
-[node name="ColorRect" type="ColorRect" parent="HBoxContainer/RightSlots/Slot8"]
+[node name="ColorRect" type="ColorRect" parent="HBoxContainer/背包/Slot6"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -189,6 +192,7 @@ grow_vertical = 2
 color = Color(0.2, 0.2, 0.2, 0.5)
 
 [node name="BagAreaDetector" type="Area2D" parent="."]
+visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BagAreaDetector"]
 position = Vector2(93, 65)

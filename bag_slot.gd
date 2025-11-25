@@ -1,16 +1,8 @@
 extends Panel
 class_name BagSlot
-
-## 背包卡槽 - 纯背景显示组件
-## 只负责提供位置信息，不存储卡片引用，不处理逻辑
-
+signal show_card(card_scene:PackedScene, card_data:CharacterCard)
 func _ready() -> void:
-	# 确保可以接收鼠标事件（用于检测）
-	mouse_filter = Control.MOUSE_FILTER_STOP
-	
-	# 加入 BagSlot 组，方便查找
-	add_to_group("BagSlot")
-
+	show_card.connect(show_owned_card)
 ## 获取卡槽的中心全局位置（用于卡片对齐）
 func get_center_global_position() -> Vector2:
 	return global_position + size / 2.0
@@ -23,3 +15,14 @@ func contains_global_point(point: Vector2) -> bool:
 ## 获取卡槽的尺寸（用于计算缩放）
 func get_slot_size() -> Vector2:
 	return size
+func show_owned_card(card_scene:PackedScene, card_data:CharacterCard) -> void:
+	if not card_scene:
+		push_error("没有卡片场景")
+		return
+	var card = card_scene.instance()
+	if card.has_method("set_character_stats"):
+		card.set_character_stats(card_data)
+	elif "character" in card:
+		card.character = card_data
+	add_child(card)
+	print("生成卡片")
