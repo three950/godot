@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="CharacterCard" load_steps=4 format=3 uid="uid://tk1nuwcbk0u2"]
+[gd_resource type="Resource" script_class="CharacterCard" load_steps=5 format=3 uid="uid://tk1nuwcbk0u2"]
 
+[ext_resource type="PackedScene" uid="uid://di7barbrn42cy" path="res://assets/人物与敌人/Character/character.tscn" id="1_ebsdk"]
 [ext_resource type="Script" uid="uid://c4lf65wbktjbc" path="res://assets/人物与敌人/Character/CharacterCard.gd" id="1_i00u1"]
 [ext_resource type="Resource" uid="uid://dfpw7xhnxtvgh" path="res://assets/人物与敌人/Character/characters/莉可.tres" id="1_jpc52"]
 [ext_resource type="Texture2D" uid="uid://2cp8gr68qu5g" path="res://assets/人物与敌人/Character/人物_娜娜奇.png" id="1_t1jnm"]
@@ -9,7 +10,8 @@ resource_name = "娜娜奇"
 script = ExtResource("1_i00u1")
 POW = 8
 aware = 100
-left = ExtResource("1_jpc52")
+card_scene = ExtResource("1_ebsdk")
+"左右手" = Array[ExtResource("1_i00u1")]([ExtResource("1_jpc52"), null])
 MAX_HP = 30
 speed = 15
 DEF = 5

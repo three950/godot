@@ -7,23 +7,23 @@
 [ext_resource type="PackedScene" uid="uid://b1n4d84218ejx" path="res://assets/人物与敌人/Enemy/enemy.tscn" id="5_8cufd"]
 [ext_resource type="Resource" uid="uid://do4ivypcif1tw" path="res://assets/人物与敌人/Enemy/enemys/毒针线虫.tres" id="6_wxwn5"]
 
-[node name="TestCards" type="Node2D"]
+[node name="TestCards" type="Node2D" groups=["Cards"]]
 
-[node name="character" parent="." instance=ExtResource("1_lmy0h")]
+[node name="娜娜奇" parent="." instance=ExtResource("1_lmy0h")]
 offset_left = 137.0
 offset_top = 84.0
 offset_right = 225.0
 offset_bottom = 199.0
 character = ExtResource("4_wxwn5")
 
-[node name="character2" parent="." instance=ExtResource("1_lmy0h")]
+[node name="莉可" parent="." instance=ExtResource("1_lmy0h")]
 offset_left = 257.0
 offset_top = 84.0
 offset_right = 345.0
 offset_bottom = 199.0
 character = ExtResource("2_lmy0h")
 
-[node name="character3" parent="." instance=ExtResource("1_lmy0h")]
+[node name="雷古" parent="." instance=ExtResource("1_lmy0h")]
 offset_left = 394.0
 offset_top = 93.0
 offset_right = 482.0

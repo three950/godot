@@ -192,7 +192,6 @@ grow_vertical = 2
 color = Color(0.2, 0.2, 0.2, 0.5)
 
 [node name="BagAreaDetector" type="Area2D" parent="."]
-visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BagAreaDetector"]
 position = Vector2(93, 65)

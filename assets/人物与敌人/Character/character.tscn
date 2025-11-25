@@ -40,9 +40,13 @@ clip_text = true
 script = ExtResource("3_dm7l3")
 
 [node name="Bag" parent="." index="5" groups=["Cards"] instance=ExtResource("4_ig4cw")]
+visible = false
 layout_mode = 0
 offset_left = 94.0
 offset_top = -7.0
 offset_right = 282.0
 offset_bottom = 123.0
 mouse_filter = 2
+
+[node name="CradDragging" parent="CardStateMachine" index="2"]
+type = null

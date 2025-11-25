@@ -19,7 +19,7 @@ func show_owned_card(card_scene:PackedScene, card_data:CharacterCard) -> void:
 	if not card_scene:
 		push_error("没有卡片场景")
 		return
-	var card = card_scene.instance()
+	var card = card_scene.instantiate()
 	if card.has_method("set_character_stats"):
 		card.set_character_stats(card_data)
 	elif "character" in card:

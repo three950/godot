@@ -35,6 +35,8 @@ func update_stats() -> void:
 	var resource = get_battle_resource()
 	if resource == null:
 		return
+	if attribute_labels == null:
+		return
 	attribute_labels.update_labels(resource.HP, resource.ATK, resource.DEF)
 
 func take_damage(damage: int) -> void:

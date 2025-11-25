@@ -1,16 +1,16 @@
-[gd_resource type="Resource" script_class="CharacterCard" load_steps=3 format=3 uid="uid://dfpw7xhnxtvgh"]
+[gd_resource type="Resource" script_class="CharacterCard" load_steps=4 format=3 uid="uid://dfpw7xhnxtvgh"]
 
 [ext_resource type="Script" uid="uid://c4lf65wbktjbc" path="res://assets/人物与敌人/Character/CharacterCard.gd" id="1_33mer"]
 [ext_resource type="Texture2D" uid="uid://b11wupevcdiwd" path="res://assets/人物与敌人/Character/人物_莉可.png" id="1_e6vqo"]
+[ext_resource type="PackedScene" uid="uid://di7barbrn42cy" path="res://assets/人物与敌人/Character/character.tscn" id="1_vm5mx"]
 
 [resource]
 script = ExtResource("1_33mer")
 POW = 2
 aware = 80
-speed = 5
+card_scene = ExtResource("1_vm5mx")
 MAX_HP = 10
-right = "探窟稿"
-slot_1 = "便携锅"
+speed = 5
 name = "莉可"
 portrait = ExtResource("1_e6vqo")
 metadata/_custom_type_script = "uid://c4lf65wbktjbc"
