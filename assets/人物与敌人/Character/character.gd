@@ -22,6 +22,6 @@ func _update_battle_card() -> void:
 	update_stats()
 
 func _update_bag_panel() -> void:
-	var bag_panel := get_node_or_null("Bag")
+	var bag_panel := get_node("Bag")
 	if bag_panel:
 		bag_panel.character = character

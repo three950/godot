@@ -1,5 +1,5 @@
 extends Node
-class_name bag_slot
+class_name BagArea
 # 信号：当卡片被放入卡槽
 signal card_placed(card: Card, slot_index: int)
 # 信号：当卡片被移出卡槽
@@ -37,5 +37,5 @@ func _load_card(卡牌:Array,卡槽:Array[BagSlot]) -> void:
 		var card_resource:CharacterCard = 卡牌[index] if index < 卡牌.size() else null
 		if card_resource == null:
 			continue
-		if card_resource != null and card_resource.card_scene:
-			slot.show_card.emit(card_resource.card_scene, card_resource)
+		if card_resource != null:
+			slot.show_card.emit(card_resource)

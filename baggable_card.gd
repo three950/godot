@@ -21,8 +21,6 @@ func _ready() -> void:
 
 # 重写按钮按下逻辑，添加背包槽位相关处理
 func _on_button_button_down() -> void:
-	# 先调用父类逻辑
-	super._on_button_button_down()
 	
 	# 如果卡片在背包槽位中，立即从槽位中移除引用和效果
 	var current_info = _find_current_slot_info()

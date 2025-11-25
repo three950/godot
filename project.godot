@@ -15,13 +15,6 @@ run/main_scene="uid://r1lb3ajxfx1j"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
-[autoload]
-
-GameData="res://script_folder/game_data.gd"
-CardFactory="res://script_folder/card_factory.gd"
-CraftManager="res://script_folder/craft_manager.gd"
-CardShooter="res://script_folder/card_shooter.gd"
-
 [display]
 
 window/stretch/mode="canvas_items"
