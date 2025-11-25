@@ -1,3 +1,4 @@
+使用enabled启用或禁用脚本S1-E02
 S1-10获取所有在统一场景中的元素tree.get_nodes_in_group("Character")
 没有跟随，点到了panel
 
