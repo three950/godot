@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://47jqjxp2hu76" path="res://bag.gd" id="1_bag"]
 [ext_resource type="Script" uid="uid://b6qdcc1812p6c" path="res://bag_slot.gd" id="2_slot"]
-[ext_resource type="Script" uid="uid://cp5b80hwejldr" path="res://script_folder/bag_mover.gd" id="3_4mvu4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_76wf2"]
 size = Vector2(186, 126)
@@ -197,6 +196,3 @@ color = Color(0.2, 0.2, 0.2, 0.5)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BagAreaDetector"]
 position = Vector2(93, 65)
 shape = SubResource("RectangleShape2D_76wf2")
-
-[node name="bagmover" type="Node" parent="."]
-script = ExtResource("3_4mvu4")

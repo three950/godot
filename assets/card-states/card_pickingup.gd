@@ -7,7 +7,9 @@ func enter() -> void:
 		card.stack_state = 0
 	card.z_index = 100
 	card.drag_offset = card.get_global_mouse_position()-card.global_position
-		
+	card.drag_started.emit()
+	# 通知全局事件系统
+	Events.card_drag_started.emit(card)
 	
 func on_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:

@@ -34,6 +34,10 @@ LMB={
 ]
 }
 
+[autoload]
+
+Events="*res://ui/events.gd"
+
 [layer_names]
 
 2d_physics/layer_1="StackDetectorArea"

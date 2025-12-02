@@ -8,6 +8,9 @@ func enter() -> void:
 	card.z_index = 0
 	# 延迟到下一帧再处理状态转换，确保状态机已准备好
 	await get_tree().process_frame
+	card.dropped.emit()
+	# 通知全局事件系统
+	Events.card_dropped.emit(card)
 	# 检测是否可以堆叠到其他卡片上
 	var closest_card_falling = find_closest_card()
 	if closest_card_falling != null:

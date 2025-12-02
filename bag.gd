@@ -21,8 +21,15 @@ signal bag_item_changed
 
 # 当前背包所属的角色（在编辑器或运行时注入）
 @export var character: CharacterCard = null
+
 func _ready() -> void:
 	_load_all_cards()
+	Events.bag_registered.emit(self)
+	print("【BagArea】已注册到事件系统")
+
+func _exit_tree() -> void:
+	Events.bag_unregistered.emit(self)
+	print("【BagArea】已从事件系统注销")
 	
 func _load_all_cards():
 	if character == null:

@@ -7,6 +7,8 @@ signal card_label_exited_stack_area(exiting_card: Control)
 # 由堆叠在此卡上的其他卡发出，让此卡设置control区域和状态转换
 signal stacking_on_you(children: Card)
 signal stop_stacking_on_you()
+signal dropped
+signal drag_started
 signal leave_you()
 # 信号：请求重新设置父节点
 signal reparent_requested(which_card: Card)
