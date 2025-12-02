@@ -1,8 +1,10 @@
 extends Panel
 class_name BagSlot
 signal show_card(card_data:CharacterCard)
+
 func _ready() -> void:
 	show_card.connect(show_owned_card)
+
 ## 获取卡槽的中心全局位置（用于卡片对齐）
 func get_center_global_position() -> Vector2:
 	return global_position + size / 2.0
@@ -15,6 +17,47 @@ func contains_global_point(point: Vector2) -> bool:
 ## 获取卡槽的尺寸（用于计算缩放）
 func get_slot_size() -> Vector2:
 	return size
+
+## 获取槽位中的卡片（如果有）
+func get_card() -> Card:
+	for child in get_children():
+		if child is Card:
+			return child
+	return null
+
+## 检查槽位是否为空
+func is_empty() -> bool:
+	return get_card() == null
+
+## 将卡片放入槽位（统一处理位置和缩放）
+func place_card(card: Card) -> void:
+	# 1. 先从原父节点移除（如果有）
+	var old_parent = card.get_parent()
+	if old_parent:
+		old_parent.remove_child(card)
+	
+	# 2. 添加到槽位
+	add_child(card)
+	
+	# 3. 根据槽位大小调整卡片缩放（保持宽高比）
+	var card_size = card.size
+	# 计算缩放比例，取较小值以确保卡片完全在槽位内
+	var scale_ratio = min(size.x / card_size.x, size.y / card_size.y)
+	# 留一点边距（0.9 表示留 10% 边距）
+	card.scale = Vector2(scale_ratio, scale_ratio)
+	
+	# 4. 设置位置（居中对齐，使用局部坐标）
+	card.position = (size - card.size * card.scale) / 2.0
+	
+	print("【BagSlot】卡片 %s 放入槽位，缩放: %.2f" % [card.name, scale_ratio])
+
+## 移除槽位中的卡片并返回
+func remove_card() -> Card:
+	var card = get_card()
+	if card:
+		remove_child(card)
+	return card
+
 func show_owned_card(card_data:CharacterCard) -> void:
 	if not card_data:
 		push_error("没有卡片数据")
@@ -25,5 +68,6 @@ func show_owned_card(card_data:CharacterCard) -> void:
 	var card = card_data.card_scene.instantiate()
 	if card.has_method("set_character_stats"):
 		card.set_character_stats(card_data)
-	add_child(card)
+	# 使用统一的 place_card 方法
+	place_card(card)
 	print("生成卡片")

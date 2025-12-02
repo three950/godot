@@ -37,18 +37,13 @@ func _get_bag_area_for_position(global: Vector2) -> int:#获得是场景中的�
 			dropoed_bag_index=index
 	return dropoed_bag_index
 
-func _add_card_to_slot(global:Vector2,card:Card) -> void:
-	var bag_index:=_get_bag_area_for_position(global)
+func _add_card_to_slot(global: Vector2, card: Card) -> void:
+	var bag_index := _get_bag_area_for_position(global)
 	if bag_index >= 0 and bag_index < bag_area.size():
 		var bag = bag_area[bag_index]
 		var slot = _get_slot_for_position(bag, global)
 		if slot:
-			slot.add_child(card)
-			card.global_position = slot.get_center_global_position()
-			# 4. 根据槽位大小调整卡片缩放
-			var scale = slot.get_slot_size().x / card.size.x
-			card.scale = Vector2(scale, scale)
-			print("将卡片添加到槽位", slot)
+			slot.place_card(card)
 	
 func _get_slot_for_position(bag: BagArea, global: Vector2) -> BagSlot:#获得是哪一个槽位
 	"""获取背包中包含指定位置的槽位"""
@@ -66,15 +61,10 @@ func _reset_card_to_starting_position(starting_position: Vector2, card: Node) ->
 	"""将卡片重置到起始位置"""
 	card.global_position = starting_position
 
-func _move_card_to_slot(card: Node, slot: BagSlot) -> void:
-	"""将卡片移动到指定槽位"""#add_children之后需要重写，因为要附带大小改变和数据变化
-	if slot:
-		slot.add_child(card)
-
-func _remove_card_from_slot(card: Node, slot: BagSlot) -> void:
-	"""将卡片移出所在槽位"""
-	if slot:
-		slot.remove_child(card)
+func _move_card_to_slot(card: Card, slot: BagSlot) -> void:
+	"""将卡片移动到指定槽位"""
+	if slot and card:
+		slot.place_card(card)
 
 
 func _on_card_dropped(card: Card) -> void:
@@ -104,19 +94,16 @@ func _on_card_dropped(card: Card) -> void:
 	if start_bag_index >= 0:
 		start_slot = _get_slot_for_position(bag_area[start_bag_index], drag_start_position)
 	
-	# 检查目标槽位是否已有卡片（跳过 ColorRect 等非卡片子节点）
-	var existing_card: Card = null
-	for child in target_slot.get_children():
-		if child is Card:
-			existing_card = child
-			break
+	# 检查目标槽位是否已有卡片
+	var existing_card = target_slot.get_card()
 	
 	if existing_card:
 		# 如果有卡片，交换位置
-		_remove_card_from_slot(existing_card, start_slot)
-		_remove_card_from_slot(card, target_slot)
-		_move_card_to_slot(existing_card, start_slot)
-		_move_card_to_slot(card, target_slot)
+		target_slot.remove_card()
+		if start_slot:
+			start_slot.remove_card()
+			start_slot.place_card(existing_card)
+		target_slot.place_card(card)
 	else:
 		# 目标槽位为空，直接放入
 		_add_card_to_slot(drop_position, card)
