@@ -38,12 +38,9 @@ func place_card(card: Card) -> void:
 	
 	# 2. 添加到槽位
 	add_child(card)
-	
-	# 3. 根据槽位大小调整卡片缩放（保持宽高比）
 	var card_size = card.size
 	# 计算缩放比例，取较小值以确保卡片完全在槽位内
 	var scale_ratio = min(size.x / card_size.x, size.y / card_size.y)
-	# 留一点边距（0.9 表示留 10% 边距）
 	card.scale = Vector2(scale_ratio, scale_ratio)
 	
 	# 4. 设置位置（居中对齐，使用局部坐标）

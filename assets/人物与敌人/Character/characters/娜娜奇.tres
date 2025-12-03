@@ -13,6 +13,7 @@ aware = 100
 card_scene = ExtResource("1_ebsdk")
 "左右手" = Array[ExtResource("1_i00u1")]([ExtResource("1_jpc52"), null])
 MAX_HP = 30
+ATK = 6
 speed = 15
 DEF = 5
 name = " 娜娜奇"

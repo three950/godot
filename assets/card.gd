@@ -12,7 +12,6 @@ signal drag_started
 signal leave_you()
 # 信号：请求重新设置父节点
 signal reparent_requested(which_card: Card)
-@export var info: CardInfo
 enum cardType{normal, selling, architecture}  # 卡片类型
 @export var card_type: cardType = cardType.normal  # 默认为普通类型
 @export var can_stack: bool = true  # 是否允许其他卡片堆叠在上面
