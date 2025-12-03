@@ -22,8 +22,16 @@ signal bag_item_changed
 # 当前背包所属的角色（在编辑器或运行时注入）
 @export var character: CharacterCard = null
 
+var _cards_loaded: bool = false
+
 func _ready() -> void:
-	_load_all_cards()
+	# 只在第一次加载卡片
+	if not _cards_loaded:
+		_load_all_cards()
+		_cards_loaded = true
+
+func _enter_tree() -> void:
+	# 每次进入场景树时都注册
 	Events.bag_registered.emit(self)
 	print("【BagArea】已注册到事件系统")
 

@@ -8,6 +8,8 @@ func enter() -> void:
 
 func _on_control_gui_input(event: InputEvent) -> void:
 	if event.is_action_pressed("LMB"):
+		if card.card_type == Card.cardType.architecture:
+			return
 		card.pivot_offset = card.get_global_mouse_position() - card.global_position
 		print("fix2")
 		transition_requested.emit(self, CardState.State.pickingup)

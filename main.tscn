@@ -1,37 +1,19 @@
-[gd_scene load_steps=12 format=3 uid="uid://r1lb3ajxfx1j"]
+[gd_scene load_steps=11 format=3 uid="uid://r1lb3ajxfx1j"]
 
-[ext_resource type="Script" uid="uid://b6gu1qtuwx15i" path="res://script_folder/card_manager.gd" id="1_card_mgr"]
-[ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="2_card_scene"]
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://background.tscn" id="3_h2yge"]
 [ext_resource type="Script" uid="uid://bbnp6ftl63g4m" path="res://script_folder/camera_controller.gd" id="4_camera"]
-[ext_resource type="PackedScene" uid="uid://cs4aojjehfrjt" path="res://assets/小地形/scene_card.tscn" id="5_scene_card"]
-[ext_resource type="PackedScene" uid="uid://cq3m5h8qavw2k" path="res://assets/物品/遗物/remains_card.tscn" id="6_remains_card"]
-[ext_resource type="PackedScene" path="res://assets/AbyssLayer/layer1/depth_indicator.tscn" id="7_depth_indicator"]
-[ext_resource type="PackedScene" uid="uid://cvn5scyib1276" path="res://assets/物品/资源/resource_card.tscn" id="8_resource_card"]
+[ext_resource type="PackedScene" uid="uid://di7barbrn42cy" path="res://assets/人物与敌人/Character/character.tscn" id="6_kek77"]
+[ext_resource type="Resource" uid="uid://tk1nuwcbk0u2" path="res://assets/人物与敌人/Character/characters/娜娜奇.tres" id="7_4c57u"]
+[ext_resource type="PackedScene" uid="uid://rjupoy2robs0" path="res://assets/AbyssLayer/layer1/depth_indicator.tscn" id="7_depth_indicator"]
+[ext_resource type="Resource" uid="uid://dfpw7xhnxtvgh" path="res://assets/人物与敌人/Character/characters/莉可.tres" id="8_efxa6"]
+[ext_resource type="Resource" uid="uid://dsjxxvme1bq2n" path="res://assets/人物与敌人/Character/characters/雷古.tres" id="9_dg77c"]
 [ext_resource type="PackedScene" uid="uid://b1n4d84218ejx" path="res://assets/人物与敌人/Enemy/enemy.tscn" id="9_enemy_card"]
-[ext_resource type="PackedScene" path="res://assets/物品/装备/equipment_card.tscn" id="10_equipment_card"]
-
-[sub_resource type="Resource" id="Resource_4c57u"]
-metadata/__load_path__ = "res://assets/人物与敌人/Character/character_card.tscn"
+[ext_resource type="Resource" uid="uid://do4ivypcif1tw" path="res://assets/人物与敌人/Enemy/enemys/毒针线虫.tres" id="10_4c57u"]
+[ext_resource type="Script" uid="uid://cp5b80hwejldr" path="res://script_folder/bag_mover.gd" id="11_efxa6"]
 
 [node name="Main" type="Node2D"]
 
 [node name="backgroundUi" parent="." instance=ExtResource("3_h2yge")]
-
-[node name="CardManager" type="Node2D" parent="."]
-script = ExtResource("1_card_mgr")
-card_scene = ExtResource("2_card_scene")
-character_card_scene = SubResource("Resource_4c57u")
-scene_card_scene = ExtResource("5_scene_card")
-remains_card_scene = ExtResource("6_remains_card")
-equipment_card_scene = ExtResource("10_equipment_card")
-resource_card_scene = ExtResource("8_resource_card")
-start_position = Vector2(100, 100)
-card_spacing = Vector2(120, 0)
-
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(576, 328)
-script = ExtResource("4_camera")
 
 [node name="DepthIndicator500m" parent="." instance=ExtResource("7_depth_indicator")]
 offset_left = 1000.0
@@ -39,8 +21,45 @@ offset_top = 150.0
 offset_right = 1088.0
 offset_bottom = 265.0
 
-[node name="BiologyCard" parent="." instance=ExtResource("9_enemy_card")]
+[node name="娜娜奇" parent="." instance=ExtResource("6_kek77")]
+offset_left = 92.0
+offset_top = 181.0
+offset_right = 180.0
+offset_bottom = 296.0
+character = ExtResource("7_4c57u")
+card_type = 0
+can_stack = true
+
+[node name="莉可" parent="." instance=ExtResource("6_kek77")]
 offset_left = 243.0
-offset_top = 327.0
+offset_top = 180.0
 offset_right = 331.0
-offset_bottom = 442.0
+offset_bottom = 295.0
+character = ExtResource("8_efxa6")
+card_type = 0
+can_stack = true
+
+[node name="雷古" parent="." instance=ExtResource("6_kek77")]
+offset_left = 415.0
+offset_top = 181.0
+offset_right = 503.0
+offset_bottom = 296.0
+character = ExtResource("9_dg77c")
+card_type = 0
+can_stack = true
+
+[node name="EnemyCard" parent="." instance=ExtResource("9_enemy_card")]
+offset_left = 272.0
+offset_top = 379.0
+offset_right = 360.0
+offset_bottom = 494.0
+enemy = ExtResource("10_4c57u")
+card_type = 0
+can_stack = true
+
+[node name="BagMover" type="Node" parent="."]
+script = ExtResource("11_efxa6")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(576, 328)
+script = ExtResource("4_camera")

@@ -95,47 +95,6 @@ func shoot_card(card_name: Variant, start_pos: Vector2, end_pos: Vector2 = Vecto
 	
 	return card
 
-## 根据卡片名称创建卡片实例（内部辅助函数）
-## 支持传入 Dialogue 对象作为 card_name 参数来创建对话卡片
-func _create_card_by_name(card_name: Variant) -> Control:
-	# 检查是否是 Dialogue 对象（对话卡片）
-	if card_name is Dialogue:
-		if not dialogue_card_scene:
-			push_error("对话卡片场景未加载")
-			return null
-		var dialogue: Dialogue = card_name
-		var card = dialogue_card_scene.instantiate()
-		card.dialogue_content = dialogue.content
-		card.dialogue_type = dialogue.type
-		return card
-	
-	# 否则按字符串名称在 GameData 中查找
-	var result = GameData.find_card_data(card_name)
-	
-	if result.is_empty():
-		push_warning("未找到卡片数据: " + str(card_name))
-		return null
-	
-	var card_data = result["data"]
-	var card_type = result["type"]
-	
-	# 根据类型创建对应的卡片
-	if card_type == "remains" and remains_card_scene:
-		var card = remains_card_scene.instantiate()
-		if card.has_method("initialize_from_csv"):
-			card.initialize_from_csv(card_data)
-		return card
-	
-	if card_type == "scene" and scene_card_scene:
-		var card = scene_card_scene.instantiate()
-		if card.has_method("initialize_from_scene_data"):
-			card.initialize_from_scene_data(card_data)
-		return card
-	
-	if card_type == "character" and character_card_scene:
-		return character_card_scene.instantiate()
-	
-	return null
 
 ## 查找空闲位置
 func find_empty_position(reference_pos: Vector2, search_radius: float = 200.0) -> Vector2:

@@ -26,9 +26,7 @@ var stack_state: int = 0  # 堆叠状态位标记，参照 CardState.STACK_STATE
 var children_card: Card = null# 堆叠在卡片上的子卡片
 func _ready() -> void:
 	card_state_machine.init(self)
-	original_position = position	
-	if info:
-		can_stack = info.能被堆叠
+	original_position = position		
 	# 连接 CardStackDetectorArea 信号
 	var stack_detector = get_node("CardStackDetectorArea")
 	if stack_detector:

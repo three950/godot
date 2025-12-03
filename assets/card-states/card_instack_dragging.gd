@@ -4,6 +4,8 @@ func enter() -> void:
 	print("%s跟着移动。。。"%card.name)
 	stop_follow_me.connect(stop_follow_you)
 func _process(_delta: float) -> void:
+	if card == null:
+		return
 	if card.follow_target != null:
 		# 当卡片有follow_target时，卡片的cardState完全按照follow_target来
 		if card.stack_state & CardState.STACK_STATE_STACKING:
