@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://bghrawg2wa0mf"]
+[gd_scene load_steps=5 format=3 uid="uid://bghrawg2wa0mf"]
 
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="1_2r54s"]
+[ext_resource type="Script" uid="uid://bhmyggn7sc5wt" path="res://assets/固定场景建筑/building_card.gd" id="2_5ffud"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2r54s"]
 bg_color = Color(0.2123048, 0.21230489, 0.21230471, 1)
@@ -16,6 +17,7 @@ border_width_bottom = 1
 border_color = Color(0, 0, 0, 1)
 
 [node name="固定场景建筑" instance=ExtResource("1_2r54s")]
+script = ExtResource("2_5ffud")
 
 [node name="CardPanel" parent="." index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_2r54s")

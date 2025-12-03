@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://d8vp1m0epvxf"]
+[gd_scene load_steps=5 format=3 uid="uid://d8vp1m0epvxf"]
 
 [ext_resource type="Texture2D" uid="uid://cwohluet7sc50" path="res://assets/AbyssLayer/ground/地表.jpg" id="1_oabld"]
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="2_shop"]
 [ext_resource type="Script" path="res://script_folder/shop_manager.gd" id="3_shop_mgr"]
+[ext_resource type="PackedScene" uid="uid://bivykmwh7lskv" path="res://assets/固定场景建筑/探窟者协会/探窟者协会.tscn" id="4_splo0"]
 
 [node name="backgroundUi" type="Node2D"]
 
@@ -61,3 +62,7 @@ theme_override_font_sizes/font_size = 24
 text = "金币: 0"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="探窟者协会" parent="ShopManager" instance=ExtResource("4_splo0")]
+offset_top = 1.0
+offset_bottom = 116.0

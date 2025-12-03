@@ -12,7 +12,7 @@ func _ready() -> void:
 		push_warning("【背包按钮】未找到 Character 节点")
 		return
 	# 加载背包场景但不实例化
-	bag_scene = load("res://bag.tscn")
+	bag_scene = load("res://assets/人物与敌人/Character/背包/bag.tscn")
 	if not bag_scene:
 		push_warning("【背包按钮】无法加载背包场景")
 	pressed.connect(toggle_bag)

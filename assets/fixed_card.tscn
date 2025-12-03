@@ -1,0 +1,80 @@
+[gd_scene load_steps=7 format=3 uid="uid://chd1450hb3kko"]
+
+[ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="2_61llo"]
+[ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="3_p0bds"]
+
+[sub_resource type="GDScript" id="GDScript_jsic4"]
+script/source = "extends \"res://assets/card.gd\"
+#放不能移动的卡片的简化逻辑脚本
+"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e6854"]
+bg_color = Color(0.89353544, 0.8712141, 0.789065, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a3cqy"]
+bg_color = Color(0.69949013, 0.6593968, 0.5148751, 1)
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e484p"]
+size = Vector2(88, 73)
+
+[node name="fixedCard" type="Control" groups=["Cards"]]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 88.0
+offset_bottom = 115.0
+script = SubResource("GDScript_jsic4")
+metadata/_edit_lock_ = true
+
+[node name="CardPanel" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 88.0
+offset_bottom = 114.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_e6854")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 86.0
+offset_bottom = 16.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_a3cqy")
+
+[node name="Label" type="Label" parent="Panel"]
+layout_mode = 0
+offset_right = 84.0
+offset_bottom = 14.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_61llo")
+theme_override_font_sizes/font_size = 10
+text = "莉可"
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 18.0
+offset_right = 83.583336
+offset_bottom = 87.0
+mouse_filter = 2
+texture = ExtResource("3_p0bds")
+expand_mode = 1
+
+[node name="CardStackDetectorArea" type="Area2D" parent="."]
+position = Vector2(3, 3)
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CardStackDetectorArea"]
+position = Vector2(41, 54)
+shape = SubResource("RectangleShape2D_e484p")
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
