@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://r1lb3ajxfx1j"]
+[gd_scene load_steps=13 format=3 uid="uid://r1lb3ajxfx1j"]
 
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://background.tscn" id="3_h2yge"]
 [ext_resource type="Script" uid="uid://bbnp6ftl63g4m" path="res://script_folder/camera_controller.gd" id="4_camera"]
@@ -9,7 +9,9 @@
 [ext_resource type="Resource" uid="uid://dsjxxvme1bq2n" path="res://assets/人物与敌人/Character/characters/雷古.tres" id="9_dg77c"]
 [ext_resource type="PackedScene" uid="uid://b1n4d84218ejx" path="res://assets/人物与敌人/Enemy/enemy.tscn" id="9_enemy_card"]
 [ext_resource type="Resource" uid="uid://do4ivypcif1tw" path="res://assets/人物与敌人/Enemy/enemys/毒针线虫.tres" id="10_4c57u"]
+[ext_resource type="PackedScene" uid="uid://dnxa570k3cf" path="res://assets/物品/道具/item.tscn" id="11_dg77c"]
 [ext_resource type="Script" uid="uid://cp5b80hwejldr" path="res://script_folder/bag_mover.gd" id="11_efxa6"]
+[ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/钓鱼竿.tres" id="12_dg77c"]
 
 [node name="Main" type="Node2D"]
 
@@ -27,8 +29,6 @@ offset_top = 181.0
 offset_right = 180.0
 offset_bottom = 296.0
 character = ExtResource("7_4c57u")
-card_type = 0
-can_stack = true
 
 [node name="莉可" parent="." instance=ExtResource("6_kek77")]
 offset_left = 243.0
@@ -36,8 +36,6 @@ offset_top = 180.0
 offset_right = 331.0
 offset_bottom = 295.0
 character = ExtResource("8_efxa6")
-card_type = 0
-can_stack = true
 
 [node name="雷古" parent="." instance=ExtResource("6_kek77")]
 offset_left = 415.0
@@ -45,8 +43,6 @@ offset_top = 181.0
 offset_right = 503.0
 offset_bottom = 296.0
 character = ExtResource("9_dg77c")
-card_type = 0
-can_stack = true
 
 [node name="EnemyCard" parent="." instance=ExtResource("9_enemy_card")]
 offset_left = 272.0
@@ -63,3 +59,12 @@ script = ExtResource("11_efxa6")
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(576, 328)
 script = ExtResource("4_camera")
+
+[node name="Item" parent="." instance=ExtResource("11_dg77c")]
+offset_left = 680.0
+offset_top = 234.0
+offset_right = 768.0
+offset_bottom = 349.0
+item = ExtResource("12_dg77c")
+card_type = 0
+can_stack = true
