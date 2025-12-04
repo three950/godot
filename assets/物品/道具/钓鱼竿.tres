@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemCard" load_steps=3 format=3 uid="uid://fcqupg4pyrk6"]
+
+[ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="1_7cpgg"]
+[ext_resource type="Script" uid="uid://c471nqy7votga" path="res://assets/物品/道具/ItemCard.gd" id="1_tcsp3"]
+
+[resource]
+script = ExtResource("1_tcsp3")
+"特殊效果" = "fishing-faser"
+name = "钓鱼竿"
+portrait = ExtResource("1_7cpgg")
+metadata/_custom_type_script = "uid://c471nqy7votga"

@@ -28,7 +28,7 @@ border_color = Color(0, 0, 0, 1)
 size = Vector2(88, 16)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e484p"]
-size = Vector2(88, 73)
+size = Vector2(88, 74)
 
 [node name="Card" type="Control" groups=["Cards"]]
 layout_mode = 3
@@ -76,6 +76,7 @@ texture = ExtResource("2_e484p")
 expand_mode = 1
 
 [node name="CardLabel" type="Area2D" parent="."]
+visible = false
 position = Vector2(3, 3)
 collision_layer = 2
 collision_mask = 0
@@ -85,6 +86,7 @@ position = Vector2(41, 5)
 shape = SubResource("RectangleShape2D_q5obu")
 
 [node name="CardStackDetectorArea" type="Area2D" parent="."]
+visible = false
 position = Vector2(3, 3)
 collision_mask = 2
 
@@ -120,9 +122,9 @@ script = ExtResource("10_a3cqy")
 state = 5
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
-[connection signal="gui_input" from="." to="CardStateMachine/CardFixed" method="_on_control_gui_input"]
 [connection signal="gui_input" from="." to="CardStateMachine/CardFixed" method="_on_card_gui_input"]
-[connection signal="gui_input" from="." to="CardStateMachine/CardInstack" method="_on_control_gui_input"]
+[connection signal="gui_input" from="." to="CardStateMachine/CardFixed" method="_on_control_gui_input"]
 [connection signal="gui_input" from="." to="CardStateMachine/CardInstack" method="_on_cpntrol_gui_input"]
+[connection signal="gui_input" from="." to="CardStateMachine/CardInstack" method="_on_control_gui_input"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

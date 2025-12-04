@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="EquipmentCard" load_steps=3 format=3 uid="uid://dntioc7brul78"]
+
+[ext_resource type="Texture2D" uid="uid://d4ml0xnr3ldxt" path="res://assets/物品/装备/armour防具/盾牌.png" id="1_3o1ug"]
+[ext_resource type="Script" uid="uid://b6vcycxqwdmqc" path="res://assets/物品/装备/EquipmentCard.gd" id="1_ggkgv"]
+
+[resource]
+script = ExtResource("1_ggkgv")
+equip_type = 1
+DEF = 5
+value = 10
+name = "祈愿者的盖子"
+portrait = ExtResource("1_3o1ug")
+metadata/_custom_type_script = "uid://b6vcycxqwdmqc"

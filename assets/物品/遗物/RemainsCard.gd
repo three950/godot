@@ -1,0 +1,2 @@
+extends ThingsCard
+class_name RemainsCard

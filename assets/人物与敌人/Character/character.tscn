@@ -40,5 +40,8 @@ autowrap_trim_flags = 64
 clip_text = true
 script = ExtResource("3_dm7l3")
 
+[node name="CollisionShape2D" parent="CardStackDetectorArea" index="0"]
+position = Vector2(41, 51)
+
 [node name="CradDragging" parent="CardStateMachine" index="2"]
 type = null

@@ -1,0 +1,43 @@
+[gd_scene load_steps=4 format=3 uid="uid://dtdlifuitpvq3"]
+
+[ext_resource type="PackedScene" uid="uid://fopgb30s4q33" path="res://assets/物品/Things.tscn" id="1_ughbl"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5s73d"]
+bg_color = Color(0.9078308, 0.62965226, 0.6109663, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.33682287, 0.138874, 0.12746808, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wdw0p"]
+bg_color = Color(0.85329366, 0.50729734, 0.48764396, 1)
+border_width_bottom = 1
+border_color = Color(0.9490196, 0.78039217, 0.7607843, 1)
+
+[node name="Recource" instance=ExtResource("1_ughbl")]
+
+[node name="CardPanel" parent="." index="0"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_5s73d")
+
+[node name="Panel" parent="." index="1"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_wdw0p")
+
+[node name="Label" parent="Panel" index="0"]
+text = "食物"
+
+[node name="valueText" parent="." index="3"]
+theme_override_colors/font_color = Color(0.29045805, 0.28657466, 0.29657704, 1)
+
+[node name="FoodLabel" type="Label" parent="." index="4"]
+layout_mode = 0
+offset_left = 71.0
+offset_top = 88.0
+offset_right = 84.0
+offset_bottom = 100.0
+theme_override_colors/font_color = Color(0.3990132, 0, 0.09163085, 1)
+theme_override_font_sizes/font_size = 8
+text = "2"
+
+[node name="ValueLabel" parent="." index="5"]
+theme_override_colors/font_color = Color(0.29045805, 0.28657466, 0.29657704, 1)

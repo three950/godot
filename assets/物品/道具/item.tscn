@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://dnxa570k3cf"]
+
+[ext_resource type="PackedScene" uid="uid://fopgb30s4q33" path="res://assets/物品/Things.tscn" id="1_7lfsj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7lfsj"]
+bg_color = Color(0.32734174, 0.4206553, 0.53314674, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.18866554, 0.2546709, 0.33002728, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ja4eb"]
+bg_color = Color(0.44764787, 0.5510629, 0.6761026, 1)
+border_width_bottom = 1
+border_color = Color(0.18866554, 0.2546709, 0.33002728, 1)
+
+[node name="Item" instance=ExtResource("1_7lfsj")]
+
+[node name="CardPanel" parent="." index="0"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_7lfsj")
+
+[node name="Panel" parent="." index="1"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_ja4eb")
+
+[node name="Label" parent="Panel" index="0"]
+theme_override_colors/font_color = Color(1, 1, 1, 1)
