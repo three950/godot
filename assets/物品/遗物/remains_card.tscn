@@ -5,7 +5,17 @@
 
 [node name="RemainsCard" instance=ExtResource("1_base")]
 script = ExtResource("2_remains")
-follow_target = NodePath("Control/ColorRect/Label")
+remains_name = null
+grade = null
+effect = null
+attribute = null
+value = null
+
+[node name="CardLabel" parent="." index="3"]
+visible = false
+
+[node name="CardStackDetectorArea" parent="." index="4"]
+visible = false
 
 [node name="GradeLabel" type="Label" parent="." index="5"]
 layout_mode = 0

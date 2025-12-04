@@ -10,6 +10,8 @@ const RARITY_COLORS:={
 	Rarity.FRIST:Color("e6bbd9ff"),
 	Rarity.SUPER:Color("eeb6deff"),
 }
+@onready var grade_label: Label = $GradeLabel
+@onready var value_label: Label = $ValueLabel
 
 
 # 遗物卡片特有属性
@@ -18,11 +20,6 @@ const RARITY_COLORS:={
 @export var effect: String = ""  # 效果
 @export var attribute: String = ""  # 属性
 @export var value: int = 0  # 遗物价值
-
-# 标签引用
-var name_label: Label = null
-var grade_label: Label = null
-var value_label: Label = null
 
 func _ready() -> void:
 	super._ready()
@@ -35,9 +32,6 @@ func _ready() -> void:
 			grade_label = info_container.get_node_or_null("GradeLabel")
 			value_label = info_container.get_node_or_null("ValueLabel")
 	update_labels()
-	
-	# 添加堆叠合成检测器
-	add_stack_craft_detector()
 
 # 更新标签显示
 func update_labels() -> void:
@@ -75,28 +69,3 @@ func initialize_from_csv(csv_data: Dictionary) -> void:
 			value = 0
 	
 	update_labels()
-
-## 获取卡片名称（用于合成系统）
-func get_card_name() -> String:
-	return remains_name
-
-## 添加堆叠合成检测器
-func add_stack_craft_detector() -> void:
-	# 检查是否已经添加过
-	if has_node("StackCraftDetector"):
-		return
-	
-	# 加载检测器脚本
-	var detector_script = load("res://script_folder/stack_craft_detector.gd")
-	if detector_script == null:
-		push_error("无法加载 StackCraftDetector 脚本")
-		return
-	
-	# 创建检测器节点
-	var detector = Node.new()
-	detector.name = "StackCraftDetector"
-	detector.set_script(detector_script)
-	
-	# 添加为子节点
-	add_child(detector)
-	print("【遗物卡】已添加堆叠合成检测器: %s" % remains_name)

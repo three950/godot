@@ -1,5 +1,14 @@
 extends CardInfo
 class_name ItemCard
-@export var value:int=1
-@export var 是遗物:bool=false
-@export var 能被堆叠:bool=true
+enum 遗物等级 {NO, FIFTH, FORTH, THRID, SECOND, FRIST, SUPER}
+
+@export var value: int = 1
+@export var 是遗物: 遗物等级 = 遗物等级.NO
+
+@export_group("合成配方")
+@export var has_craft_recipe: bool = false
+@export var craft_materials: Array[String] = []
+
+func _validate_property(property: Dictionary) -> void:
+	if property.name == "craft_materials":
+		property.usage = PROPERTY_USAGE_DEFAULT if has_craft_recipe else PROPERTY_USAGE_NO_EDITOR

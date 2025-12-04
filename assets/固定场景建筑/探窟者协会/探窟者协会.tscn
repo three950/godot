@@ -1,13 +1,21 @@
-[gd_scene load_steps=3 format=3 uid="uid://bivykmwh7lskv"]
+[gd_scene load_steps=4 format=3 uid="uid://bivykmwh7lskv"]
 
 [ext_resource type="PackedScene" uid="uid://chd1450hb3kko" path="res://assets/fixed_card.tscn" id="1_xkroh"]
+[ext_resource type="Script" uid="uid://de1yfvceyiewt" path="res://assets/固定场景建筑/探窟者协会/探窟者协会.gd" id="2_le5xf"]
 [ext_resource type="Texture2D" uid="uid://bh6qgmyo0b573" path="res://assets/固定场景建筑/探窟者协会/Association_of_Grotters.png" id="3_le5xf"]
 
 [node name="探窟者协会" instance=ExtResource("1_xkroh")]
-script = null
+script = ExtResource("2_le5xf")
+game_stats = null
 
 [node name="Label" parent="Panel" index="0"]
 text = "探窟者协会"
 
 [node name="TextureRect" parent="." index="2"]
 texture = ExtResource("3_le5xf")
+
+[node name="CardStackDetectorArea" parent="." index="3"]
+visible = false
+
+[connection signal="area_entered" from="CardStackDetectorArea" to="." method="_on_card_stack_detector_area_area_entered"]
+[connection signal="area_exited" from="CardStackDetectorArea" to="." method="_on_card_stack_detector_area_area_exited"]
