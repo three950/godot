@@ -1,10 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://d8vp1m0epvxf"]
+[gd_scene load_steps=9 format=3 uid="uid://d8vp1m0epvxf"]
 
 [ext_resource type="Texture2D" uid="uid://cwohluet7sc50" path="res://assets/AbyssLayer/ground/地表.jpg" id="1_oabld"]
 [ext_resource type="Script" path="res://script_folder/shop_manager.gd" id="3_shop_mgr"]
 [ext_resource type="PackedScene" uid="uid://dde8q2r1usqpa" path="res://assets/AbyssLayer/card_bag/GroundPackage.tscn" id="4_eq6nc"]
 [ext_resource type="PackedScene" uid="uid://bivykmwh7lskv" path="res://assets/固定场景建筑/探窟者协会/探窟者协会.tscn" id="4_splo0"]
 [ext_resource type="Resource" uid="uid://flhywkkf61mb" path="res://base_data/game_stats.tres" id="5_eq6nc"]
+[ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/钓鱼竿.tres" id="6_fishing"]
+[ext_resource type="Resource" uid="uid://dntioc7brul78" path="res://assets/物品/装备/armour防具/祈愿者的盖子.tres" id="7_shield"]
+[ext_resource type="Resource" uid="uid://b5lhfvaex1tbh" path="res://assets/物品/资源/鱼.tres" id="8_fish"]
 
 [node name="backgroundUi" type="Node2D"]
 
@@ -38,6 +41,7 @@ alignment = 1
 layout_mode = 2
 game_stats = ExtResource("5_eq6nc")
 mean_layer = 0
+spawn_card_info = ExtResource("6_fishing")
 
 [node name="GroundPackage1" parent="ShopManager/ShopArea/HBoxContainer" instance=ExtResource("4_eq6nc")]
 layout_mode = 2
@@ -46,6 +50,7 @@ package_name = "深界一层
 阿比斯之渊"
 mean_layer = 1
 package_price = 5
+spawn_card_info = ExtResource("7_shield")
 
 [node name="GroundPackage2" parent="ShopManager/ShopArea/HBoxContainer" instance=ExtResource("4_eq6nc")]
 layout_mode = 2
@@ -54,6 +59,7 @@ package_name = "深界二层
 诱惑之森"
 mean_layer = 2
 package_price = 8
+spawn_card_info = ExtResource("8_fish")
 
 [node name="GroundPackage3" parent="ShopManager/ShopArea/HBoxContainer" instance=ExtResource("4_eq6nc")]
 layout_mode = 2
