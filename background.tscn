@@ -17,6 +17,7 @@ texture = ExtResource("1_oabld")
 [node name="ShopManager" type="Node2D" parent="." groups=["ShopManager"]]
 position = Vector2(16, 16)
 script = ExtResource("3_shop_mgr")
+game_stats = ExtResource("5_eq6nc")
 
 [node name="ShopArea" type="Panel" parent="ShopManager" groups=["ShopArea"]]
 custom_minimum_size = Vector2(800, 115)

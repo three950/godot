@@ -1,16 +1,11 @@
 class_name SellStore
 extends Control
 @export var game_stats:GameStats
-@onready var coin_label: Label = $"../CoinLabel"
 
 var current_card:Card
 func _ready() -> void:
-	Events.card_dropped.connect(coin_label._sell_card)
-	game_stats.changed.connect(_update_coin_label)
-	_update_coin_label()
+	Events.card_dropped.connect(_sell_card)
 
-func _update_coin_label() -> void:
-	coin_label.text = str(game_stats.coins)
 func _sell_card(card:Card) -> void:
 	if not current_card or card != current_card:
 		return
