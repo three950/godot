@@ -10,7 +10,7 @@ extends Resource
 @export var food_have:int:set = set_food_have#现有的食物
 
 @export_range(0,7) var layer:int:set = set_layer#当前所在的层数
-
+@export var max_layer:int:set = set_max_layer#最深探索到第几层
 func set_days(value: int) -> void:
 	days = value
 	emit_changed()
@@ -29,4 +29,8 @@ func set_food_have(value: int) -> void:
 
 func set_layer(value: int) -> void:
 	layer = value
+	emit_changed()
+	
+func set_max_layer(value:int)-> void:
+	max_layer=value
 	emit_changed()

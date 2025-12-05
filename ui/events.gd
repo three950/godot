@@ -10,3 +10,4 @@ signal bag_unregistered(bag: BagArea)
 # 卡片拖拽信号（用于 BagMover 监听）
 signal card_drag_started(card: Card)
 signal card_dropped(card: Card)
+signal max_layer_changed(max_layer:int)
