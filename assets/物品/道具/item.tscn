@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://cio4rq8r14xrn" path="res://assets/物品/道具/item.gd" id="2_ja4eb"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7lfsj"]
-bg_color = Color(0.32734174, 0.4206553, 0.53314674, 1)
+bg_color = Color(0.28484476, 0.32436445, 0.38870683, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -12,7 +12,7 @@ border_width_bottom = 2
 border_color = Color(0.18866554, 0.2546709, 0.33002728, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ja4eb"]
-bg_color = Color(0.44764787, 0.5510629, 0.6761026, 1)
+bg_color = Color(0.2966325, 0.38666517, 0.48959756, 1)
 border_width_bottom = 1
 border_color = Color(0.18866554, 0.2546709, 0.33002728, 1)
 
@@ -28,3 +28,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ja4eb")
 
 [node name="Label" parent="Panel" index="0"]
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="valueText" parent="." index="3"]
+offset_left = 26.0
+offset_right = 50.0

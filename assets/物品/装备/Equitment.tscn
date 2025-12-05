@@ -18,6 +18,9 @@ border_color = Color(0.27450982, 0.3137255, 0.38039216, 1)
 
 [node name="Equipment" instance=ExtResource("1_g8hp3")]
 script = ExtResource("2_rkhsv")
+equipment = null
+card_type = 0
+can_stack = true
 
 [node name="CardPanel" parent="." index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_rkhsv")
@@ -28,12 +31,16 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_k2tfy")
 [node name="Label" parent="Panel" index="0"]
 text = "武器"
 
-[node name="AttackLabel" type="Label" parent="valueText" index="0"]
+[node name="EffectLabel" type="Label" parent="." index="3"]
 layout_mode = 0
-offset_left = 7.0
-offset_top = -11.0
-offset_right = 33.0
-offset_bottom = 1.0
+offset_left = 32.0
+offset_top = 88.0
+offset_right = 58.0
+offset_bottom = 100.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 8
 text = "ATK+5"
+
+[node name="valueText" parent="." index="4"]
+offset_left = 26.0
+offset_right = 50.0

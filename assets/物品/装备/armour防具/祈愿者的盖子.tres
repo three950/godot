@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_ggkgv")
 equip_type = 1
-DEF = 5
+equip_effect = 5
 value = 10
 name = "祈愿者的盖子"
 portrait = ExtResource("1_3o1ug")

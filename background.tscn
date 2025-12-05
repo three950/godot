@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://d8vp1m0epvxf"]
 
 [ext_resource type="Texture2D" uid="uid://cwohluet7sc50" path="res://assets/AbyssLayer/ground/地表.jpg" id="1_oabld"]
-[ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="2_shop"]
 [ext_resource type="Script" path="res://script_folder/shop_manager.gd" id="3_shop_mgr"]
 [ext_resource type="PackedScene" uid="uid://bivykmwh7lskv" path="res://assets/固定场景建筑/探窟者协会/探窟者协会.tscn" id="4_splo0"]
+[ext_resource type="Resource" uid="uid://flhywkkf61mb" path="res://base_data/game_stats.tres" id="5_eq6nc"]
 
 [node name="backgroundUi" type="Node2D"]
 
@@ -14,13 +14,9 @@ offset_right = 1325.3334
 offset_bottom = 744.0
 texture = ExtResource("1_oabld")
 
-[node name="ShopManager" type="Node2D" parent="." node_paths=PackedStringArray("slot_container", "refresh_button", "coin_label") groups=["ShopManager"]]
+[node name="ShopManager" type="Node2D" parent="." groups=["ShopManager"]]
 position = Vector2(16, 16)
 script = ExtResource("3_shop_mgr")
-card_scene = ExtResource("2_shop")
-slot_container = NodePath("ShopArea/HBoxContainer")
-refresh_button = NodePath("RefreshButton")
-coin_label = NodePath("CoinLabel")
 
 [node name="ShopArea" type="Panel" parent="ShopManager" groups=["ShopArea"]]
 custom_minimum_size = Vector2(800, 115)
@@ -66,3 +62,4 @@ vertical_alignment = 1
 [node name="探窟者协会" parent="ShopManager" instance=ExtResource("4_splo0")]
 offset_top = 1.0
 offset_bottom = 116.0
+game_stats = ExtResource("5_eq6nc")

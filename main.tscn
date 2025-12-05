@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://r1lb3ajxfx1j"]
+[gd_scene load_steps=17 format=3 uid="uid://r1lb3ajxfx1j"]
 
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://background.tscn" id="3_h2yge"]
 [ext_resource type="Script" uid="uid://bbnp6ftl63g4m" path="res://script_folder/camera_controller.gd" id="4_camera"]
@@ -12,10 +12,15 @@
 [ext_resource type="PackedScene" uid="uid://dnxa570k3cf" path="res://assets/物品/道具/item.tscn" id="11_dg77c"]
 [ext_resource type="Script" uid="uid://cp5b80hwejldr" path="res://script_folder/bag_mover.gd" id="11_efxa6"]
 [ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/钓鱼竿.tres" id="12_dg77c"]
+[ext_resource type="PackedScene" uid="uid://dtdlifuitpvq3" path="res://assets/物品/资源/recource.tscn" id="13_ycdy4"]
+[ext_resource type="Resource" uid="uid://b5lhfvaex1tbh" path="res://assets/物品/资源/鱼.tres" id="14_w48qg"]
+[ext_resource type="PackedScene" uid="uid://cba2igvxd481l" path="res://assets/物品/装备/Equitment.tscn" id="15_2cqfq"]
+[ext_resource type="Resource" uid="uid://dntioc7brul78" path="res://assets/物品/装备/armour防具/祈愿者的盖子.tres" id="16_yaehf"]
 
 [node name="Main" type="Node2D"]
 
 [node name="backgroundUi" parent="." instance=ExtResource("3_h2yge")]
+metadata/_edit_lock_ = true
 
 [node name="DepthIndicator500m" parent="." instance=ExtResource("7_depth_indicator")]
 offset_left = 1000.0
@@ -68,3 +73,17 @@ offset_bottom = 349.0
 item = ExtResource("12_dg77c")
 card_type = 0
 can_stack = true
+
+[node name="Recource" parent="." instance=ExtResource("13_ycdy4")]
+offset_left = 794.0
+offset_top = 237.0
+offset_right = 882.0
+offset_bottom = 352.0
+recource = ExtResource("14_w48qg")
+
+[node name="Equipment" parent="." instance=ExtResource("15_2cqfq")]
+offset_left = 903.0
+offset_top = 237.0
+offset_right = 991.0
+offset_bottom = 352.0
+equipment = ExtResource("16_yaehf")
