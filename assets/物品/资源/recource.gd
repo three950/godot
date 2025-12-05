@@ -21,3 +21,5 @@ func _update_item_card() -> void:
 
 func get_value() -> int:
 	return recource.value if recource else 0
+func set_stats(value:ResourceCard)-> void:
+	recource = value

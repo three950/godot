@@ -21,3 +21,5 @@ func _update_item_card() -> void:
 
 func get_value() -> int:
 	return equipment.value if equipment else 0
+func set_stats(value:EquipmentCard)-> void:
+	equipment = value

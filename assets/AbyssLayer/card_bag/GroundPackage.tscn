@@ -13,7 +13,6 @@ offset_bottom = 114.0
 script = ExtResource("1_v0axs")
 package_name = "地表
 巨穴之口"
-mean_layer = null
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 1

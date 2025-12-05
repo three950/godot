@@ -19,3 +19,5 @@ func _update_item_card() -> void:
 
 func get_value() -> int:
 	return item.value if item else 0
+func set_stats(value:ItemCard)-> void:
+	item = value
