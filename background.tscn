@@ -38,6 +38,8 @@ alignment = 1
 layout_mode = 2
 game_stats = ExtResource("5_eq6nc")
 mean_layer = 0
+spawn_offset = Vector2(0, 130)
+spawn_z_index = 100
 
 [node name="GroundPackage1" parent="ShopManager/ShopArea/HBoxContainer" instance=ExtResource("4_eq6nc")]
 layout_mode = 2
@@ -46,6 +48,8 @@ package_name = "深界一层
 阿比斯之渊"
 mean_layer = 1
 package_price = 5
+spawn_offset = Vector2(0, 130)
+spawn_z_index = 100
 
 [node name="GroundPackage2" parent="ShopManager/ShopArea/HBoxContainer" instance=ExtResource("4_eq6nc")]
 layout_mode = 2
@@ -54,6 +58,8 @@ package_name = "深界二层
 诱惑之森"
 mean_layer = 2
 package_price = 8
+spawn_offset = Vector2(0, 130)
+spawn_z_index = 100
 
 [node name="GroundPackage3" parent="ShopManager/ShopArea/HBoxContainer" instance=ExtResource("4_eq6nc")]
 layout_mode = 2
@@ -62,6 +68,8 @@ package_name = "深界三层
 大断层"
 mean_layer = 3
 package_price = 12
+spawn_offset = Vector2(0, 130)
+spawn_z_index = 100
 
 [node name="GroundPackage4" parent="ShopManager/ShopArea/HBoxContainer" instance=ExtResource("4_eq6nc")]
 layout_mode = 2
@@ -70,6 +78,8 @@ package_name = "深界四层
 巨人之杯"
 mean_layer = 4
 package_price = 18
+spawn_offset = Vector2(0, 130)
+spawn_z_index = 100
 
 [node name="GroundPackage5" parent="ShopManager/ShopArea/HBoxContainer" instance=ExtResource("4_eq6nc")]
 layout_mode = 2
@@ -78,6 +88,8 @@ package_name = "深界五层
 亡骸之海"
 mean_layer = 5
 package_price = 25
+spawn_offset = Vector2(0, 130)
+spawn_z_index = 100
 
 [node name="GroundPackage6" parent="ShopManager/ShopArea/HBoxContainer" instance=ExtResource("4_eq6nc")]
 layout_mode = 2
@@ -86,6 +98,8 @@ package_name = "深界六层
 来无回之都"
 mean_layer = 6
 package_price = 35
+spawn_offset = Vector2(0, 130)
+spawn_z_index = 100
 
 [node name="RefreshButton" type="Button" parent="ShopManager"]
 offset_left = 820.0
