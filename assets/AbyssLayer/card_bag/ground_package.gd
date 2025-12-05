@@ -12,13 +12,15 @@ signal package_bought(CardPackage)
 @export var spawn_offset: Vector2 = Vector2(0, 120)
 ## 生成的卡牌的z_index，确保不被遮挡
 @export var spawn_z_index: int = 1
+## 指定要生成的卡牌资源（CardInfo类型），如果为空则使用默认卡牌
+@export var spawn_card_info: CardInfo = null
 
 @onready var packagename: Label = %packagename
 @onready var value: Label = %value
 @onready var panel_3: Panel = $Panel3
 
-# 卡牌场景预加载
-var card_scene: PackedScene = preload("res://assets/card.tscn")
+# 默认卡牌场景预加载
+var default_card_scene: PackedScene = preload("res://assets/card.tscn")
 
 func _ready() -> void:
 	_update_display()
@@ -50,8 +52,8 @@ func _spawn_card_delayed() -> void:
 
 ## 生成卡牌
 func _spawn_card() -> void:
-	# 实例化卡牌
-	var card_instance = card_scene.instantiate()
+	# 根据卡牌资源类型选择正确的场景并实例化
+	var card_instance = _create_card_instance()
 	
 	# 计算生成位置（当前位置的下方）
 	var spawn_position = global_position + spawn_offset
@@ -75,7 +77,26 @@ func _spawn_card() -> void:
 	if not card_instance.is_in_group("Cards"):
 		card_instance.add_to_group("Cards")
 	
-	print("卡牌已生成于位置: %s" % spawn_position)
+	print("卡牌已生成于位置: %s, 卡牌名称: %s" % [spawn_position, spawn_card_info.name if spawn_card_info else "默认"])
+
+## 根据卡牌资源类型创建对应的卡牌实例
+func _create_card_instance() -> Node:
+	if spawn_card_info == null or spawn_card_info.card_scene == null:
+		# 没有指定资源或场景，使用默认卡牌场景
+		return default_card_scene.instantiate()
+	
+	# 从CardInfo中获取场景并实例化
+	var instance = spawn_card_info.card_scene.instantiate()
+	
+	# 根据资源类型设置对应的属性
+	if spawn_card_info is ItemCard and "item" in instance:
+		instance.item = spawn_card_info
+	elif spawn_card_info is EquipmentCard and "equipment" in instance:
+		instance.equipment = spawn_card_info
+	elif spawn_card_info is ResourceCard and "recource" in instance:
+		instance.recource = spawn_card_info
+	
+	return instance
 	
 func _update_state() -> void:
 	if game_stats.max_layer <= mean_layer:
