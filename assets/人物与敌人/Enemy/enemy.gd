@@ -20,3 +20,5 @@ func _update_battle_card() -> void:
 	portrait_rect.texture = enemy.portrait
 	enemy.HP = enemy.MAX_HP
 	update_stats()
+func set_stats(value:EnemyCard)-> void:
+	enemy = value
