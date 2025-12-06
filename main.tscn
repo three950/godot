@@ -1,10 +1,9 @@
-[gd_scene load_steps=17 format=3 uid="uid://r1lb3ajxfx1j"]
+[gd_scene load_steps=19 format=3 uid="uid://r1lb3ajxfx1j"]
 
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://background.tscn" id="3_h2yge"]
 [ext_resource type="Script" uid="uid://bbnp6ftl63g4m" path="res://script_folder/camera_controller.gd" id="4_camera"]
 [ext_resource type="PackedScene" uid="uid://di7barbrn42cy" path="res://assets/人物与敌人/Character/character.tscn" id="6_kek77"]
 [ext_resource type="Resource" uid="uid://tk1nuwcbk0u2" path="res://assets/人物与敌人/Character/characters/娜娜奇.tres" id="7_4c57u"]
-[ext_resource type="PackedScene" uid="uid://rjupoy2robs0" path="res://assets/AbyssLayer/layer1/depth_indicator.tscn" id="7_depth_indicator"]
 [ext_resource type="Resource" uid="uid://dfpw7xhnxtvgh" path="res://assets/人物与敌人/Character/characters/莉可.tres" id="8_efxa6"]
 [ext_resource type="Resource" uid="uid://dsjxxvme1bq2n" path="res://assets/人物与敌人/Character/characters/雷古.tres" id="9_dg77c"]
 [ext_resource type="PackedScene" uid="uid://b1n4d84218ejx" path="res://assets/人物与敌人/Enemy/enemy.tscn" id="9_enemy_card"]
@@ -15,18 +14,15 @@
 [ext_resource type="PackedScene" uid="uid://dtdlifuitpvq3" path="res://assets/物品/资源/recource.tscn" id="13_ycdy4"]
 [ext_resource type="Resource" uid="uid://b5lhfvaex1tbh" path="res://assets/物品/资源/鱼.tres" id="14_w48qg"]
 [ext_resource type="PackedScene" uid="uid://cba2igvxd481l" path="res://assets/物品/装备/Equitment.tscn" id="15_2cqfq"]
+[ext_resource type="PackedScene" uid="uid://cenk3fyviu5iq" path="res://assets/AbyssLayer/layer1/depth.tscn" id="16_2cqfq"]
 [ext_resource type="Resource" uid="uid://dntioc7brul78" path="res://assets/物品/装备/armour防具/祈愿者的盖子.tres" id="16_yaehf"]
+[ext_resource type="Resource" uid="uid://cmli5pr88q6d" path="res://assets/AbyssLayer/layer1/depthcard/1000m.tres" id="17_074og"]
+[ext_resource type="Resource" uid="uid://b84vk56tstpon" path="res://assets/AbyssLayer/layer1/depthcard/500m.tres" id="18_cegan"]
 
 [node name="Main" type="Node2D"]
 
 [node name="backgroundUi" parent="." instance=ExtResource("3_h2yge")]
 metadata/_edit_lock_ = true
-
-[node name="DepthIndicator500m" parent="." instance=ExtResource("7_depth_indicator")]
-offset_left = 1000.0
-offset_top = 150.0
-offset_right = 1088.0
-offset_bottom = 265.0
 
 [node name="娜娜奇" parent="." instance=ExtResource("6_kek77")]
 offset_left = 92.0
@@ -55,8 +51,6 @@ offset_top = 379.0
 offset_right = 360.0
 offset_bottom = 494.0
 enemy = ExtResource("10_4c57u")
-card_type = 0
-can_stack = true
 
 [node name="BagMover" type="Node" parent="."]
 script = ExtResource("11_efxa6")
@@ -71,8 +65,6 @@ offset_top = 234.0
 offset_right = 768.0
 offset_bottom = 349.0
 item = ExtResource("12_dg77c")
-card_type = 0
-can_stack = true
 
 [node name="Recource" parent="." instance=ExtResource("13_ycdy4")]
 offset_left = 794.0
@@ -87,3 +79,17 @@ offset_top = 237.0
 offset_right = 991.0
 offset_bottom = 352.0
 equipment = ExtResource("16_yaehf")
+
+[node name="1000m" parent="." instance=ExtResource("16_2cqfq")]
+offset_left = 877.0
+offset_top = 391.0
+offset_right = 965.0
+offset_bottom = 506.0
+depth = ExtResource("17_074og")
+
+[node name="500m" parent="." instance=ExtResource("16_2cqfq")]
+offset_left = 955.0
+offset_top = 108.0
+offset_right = 1043.0
+offset_bottom = 223.0
+depth = ExtResource("18_cegan")

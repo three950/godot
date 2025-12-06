@@ -1,4 +1,4 @@
-extends "res://assets/物品/things.gd"
+extends Things
 class_name Item
 @onready var label: Label = $Panel/Label
 @onready var texture_rect: TextureRect = $TextureRect

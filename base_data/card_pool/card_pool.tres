@@ -1,13 +1,17 @@
-[gd_resource type="Resource" script_class="CardPool" load_steps=7 format=3 uid="uid://v7v7n33brkuk"]
+[gd_resource type="Resource" script_class="CardPool" load_steps=11 format=3 uid="uid://v7v7n33brkuk"]
 
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="1_74mtg"]
 [ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/钓鱼竿.tres" id="2_10ut8"]
+[ext_resource type="Resource" uid="uid://tk1nuwcbk0u2" path="res://assets/人物与敌人/Character/characters/娜娜奇.tres" id="2_hue0t"]
 [ext_resource type="Script" uid="uid://b2iywp5awfiv3" path="res://base_data/card_pool/pool.gd" id="2_ps1rd"]
 [ext_resource type="Resource" uid="uid://b5lhfvaex1tbh" path="res://assets/物品/资源/鱼.tres" id="3_ghute"]
 [ext_resource type="Resource" uid="uid://bptle7yhbwdk8" path="res://assets/物品/装备/weapon/探窟稿.tres" id="4_tiibe"]
 [ext_resource type="Resource" uid="uid://dntioc7brul78" path="res://assets/物品/装备/armour防具/祈愿者的盖子.tres" id="5_hue0t"]
+[ext_resource type="Resource" uid="uid://dsjxxvme1bq2n" path="res://assets/人物与敌人/Character/characters/雷古.tres" id="6_66b5c"]
+[ext_resource type="Resource" uid="uid://dfpw7xhnxtvgh" path="res://assets/人物与敌人/Character/characters/莉可.tres" id="7_x7qfk"]
+[ext_resource type="Resource" uid="uid://do4ivypcif1tw" path="res://assets/人物与敌人/Enemy/enemys/毒针线虫.tres" id="8_kp64e"]
 
 [resource]
 script = ExtResource("2_ps1rd")
-card_pool = Array[ExtResource("1_74mtg")]([ExtResource("2_10ut8"), ExtResource("3_ghute"), ExtResource("4_tiibe"), ExtResource("5_hue0t")])
+card_pool = Array[ExtResource("1_74mtg")]([ExtResource("2_hue0t"), ExtResource("3_ghute"), ExtResource("4_tiibe"), ExtResource("5_hue0t"), ExtResource("6_66b5c"), ExtResource("7_x7qfk"), ExtResource("8_kp64e"), ExtResource("2_10ut8")])
 metadata/_custom_type_script = "uid://b2iywp5awfiv3"

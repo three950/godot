@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="DepthCard" load_steps=3 format=3 uid="uid://cmli5pr88q6d"]
+
+[ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="1_12kqh"]
+[ext_resource type="Script" uid="uid://bgofijjl5muvc" path="res://assets/AbyssLayer/layer1/depthCard.gd" id="1_yhq3f"]
+
+[resource]
+script = ExtResource("1_yhq3f")
+depth = 1000
+name = "1000"
+portrait = ExtResource("1_12kqh")
+type = 6
+metadata/_custom_type_script = "uid://bgofijjl5muvc"
