@@ -6,6 +6,8 @@
 [resource]
 script = ExtResource("1_tcsp3")
 "特殊效果" = "fishing-faser"
+type = 3
 name = "钓鱼竿"
 portrait = ExtResource("1_7cpgg")
+type = 3
 metadata/_custom_type_script = "uid://c471nqy7votga"

@@ -11,3 +11,9 @@ signal bag_unregistered(bag: BagArea)
 signal card_drag_started(card: Card)
 signal card_dropped(card: Card)
 signal max_layer_changed(max_layer:int)
+@export var spawn_card_info: CardInfo = null
+## 根据卡牌资源类型创建对应的卡牌实例
+func _create_card_instance() -> Node:
+	var instance = spawn_card_info.card_scene.instantiate()
+	instance.set_stats(spawn_card_info)
+	return instance

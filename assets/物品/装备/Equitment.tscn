@@ -19,8 +19,6 @@ border_color = Color(0.27450982, 0.3137255, 0.38039216, 1)
 [node name="Equipment" instance=ExtResource("1_g8hp3")]
 script = ExtResource("2_rkhsv")
 equipment = null
-card_type = 0
-can_stack = true
 
 [node name="CardPanel" parent="." index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_rkhsv")

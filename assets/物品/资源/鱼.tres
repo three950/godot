@@ -9,4 +9,5 @@ nutrition = 1
 value = 5
 name = "鱼"
 portrait = ExtResource("1_hy6qp")
+type = 5
 metadata/_custom_type_script = "uid://cof2oajhsugri"

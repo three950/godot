@@ -17,9 +17,6 @@ signal package_bought(CardPackage)
 @onready var value: Label = %value
 @onready var panel_3: Panel = $Panel3
 
-# 默认卡牌场景预加载
-var default_card_scene: PackedScene = preload("res://assets/card.tscn")
-
 func _ready() -> void:
 	_update_display()
 	Events.max_layer_changed.connect(_update_state)
@@ -44,8 +41,6 @@ func _spawn_card_delayed() -> void:
 	# 创建计时器
 	var timer = get_tree().create_timer(spawn_delay)
 	await timer.timeout
-	
-	# 计时器结束后生成卡牌
 	_spawn_card()
 
 ## 生成卡牌
@@ -68,7 +63,6 @@ func _spawn_card() -> void:
 func _create_card_instance() -> Node:
 	var instance = spawn_card_info.card_scene.instantiate()
 	instance.set_stats(spawn_card_info)
-
 	return instance
 	
 func _update_state() -> void:

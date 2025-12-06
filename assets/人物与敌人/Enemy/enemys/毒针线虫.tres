@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="EnemyCard" load_steps=3 format=3 uid="uid://do4ivypcif1tw"]
 
 [ext_resource type="Texture2D" uid="uid://ccg6ro7r3trco" path="res://assets/人物与敌人/Enemy/enemys/毒针线虫.jpg" id="1_ft5gs"]
-[ext_resource type="Script" uid="uid://c5d3up0hwneb" path="res://assets/人物与敌人/Enemy/EnemyCard.gd" id="1_fvscb"]
+[ext_resource type="Script" path="res://assets/人物与敌人/Enemy/EnemyCard.gd" id="1_fvscb"]
 
 [resource]
 script = ExtResource("1_fvscb")
@@ -11,4 +11,4 @@ speed = 8
 DEF = 3
 name = "毒针线虫"
 portrait = ExtResource("1_ft5gs")
-metadata/_custom_type_script = "uid://c5d3up0hwneb"
+type = 1

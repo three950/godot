@@ -34,3 +34,16 @@ func set_layer(value: int) -> void:
 func set_max_layer(value:int)-> void:
 	max_layer=value
 	emit_changed()
+
+	#类型判断，根据卡包设置出现的卡牌类型及概率
+const 深度卡包中出现的卡牌类型:=[CardInfo.CardType.人物,CardInfo.CardType.敌人,CardInfo.CardType.小场景,CardInfo.CardType.道具,CardInfo.CardType.武器,CardInfo.CardType.资源,CardInfo.CardType.事件]
+const 深度卡包中每种卡牌类型出现概率:={
+	500m :[0.2,1,8,2,2,2,0]
+	1000m :[0.2,1,8,2,2,2,0]
+}
+const 协会卡包中出现的卡牌类型:=[CardInfo.CardType.道具,CardInfo.CardType.武器,CardInfo.CardType.资源]
+const 协会卡包中每种卡牌类型出现概率:=[1,1,1]
+
+	#卡片判断，根据深渊的层数设定卡牌类型中具体可能出现的小场景卡牌
+const [深渊]每层可能出现的小场景类型:=[]
+const [深渊]小场景类型的概率:=[]

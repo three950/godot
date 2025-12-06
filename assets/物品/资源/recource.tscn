@@ -18,8 +18,7 @@ border_color = Color(0.9490196, 0.78039217, 0.7607843, 1)
 
 [node name="Recource" instance=ExtResource("1_ughbl")]
 script = ExtResource("2_5s73d")
-card_type = 0
-can_stack = true
+recource = null
 
 [node name="CardPanel" parent="." index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_5s73d")
