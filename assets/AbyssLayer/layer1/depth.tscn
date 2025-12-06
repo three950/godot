@@ -10,7 +10,11 @@
 
 [node name="500m" instance=ExtResource("1_7xi6g")]
 script = ExtResource("2_a0gw6")
-depth = null
+spawn_card_info = null
+depthcard = null
+spawn_offset = Vector2(0, 120)
+cardpool = null
+gamestats = null
 
 [node name="Label" parent="Panel" index="0"]
 text = "500m"

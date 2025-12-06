@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://r1lb3ajxfx1j"]
+[gd_scene load_steps=21 format=3 uid="uid://r1lb3ajxfx1j"]
 
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://background.tscn" id="3_h2yge"]
 [ext_resource type="Script" uid="uid://bbnp6ftl63g4m" path="res://script_folder/camera_controller.gd" id="4_camera"]
@@ -17,7 +17,9 @@
 [ext_resource type="PackedScene" uid="uid://cenk3fyviu5iq" path="res://assets/AbyssLayer/layer1/depth.tscn" id="16_2cqfq"]
 [ext_resource type="Resource" uid="uid://dntioc7brul78" path="res://assets/物品/装备/armour防具/祈愿者的盖子.tres" id="16_yaehf"]
 [ext_resource type="Resource" uid="uid://cmli5pr88q6d" path="res://assets/AbyssLayer/layer1/depthcard/1000m.tres" id="17_074og"]
-[ext_resource type="Resource" uid="uid://b84vk56tstpon" path="res://assets/AbyssLayer/layer1/depthcard/500m.tres" id="18_cegan"]
+[ext_resource type="Resource" uid="uid://v7v7n33brkuk" path="res://base_data/card_pool/card_pool.tres" id="18_cegan"]
+[ext_resource type="Resource" uid="uid://flhywkkf61mb" path="res://base_data/game_stats.tres" id="19_82xsv"]
+[ext_resource type="Resource" uid="uid://b84vk56tstpon" path="res://assets/AbyssLayer/layer1/depthcard/500m.tres" id="20_82xsv"]
 
 [node name="Main" type="Node2D"]
 
@@ -85,11 +87,15 @@ offset_left = 877.0
 offset_top = 391.0
 offset_right = 965.0
 offset_bottom = 506.0
-depth = ExtResource("17_074og")
+depthcard = ExtResource("17_074og")
+cardpool = ExtResource("18_cegan")
+gamestats = ExtResource("19_82xsv")
 
 [node name="500m" parent="." instance=ExtResource("16_2cqfq")]
 offset_left = 955.0
 offset_top = 108.0
 offset_right = 1043.0
 offset_bottom = 223.0
-depth = ExtResource("18_cegan")
+depthcard = ExtResource("20_82xsv")
+cardpool = ExtResource("18_cegan")
+gamestats = ExtResource("19_82xsv")
