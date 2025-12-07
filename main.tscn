@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://r1lb3ajxfx1j"]
+[gd_scene load_steps=22 format=3 uid="uid://r1lb3ajxfx1j"]
 
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://background.tscn" id="3_h2yge"]
 [ext_resource type="Script" uid="uid://bbnp6ftl63g4m" path="res://script_folder/camera_controller.gd" id="4_camera"]
@@ -20,6 +20,7 @@
 [ext_resource type="Resource" uid="uid://v7v7n33brkuk" path="res://base_data/card_pool/card_pool.tres" id="18_cegan"]
 [ext_resource type="Resource" uid="uid://flhywkkf61mb" path="res://base_data/game_stats.tres" id="19_82xsv"]
 [ext_resource type="Resource" uid="uid://b84vk56tstpon" path="res://assets/AbyssLayer/layer1/depthcard/500m.tres" id="20_82xsv"]
+[ext_resource type="Script" uid="uid://bhwdhxluayto5" path="res://ui/card_craft_manager.gd" id="21_getpj"]
 
 [node name="Main" type="Node2D"]
 
@@ -99,3 +100,7 @@ offset_bottom = 223.0
 depthcard = ExtResource("20_82xsv")
 cardpool = ExtResource("18_cegan")
 gamestats = ExtResource("19_82xsv")
+
+[node name="CraftManager" type="Node" parent="."]
+script = ExtResource("21_getpj")
+metadata/_custom_type_script = "uid://bhwdhxluayto5"

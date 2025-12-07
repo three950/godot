@@ -2,6 +2,7 @@ extends Node
 
 signal card_fixed()
 signal card_put_in_bag(card:Card)
+signal stack_changed(card:Card)
 
 # 背包注册/注销信号
 signal bag_registered(bag: BagArea)

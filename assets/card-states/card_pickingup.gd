@@ -5,6 +5,7 @@ func enter() -> void:
 		print("卡片 %s 断开与目标 %s 的连接" % [card.name, card.follow_target.name])
 		card.follow_target.stop_stacking_on_you.emit()
 		card.stack_state = 0
+		card.follow_target = null  # 清除跟随目标
 	card.z_index = 100
 	card.drag_offset = card.get_global_mouse_position()-card.global_position
 	card.drag_started.emit()

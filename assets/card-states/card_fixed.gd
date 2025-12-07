@@ -5,6 +5,7 @@ func enter() -> void:
 	print("fix状态开始")
 	card.reparent_requested.emit(card)
 	card.pivot_offset = Vector2.ZERO
+	Events.stack_changed.emit(card)
 
 func _on_control_gui_input(event: InputEvent) -> void:
 	if event.is_action_pressed("LMB"):

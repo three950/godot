@@ -63,6 +63,7 @@ func stack_on_card(target_card: Card) -> void:
 	# 设置跟随目标
 	card.follow_target = target_card
 	target_card.stacking_on_you.emit(card)
+	
 	# 将当前卡片的父节点设为和目标卡片相同
 	var target_parent = target_card.get_parent()
 	if target_parent and get_parent() != target_parent:

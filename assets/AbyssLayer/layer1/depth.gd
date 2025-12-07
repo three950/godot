@@ -33,13 +33,14 @@ func _spawn_card() -> void:
 	
 	# 计算生成位置（当前位置的下方）
 	var spawn_position = global_position + spawn_offset
-	card_instance.global_position = spawn_position
 	card_instance.z_index = 1
 	
 	# 将卡牌添加到Cards分组的根节点
 	var cards_group = get_tree().get_first_node_in_group("Cards")
 	if cards_group:
 		cards_group.add_child(card_instance)
+	card_instance.global_position = global_position
+	card_instance.shooter.play_card_shooter(spawn_position)
 	print("卡牌已生成于位置: %s, 卡牌名称: %s" % [spawn_position, spawn_card_info.name if spawn_card_info else "默认"])
 
 ## 根据卡牌资源类型创建对应的卡牌实例

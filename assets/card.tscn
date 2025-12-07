@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cxgk8a5mjy27v"]
+[gd_scene load_steps=16 format=3 uid="uid://cxgk8a5mjy27v"]
 
 [ext_resource type="Script" uid="uid://ut5tbn2q80gh" path="res://assets/card.gd" id="1_q5obu"]
 [ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="2_e484p"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://bgkton1xcycf" path="res://assets/card-states/card_falling.gd" id="8_ram0e"]
 [ext_resource type="Script" uid="uid://sxc0f1pavh3f" path="res://assets/card-states/card_instack.gd" id="9_kvflh"]
 [ext_resource type="Script" uid="uid://bwf2g3aljfb72" path="res://assets/card-states/card_instack_dragging.gd" id="10_a3cqy"]
+[ext_resource type="Script" uid="uid://cvwtip1ly5e7f" path="res://ui/card_shooter_animations.gd" id="11_ram0e"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e6854"]
 bg_color = Color(0.89353544, 0.8712141, 0.789065, 1)
@@ -118,6 +119,11 @@ state = 4
 [node name="CardInstackDragging" type="Node" parent="CardStateMachine"]
 script = ExtResource("10_a3cqy")
 state = 5
+
+[node name="Shooter" type="Node" parent="." node_paths=PackedStringArray("card")]
+script = ExtResource("11_ram0e")
+card = NodePath("..")
+metadata/_custom_type_script = "uid://cvwtip1ly5e7f"
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="gui_input" from="." to="CardStateMachine/CardFixed" method="_on_card_gui_input"]

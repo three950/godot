@@ -14,6 +14,7 @@ func _ready() -> void:
 func _update_item_card() -> void:
 	if equipment == null:
 		return
+	name = equipment.name  # 设置节点名称
 	label.text = equipment.name
 	texture_rect.texture = equipment.portrait
 	value_label.text = str(equipment.value)

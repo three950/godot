@@ -18,6 +18,7 @@ enum cardType{normal, selling, architecture}  # 卡片类型
 var original_position: Vector2 = Vector2.ZERO  # 开始拖拽时的原始位置
 var drag_offset: Vector2 = Vector2.ZERO  # 拖拽时鼠标相对于卡片的偏移量
 @onready var card_state_machine:CardStateMachine=$CardStateMachine as CardStateMachine
+@onready var shooter: Shooter = $Shooter
 # Area2D 重叠检测
 var overlapping_cards: Array[Control] = []  # 当前与此卡片 Area2D 重叠的其他卡片
 const DRAG_TEMP_Z := 100
@@ -67,6 +68,7 @@ func bestacked_on_me(children: Card) -> void:
 	var label_panel := get_node("Panel")
 	if label_panel:
 		size = label_panel.size
+	Events.stack_changed.emit(self)
 func stop_stacking_on_me() -> void:
 	stack_state &= ~CardState.STACK_STATE_BESTACKED
 	children_card = null
@@ -74,7 +76,7 @@ func stop_stacking_on_me() -> void:
 	var card_panel:= get_node("CardPanel")
 	if card_panel:
 		size=card_panel.size
-
+	Events.stack_changed.emit(self)
 func _input(event: InputEvent) -> void:
 	card_state_machine.on_input(event)
 
