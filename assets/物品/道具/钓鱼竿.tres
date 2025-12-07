@@ -1,13 +1,18 @@
-[gd_resource type="Resource" script_class="ItemCard" load_steps=4 format=3 uid="uid://fcqupg4pyrk6"]
+[gd_resource type="Resource" script_class="ItemCard" load_steps=7 format=3 uid="uid://fcqupg4pyrk6"]
 
 [ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="1_7cpgg"]
 [ext_resource type="PackedScene" uid="uid://dnxa570k3cf" path="res://assets/物品/道具/item.tscn" id="1_h6ict"]
 [ext_resource type="Script" uid="uid://c471nqy7votga" path="res://assets/物品/道具/ItemCard.gd" id="1_tcsp3"]
+[ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="2_3wdk2"]
+[ext_resource type="Resource" uid="uid://dfpw7xhnxtvgh" path="res://assets/人物与敌人/Character/characters/莉可.tres" id="3_66yr0"]
+[ext_resource type="Resource" uid="uid://dsjxxvme1bq2n" path="res://assets/人物与敌人/Character/characters/雷古.tres" id="4_jgt2w"]
 
 [resource]
 script = ExtResource("1_tcsp3")
 card_scene = ExtResource("1_h6ict")
 "特殊效果" = "fishing-faser"
+has_craft_recipe = true
+craft_materials = Array[ExtResource("2_3wdk2")]([ExtResource("3_66yr0"), ExtResource("4_jgt2w")])
 name = "钓鱼竿"
 portrait = ExtResource("1_7cpgg")
 type = 3

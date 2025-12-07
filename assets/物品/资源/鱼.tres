@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="ResourceCard" load_steps=4 format=3 uid="uid://b5lhfvaex1tbh"]
+[gd_resource type="Resource" script_class="ResourceCard" load_steps=5 format=3 uid="uid://b5lhfvaex1tbh"]
 
 [ext_resource type="PackedScene" uid="uid://dtdlifuitpvq3" path="res://assets/物品/资源/recource.tscn" id="1_7hwt8"]
 [ext_resource type="Texture2D" uid="uid://c8tkdocp183ia" path="res://assets/物品/资源/fish.jpg" id="1_hy6qp"]
 [ext_resource type="Script" uid="uid://cof2oajhsugri" path="res://assets/物品/资源/ResourceCard.gd" id="1_kukxd"]
+[ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="2_wt4li"]
 
 [resource]
 script = ExtResource("1_kukxd")

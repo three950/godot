@@ -7,7 +7,7 @@ enum 遗物等级 {NO, FIFTH, FORTH, THRID, SECOND, FRIST, SUPER}
 
 @export_group("合成配方")
 @export var has_craft_recipe: bool = false
-@export var craft_materials: Array[String] = []
+@export var craft_materials: Array[CardInfo] = []
 @export var 合成时间: float = 0.0
 func _validate_property(property: Dictionary) -> void:
 	if property.name == "craft_materials":
