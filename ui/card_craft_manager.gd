@@ -29,7 +29,7 @@ func _get_array(card: Card) -> void:
 	if card.children_card != null:
 		var current = card.children_card
 		while current != null:
-			result_down.append(current.name)
+			result_down.append(current.cardname)
 			cards_to_free.append(current)
 			current = current.children_card
 	
@@ -38,14 +38,14 @@ func _get_array(card: Card) -> void:
 	if card.follow_target != null:
 		var current = card.follow_target
 		while current != null:
-			result_up.append(current.name)
+			result_up.append(current.cardname)
 			cards_to_free.append(current)
 			if current.follow_target == null:
 				top_card = current
 			current = current.follow_target
 	
 	var result: Array[String] = []
-	result.assign(result_up + [card.name] + result_down)
+	result.assign(result_up + [card.cardname] + result_down)
 	if result:
 		result.sort()
 	print(result)

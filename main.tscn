@@ -69,6 +69,8 @@ offset_top = 234.0
 offset_right = 768.0
 offset_bottom = 349.0
 item = ExtResource("12_dg77c")
+card_type = null
+can_stack = null
 
 [node name="Recource" parent="." instance=ExtResource("13_ycdy4")]
 offset_left = 794.0
@@ -76,6 +78,8 @@ offset_top = 237.0
 offset_right = 882.0
 offset_bottom = 352.0
 recource = ExtResource("14_w48qg")
+card_type = null
+can_stack = null
 
 [node name="Equipment" parent="." instance=ExtResource("15_2cqfq")]
 offset_left = 903.0
@@ -83,6 +87,8 @@ offset_top = 237.0
 offset_right = 991.0
 offset_bottom = 352.0
 equipment = ExtResource("16_yaehf")
+card_type = null
+can_stack = null
 
 [node name="1000m" parent="." instance=ExtResource("16_2cqfq")]
 offset_left = 877.0

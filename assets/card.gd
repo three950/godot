@@ -15,6 +15,7 @@ signal array_changed()
 # 信号：请求重新设置父节点
 signal reparent_requested(which_card: Card)
 enum cardType{normal, selling, architecture}  # 卡片类型
+@export var cardname:String
 @export var card_type: cardType = cardType.normal  # 默认为普通类型
 @export var can_stack: bool = true  # 是否允许其他卡片堆叠在上面
 var original_position: Vector2 = Vector2.ZERO  # 开始拖拽时的原始位置

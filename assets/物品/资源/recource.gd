@@ -14,7 +14,8 @@ func _ready() -> void:
 func _update_item_card() -> void:
 	if recource == null:
 		return
-	name = recource.name  # 设置节点名称
+	name = recource.name
+	cardname = recource.name
 	label.text = recource.name
 	texture_rect.texture = recource.portrait
 	value_label.text = str(recource.value)
