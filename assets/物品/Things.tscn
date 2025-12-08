@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://fopgb30s4q33"]
+[gd_scene load_steps=4 format=3 uid="uid://fopgb30s4q33"]
 
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="1_1jjow"]
 [ext_resource type="Script" uid="uid://xwsvanroj8nl" path="res://assets/物品/things.gd" id="2_xtrdk"]
+[ext_resource type="PackedScene" uid="uid://m6rrjkc625gk" path="res://ui/card_progress_bar.tscn" id="3_g60qt"]
 
 [node name="Item" instance=ExtResource("1_1jjow")]
 script = ExtResource("2_xtrdk")
@@ -29,3 +30,11 @@ theme_override_colors/font_color = Color(0.8174487, 0.67471844, 0.2704918, 1)
 theme_override_font_sizes/font_size = 8
 text = "100"
 horizontal_alignment = 2
+
+[node name="CardProgressBar" parent="." index="9" instance=ExtResource("3_g60qt")]
+visible = false
+layout_mode = 0
+offset_left = 0.0
+offset_top = -9.0
+offset_right = 88.0
+offset_bottom = -1.0

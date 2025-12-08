@@ -3,6 +3,7 @@ extends Node
 @export var craft_pools: Array[CardInfo] = []
 var _recipe_map: Dictionary = {}
 
+#检测解析所有合成配方，实时检测堆叠数组并识别是否可合成
 func _ready() -> void:
 	_build_recipe_map()
 	Events.stack_changed.connect(_get_array)
@@ -49,14 +50,49 @@ func _get_array(card: Card) -> void:
 	
 	# 查询配方
 	if _recipe_map.has(result):
-		print("配方匹配成功: ", result, " -> ", _recipe_map[result].name)
-		var spawn_position = top_card.global_position		
-		# 销毁所有相关卡片
+		var card_info: ThingsCard = _recipe_map[result]
+		print("配方匹配成功: ", result, " -> ", card_info.name)
+		
 		cards_to_free.append(card)
-		for c in cards_to_free:
-			c.queue_free()		
-		# 生成新卡片
-		_spawn_crafted_card(_recipe_map[result], spawn_position)
+		var spawn_position = top_card.global_position
+		
+		# 检查合成时间
+		if card_info.合成时间 > 0:
+			_start_crafting(top_card, cards_to_free, card_info, spawn_position)
+		else:
+			# 无合成时间，立即合成
+			_finish_crafting(cards_to_free, card_info, spawn_position)
+
+## 开始合成：显示进度条并计时
+func _start_crafting(top_card: Card, cards_to_free: Array[Card], card_info: ThingsCard, spawn_position: Vector2) -> void:
+	# 获取 top_card 的进度条并启动
+	var progress_bar = top_card.get_node_or_null("CardProgressBar") as CardProgressBar
+	if progress_bar:
+		# 使用 lambda 捕获所有参数
+		progress_bar.progress_completed.connect(
+			func(): _on_craft_completed(cards_to_free, card_info, spawn_position),
+			CONNECT_ONE_SHOT
+		)
+		progress_bar.start(card_info.合成时间)
+		print("开始合成: ", card_info.name, " 需要 ", card_info.合成时间, " 秒")
+	else:
+		# 没有进度条，直接完成合成
+		print("警告: top_card 没有 CardProgressBar，直接完成合成")
+		_finish_crafting(cards_to_free, card_info, spawn_position)
+
+## 合成进度完成回调
+func _on_craft_completed(cards_to_free: Array[Card], card_info: ThingsCard, spawn_position: Vector2) -> void:
+	print("合成完成: ", card_info.name)
+	_finish_crafting(cards_to_free, card_info, spawn_position)
+
+## 完成合成：销毁材料卡片，生成新卡片
+func _finish_crafting(cards_to_free: Array[Card], card_info: ThingsCard, spawn_position: Vector2) -> void:
+	# 销毁所有相关卡片
+	for c in cards_to_free:
+		if is_instance_valid(c):
+			c.queue_free()
+	# 生成新卡片
+	_spawn_crafted_card(card_info, spawn_position)
 
 func _spawn_crafted_card(card_info: CardInfo, spawn_position: Vector2) -> void:
 	var instance = card_info.card_scene.instantiate()
