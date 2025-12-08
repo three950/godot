@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://xwsvanroj8nl" path="res://assets/物品/things.gd" id="2_xtrdk"]
 [ext_resource type="PackedScene" uid="uid://m6rrjkc625gk" path="res://ui/card_progress_bar.tscn" id="3_g60qt"]
 
-[node name="Item" instance=ExtResource("1_1jjow")]
+[node name="Things" instance=ExtResource("1_1jjow")]
 script = ExtResource("2_xtrdk")
 
 [node name="Label" parent="Panel" index="0"]

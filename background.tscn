@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://d8vp1m0epvxf"]
 
-[ext_resource type="Texture2D" uid="uid://cwohluet7sc50" path="res://assets/AbyssLayer/ground/地表.jpg" id="1_oabld"]
+[ext_resource type="Texture2D" uid="uid://cwohluet7sc50" path="res://assets/AbyssLayer/begintscn/地表.jpg" id="1_oabld"]
 [ext_resource type="Script" path="res://script_folder/shop_manager.gd" id="3_shop_mgr"]
 [ext_resource type="PackedScene" uid="uid://dde8q2r1usqpa" path="res://assets/AbyssLayer/card_bag/GroundPackage.tscn" id="4_eq6nc"]
 [ext_resource type="PackedScene" uid="uid://bivykmwh7lskv" path="res://assets/固定场景建筑/探窟者协会/探窟者协会.tscn" id="4_splo0"]

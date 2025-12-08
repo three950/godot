@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://r1lb3ajxfx1j"]
+[gd_scene load_steps=24 format=3 uid="uid://r1lb3ajxfx1j"]
 
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://background.tscn" id="3_h2yge"]
 [ext_resource type="Script" uid="uid://bbnp6ftl63g4m" path="res://script_folder/camera_controller.gd" id="4_camera"]
@@ -22,6 +22,7 @@
 [ext_resource type="Resource" uid="uid://b84vk56tstpon" path="res://assets/AbyssLayer/layer1/depthcard/500m.tres" id="20_82xsv"]
 [ext_resource type="Script" uid="uid://bhwdhxluayto5" path="res://ui/card_craft_manager.gd" id="21_getpj"]
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="22_ryguw"]
+[ext_resource type="PackedScene" uid="uid://bm4r8w10jcbid" path="res://ui/ui_layer.tscn" id="23_d13ii"]
 
 [node name="Main" type="Node2D"]
 
@@ -34,7 +35,6 @@ offset_top = 181.0
 offset_right = 180.0
 offset_bottom = 296.0
 character = ExtResource("7_4c57u")
-cardname = null
 
 [node name="莉可" parent="." instance=ExtResource("6_kek77")]
 offset_left = 243.0
@@ -42,7 +42,6 @@ offset_top = 180.0
 offset_right = 331.0
 offset_bottom = 295.0
 character = ExtResource("8_efxa6")
-cardname = null
 
 [node name="雷古" parent="." instance=ExtResource("6_kek77")]
 offset_left = 415.0
@@ -50,7 +49,6 @@ offset_top = 181.0
 offset_right = 503.0
 offset_bottom = 296.0
 character = ExtResource("9_dg77c")
-cardname = null
 
 [node name="EnemyCard" parent="." instance=ExtResource("9_enemy_card")]
 offset_left = 272.0
@@ -58,7 +56,6 @@ offset_top = 379.0
 offset_right = 360.0
 offset_bottom = 494.0
 enemy = ExtResource("10_4c57u")
-cardname = null
 
 [node name="BagMover" type="Node" parent="."]
 script = ExtResource("11_efxa6")
@@ -96,7 +93,6 @@ offset_bottom = 506.0
 depthcard = ExtResource("17_074og")
 cardpool = ExtResource("18_cegan")
 gamestats = ExtResource("19_82xsv")
-cardname = null
 
 [node name="500m" parent="." instance=ExtResource("16_2cqfq")]
 offset_left = 955.0
@@ -106,9 +102,10 @@ offset_bottom = 223.0
 depthcard = ExtResource("20_82xsv")
 cardpool = ExtResource("18_cegan")
 gamestats = ExtResource("19_82xsv")
-cardname = null
 
 [node name="CraftManager" type="Node" parent="."]
 script = ExtResource("21_getpj")
 craft_pools = Array[ExtResource("22_ryguw")]([ExtResource("16_yaehf"), ExtResource("12_dg77c")])
 metadata/_custom_type_script = "uid://bhwdhxluayto5"
+
+[node name="UI_Layer" parent="." instance=ExtResource("23_d13ii")]

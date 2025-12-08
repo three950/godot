@@ -1,0 +1,98 @@
+[gd_scene load_steps=5 format=3 uid="uid://bm4r8w10jcbid"]
+
+[ext_resource type="StyleBox" uid="uid://b6vu8exnid8yt" path="res://ui/ui_style.tres" id="1_00rn6"]
+[ext_resource type="Texture2D" uid="uid://yhr14dughpmr" path="res://assets/物品/资源/meat.png" id="2_gjtyb"]
+[ext_resource type="Texture2D" uid="uid://d4ml0xnr3ldxt" path="res://assets/物品/装备/armour防具/盾牌.png" id="3_vu3t1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_00rn6"]
+bg_color = Color(0.69803923, 0.65882355, 0.5137255, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_bottom = 3
+border_color = Color(0.05197095, 0.051970974, 0.051970884, 1)
+
+[node name="UI_Layer" type="CanvasLayer"]
+
+[node name="TopRightUI" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(200, 0)
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -534.0
+offset_bottom = 35.0
+grow_horizontal = 0
+size_flags_horizontal = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TopRightUI"]
+layout_mode = 2
+alignment = 1
+
+[node name="game_stats" type="PanelContainer" parent="TopRightUI/HBoxContainer"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("1_00rn6")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TopRightUI/HBoxContainer/game_stats"]
+layout_mode = 2
+alignment = 1
+
+[node name="foodstate" type="HBoxContainer" parent="TopRightUI/HBoxContainer/game_stats/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+alignment = 1
+
+[node name="Label" type="Label" parent="TopRightUI/HBoxContainer/game_stats/HBoxContainer/foodstate"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "8/6"
+
+[node name="TextureRect" type="TextureRect" parent="TopRightUI/HBoxContainer/game_stats/HBoxContainer/foodstate"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("2_gjtyb")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="moneystate" type="HBoxContainer" parent="TopRightUI/HBoxContainer/game_stats/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Label" type="Label" parent="TopRightUI/HBoxContainer/game_stats/HBoxContainer/moneystate"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "5000"
+
+[node name="TextureRect" type="TextureRect" parent="TopRightUI/HBoxContainer/game_stats/HBoxContainer/moneystate"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("3_vu3t1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="layerstate" type="Label" parent="TopRightUI/HBoxContainer/game_stats/HBoxContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "深渊1层"
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="TopRightUI/HBoxContainer"]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/background = ExtResource("1_00rn6")
+theme_override_styles/fill = SubResource("StyleBoxFlat_00rn6")
+value = 50.0
+
+[node name="Label" type="Label" parent="TopRightUI/HBoxContainer/ProgressBar"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 6.0
+offset_right = 34.0
+offset_bottom = 30.0
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 1.81
+localize_numeral_system = false
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "9天"

@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_yhq3f")
 depth = 1000
-name = "1000"
+name = "1000m"
 portrait = ExtResource("1_12kqh")
 type = 6
 metadata/_custom_type_script = "uid://bgofijjl5muvc"

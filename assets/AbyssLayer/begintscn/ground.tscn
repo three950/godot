@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://mqnok60lesyq"]
 
-[ext_resource type="Texture2D" uid="uid://cwohluet7sc50" path="res://assets/AbyssLayer/ground/地表.jpg" id="1_pgxni"]
+[ext_resource type="Texture2D" uid="uid://cwohluet7sc50" path="res://assets/AbyssLayer/begintscn/地表.jpg" id="1_pgxni"]
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="2_2bq1q"]
-[ext_resource type="Script" uid="uid://c3x0sf1cy31it" path="res://assets/AbyssLayer/ground/ground.gd" id="3_ground"]
+[ext_resource type="Script" uid="uid://c3x0sf1cy31it" path="res://assets/AbyssLayer/begintscn/ground.gd" id="3_ground"]
 
 [node name="Ground" type="Node2D"]
 script = ExtResource("3_ground")

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cwohluet7sc50"
-path="res://.godot/imported/地表.jpg-47f304ca24b34aa836b472e3c10ad1a2.ctex"
+path="res://.godot/imported/地表.jpg-4537d66762a2c55c4e4cc8d251fc9aa1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/AbyssLayer/ground/地表.jpg"
-dest_files=["res://.godot/imported/地表.jpg-47f304ca24b34aa836b472e3c10ad1a2.ctex"]
+source_file="res://assets/AbyssLayer/begintscn/地表.jpg"
+dest_files=["res://.godot/imported/地表.jpg-4537d66762a2c55c4e4cc8d251fc9aa1.ctex"]
 
 [params]
 
