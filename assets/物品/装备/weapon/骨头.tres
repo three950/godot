@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="EquipmentCard" load_steps=5 format=3 uid="uid://b32f4bmc4pf4t"]
+
+[ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="1_1yilk"]
+[ext_resource type="PackedScene" uid="uid://cba2igvxd481l" path="res://assets/物品/装备/Equitment.tscn" id="1_vudgc"]
+[ext_resource type="Script" uid="uid://b6vcycxqwdmqc" path="res://assets/物品/装备/EquipmentCard.gd" id="2_r6hf1"]
+[ext_resource type="Texture2D" uid="uid://du2vy2d5kk4ih" path="res://assets/物品/装备/weapon/锥.jpg" id="2_vudgc"]
+
+[resource]
+script = ExtResource("2_r6hf1")
+card_scene = ExtResource("1_vudgc")
+need_power = 4
+equip_effect = 9
+value = 90
+has_craft_recipe = true
+craft_materials = Array[ExtResource("1_1yilk")]([null, null])
+"合成时间" = 5.0
+name = "骨头"
+portrait = ExtResource("2_vudgc")
+metadata/_custom_type_script = "uid://b6vcycxqwdmqc"

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EquipmentCard" load_steps=5 format=3 uid="uid://bnpnjoke06uht"]
+
+[ext_resource type="PackedScene" uid="uid://cba2igvxd481l" path="res://assets/物品/装备/Equitment.tscn" id="1_jljn0"]
+[ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="1_ugr0o"]
+[ext_resource type="Script" uid="uid://b6vcycxqwdmqc" path="res://assets/物品/装备/EquipmentCard.gd" id="2_uooo1"]
+[ext_resource type="Texture2D" uid="uid://du2vy2d5kk4ih" path="res://assets/物品/装备/weapon/锥.jpg" id="3_8888r"]
+
+[resource]
+script = ExtResource("2_uooo1")
+card_scene = ExtResource("1_jljn0")
+need_power = 2
+equip_effect = 10
+name = "化石树的树枝"
+portrait = ExtResource("3_8888r")
+metadata/_custom_type_script = "uid://b6vcycxqwdmqc"

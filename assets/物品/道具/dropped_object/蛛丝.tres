@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemCard" load_steps=5 format=3 uid="uid://fqjjt4087o7s"]
+
+[ext_resource type="PackedScene" uid="uid://dnxa570k3cf" path="res://assets/物品/道具/item.tscn" id="1_dtevr"]
+[ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="1_up803"]
+[ext_resource type="Script" uid="uid://c471nqy7votga" path="res://assets/物品/道具/ItemCard.gd" id="2_oi55p"]
+[ext_resource type="Texture2D" uid="uid://ccg6ro7r3trco" path="res://assets/人物与敌人/Enemy/enemys/毒针线虫.jpg" id="3_3fs51"]
+
+[resource]
+script = ExtResource("2_oi55p")
+card_scene = ExtResource("1_dtevr")
+name = "蛛丝"
+portrait = ExtResource("3_3fs51")
+type = 3
+metadata/_custom_type_script = "uid://c471nqy7votga"

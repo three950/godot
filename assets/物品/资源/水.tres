@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ResourceCard" load_steps=5 format=3 uid="uid://b5lhfvaex1tbh"]
+[gd_resource type="Resource" script_class="ResourceCard" load_steps=5 format=3 uid="uid://cresource_water"]
 
 [ext_resource type="PackedScene" uid="uid://dtdlifuitpvq3" path="res://assets/物品/资源/recource.tscn" id="1_7hwt8"]
 [ext_resource type="Texture2D" uid="uid://c8tkdocp183ia" path="res://assets/物品/资源/fish.jpg" id="1_hy6qp"]
@@ -8,8 +8,10 @@
 [resource]
 script = ExtResource("1_kukxd")
 card_scene = ExtResource("1_7hwt8")
-nutrition = 1
-name = "鱼"
+nutrition = 0
+value = 0
+name = "水"
 portrait = ExtResource("1_hy6qp")
 type = 5
 metadata/_custom_type_script = "uid://cof2oajhsugri"
+

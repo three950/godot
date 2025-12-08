@@ -1,7 +1,18 @@
-[gd_resource type="Resource" script_class="EquipmentCard" load_steps=2 format=3 uid="uid://bptle7yhbwdk8"]
+[gd_resource type="Resource" script_class="EquipmentCard" load_steps=7 format=3 uid="uid://bptle7yhbwdk8"]
 
+[ext_resource type="PackedScene" uid="uid://cba2igvxd481l" path="res://assets/物品/装备/Equitment.tscn" id="1_klggm"]
 [ext_resource type="Script" uid="uid://b6vcycxqwdmqc" path="res://assets/物品/装备/EquipmentCard.gd" id="1_onpdw"]
+[ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="1_r6xg6"]
+[ext_resource type="Resource" uid="uid://c3qj5yaqkc0me" path="res://assets/物品/装备/weapon/石块.tres" id="2_c3nyw"]
+[ext_resource type="Resource" uid="uid://bnpnjoke06uht" path="res://assets/物品/装备/weapon/化石树的树枝.tres" id="3_kt6b8"]
+[ext_resource type="Texture2D" uid="uid://du2vy2d5kk4ih" path="res://assets/物品/装备/weapon/锥.jpg" id="5_f0dlk"]
 
 [resource]
 script = ExtResource("1_onpdw")
+card_scene = ExtResource("1_klggm")
+has_craft_recipe = true
+craft_materials = Array[ExtResource("1_r6xg6")]([ExtResource("2_c3nyw"), ExtResource("3_kt6b8")])
+"合成时间" = 5.0
+name = "探窟稿"
+portrait = ExtResource("5_f0dlk")
 metadata/_custom_type_script = "uid://b6vcycxqwdmqc"

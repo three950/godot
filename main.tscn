@@ -72,8 +72,6 @@ offset_left = 680.0
 offset_top = 234.0
 offset_right = 768.0
 offset_bottom = 349.0
-card_type = null
-can_stack = null
 item = ExtResource("12_dg77c")
 
 [node name="Recource" parent="." instance=ExtResource("13_ycdy4")]
