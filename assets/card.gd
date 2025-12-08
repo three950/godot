@@ -22,6 +22,9 @@ var original_position: Vector2 = Vector2.ZERO  # 开始拖拽时的原始位置
 var drag_offset: Vector2 = Vector2.ZERO  # 拖拽时鼠标相对于卡片的偏移量
 @onready var card_state_machine:CardStateMachine=$CardStateMachine as CardStateMachine
 @onready var shooter: Shooter = $Shooter
+# 通用UI元素引用 - 子类可以重写这些路径
+@onready var card_label: Label = $Panel/Label
+@onready var card_texture: TextureRect = $TextureRect
 # Area2D 重叠检测
 var overlapping_cards: Array[Control] = []  # 当前与此卡片 Area2D 重叠的其他卡片
 const DRAG_TEMP_Z := 100
@@ -38,6 +41,25 @@ func _ready() -> void:
 		stack_detector.area_exited.connect(_on_stack_detector_area_exited)
 	stacking_on_you.connect(bestacked_on_me)
 	stop_stacking_on_you.connect(stop_stacking_on_me)
+
+# 子类需要重写此方法，返回对应的 CardInfo 资源
+func get_card_resource() -> CardInfo:
+	return null
+
+# 通用的卡片信息更新方法，子类可以调用 super 后添加额外逻辑
+func _update_card_display() -> void:
+	var resource = get_card_resource()
+	if resource == null:
+		return
+	# 设置节点名称和卡片名称
+	name = resource.name
+	cardname = resource.name
+	# 更新标签文字
+	if card_label:
+		card_label.text = resource.name
+	# 更新纹理
+	if card_texture:
+		card_texture.texture = resource.portrait
 # CardStackDetectorArea 信号处理：当有 Area 进入时
 func _on_stack_detector_area_entered(area: Area2D) -> void:
 	# 找到进入区域的Area2D所属的卡片实例

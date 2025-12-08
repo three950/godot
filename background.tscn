@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dde8q2r1usqpa" path="res://assets/AbyssLayer/card_bag/GroundPackage.tscn" id="4_eq6nc"]
 [ext_resource type="PackedScene" uid="uid://bivykmwh7lskv" path="res://assets/固定场景建筑/探窟者协会/探窟者协会.tscn" id="4_splo0"]
 [ext_resource type="Resource" uid="uid://flhywkkf61mb" path="res://base_data/game_stats.tres" id="5_eq6nc"]
-[ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/钓鱼竿.tres" id="6_fishing"]
+[ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/cards/钓鱼竿.tres" id="6_fishing"]
 [ext_resource type="Resource" uid="uid://dntioc7brul78" path="res://assets/物品/装备/armour防具/祈愿者的盖子.tres" id="7_shield"]
 [ext_resource type="Resource" uid="uid://b5lhfvaex1tbh" path="res://assets/物品/资源/鱼.tres" id="8_fish"]
 
@@ -40,9 +40,7 @@ alignment = 1
 [node name="GroundPackage" parent="ShopManager/ShopArea/HBoxContainer" instance=ExtResource("4_eq6nc")]
 layout_mode = 2
 game_stats = ExtResource("5_eq6nc")
-mean_layer = 0
 spawn_offset = Vector2(0, 130)
-spawn_z_index = 100
 spawn_card_info = ExtResource("6_fishing")
 
 [node name="GroundPackage1" parent="ShopManager/ShopArea/HBoxContainer" instance=ExtResource("4_eq6nc")]
@@ -53,7 +51,6 @@ package_name = "深界一层
 mean_layer = 1
 package_price = 5
 spawn_offset = Vector2(0, 130)
-spawn_z_index = 100
 spawn_card_info = ExtResource("7_shield")
 
 [node name="GroundPackage2" parent="ShopManager/ShopArea/HBoxContainer" instance=ExtResource("4_eq6nc")]
@@ -64,7 +61,6 @@ package_name = "深界二层
 mean_layer = 2
 package_price = 8
 spawn_offset = Vector2(0, 130)
-spawn_z_index = 100
 spawn_card_info = ExtResource("8_fish")
 
 [node name="GroundPackage3" parent="ShopManager/ShopArea/HBoxContainer" instance=ExtResource("4_eq6nc")]
@@ -75,7 +71,6 @@ package_name = "深界三层
 mean_layer = 3
 package_price = 12
 spawn_offset = Vector2(0, 130)
-spawn_z_index = 100
 
 [node name="GroundPackage4" parent="ShopManager/ShopArea/HBoxContainer" instance=ExtResource("4_eq6nc")]
 layout_mode = 2
@@ -85,7 +80,6 @@ package_name = "深界四层
 mean_layer = 4
 package_price = 18
 spawn_offset = Vector2(0, 130)
-spawn_z_index = 100
 
 [node name="GroundPackage5" parent="ShopManager/ShopArea/HBoxContainer" instance=ExtResource("4_eq6nc")]
 layout_mode = 2
@@ -95,7 +89,6 @@ package_name = "深界五层
 mean_layer = 5
 package_price = 25
 spawn_offset = Vector2(0, 130)
-spawn_z_index = 100
 
 [node name="GroundPackage6" parent="ShopManager/ShopArea/HBoxContainer" instance=ExtResource("4_eq6nc")]
 layout_mode = 2
@@ -105,7 +98,6 @@ package_name = "深界六层
 mean_layer = 6
 package_price = 35
 spawn_offset = Vector2(0, 130)
-spawn_z_index = 100
 
 [node name="RefreshButton" type="Button" parent="ShopManager"]
 offset_left = 820.0

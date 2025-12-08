@@ -1,6 +1,7 @@
-extends "res://assets/card.gd"
-class_name RemainsCard
+extends "res://assets/物品/things.gd"
+class_name Remains
 ################################################
+# 遗物卡片场景脚本 - 继承自 Things 以复用通用功能
 enum Rarity {COMMON,FORTH,THRID,SECOND,FRIST,SUPER}
 const RARITY_COLORS:={
 	Rarity.COMMON:Color("cbcac7ff"),
@@ -10,62 +11,48 @@ const RARITY_COLORS:={
 	Rarity.FRIST:Color("934185ff"),
 	Rarity.SUPER:Color("7a2569ff"),
 }
+
 @onready var grade_label: Label = $GradeLabel
-@onready var value_label: Label = $ValueLabel
 
+# 遗物资源引用
+@export var remains: RemainsCard
 
-# 遗物卡片特有属性
-@export var remains_name: String = ""  # 遗物名称
-@export var grade: String = ""  # 等级
-@export var effect: String = ""  # 效果
-@export var attribute: String = ""  # 属性
-@export var value: int = 0  # 遗物价值
+func get_things_resource() -> ThingsCard:
+	return remains
 
 func _ready() -> void:
 	super._ready()
-	# 自动获取标签引用
-	var color_rect = get_node_or_null("Control/ColorRect")
-	if color_rect:
-		name_label = color_rect.get_node_or_null("Label")
-		var info_container = color_rect.get_node_or_null("InfoContainer")
-		if info_container:
-			grade_label = info_container.get_node_or_null("GradeLabel")
-			value_label = info_container.get_node_or_null("ValueLabel")
-	update_labels()
+	_update_remains_display()
 
-# 更新标签显示
-func update_labels() -> void:
-	if name_label:
-		name_label.text = remains_name
-	if grade_label:
-		grade_label.text = "等级:%s" % grade
-	if value_label:
-		value_label.text = "价值:%d" % value
+func _update_remains_display() -> void:
+	# 调用父类通用更新（设置 name, cardname, label, texture, value）
+	_update_things_display()
+	# 更新遗物特有的等级标签
+	if remains and grade_label:
+		grade_label.text = "等级:%s" % ThingsCard.遗物等级.keys()[remains.是遗物]
 
-# 设置遗物属性
-func set_remains_data(r_name: String, r_grade: String, r_effect: String, r_attribute: String, r_value: int) -> void:
-	remains_name = r_name
-	grade = r_grade
-	effect = r_effect
-	attribute = r_attribute
-	value = r_value
-	update_labels()
+func set_stats(value: RemainsCard) -> void:
+	remains = value
+	if is_node_ready():
+		_update_remains_display()
 
 # 从CSV数据初始化遗物信息
 func initialize_from_csv(csv_data: Dictionary) -> void:
+	if remains == null:
+		remains = RemainsCard.new()
 	if csv_data.has("名称"):
-		remains_name = csv_data["名称"]
+		remains.name = csv_data["名称"]
 	if csv_data.has("等级"):
-		grade = str(csv_data["等级"])
-	if csv_data.has("效果"):
-		effect = csv_data["效果"]
-	if csv_data.has("属性"):
-		attribute = csv_data["属性"]
+		var grade_str = str(csv_data["等级"])
+		# 尝试将等级字符串转换为枚举值
+		for i in ThingsCard.遗物等级.size():
+			if ThingsCard.遗物等级.keys()[i] == grade_str:
+				remains.是遗物 = i
+				break
 	if csv_data.has("value"):
 		var value_str = str(csv_data["value"])
 		if value_str.is_valid_int():
-			value = int(value_str)
-		else:
-			value = 0
+			remains.value = int(value_str)
 	
-	update_labels()
+	if is_node_ready():
+		_update_remains_display()

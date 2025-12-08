@@ -16,10 +16,10 @@ func set_enemy_stats(value: EnemyCard) -> void:
 func _update_battle_card() -> void:
 	if enemy == null:
 		return
-	name = enemy.name  # 设置节点名称
-	name_label.text = enemy.name
-	portrait_rect.texture = enemy.portrait
+	# 调用父类通用更新（设置 name, cardname, label, texture）
+	super._update_battle_card()
 	enemy.HP = enemy.MAX_HP
 	update_stats()
+
 func set_stats(value:EnemyCard)-> void:
 	enemy = value

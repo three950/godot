@@ -3,17 +3,20 @@ extends "res://assets/card.gd"
 
 var _needs_initial_update := false
 
-@onready var name_label: Label = $Panel/Label
 @onready var attribute_labels: AttributeLabels = $AttributeLabels
-@onready var portrait_rect: TextureRect = $TextureRect
 
 # 子类需要重写这个方法，返回 BattleStates 类型的资源
 func get_battle_resource() -> BattleStates:
 	return null
 
-# 子类需要重写这个方法，执行具体的更新逻辑（设置 name, portrait, HP 等）
+# 重写父类方法，返回战斗资源
+func get_card_resource() -> CardInfo:
+	return get_battle_resource()
+
+# 子类需要重写这个方法，执行具体的更新逻辑（设置 HP 等战斗属性）
 func _update_battle_card() -> void:
-	pass
+	# 调用父类通用更新方法（设置 name, cardname, label, texture）
+	_update_card_display()
 
 func _ready() -> void:
 	super._ready()

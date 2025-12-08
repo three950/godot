@@ -1,27 +1,25 @@
 extends "res://assets/物品/things.gd"
 class_name Equipment
-@onready var label: Label = $Panel/Label
-@onready var texture_rect: TextureRect = $TextureRect
-@onready var value_label: Label = $ValueLabel
+
 @onready var effect_label: Label = $EffectLabel
 
 @export var equipment: EquipmentCard
+
+func get_things_resource() -> ThingsCard:
+	return equipment
 	
 func _ready() -> void:
 	super._ready()
-	_update_item_card()
+	_update_equipment_display()
 
-func _update_item_card() -> void:
-	if equipment == null:
-		return
-	name = equipment.name  # 设置节点名称
-	cardname = equipment.name
-	label.text = equipment.name
-	texture_rect.texture = equipment.portrait
-	value_label.text = str(equipment.value)
-	effect_label.text = EquipmentCard.EquipType.keys()[equipment.equip_type] + " + " + str(equipment.equip_effect)
+func _update_equipment_display() -> void:
+	# 调用父类通用更新（设置 name, cardname, label, texture, value）
+	_update_things_display()
+	# 更新装备特有的效果标签
+	if equipment and effect_label:
+		effect_label.text = EquipmentCard.EquipType.keys()[equipment.equip_type] + " + " + str(equipment.equip_effect)
 
-func get_value() -> int:
-	return equipment.value if equipment else 0
-func set_stats(value:EquipmentCard)-> void:
+func set_stats(value: EquipmentCard) -> void:
 	equipment = value
+	if is_node_ready():
+		_update_equipment_display()

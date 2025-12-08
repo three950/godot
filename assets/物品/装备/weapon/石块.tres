@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="EquipmentCard" load_steps=3 format=3 uid="uid://c3qj5yaqkc0me"]
+
+[ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="1_sf4rd"]
+[ext_resource type="Script" uid="uid://b6vcycxqwdmqc" path="res://assets/物品/装备/EquipmentCard.gd" id="2_kc77c"]
+
+[resource]
+script = ExtResource("2_kc77c")
+need_power = 0
+equip_effect = 2
+value = 0
+name = "石块"
+metadata/_custom_type_script = "uid://b6vcycxqwdmqc"

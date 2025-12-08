@@ -14,8 +14,6 @@ func set_character_stats(value: CharacterCard) -> void:
 func _update_battle_card() -> void:
 	if character == null:
 		return
-	name_label.text = character.name
-	portrait_rect.texture = character.portrait
-	# ATK 会自动从 POW 初始化，无需手动设置
+	super._update_battle_card()
 	character.HP = character.MAX_HP
 	update_stats()
