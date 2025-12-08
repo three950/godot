@@ -11,7 +11,13 @@ signal bag_unregistered(bag: BagArea)
 # 卡片拖拽信号（用于 BagMover 监听）
 signal card_drag_started(card: Card)
 signal card_dropped(card: Card)
+
+#场景切换导致的物品资源池更新
 signal max_layer_changed(max_layer:int)
+
+#堆叠数组发送改变
+signal array_changed()
+
 @export var spawn_card_info: CardInfo = null
 ## 根据卡牌资源类型创建对应的卡牌实例
 func _create_card_instance() -> Node:

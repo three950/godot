@@ -2,6 +2,8 @@ class_name CraftManager
 extends Node
 @export var craft_pools: Array[CardInfo] = []
 var _recipe_map: Dictionary = {}
+# 正在合成的任务: { progress_bar: { "cards": Array[Card], "card_info": ThingsCard, "spawn_position": Vector2 } }
+var _active_crafts: Dictionary = {}
 
 #检测解析所有合成配方，实时检测堆叠数组并识别是否可合成
 func _ready() -> void:
@@ -59,31 +61,56 @@ func _get_array(card: Card) -> void:
 		# 检查合成时间
 		if card_info.合成时间 > 0:
 			_start_crafting(top_card, cards_to_free, card_info, spawn_position)
-		else:
-			# 无合成时间，立即合成
-			_finish_crafting(cards_to_free, card_info, spawn_position)
 
 ## 开始合成：显示进度条并计时
 func _start_crafting(top_card: Card, cards_to_free: Array[Card], card_info: ThingsCard, spawn_position: Vector2) -> void:
-	# 获取 top_card 的进度条并启动
-	var progress_bar = top_card.get_node_or_null("CardProgressBar") as CardProgressBar
-	if progress_bar:
-		# 使用 lambda 捕获所有参数
-		progress_bar.progress_completed.connect(
-			func(): _on_craft_completed(cards_to_free, card_info, spawn_position),
-			CONNECT_ONE_SHOT
-		)
-		progress_bar.start(card_info.合成时间)
-		print("开始合成: ", card_info.name, " 需要 ", card_info.合成时间, " 秒")
-	else:
-		# 没有进度条，直接完成合成
-		print("警告: top_card 没有 CardProgressBar，直接完成合成")
-		_finish_crafting(cards_to_free, card_info, spawn_position)
+	var progress_bar = top_card.get_node("CardProgressBar") as CardProgressBar
+	# 记录合成任务
+	var craft_data := {
+		"cards": cards_to_free,
+		"card_info": card_info,
+		"spawn_position": spawn_position
+	}
+	_active_crafts[progress_bar] = craft_data
+	
+	# 为卡组中的每张卡片连接 array_changed 信号
+	for c in cards_to_free:
+		if is_instance_valid(c):
+			# 使用 lambda 捕获 progress_bar
+			var callback = func(): _on_array_changed(progress_bar)
+			c.array_changed.connect(callback, CONNECT_ONE_SHOT)
+	
+	# 连接完成信号
+	progress_bar.progress_completed.connect(
+		func(): _on_craft_completed(progress_bar),
+		CONNECT_ONE_SHOT
+	)
+	progress_bar.start(card_info.合成时间)
+	print("开始合成: ", card_info.name, " 需要 ", card_info.合成时间, " 秒")
+
+## 当卡组发生变化时取消合成
+func _on_array_changed(progress_bar: CardProgressBar) -> void:
+	if not _active_crafts.has(progress_bar):
+		return
+	
+	var craft_data: Dictionary = _active_crafts[progress_bar]
+	print("卡组变化，取消合成: ", craft_data["card_info"].name)
+	
+	# 先从字典移除，再停止进度条
+	_active_crafts.erase(progress_bar)
+	progress_bar.stop()
 
 ## 合成进度完成回调
-func _on_craft_completed(cards_to_free: Array[Card], card_info: ThingsCard, spawn_position: Vector2) -> void:
-	print("合成完成: ", card_info.name)
-	_finish_crafting(cards_to_free, card_info, spawn_position)
+func _on_craft_completed(progress_bar: CardProgressBar) -> void:
+	# 如果任务不存在（已被取消），直接返回
+	if not _active_crafts.has(progress_bar):
+		return
+	
+	var craft_data: Dictionary = _active_crafts[progress_bar]
+	print("合成完成: ", craft_data["card_info"].name)
+	
+	_active_crafts.erase(progress_bar)
+	_finish_crafting(craft_data["cards"], craft_data["card_info"], craft_data["spawn_position"])
 
 ## 完成合成：销毁材料卡片，生成新卡片
 func _finish_crafting(cards_to_free: Array[Card], card_info: ThingsCard, spawn_position: Vector2) -> void:

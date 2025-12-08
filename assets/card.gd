@@ -10,6 +10,8 @@ signal stop_stacking_on_you()
 signal dropped
 signal drag_started
 signal leave_you()
+# 信号：当此卡片的堆叠状态发生变化时触发（有卡片堆上来或离开）
+signal array_changed()
 # 信号：请求重新设置父节点
 signal reparent_requested(which_card: Card)
 enum cardType{normal, selling, architecture}  # 卡片类型
@@ -68,7 +70,9 @@ func bestacked_on_me(children: Card) -> void:
 	var label_panel := get_node("Panel")
 	if label_panel:
 		size = label_panel.size
+	array_changed.emit()
 	Events.stack_changed.emit(self)
+
 func stop_stacking_on_me() -> void:
 	stack_state &= ~CardState.STACK_STATE_BESTACKED
 	children_card = null
@@ -76,6 +80,7 @@ func stop_stacking_on_me() -> void:
 	var card_panel:= get_node("CardPanel")
 	if card_panel:
 		size=card_panel.size
+	array_changed.emit()
 	Events.stack_changed.emit(self)
 func _input(event: InputEvent) -> void:
 	card_state_machine.on_input(event)
