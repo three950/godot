@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource("1_2b2sk")
+time = 2
 coins = 100
 layer = 3
 max_layer = 3

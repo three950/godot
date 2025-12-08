@@ -1,7 +1,7 @@
 class_name GameStats
 extends Resource
 #记录游戏除卡牌外的所有通用信息
-@export_range(0,5) var time: float#每天的时间
+@export_range(0,5) var time: int:set=set_time#每天的时间
 @export var days:int:set = set_days#总天数
 
 @export var coins:int:set = set_coins #金币
@@ -11,6 +11,10 @@ extends Resource
 
 @export_range(0,7) var layer:int:set = set_layer#当前所在的层数
 @export var max_layer:int:set = set_max_layer#最深探索到第几层
+func set_time(value:int) -> void:
+	time = value
+	emit_changed()
+	
 func set_days(value: int) -> void:
 	days = value
 	emit_changed()

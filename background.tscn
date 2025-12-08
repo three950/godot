@@ -1,7 +1,6 @@
-[gd_scene load_steps=9 format=3 uid="uid://d8vp1m0epvxf"]
+[gd_scene load_steps=8 format=3 uid="uid://d8vp1m0epvxf"]
 
 [ext_resource type="Texture2D" uid="uid://cwohluet7sc50" path="res://assets/AbyssLayer/begintscn/地表.jpg" id="1_oabld"]
-[ext_resource type="Script" path="res://script_folder/shop_manager.gd" id="3_shop_mgr"]
 [ext_resource type="PackedScene" uid="uid://dde8q2r1usqpa" path="res://assets/AbyssLayer/card_bag/GroundPackage.tscn" id="4_eq6nc"]
 [ext_resource type="PackedScene" uid="uid://bivykmwh7lskv" path="res://assets/固定场景建筑/探窟者协会/探窟者协会.tscn" id="4_splo0"]
 [ext_resource type="Resource" uid="uid://flhywkkf61mb" path="res://base_data/game_stats.tres" id="5_eq6nc"]
@@ -19,8 +18,6 @@ offset_bottom = 744.0
 texture = ExtResource("1_oabld")
 
 [node name="ShopManager" type="Node2D" parent="." groups=["ShopManager"]]
-script = ExtResource("3_shop_mgr")
-game_stats = ExtResource("5_eq6nc")
 
 [node name="ShopArea" type="Panel" parent="ShopManager" groups=["ShopArea"]]
 custom_minimum_size = Vector2(800, 115)
@@ -98,23 +95,6 @@ package_name = "深界六层
 mean_layer = 6
 package_price = 35
 spawn_offset = Vector2(0, 130)
-
-[node name="RefreshButton" type="Button" parent="ShopManager"]
-offset_left = 820.0
-offset_right = 920.0
-offset_bottom = 40.0
-text = "刷新商店"
-
-[node name="CoinLabel" type="Label" parent="ShopManager"]
-offset_left = 820.0
-offset_top = 50.0
-offset_right = 920.0
-offset_bottom = 90.0
-theme_override_colors/font_color = Color(1, 0.84, 0, 1)
-theme_override_font_sizes/font_size = 24
-text = "金币: 0"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="探窟者协会" parent="ShopManager" instance=ExtResource("4_splo0")]
 offset_top = 1.0
