@@ -26,6 +26,8 @@
 
 [node name="Main" type="Node2D"]
 
+[node name="UI_Layer" parent="." instance=ExtResource("23_d13ii")]
+
 [node name="backgroundUi" parent="." instance=ExtResource("3_h2yge")]
 metadata/_edit_lock_ = true
 
@@ -107,5 +109,3 @@ gamestats = ExtResource("19_82xsv")
 script = ExtResource("21_getpj")
 craft_pools = Array[ExtResource("22_ryguw")]([ExtResource("16_yaehf"), ExtResource("12_dg77c")])
 metadata/_custom_type_script = "uid://bhwdhxluayto5"
-
-[node name="UI_Layer" parent="." instance=ExtResource("23_d13ii")]
