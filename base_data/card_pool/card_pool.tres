@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="1_74mtg"]
 [ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/cards/钓鱼竿.tres" id="2_10ut8"]
 [ext_resource type="Resource" uid="uid://tk1nuwcbk0u2" path="res://assets/人物与敌人/Character/characters/娜娜奇.tres" id="2_hue0t"]
-[ext_resource type="Script" uid="uid://b2iywp5awfiv3" path="res://base_data/card_pool/pool.gd" id="2_ps1rd"]
+[ext_resource type="Script" uid="uid://b2iywp5awfiv3" path="res://base_data/card_pool/CardPool.gd" id="2_ps1rd"]
 [ext_resource type="Resource" uid="uid://b5lhfvaex1tbh" path="res://assets/物品/资源/鱼.tres" id="3_ghute"]
 [ext_resource type="Resource" uid="uid://bptle7yhbwdk8" path="res://assets/物品/装备/weapon/探窟稿.tres" id="4_tiibe"]
 [ext_resource type="Resource" uid="uid://dntioc7brul78" path="res://assets/物品/装备/armour防具/祈愿者的盖子.tres" id="5_hue0t"]

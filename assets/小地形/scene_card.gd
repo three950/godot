@@ -9,7 +9,6 @@ var spawn_card_info:CardInfo
 #生成卡牌相关
 @export var spawn_offset: Vector2 = Vector2(0, 120)
 @export var cardpool:CardPool
-@export var scenepool
 func _ready() -> void:
 	super._ready()
 	_update_item_card()
