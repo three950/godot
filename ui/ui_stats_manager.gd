@@ -12,11 +12,14 @@ var elapsed_time: float = 0.0
 func _ready() -> void:
 	game_stats.changed.connect(_update_stats)
 	Events.food_need_update.connect(_on_food_need_update)
+	Events.food_have_update.connect(_on_food_have_update)
 	_update_stats()
 
 func _on_food_need_update(amount: int) -> void:
 	game_stats.food_need += amount
-
+func _on_food_have_update(amount: int) -> void:
+	game_stats.food_have += amount
+	
 func _process(delta: float) -> void:
 	if game_stats.time <= 0:
 		return

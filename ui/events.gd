@@ -18,8 +18,9 @@ signal max_layer_changed(max_layer:int)
 #堆叠数组发送改变
 signal array_changed()
 
-#角色生成时更新食物需求
+#食物状态更新
 signal food_need_update(amount: int)
+signal food_have_update(amount: int)
 
 @export var spawn_card_info: CardInfo = null
 ## 根据卡牌资源类型创建对应的卡牌实例

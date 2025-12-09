@@ -10,6 +10,11 @@ func _ready() -> void:
 	if not Engine.is_editor_hint():
 		Events.food_need_update.emit(2)
 
+func _exit_tree() -> void:
+	# 角色被删除时发送食物需求减少信号
+	if not Engine.is_editor_hint():
+		Events.food_need_update.emit(-2)
+
 func get_battle_resource() -> BattleStates:
 	return character
 
