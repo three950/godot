@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bl24ms4d6ii3h"
-path="res://.godot/imported/500m.png-000d42b1d62b8b1d7cc8855e698e012b.ctex"
+uid="uid://cwohluet7sc50"
+path="res://.godot/imported/地表.jpg-377d85d121727b742a152d1660392a63.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/AbyssLayer/layer1/500m.png"
-dest_files=["res://.godot/imported/500m.png-000d42b1d62b8b1d7cc8855e698e012b.ctex"]
+source_file="res://begintscn/地表.jpg"
+dest_files=["res://.godot/imported/地表.jpg-377d85d121727b742a152d1660392a63.ctex"]
 
 [params]
 

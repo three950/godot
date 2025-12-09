@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://r1lb3ajxfx1j"]
+[gd_scene load_steps=23 format=3 uid="uid://r1lb3ajxfx1j"]
 
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://background.tscn" id="3_h2yge"]
 [ext_resource type="Script" uid="uid://bbnp6ftl63g4m" path="res://script_folder/camera_controller.gd" id="4_camera"]
@@ -14,13 +14,12 @@
 [ext_resource type="PackedScene" uid="uid://dtdlifuitpvq3" path="res://assets/物品/资源/recource.tscn" id="13_ycdy4"]
 [ext_resource type="Resource" uid="uid://b5lhfvaex1tbh" path="res://assets/物品/资源/鱼.tres" id="14_w48qg"]
 [ext_resource type="PackedScene" uid="uid://cba2igvxd481l" path="res://assets/物品/装备/Equitment.tscn" id="15_2cqfq"]
-[ext_resource type="PackedScene" uid="uid://cenk3fyviu5iq" path="res://assets/AbyssLayer/layer1/depth.tscn" id="16_2cqfq"]
+[ext_resource type="PackedScene" uid="uid://cenk3fyviu5iq" path="res://assets/AbyssLayer/depth.tscn" id="16_2cqfq"]
 [ext_resource type="Resource" uid="uid://dntioc7brul78" path="res://assets/物品/装备/armour防具/祈愿者的盖子.tres" id="16_yaehf"]
-[ext_resource type="Resource" uid="uid://cmli5pr88q6d" path="res://assets/AbyssLayer/layer1/depthcard/1000m.tres" id="17_074og"]
+[ext_resource type="Resource" uid="uid://cmli5pr88q6d" path="res://assets/AbyssLayer/layer/layer1/depthcard/1000m.tres" id="17_074og"]
 [ext_resource type="Resource" uid="uid://v7v7n33brkuk" path="res://base_data/card_pool/card_pool.tres" id="18_cegan"]
-[ext_resource type="Resource" uid="uid://flhywkkf61mb" path="res://base_data/game_stats.tres" id="19_82xsv"]
-[ext_resource type="Resource" uid="uid://b84vk56tstpon" path="res://assets/AbyssLayer/layer1/depthcard/500m.tres" id="20_82xsv"]
-[ext_resource type="Script" uid="uid://bhwdhxluayto5" path="res://ui/card_craft_manager.gd" id="21_getpj"]
+[ext_resource type="Resource" uid="uid://b84vk56tstpon" path="res://assets/AbyssLayer/layer/layer1/depthcard/500m.tres" id="20_82xsv"]
+[ext_resource type="Script" uid="uid://bhwdhxluayto5" path="res://script_folder/card_craft_manager.gd" id="21_getpj"]
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="22_ryguw"]
 [ext_resource type="PackedScene" uid="uid://bm4r8w10jcbid" path="res://ui/ui_layer.tscn" id="23_d13ii"]
 
@@ -94,7 +93,6 @@ offset_right = 965.0
 offset_bottom = 506.0
 depthcard = ExtResource("17_074og")
 cardpool = ExtResource("18_cegan")
-gamestats = ExtResource("19_82xsv")
 
 [node name="500m" parent="." instance=ExtResource("16_2cqfq")]
 offset_left = 955.0
@@ -103,7 +101,6 @@ offset_right = 1043.0
 offset_bottom = 223.0
 depthcard = ExtResource("20_82xsv")
 cardpool = ExtResource("18_cegan")
-gamestats = ExtResource("19_82xsv")
 
 [node name="CraftManager" type="Node" parent="."]
 script = ExtResource("21_getpj")

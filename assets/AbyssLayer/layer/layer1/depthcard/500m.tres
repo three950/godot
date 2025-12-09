@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="DepthCard" load_steps=3 format=3 uid="uid://b84vk56tstpon"]
 
-[ext_resource type="Script" uid="uid://bgofijjl5muvc" path="res://assets/AbyssLayer/layer1/depthCard.gd" id="1_3hkdj"]
-[ext_resource type="Texture2D" uid="uid://bl24ms4d6ii3h" path="res://assets/AbyssLayer/layer1/500m.png" id="1_060h6"]
+[ext_resource type="Script" uid="uid://bgofijjl5muvc" path="res://assets/AbyssLayer/depthCard.gd" id="1_3hkdj"]
+[ext_resource type="Texture2D" uid="uid://bl24ms4d6ii3h" path="res://assets/AbyssLayer/500m.png" id="1_060h6"]
 
 [resource]
 script = ExtResource("1_3hkdj")

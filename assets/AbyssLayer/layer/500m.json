@@ -1,0 +1,63 @@
+{
+	"exploration_layers": {
+	  "500m": {
+		"generation_types": {
+		  "场景": 50,
+		  "装备": 50
+		},
+		"scenes": {
+		  "小洞穴": {
+			"spawn_chance": 70,
+			"max_count": 3,
+			"max_explorations": 5,
+			"loot_table": [
+			  {
+				"category": "遗物",
+				"chance": 70,
+				"items": [
+				  {"name": "五级太阳石", "chance": 90},
+				  {"name": "四级太阳石", "chance": 10}
+				]
+			  },
+			  {
+				"category": "资源", 
+				"chance": 30,
+				"items": [
+				  {"name": "蛋", "chance": 100}
+				]
+			  }
+			]
+		  },
+		  "河流": {
+			"spawn_chance": 30,
+			"max_count": 1,
+			"max_explorations": -1,
+			"loot_table": [
+			  {
+				"category": "资源",
+				"chance": 90,
+				"items": [
+				  {"name": "鱼", "chance": 100}
+				]
+			  },
+			  {
+				"category": "遗物",
+				"chance": 10,
+				"items": [
+				  {"name": "星之罗盘", "chance": 100, "unique": true}
+				]
+			  }
+			]
+		  }
+		},
+		"equipment_spawn": {
+		  "items": [
+			{"name": "化石树的树枝", "chance": 30},
+			{"name": "祈愿者的盖子", "chance": 20},
+			{"name": "石板", "chance": 10},
+			{"name": "石块", "chance": 40}
+		  ]
+		}
+	  }
+	}
+  }

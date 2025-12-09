@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://d8vp1m0epvxf"]
 
-[ext_resource type="Texture2D" uid="uid://cwohluet7sc50" path="res://assets/AbyssLayer/begintscn/地表.jpg" id="1_oabld"]
-[ext_resource type="PackedScene" uid="uid://dde8q2r1usqpa" path="res://assets/AbyssLayer/card_bag/GroundPackage.tscn" id="4_eq6nc"]
+[ext_resource type="Texture2D" uid="uid://cwohluet7sc50" path="res://begintscn/地表.jpg" id="1_oabld"]
+[ext_resource type="PackedScene" uid="uid://dde8q2r1usqpa" path="res://ui/shop_bag/GroundPackage.tscn" id="4_eq6nc"]
 [ext_resource type="PackedScene" uid="uid://bivykmwh7lskv" path="res://assets/固定场景建筑/探窟者协会/探窟者协会.tscn" id="4_splo0"]
 [ext_resource type="Resource" uid="uid://flhywkkf61mb" path="res://base_data/game_stats.tres" id="5_eq6nc"]
 [ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/cards/钓鱼竿.tres" id="6_fishing"]
