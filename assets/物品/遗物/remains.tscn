@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://dd7sln03nhigl"]
+[gd_scene load_steps=5 format=3 uid="uid://dd7sln03nhigl"]
 
 [ext_resource type="PackedScene" uid="uid://fopgb30s4q33" path="res://assets/物品/Things.tscn" id="1_hkc7c"]
+[ext_resource type="Script" uid="uid://c8iak2m5n7p1q" path="res://assets/物品/遗物/remains.gd" id="2_ssi8w"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hkc7c"]
 bg_color = Color(0.7058824, 0.45490196, 0.62352943, 1)
@@ -16,6 +17,8 @@ border_width_bottom = 1
 border_color = Color(0.23529412, 0.14509805, 0.043137256, 1)
 
 [node name="Remains" instance=ExtResource("1_hkc7c")]
+script = ExtResource("2_ssi8w")
+remains = null
 
 [node name="CardPanel" parent="." index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_hkc7c")

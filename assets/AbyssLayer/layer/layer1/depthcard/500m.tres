@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="DepthCard" load_steps=3 format=3 uid="uid://b84vk56tstpon"]
+[gd_resource type="Resource" script_class="DepthCard" load_steps=4 format=3 uid="uid://b84vk56tstpon"]
 
 [ext_resource type="Script" uid="uid://bgofijjl5muvc" path="res://assets/AbyssLayer/depthCard.gd" id="1_3hkdj"]
 [ext_resource type="Texture2D" uid="uid://bl24ms4d6ii3h" path="res://assets/AbyssLayer/500m.png" id="1_060h6"]
+[ext_resource type="PackedScene" uid="uid://cenk3fyviu5iq" path="res://assets/AbyssLayer/depth.tscn" id="1_mmghq"]
 
 [resource]
 script = ExtResource("1_3hkdj")
 depth = 500
+card_scene = ExtResource("1_mmghq")
 name = "500m"
 portrait = ExtResource("1_060h6")
 type = 6

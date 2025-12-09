@@ -5,24 +5,27 @@ class_name Scene
 @onready var texture_rect: TextureRect = $TextureRect
 @onready var card_progress_bar: CardProgressBar = $CardProgressBar
 var spawn_card_info:CardInfo
-@export var depthcard: DepthCard
 #生成卡牌相关
 @export var spawn_offset: Vector2 = Vector2(0, 120)
-@export var cardpool:CardPool
+@export var cardpool:SceneCardPool
 func _ready() -> void:
 	super._ready()
 	_update_item_card()
 
+func set_stats(value: SceneCardPool) -> void:
+	cardpool = value
+	if is_node_ready():
+		_update_item_card()
+
 func _update_item_card() -> void:
-	if depthcard == null:
+	if cardpool == null:
 		return
-	label.text = depthcard.name
-	texture_rect.texture = depthcard.portrait
+	label.text = cardpool.name
+	texture_rect.texture = cardpool.portrait
 
 func bestacked_on_me(children: Card) -> void:
 	super.bestacked_on_me(children)
-	var type=cardpool.get_random_type_for_depth(depthcard.depth)
-	spawn_card_info=cardpool.get_cards_by_type(type)
+	spawn_card_info = cardpool.scene_cards.pick_random()
 	_spawn_card()
 
 ## 生成卡牌
@@ -45,5 +48,6 @@ func _spawn_card() -> void:
 ## 根据卡牌资源类型创建对应的卡牌实例
 func _create_card_instance() -> Node:
 	var instance = spawn_card_info.card_scene.instantiate()
+	print(instance)
 	instance.set_stats(spawn_card_info)
 	return instance

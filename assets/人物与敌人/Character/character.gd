@@ -11,8 +11,8 @@ func _ready() -> void:
 		Events.food_need_update.emit(2)
 
 func _exit_tree() -> void:
-	# 角色被删除时发送食物需求减少信号
-	if not Engine.is_editor_hint():
+	# 角色被删除时发送食物需求减少信号（排除拖拽时的 reparent 情况）
+	if is_queued_for_deletion():
 		Events.food_need_update.emit(-2)
 
 func get_battle_resource() -> BattleStates:

@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://chd1450hb3kko"]
+[gd_scene load_steps=8 format=3 uid="uid://chd1450hb3kko"]
 
 [ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="2_61llo"]
 [ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="3_p0bds"]
+[ext_resource type="Script" uid="uid://cvwtip1ly5e7f" path="res://script_folder/animations_shooter.gd" id="4_shooter"]
 
 [sub_resource type="GDScript" id="GDScript_jsic4"]
 script/source = "extends \"res://assets/card.gd\"
@@ -74,6 +75,11 @@ collision_mask = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CardStackDetectorArea"]
 position = Vector2(41, 62)
 shape = SubResource("RectangleShape2D_e484p")
+
+[node name="Shooter" type="Node" parent="." node_paths=PackedStringArray("card")]
+script = ExtResource("4_shooter")
+card = NodePath("..")
+metadata/_custom_type_script = "uid://cvwtip1ly5e7f"
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b0vold4lpkdcl"
-path="res://.godot/imported/河流.png-800a34a22607e31ba34be7b7227bc1ec.ctex"
+uid="uid://bl8gwcgn5svup"
+path="res://.godot/imported/小洞穴.png-ca61c1706a1ec5c108eddfb1c1aed63b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/小地形/河流.png"
-dest_files=["res://.godot/imported/河流.png-800a34a22607e31ba34be7b7227bc1ec.ctex"]
+source_file="res://assets/小场景/小洞穴.png"
+dest_files=["res://.godot/imported/小洞穴.png-ca61c1706a1ec5c108eddfb1c1aed63b.ctex"]
 
 [params]
 

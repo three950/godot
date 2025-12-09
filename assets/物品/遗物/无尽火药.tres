@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="RemainsCard" load_steps=4 format=3 uid="uid://cxqh2msdarg88"]
+[gd_resource type="Resource" script_class="RemainsCard" load_steps=5 format=3 uid="uid://cxqh2msdarg88"]
 
+[ext_resource type="PackedScene" uid="uid://dd7sln03nhigl" path="res://assets/物品/遗物/remains.tscn" id="1_58vjm"]
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="1_81fak"]
 [ext_resource type="Script" uid="uid://bbshtqb40yssc" path="res://assets/物品/遗物/RemainsCard.gd" id="2_6ald8"]
 [ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="2_58vjm"]
 
 [resource]
 script = ExtResource("2_6ald8")
+card_scene = ExtResource("1_58vjm")
 value = 5000
 "是遗物" = 4
 name = "无尽火药"

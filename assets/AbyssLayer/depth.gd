@@ -9,6 +9,12 @@ var spawn_card_info:CardInfo
 #生成卡牌相关
 @export var spawn_offset: Vector2 = Vector2(0, 120)
 @export var cardpool:CardPool
+
+func set_stats(value: DepthCard) -> void:
+	depthcard = value
+	if is_node_ready():
+		_update_item_card()
+
 func _ready() -> void:
 	super._ready()
 	_update_item_card()
@@ -21,8 +27,10 @@ func _update_item_card() -> void:
 
 func bestacked_on_me(children: Card) -> void:
 	super.bestacked_on_me(children)
-	var type=cardpool.get_random_type_for_depth(depthcard.depth)
+	var type=cardpool.get_random_type_in_abyss()
 	spawn_card_info=cardpool.get_cards_by_type(type)
+	print("type: ", type)
+	print("spawn_card_info: ", spawn_card_info)
 	_spawn_card()
 
 ## 生成卡牌
