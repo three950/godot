@@ -7,6 +7,9 @@ func enter() -> void:
 		card.stack_state = 0
 		card.follow_target = null  # 清除跟随目标
 	card.z_index = 100
+	# 立即更新所有子卡的z_index
+	if card.children_card != null:
+		card.update_children_position()
 	card.drag_offset = card.get_global_mouse_position()-card.global_position
 	card.drag_started.emit()
 	# 通知全局事件系统

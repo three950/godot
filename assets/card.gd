@@ -118,3 +118,19 @@ func _on_mouse_entered() -> void:
 
 func _on_mouse_exited() -> void:
 	card_state_machine.on_mouse_exited()
+
+# 递归更新所有子卡牌的位置和z_index
+func update_children_position() -> void:
+	if children_card == null:
+		return
+	
+	# 更新直接子卡牌的位置
+	var label_node = get_node("Panel")
+	if label_node:
+		var label_pos = label_node.global_position
+		var label_size = label_node.size
+		children_card.global_position = Vector2(global_position.x, label_pos.y + label_size.y)
+		children_card.z_index = z_index + 1
+	
+	# 递归更新子卡牌的子卡牌
+	children_card.update_children_position()

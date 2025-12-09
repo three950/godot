@@ -21,11 +21,15 @@ func enter() -> void:
 		if card.children_card and card.children_card.card_state_machine and card.children_card.card_state_machine.current_state:
 			card.children_card.card_state_machine.current_state.stop_follow_me.emit()
 		card_fixed.emit()
+	
 	if card.stack_state & CardState.STACK_STATE_STACKING:#堆叠在其他卡片上，不是头卡
 		print("卡片 %s 已堆叠到最顶部" % card.name)
 		transition_requested.emit(self, CardState.State.instack)
 	else:	
 		print("卡片 %s 已固定" % card.name)
+		# 进入fixed状态前，更新所有子卡牌的位置和z_index
+		if card.children_card != null:
+			card.update_children_position()
 		transition_requested.emit(self, CardState.State.fixed)
 
 			
@@ -86,4 +90,8 @@ func stack_on_card(target_card: Card) -> void:
 	
 	# 设置层级
 	card.z_index = target_card.z_index + 1
+	
+	# 递归更新当前卡片的所有子卡牌位置和z_index
+	card.update_children_position()
+	
 	print("卡片 %s 堆叠完成" % card.name)
