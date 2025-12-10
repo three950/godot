@@ -8,22 +8,41 @@ extends Node3D
 var viewport_size: Vector2
 
 func _ready():
-	# 等待一帧确保SubViewport已经准备好
-	await get_tree().process_frame
+	# 初始化设置
+	_update_viewport_size()
 	
-	viewport_size = Vector2(sub_viewport.size)
+	# 创建材质并应用SubViewport的纹理
+	var material = StandardMaterial3D.new()
+	material.albedo_texture = sub_viewport.get_texture()
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	
-	# Camera2D 保持启用，这样可以在SubViewport内拖动场景
+	# 将材质应用到GamePlane
+	game_plane.material_override = material
 	
-	# 获取SubViewport的纹理并应用到3D平面的材质上
-	var viewport_texture = sub_viewport.get_texture()
-	var material = game_plane.get_surface_override_material(0) as StandardMaterial3D
-	if material:
-		material.albedo_texture = viewport_texture
-		# 使用未着色模式以获得正确的颜色，不受光照影响
-		material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		# 确保透明度正确
-		material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	# 监听窗口尺寸变化
+	get_viewport().size_changed.connect(_update_viewport_size)
+
+func _update_viewport_size():
+	# 获取主窗口尺寸
+	var window_size = get_viewport().get_visible_rect().size
+	
+	# 更新SubViewport尺寸
+	sub_viewport.size = Vector2i(window_size)
+	viewport_size = Vector2(window_size)
+	
+	# 调整GamePlane的网格尺寸以匹配窗口比例
+	var mesh = game_plane.mesh as QuadMesh
+	if mesh:
+		mesh.size = Vector2(window_size.x, window_size.y)
+	
+	# 调整相机位置，确保完整看到平面
+	var fov_rad = deg_to_rad(camera_3d.fov)
+	var distance = (window_size.y / 2.0) / tan(fov_rad / 2.0)
+	# 将距离缩小，让相机更靠近，填满整个视口（即使部分超出也没关系）
+	distance *= 0.95  # 可以调整这个系数来控制缩放程度
+	# 保持倾斜角度，稍微往下偏移
+	camera_3d.position = Vector3(0, -window_size.y * 0.1, distance)
 
 func _unhandled_input(event):
 	# 键盘事件和动作事件直接转发
@@ -61,4 +80,3 @@ func _unhandled_input(event):
 			
 			# 将事件推送到SubViewport
 			sub_viewport.push_input(new_event)
-

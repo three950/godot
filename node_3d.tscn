@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://divo6ckhoycvt"]
+[gd_scene load_steps=4 format=3 uid="uid://divo6ckhoycvt"]
 
 [ext_resource type="PackedScene" uid="uid://r1lb3ajxfx1j" path="res://main.tscn" id="1_a202f"]
 [ext_resource type="Script" uid="uid://6oebvrcns2i2" path="res://perspective_viewport.gd" id="2_script"]
@@ -6,25 +6,20 @@
 [sub_resource type="QuadMesh" id="QuadMesh_1"]
 size = Vector2(1920, 1080)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1"]
-transparency = 1
-texture_filter = 0
-disable_receive_shadows = true
-
 [node name="Node3D" type="Node3D"]
 script = ExtResource("2_script")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.984808, -0.173648, 0, 0.173648, 0.984808, 0, -100, 500)
+transform = Transform3D(1, 0, 0, 0, 0.9975643, -0.069756486, 0, 0.069756486, 0.9975643, 0, -100, 450)
 fov = 45.0
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-size = Vector2i(1920, 1080)
+msaa_2d = 1
+size = Vector2i(1000, 512)
 render_target_update_mode = 4
 
 [node name="Main" parent="SubViewport" instance=ExtResource("1_a202f")]
 
 [node name="GamePlane" type="MeshInstance3D" parent="."]
 mesh = SubResource("QuadMesh_1")
-surface_material_override/0 = SubResource("StandardMaterial3D_1")
