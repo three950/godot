@@ -41,3 +41,9 @@ LMB={
 [layer_names]
 
 2d_physics/layer_1="StackDetectorArea"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=2
+anti_aliasing/quality/msaa_3d=2
+anti_aliasing/quality/screen_space_aa=1
