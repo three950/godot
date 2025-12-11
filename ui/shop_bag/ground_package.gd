@@ -9,9 +9,7 @@ signal package_bought(CardPackage)
 @export var spawn_delay: float = 2.0
 ## 卡牌生成位置偏移（相对于当前位置向下）
 @export var spawn_offset: Vector2 = Vector2(0, 120)
-## 指定要生成的卡牌资源（CardInfo类型），如果为空则使用默认卡牌
-@export var spawn_card_info: CardInfo = null
-
+@export var spawn_card_info: BagResource
 @onready var packagename: Label = %packagename
 @onready var value: Label = %value
 @onready var panel_3: Panel = $Panel3
@@ -56,13 +54,15 @@ func _spawn_card() -> void:
 	var cards_group = get_tree().get_first_node_in_group("Cards")
 	if cards_group:
 		cards_group.add_child(card_instance)
-	print("卡牌已生成于位置: %s, 卡牌名称: %s" % [spawn_position, spawn_card_info.name if spawn_card_info else "默认"])
+	print("卡牌已生成")
 
 ## 根据卡牌资源类型创建对应的卡牌实例
 func _create_card_instance() -> Node:
 	var instance = spawn_card_info.card_scene.instantiate()
-	instance.set_stats(spawn_card_info)
+	instance.bagresource = spawn_card_info
+	instance.set_layer(mean_layer)
 	return instance
+
 	
 func _update_state() -> void:
 	if game_stats.max_layer <= mean_layer:

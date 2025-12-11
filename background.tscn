@@ -4,8 +4,8 @@
 [ext_resource type="PackedScene" uid="uid://dde8q2r1usqpa" path="res://ui/shop_bag/GroundPackage.tscn" id="4_eq6nc"]
 [ext_resource type="PackedScene" uid="uid://bivykmwh7lskv" path="res://assets/固定场景建筑/探窟者协会/探窟者协会.tscn" id="4_splo0"]
 [ext_resource type="Resource" uid="uid://flhywkkf61mb" path="res://base_data/game_stats.tres" id="5_eq6nc"]
+[ext_resource type="Resource" uid="uid://bmnohsw38p6a0" path="res://assets/AbyssLayer/layer1.tres" id="5_gjjrj"]
 [ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/cards/钓鱼竿.tres" id="6_fishing"]
-[ext_resource type="Resource" uid="uid://dntioc7brul78" path="res://assets/物品/装备/armour防具/祈愿者的盖子.tres" id="7_shield"]
 [ext_resource type="Resource" uid="uid://b5lhfvaex1tbh" path="res://assets/物品/资源/鱼.tres" id="8_fish"]
 
 [node name="backgroundUi" type="Node2D"]
@@ -48,7 +48,7 @@ package_name = "深界一层
 mean_layer = 1
 package_price = 5
 spawn_offset = Vector2(0, 130)
-spawn_card_info = ExtResource("7_shield")
+spawn_card_info = ExtResource("5_gjjrj")
 
 [node name="GroundPackage2" parent="ShopManager/ShopArea/HBoxContainer" instance=ExtResource("4_eq6nc")]
 layout_mode = 2

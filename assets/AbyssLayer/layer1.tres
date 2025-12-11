@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BagResource" load_steps=4 format=3 uid="uid://bmnohsw38p6a0"]
+
+[ext_resource type="Script" uid="uid://boc3ah606qrcy" path="res://assets/AbyssLayer/layer_card_bag_resource.gd" id="1_87140"]
+[ext_resource type="PackedScene" uid="uid://bh2usa7ojp531" path="res://assets/AbyssLayer/layer_card_bag.tscn" id="1_npm6a"]
+[ext_resource type="Resource" uid="uid://v7v7n33brkuk" path="res://base_data/card_pool/card_pool.tres" id="2_g2s0u"]
+
+[resource]
+script = ExtResource("1_87140")
+cardpool = ExtResource("2_g2s0u")
+card_scene = ExtResource("1_npm6a")
+metadata/_custom_type_script = "uid://boc3ah606qrcy"
