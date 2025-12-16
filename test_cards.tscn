@@ -16,8 +16,6 @@ offset_top = 84.0
 offset_right = 225.0
 offset_bottom = 199.0
 character = ExtResource("4_wxwn5")
-card_type = 0
-can_stack = true
 
 [node name="莉可" parent="." instance=ExtResource("1_lmy0h")]
 offset_left = 257.0
@@ -25,8 +23,6 @@ offset_top = 84.0
 offset_right = 345.0
 offset_bottom = 199.0
 character = ExtResource("2_lmy0h")
-card_type = 0
-can_stack = true
 
 [node name="雷古" parent="." instance=ExtResource("1_lmy0h")]
 offset_left = 394.0
@@ -34,8 +30,6 @@ offset_top = 93.0
 offset_right = 482.0
 offset_bottom = 208.0
 character = ExtResource("3_8cufd")
-card_type = 0
-can_stack = true
 
 [node name="EnemyCard" parent="." instance=ExtResource("5_8cufd")]
 offset_left = 559.0
@@ -43,8 +37,6 @@ offset_top = 101.0
 offset_right = 647.0
 offset_bottom = 216.0
 enemy = ExtResource("6_wxwn5")
-card_type = 0
-can_stack = true
 
 [node name="BagMover" type="Node" parent="."]
 script = ExtResource("7_qn1n6")
