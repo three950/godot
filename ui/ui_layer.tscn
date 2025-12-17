@@ -1,9 +1,9 @@
 [gd_scene load_steps=7 format=3 uid="uid://bm4r8w10jcbid"]
 
-[ext_resource type="StyleBox" uid="uid://b6vu8exnid8yt" path="res://ui/ui_style.tres" id="1_00rn6"]
 [ext_resource type="Texture2D" uid="uid://yhr14dughpmr" path="res://assets/物品/资源/meat.png" id="2_gjtyb"]
-[ext_resource type="Texture2D" uid="uid://d4ml0xnr3ldxt" path="res://assets/物品/装备/armour防具/盾牌.png" id="3_vu3t1"]
+[ext_resource type="StyleBox" uid="uid://to3672utuxwe" path="res://ui/棋盘.tres" id="3_vu3t1"]
 [ext_resource type="Script" uid="uid://dwsmjx8844mo2" path="res://ui/ui_stats_manager.gd" id="4_stats"]
+[ext_resource type="Texture2D" uid="uid://bwcl8eoslb20c" path="res://美术资产/treasures/gold_coin.png" id="5_8aggs"]
 [ext_resource type="Resource" uid="uid://flhywkkf61mb" path="res://base_data/game_stats.tres" id="5_game_stats"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_00rn6"]
@@ -34,11 +34,10 @@ alignment = 1
 [node name="game_stats" type="PanelContainer" parent="TopRightUI/HBoxContainer"]
 custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
-theme_override_styles/panel = ExtResource("1_00rn6")
+theme_override_styles/panel = ExtResource("3_vu3t1")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="TopRightUI/HBoxContainer/game_stats"]
 layout_mode = 2
-alignment = 0
 
 [node name="foodstate" type="HBoxContainer" parent="TopRightUI/HBoxContainer/game_stats/HBoxContainer"]
 layout_mode = 2
@@ -70,7 +69,7 @@ text = "5000"
 [node name="TextureRect" type="TextureRect" parent="TopRightUI/HBoxContainer/game_stats/HBoxContainer/moneystate"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
-texture = ExtResource("3_vu3t1")
+texture = ExtResource("5_8aggs")
 expand_mode = 1
 stretch_mode = 5
 
@@ -86,7 +85,7 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(300, 35)
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_styles/background = ExtResource("1_00rn6")
+theme_override_styles/background = ExtResource("3_vu3t1")
 theme_override_styles/fill = SubResource("StyleBoxFlat_00rn6")
 value = 50.0
 show_percentage = false
