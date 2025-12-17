@@ -90,3 +90,11 @@ func show_owned_card(card_data:CharacterCard) -> void:
 	# 使用统一的 place_card 方法
 	place_card(card)
 	print("生成卡片")
+
+## 设置高亮状态（拖拽时显示白色边框）
+func set_highlight(enabled: bool) -> void:
+	var color_rect = get_node("ColorRect")
+	if color_rect:
+		color_rect.visible = enabled
+		if enabled:
+			color_rect.color = Color(1.0, 1.0, 1.0, 0.5)  # 白色半透明
