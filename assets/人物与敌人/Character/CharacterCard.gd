@@ -11,3 +11,4 @@ func set_ATK(_value: int) -> void:
 	ATK = POW
 @export var 左右手: Array[CharacterCard] = [null, null]
 @export var 背包: Array[CharacterCard] = [null, null, null, null, null, null]
+@export var 特性 : Array[String]

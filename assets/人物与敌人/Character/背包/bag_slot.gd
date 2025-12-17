@@ -1,7 +1,15 @@
 extends Panel
 class_name BagSlot
 signal show_card(card_data:CharacterCard)
+@onready var owner_character: Character = _find_owner_character()
 
+func _find_owner_character() -> Character:
+	var node: Node = self
+	while node:
+		if node is Character:
+			return node as Character
+		node = node.get_parent()
+	return null
 func _ready() -> void:
 	show_card.connect(show_owned_card)
 
@@ -35,9 +43,16 @@ func place_card(card: Card) -> void:
 	var old_parent = card.get_parent()
 	if old_parent:
 		old_parent.remove_child(card)
-	
+
 	# 2. 添加到槽位
 	add_child(card)
+	# 3. 如果这是一个有“添加特性”的物品卡，把特性加到角色身上
+	var card_info := card.get_card_resource()
+	if card_info is ItemCard:
+		var item_card := card_info as ItemCard
+		if item_card.添加特性 != "":
+			owner_character.character.特性.append(item_card.添加特性)
+			print("【BagSlot】添加特性：", owner_character.character.特性)
 	var card_size = card.size
 	# 计算缩放比例，取较小值以确保卡片完全在槽位内
 	var scale_ratio = min(size.x / card_size.x, size.y / card_size.y)
@@ -53,6 +68,10 @@ func remove_card() -> Card:
 	var card = get_card()
 	if card:
 		remove_child(card)
+		if card.添加特性:
+			for feat in card.添加特性:
+				owner_character.character.特性.remove_at(feat)
+			print("【BagSlot】移除特性：", owner_character.character.特性)
 	return card
 
 func show_owned_card(card_data:CharacterCard) -> void:

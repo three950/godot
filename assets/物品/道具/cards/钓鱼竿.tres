@@ -8,7 +8,7 @@
 [resource]
 script = ExtResource("4_b0at1")
 card_scene = ExtResource("1_njid7")
-"特殊效果" = "fishing-faser"
+"添加特性" = "钓鱼加快"
 name = "钓鱼竿"
 portrait = ExtResource("3_mho30")
 type = 3
