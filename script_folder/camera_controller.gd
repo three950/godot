@@ -5,11 +5,11 @@ var is_dragging: bool = false
 var last_mouse_position: Vector2 = Vector2.ZERO
 
 # 相机缩放相关
-@export var min_zoom: float = 0.8  # 最小缩放（放大）
+@export var min_zoom: float = 0.5  # 最小缩放（放大）
 @export var max_zoom: float = 2.0  # 最大缩放（缩小）
-@export var zoom_step: float = 0.2  # 每次滚轮滚动的缩放步长
-@export var zoom_smoothing: float = 0.2  # 缩放平滑度
-@export var initial_zoom: float = 1.5  # 初始缩放值
+@export var zoom_step: float = 0.02  # 每次滚轮滚动的缩放步长
+@export var zoom_smoothing: float = 0.1  # 缩放平滑度
+@export var initial_zoom: float = 1.0  # 初始缩放值（数值越大，看得越远）
 
 var target_zoom: Vector2 = Vector2.ONE
 

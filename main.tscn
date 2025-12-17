@@ -63,6 +63,10 @@ script = ExtResource("11_efxa6")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(576, 328)
+limit_left = -844
+limit_top = -392
+limit_right = 2152
+limit_bottom = 1202
 script = ExtResource("4_camera")
 
 [node name="Item" parent="." instance=ExtResource("11_dg77c")]
