@@ -1,3 +1,4 @@
+packedStringArray紧凑型字符串：赋值的时候可以="\n".join(packedStringArray),在每个字符串自建自动加上换行符
 Polygon2D绘制几何图案
 S1-E10遇到freed Object问题。造成了空引用导致获取所有节点时报错的解决方法
 使用enabled启用或禁用脚本S1-E02
