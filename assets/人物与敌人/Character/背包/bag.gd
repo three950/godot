@@ -32,10 +32,12 @@ func _ready() -> void:
 
 func _enter_tree() -> void:
 	# 每次进入场景树时都注册
+	add_to_group("BagArea")
 	Events.bag_registered.emit(self)
 	print("【BagArea】已注册到事件系统")
 
 func _exit_tree() -> void:
+	remove_from_group("BagArea")
 	Events.bag_unregistered.emit(self)
 	print("【BagArea】已从事件系统注销")
 	

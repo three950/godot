@@ -6,7 +6,7 @@
 [ext_resource type="Resource" uid="uid://bptle7yhbwdk8" path="res://assets/物品/装备/weapon/探窟稿.tres" id="3_hhtck"]
 [ext_resource type="Resource" uid="uid://cxqh2msdarg88" path="res://assets/物品/遗物/无尽火药.tres" id="3_rkila"]
 [ext_resource type="Resource" uid="uid://c3qj5yaqkc0me" path="res://assets/物品/装备/weapon/石块.tres" id="4_rkila"]
-[ext_resource type="Texture2D" uid="uid://du2vy2d5kk4ih" path="res://assets/物品/装备/weapon/锥.jpg" id="5_wf4ej"]
+[ext_resource type="Texture2D" uid="uid://bwiobibrq137e" path="res://美术资产/equipment/crossbow_04.png" id="6_hhtck"]
 
 [resource]
 script = ExtResource("2_ahrun")
@@ -18,5 +18,5 @@ value = 1000
 has_craft_recipe = true
 craft_materials = Array[ExtResource("1_8rk6b")]([ExtResource("3_rkila"), ExtResource("3_hhtck"), ExtResource("4_rkila")])
 "合成时间" = 10.0
-portrait = ExtResource("5_wf4ej")
+portrait = ExtResource("6_hhtck")
 metadata/_custom_type_script = "uid://b6vcycxqwdmqc"

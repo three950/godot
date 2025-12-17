@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://cba2igvxd481l" path="res://assets/物品/装备/Equitment.tscn" id="1_nu4mp"]
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="1_sf4rd"]
 [ext_resource type="Script" uid="uid://b6vcycxqwdmqc" path="res://assets/物品/装备/EquipmentCard.gd" id="2_kc77c"]
-[ext_resource type="Texture2D" uid="uid://du2vy2d5kk4ih" path="res://assets/物品/装备/weapon/锥.jpg" id="3_bqm7d"]
+[ext_resource type="Texture2D" uid="uid://np1vycu23yob" path="res://美术资产/MushroomAssetPack/Honeycomb.png" id="3_nu4mp"]
 
 [resource]
 script = ExtResource("2_kc77c")
@@ -12,5 +12,5 @@ need_power = 0
 equip_effect = 2
 value = 0
 name = "石块"
-portrait = ExtResource("3_bqm7d")
+portrait = ExtResource("3_nu4mp")
 metadata/_custom_type_script = "uid://b6vcycxqwdmqc"

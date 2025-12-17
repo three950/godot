@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="1_0loba"]
 [ext_resource type="PackedScene" uid="uid://cba2igvxd481l" path="res://assets/物品/装备/Equitment.tscn" id="1_uk4ij"]
 [ext_resource type="Script" uid="uid://b6vcycxqwdmqc" path="res://assets/物品/装备/EquipmentCard.gd" id="2_3tohr"]
-[ext_resource type="Texture2D" uid="uid://d4ml0xnr3ldxt" path="res://assets/物品/装备/armour防具/盾牌.png" id="3_5p3ta"]
+[ext_resource type="Texture2D" uid="uid://c6skpfriccoig" path="res://美术资产/shield/shield_29.png" id="3_uk4ij"]
 
 [resource]
 script = ExtResource("2_3tohr")
@@ -12,6 +12,6 @@ equip_type = 1
 equip_effect = 10
 value = 5
 name = "石板"
-portrait = ExtResource("3_5p3ta")
+portrait = ExtResource("3_uk4ij")
 type = 4
 metadata/_custom_type_script = "uid://b6vcycxqwdmqc"

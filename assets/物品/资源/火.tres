@@ -1,17 +1,15 @@
-[gd_resource type="Resource" script_class="ResourceCard" load_steps=5 format=3 uid="uid://cresource_fire"]
+[gd_resource type="Resource" script_class="ResourceCard" load_steps=5 format=3 uid="uid://pc31dpm7lre4"]
 
 [ext_resource type="PackedScene" uid="uid://dtdlifuitpvq3" path="res://assets/物品/资源/recource.tscn" id="1_7hwt8"]
-[ext_resource type="Texture2D" uid="uid://c8tkdocp183ia" path="res://assets/物品/资源/fish.jpg" id="1_hy6qp"]
 [ext_resource type="Script" uid="uid://cof2oajhsugri" path="res://assets/物品/资源/ResourceCard.gd" id="1_kukxd"]
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="2_wt4li"]
+[ext_resource type="Texture2D" uid="uid://c4tkkq73h0577" path="res://美术资产/64x64/fc998.png" id="3_6welk"]
 
 [resource]
 script = ExtResource("1_kukxd")
 card_scene = ExtResource("1_7hwt8")
-nutrition = 0
 value = 100
 name = "火"
-portrait = ExtResource("1_hy6qp")
+portrait = ExtResource("3_6welk")
 type = 5
 metadata/_custom_type_script = "uid://cof2oajhsugri"
-

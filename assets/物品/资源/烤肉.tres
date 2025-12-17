@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="ResourceCard" load_steps=7 format=3 uid="uid://rbfoc335ixag"]
 
 [ext_resource type="PackedScene" uid="uid://dtdlifuitpvq3" path="res://assets/物品/资源/recource.tscn" id="1_7hwt8"]
-[ext_resource type="Texture2D" uid="uid://c8tkdocp183ia" path="res://assets/物品/资源/fish.jpg" id="1_hy6qp"]
 [ext_resource type="Script" uid="uid://cof2oajhsugri" path="res://assets/物品/资源/ResourceCard.gd" id="1_kukxd"]
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="2_wt4li"]
 [ext_resource type="Resource" path="res://assets/物品/资源/火.tres" id="3_qruvf"]
-[ext_resource type="Resource" path="res://assets/物品/资源/肉.tres" id="4_j8axv"]
+[ext_resource type="Resource" uid="uid://bvn2l5udvvff3" path="res://assets/物品/资源/肉.tres" id="4_j8axv"]
+[ext_resource type="Texture2D" uid="uid://cng4h6mw8lrpc" path="res://美术资产/Meat/Cooked/beast_meat_cooked_01.png" id="5_qruvf"]
 
 [resource]
 script = ExtResource("1_kukxd")
@@ -16,6 +16,6 @@ has_craft_recipe = true
 craft_materials = Array[ExtResource("2_wt4li")]([ExtResource("3_qruvf"), ExtResource("4_j8axv")])
 "合成时间" = 3.0
 name = "烤肉"
-portrait = ExtResource("1_hy6qp")
+portrait = ExtResource("5_qruvf")
 type = 5
 metadata/_custom_type_script = "uid://cof2oajhsugri"

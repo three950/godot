@@ -11,6 +11,15 @@ func enter() -> void:
 	card.dropped.emit(self)
 	# 通知全局事件系统
 	Events.card_dropped.emit(card)
+	
+	# 先检查是否落在背包槽位内，如果是则跳过堆叠逻辑
+	if _is_card_in_bag_slot():
+		print("卡片 %s 落在背包槽位内，跳过堆叠检测" % card.name)
+		# 清空重叠数组，避免隐形堆叠
+		card.overlapping_cards.clear()
+		transition_requested.emit(self, CardState.State.fixed)
+		return
+	
 	# 检测是否可以堆叠到其他卡片上
 	var closest_card_falling = find_closest_card()
 	if closest_card_falling != null:
@@ -95,3 +104,20 @@ func stack_on_card(target_card: Card) -> void:
 	card.update_children_position()
 	
 	print("卡片 %s 堆叠完成" % card.name)
+
+# 检查卡片是否落在背包槽位内
+func _is_card_in_bag_slot() -> bool:
+	var drop_position = card.get_global_mouse_position()
+	# 获取所有背包区域
+	var bag_areas = get_tree().get_nodes_in_group("BagArea")
+	for bag in bag_areas:
+		if bag is BagArea:
+			var bag_area := bag as BagArea
+			# 直接检查所有槽位
+			for slot in bag_area.hand_slots:
+				if slot.contains_global_point(drop_position):
+					return true
+			for slot in bag_area.backpack_slots:
+				if slot.contains_global_point(drop_position):
+					return true
+	return false

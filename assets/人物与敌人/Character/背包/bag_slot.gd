@@ -68,10 +68,13 @@ func remove_card() -> Card:
 	var card = get_card()
 	if card:
 		remove_child(card)
-		if card.添加特性:
-			for feat in card.添加特性:
-				owner_character.character.特性.remove_at(feat)
-			print("【BagSlot】移除特性：", owner_character.character.特性)
+		# 移除卡片添加的特性
+		var card_info := card.get_card_resource()
+		if card_info is ItemCard:
+			var item_card := card_info as ItemCard
+			if item_card.添加特性 != "":
+				owner_character.character.特性.erase(item_card.添加特性)
+				print("【BagSlot】移除特性：", owner_character.character.特性)
 	return card
 
 func show_owned_card(card_data:CharacterCard) -> void:
