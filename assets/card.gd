@@ -42,6 +42,13 @@ func _ready() -> void:
 	stacking_on_you.connect(bestacked_on_me)
 	stop_stacking_on_you.connect(stop_stacking_on_me)
 
+# 启用 / 禁用堆叠检测 Area
+func set_stack_detector_enabled(enabled: bool) -> void:
+	var stack_detector = get_node("CardStackDetectorArea")
+	if stack_detector:
+		stack_detector.set_deferred("monitoring", enabled)
+		stack_detector.set_deferred("monitorable", enabled)
+
 # 子类需要重写此方法，返回对应的 CardInfo 资源
 func get_card_resource() -> CardInfo:
 	return null
@@ -90,6 +97,8 @@ func bestacked_on_me(children: Card) -> void:
 	stack_state |= CardState.STACK_STATE_BESTACKED
 	children_card = children
 	print("一宿你")
+	# 当前卡牌作为“被堆叠的底卡”，不再需要参与新的堆叠检测，禁用检测区域
+	set_stack_detector_enabled(false)
 	var label_panel := get_node("Panel")
 	if label_panel:
 		size = label_panel.size
@@ -100,6 +109,8 @@ func stop_stacking_on_me() -> void:
 	stack_state &= ~CardState.STACK_STATE_BESTACKED
 	children_card = null
 	print("不要走")
+	# 不再被堆叠，重新允许其他卡堆到自己身上，恢复检测
+	set_stack_detector_enabled(true)
 	var card_panel:= get_node("CardPanel")
 	if card_panel:
 		size=card_panel.size

@@ -36,6 +36,8 @@ func enter() -> void:
 		transition_requested.emit(self, CardState.State.instack)
 	else:	
 		print("卡片 %s 已固定" % card.name)
+		# 如果当前卡片落在 ShopManager 区域内，则将其 Y 轴位置固定为 150
+		_snap_to_shop_manager_if_inside()
 		# 进入fixed状态前，更新所有子卡牌的位置和z_index
 		if card.children_card != null:
 			card.update_children_position()
@@ -121,3 +123,17 @@ func _is_card_in_bag_slot() -> bool:
 				if slot.contains_global_point(drop_position):
 					return true
 	return false
+
+## 如果卡片当前位置位于 ShopManager 区域内，则将其 Y 设为 150
+func _snap_to_shop_manager_if_inside() -> void:
+	var shop_manager := get_tree().get_first_node_in_group("ShopManager") as Control
+	if shop_manager == null:
+		return
+	
+	var rect := shop_manager.get_global_rect()
+	# 使用卡片中心点进行检测，比左上角更直观
+	var card_center := card.global_position + card.size * card.scale / 2.0
+	if rect.has_point(card_center):
+		var pos := card.global_position
+		pos.y = 140.0
+		card.global_position = pos
