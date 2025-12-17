@@ -69,3 +69,25 @@ func update_progress(current: float, total: float) -> void:
 	max_value = total
 	value = current
 	visible = current > 0 and total > 0
+
+## 从当前进度继续计时，使用新的总时长
+## new_duration: 新的总时长（秒）
+## preserve_progress: 是否保留当前进度比例（默认true）
+func continue_with_new_duration(new_duration: float, preserve_progress: bool = true) -> void:
+	if new_duration <= 0:
+		return
+	
+	if preserve_progress and _total_time > 0:
+		# 获取当前进度比例
+		var current_progress_ratio = get_progress_ratio()
+		# 根据新的总时长和当前进度比例，计算已用时间
+		_elapsed_time = new_duration * current_progress_ratio
+	else:
+		# 不保留进度，从头开始
+		_elapsed_time = 0.0
+	
+	_total_time = new_duration
+	max_value = new_duration
+	value = _elapsed_time
+	visible = true
+	_is_running = true
