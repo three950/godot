@@ -1,18 +1,16 @@
-[gd_resource type="Resource" script_class="SceneCardPool" load_steps=10 format=3 uid="uid://bvxngiedcur8"]
+[gd_resource type="Resource" script_class="SceneCardPool" load_steps=8 format=3 uid="uid://bvxngiedcur8"]
 
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="1_5kjiw"]
 [ext_resource type="Texture2D" uid="uid://bl8gwcgn5svup" path="res://assets/小场景/小洞穴.png" id="1_eqy7s"]
+[ext_resource type="Resource" uid="uid://dntioc7brul78" path="res://assets/物品/装备/armour防具/祈愿者的盖子.tres" id="2_mecyf"]
 [ext_resource type="Script" uid="uid://c805pjktnyxka" path="res://assets/小场景/scene_card_pool/scene_card_pool.gd" id="2_uehsh"]
-[ext_resource type="Resource" path="res://assets/物品/资源/蛋.tres" id="3_u58ud"]
-[ext_resource type="Resource" uid="uid://fqjjt4087o7s" path="res://assets/物品/道具/dropped_object/蛛丝.tres" id="4_0sbx4"]
-[ext_resource type="Resource" uid="uid://cxqh2msdarg88" path="res://assets/物品/遗物/无尽火药.tres" id="5_od21b"]
-[ext_resource type="Resource" uid="uid://b32f4bmc4pf4t" path="res://assets/物品/装备/weapon/骨头.tres" id="6_hsiah"]
+[ext_resource type="Resource" uid="uid://bqwd4e7iq1vq3" path="res://assets/物品/资源/蛋.tres" id="3_u58ud"]
 [ext_resource type="Resource" uid="uid://c3qj5yaqkc0me" path="res://assets/物品/装备/weapon/石块.tres" id="7_7q886"]
 [ext_resource type="PackedScene" uid="uid://cs4aojjehfrjt" path="res://assets/小场景/scene.tscn" id="8_scene"]
 
 [resource]
 script = ExtResource("2_uehsh")
-scene_cards = Array[ExtResource("1_5kjiw")]([ExtResource("3_u58ud"), ExtResource("4_0sbx4"), ExtResource("5_od21b"), ExtResource("6_hsiah"), ExtResource("7_7q886")])
+card_pool = Array[ExtResource("1_5kjiw")]([ExtResource("2_mecyf"), ExtResource("3_u58ud"), ExtResource("7_7q886")])
 card_scene = ExtResource("8_scene")
 name = "小洞穴"
 portrait = ExtResource("1_eqy7s")

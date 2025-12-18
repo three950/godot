@@ -25,7 +25,7 @@ func _update_item_card() -> void:
 
 func bestacked_on_me(children: Card) -> void:
 	super.bestacked_on_me(children)
-	spawn_card_info = cardpool.scene_cards.pick_random()
+	spawn_card_info = cardpool.card_pool.pick_random()
 	_spawn_card()
 
 ## 生成卡牌
