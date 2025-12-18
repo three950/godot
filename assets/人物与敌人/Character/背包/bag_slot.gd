@@ -1,6 +1,6 @@
 extends Panel
 class_name BagSlot
-signal show_card(card_data:CharacterCard)
+signal show_card(card_data:ThingsCard)
 @onready var owner_character: Character = _find_owner_character()
 
 func _find_owner_character() -> Character:
@@ -42,6 +42,7 @@ func place_card(card: Card) -> void:
 	# 1. 先从原父节点移除（如果有）
 	var old_parent = card.get_parent()
 	if old_parent:
+		print("哎呀移出啦")
 		old_parent.remove_child(card)
 
 	# 2. 添加到槽位
@@ -77,7 +78,7 @@ func remove_card() -> Card:
 				print("【BagSlot】移除特性：", owner_character.character.特性)
 	return card
 
-func show_owned_card(card_data:CharacterCard) -> void:
+func show_owned_card(card_data:ThingsCard) -> void:
 	if not card_data:
 		push_error("没有卡片数据")
 		return
@@ -85,8 +86,8 @@ func show_owned_card(card_data:CharacterCard) -> void:
 		push_error("卡片数据中没有场景")
 		return
 	var card = card_data.card_scene.instantiate()
-	if card.has_method("set_character_stats"):
-		card.set_character_stats(card_data)
+	if card.has_method("set_stats"):
+		card.set_stats(card_data)
 	# 使用统一的 place_card 方法
 	place_card(card)
 	print("生成卡片")

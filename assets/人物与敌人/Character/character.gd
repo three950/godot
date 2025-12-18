@@ -9,6 +9,7 @@ func _ready() -> void:
 	# 角色生成时发送食物需求更新信号
 	if not Engine.is_editor_hint():
 		Events.food_need_update.emit(2)
+		_init_equipment_features()
 
 func _exit_tree() -> void:
 	# 角色被删除时发送食物需求减少信号（排除拖拽时的 reparent 情况）
@@ -28,3 +29,10 @@ func _update_battle_card() -> void:
 	super._update_battle_card()
 	character.HP = character.MAX_HP
 	update_stats()
+
+func _init_equipment_features() -> void:
+	for card in character.左右手:
+		if card is ItemCard:
+			if card.添加特性 != "" and not character.特性.has(card.添加特性):
+				character.特性.append(card.添加特性)
+				print("【Character】初始化添加特性：", card.添加特性, " 当前特性：", character.特性)

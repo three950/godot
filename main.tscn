@@ -120,10 +120,6 @@ offset_top = 446.0
 offset_right = 718.0
 offset_bottom = 561.0
 scene = ExtResource("25_a6jrf")
-spawn_offset = Vector2(0, 120)
-cardname = ""
-card_type = 0
-can_stack = true
 
 [node name="小场景" parent="." instance=ExtResource("23_0odxb")]
 offset_left = 448.0
@@ -131,7 +127,3 @@ offset_top = 398.0
 offset_right = 536.0
 offset_bottom = 513.0
 scene = ExtResource("24_lswn8")
-spawn_offset = Vector2(0, 120)
-cardname = ""
-card_type = 0
-can_stack = true

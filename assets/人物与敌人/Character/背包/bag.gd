@@ -51,7 +51,7 @@ func _load_all_cards():
 func _load_card(卡牌:Array,卡槽:Array[BagSlot]) -> void:
 	for index in range(卡槽.size()):
 		var slot := 卡槽[index]
-		var card_resource:CharacterCard = 卡牌[index] if index < 卡牌.size() else null
+		var card_resource:ThingsCard = 卡牌[index] if index < 卡牌.size() else null
 		if card_resource == null:
 			continue
 		if card_resource != null:
