@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://r1lb3ajxfx1j"]
+[gd_scene load_steps=26 format=3 uid="uid://r1lb3ajxfx1j"]
 
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://background.tscn" id="3_h2yge"]
 [ext_resource type="Script" uid="uid://bbnp6ftl63g4m" path="res://script_folder/camera_controller.gd" id="4_camera"]
@@ -21,7 +21,10 @@
 [ext_resource type="Resource" uid="uid://b84vk56tstpon" path="res://assets/AbyssLayer/layer/layer1/depthcard/500m.tres" id="20_82xsv"]
 [ext_resource type="Script" uid="uid://bhwdhxluayto5" path="res://script_folder/card_craft_manager.gd" id="21_getpj"]
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="22_ryguw"]
+[ext_resource type="PackedScene" uid="uid://cs4aojjehfrjt" path="res://assets/小场景/scene.tscn" id="23_0odxb"]
 [ext_resource type="PackedScene" uid="uid://bm4r8w10jcbid" path="res://ui/ui_layer.tscn" id="23_d13ii"]
+[ext_resource type="Resource" uid="uid://c0t1pg4ohysod" path="res://assets/小场景/scene_card_pool/河流.tres" id="24_lswn8"]
+[ext_resource type="Resource" uid="uid://bvxngiedcur8" path="res://assets/小场景/scene_card_pool/小洞穴.tres" id="25_a6jrf"]
 
 [node name="Main" type="Node2D"]
 
@@ -110,3 +113,17 @@ cardpool = ExtResource("18_cegan")
 script = ExtResource("21_getpj")
 craft_pools = Array[ExtResource("22_ryguw")]([ExtResource("16_yaehf"), ExtResource("12_dg77c")])
 metadata/_custom_type_script = "uid://bhwdhxluayto5"
+
+[node name="小场景2" parent="." instance=ExtResource("23_0odxb")]
+offset_left = 630.0
+offset_top = 446.0
+offset_right = 718.0
+offset_bottom = 561.0
+cardpool = ExtResource("24_lswn8")
+
+[node name="小场景" parent="." instance=ExtResource("23_0odxb")]
+offset_left = 448.0
+offset_top = 398.0
+offset_right = 536.0
+offset_bottom = 513.0
+cardpool = ExtResource("25_a6jrf")
