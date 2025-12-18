@@ -48,7 +48,6 @@ func bestacked_on_me(children: Card) -> void:
 	super.bestacked_on_me(children)
 	# 更新信号连接，监听所有堆叠人物卡的状态变化
 	_update_signal_connections()
-	# 如果有新卡堆叠上来，保留进度并更新计时
 	if _is_timing:
 		_update_timing_with_current_progress()
 	else:
@@ -70,9 +69,6 @@ func _collect_all_character_cards(start_card: Card) -> Array[Card]:
 
 ## 更新信号连接：连接所有堆叠人物卡的 array_changed 信号
 func _update_signal_connections() -> void:
-	# 先断开所有旧的信号连接
-	_disconnect_all_signals()
-	
 	# 收集所有堆叠的人物卡
 	var character_cards = _collect_all_character_cards(children_card)
 	
@@ -108,9 +104,6 @@ func _on_stack_state_changed() -> void:
 ## 计算所有堆叠人物卡的平均speed
 func _calculate_average_speed() -> float:
 	var character_cards = _collect_all_character_cards(children_card)
-	if character_cards.is_empty():
-		return 1.0  # 默认speed
-	
 	var total_speed := 0.0
 	var valid_count := 0
 	
@@ -120,11 +113,9 @@ func _calculate_average_speed() -> float:
 			var speed = float(card_resource.speed)
 			if speed > 0.0:
 				total_speed += speed
-				valid_count += 1
-	
+				valid_count += 1	
 	if valid_count == 0:
 		return 1.0
-	
 	return total_speed / float(valid_count)
 
 ## 启动计时
@@ -133,11 +124,7 @@ func _start_timing() -> void:
 	if not is_instance_valid(children_card):
 		_cancel_timing()
 		return
-	
-	# 只记录当前是否在计时
 	_is_timing = true
-
-	# 根据所有堆叠人物卡的平均 speed 属性计算本次计时时长：100 / 平均speed
 	var average_speed = _calculate_average_speed()
 	var duration = 100.0 / average_speed
 	
