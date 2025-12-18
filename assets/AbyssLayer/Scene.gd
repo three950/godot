@@ -1,11 +1,11 @@
 @tool
 extends Card
-class_name Depth
+class_name Scene
 @onready var label: Label = $Panel/Label
 @onready var texture_rect: TextureRect = $TextureRect
 @onready var card_progress_bar: CardProgressBar = $CardProgressBar
 var spawn_card_info:CardInfo
-@export var depthcard: DepthCard
+@export var scene: SceneCard
 #生成卡牌相关
 @export var spawn_offset: Vector2 = Vector2(0, 120)
 @export var cardpool:CardPool
@@ -13,8 +13,8 @@ var spawn_card_info:CardInfo
 var _is_timing: bool = false
 var _connected_cards: Array[Card] = []  # 存储已连接信号的人物卡
 
-func set_stats(value: DepthCard) -> void:
-	depthcard = value
+func set_stats(value: SceneCard) -> void:
+	scene = value
 	if is_node_ready():
 		_update_item_card()
 
@@ -23,10 +23,10 @@ func _ready() -> void:
 	_update_item_card()
 
 func _update_item_card() -> void:
-	if depthcard == null:
+	if scene == null:
 		return
-	label.text = depthcard.name
-	texture_rect.texture = depthcard.portrait
+	label.text = scene.name
+	texture_rect.texture = scene.portrait
 
 #只允许类型为"人物"的卡牌堆叠
 func _on_stack_detector_area_entered(area: Area2D) -> void:

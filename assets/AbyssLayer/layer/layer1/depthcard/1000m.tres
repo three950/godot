@@ -1,12 +1,12 @@
-[gd_resource type="Resource" script_class="DepthCard" load_steps=4 format=3 uid="uid://cmli5pr88q6d"]
+[gd_resource type="Resource" script_class="SceneCard" load_steps=5 format=3 uid="uid://cmli5pr88q6d"]
 
 [ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="1_12kqh"]
-[ext_resource type="PackedScene" uid="uid://cenk3fyviu5iq" path="res://assets/AbyssLayer/depth.tscn" id="1_rytul"]
-[ext_resource type="Script" uid="uid://bgofijjl5muvc" path="res://assets/AbyssLayer/depthCard.gd" id="1_yhq3f"]
+[ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="1_b4tba"]
+[ext_resource type="PackedScene" uid="uid://cenk3fyviu5iq" path="res://assets/AbyssLayer/Scene.tscn" id="1_rytul"]
+[ext_resource type="Script" uid="uid://bgofijjl5muvc" path="res://assets/AbyssLayer/SceneCard.gd" id="1_yhq3f"]
 
 [resource]
 script = ExtResource("1_yhq3f")
-depth = 1000
 card_scene = ExtResource("1_rytul")
 name = "1000m"
 portrait = ExtResource("1_12kqh")

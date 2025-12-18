@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://c805pjktnyxka" path="res://assets/小场景/scene_card_pool/scene_card_pool.gd" id="2_uehsh"]
 [ext_resource type="Resource" uid="uid://bqwd4e7iq1vq3" path="res://assets/物品/资源/蛋.tres" id="3_u58ud"]
 [ext_resource type="Resource" uid="uid://c3qj5yaqkc0me" path="res://assets/物品/装备/weapon/石块.tres" id="7_7q886"]
-[ext_resource type="PackedScene" uid="uid://cs4aojjehfrjt" path="res://assets/小场景/scene.tscn" id="8_scene"]
+[ext_resource type="PackedScene" uid="uid://cs4aojjehfrjt" path="res://assets/小场景/Small_Scene.tscn" id="8_scene"]
 
 [resource]
 script = ExtResource("2_uehsh")

@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://cs4aojjehfrjt"]
+
+[ext_resource type="PackedScene" uid="uid://cenk3fyviu5iq" path="res://assets/AbyssLayer/Scene.tscn" id="1_sjn7l"]
+[ext_resource type="Script" uid="uid://cemfiiymj2it" path="res://assets/小场景/Small_Scene.gd" id="2_7mk8l"]
+
+[node name="小场景" instance=ExtResource("1_sjn7l")]
+script = ExtResource("2_7mk8l")

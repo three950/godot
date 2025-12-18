@@ -14,14 +14,14 @@
 [ext_resource type="PackedScene" uid="uid://dtdlifuitpvq3" path="res://assets/物品/资源/recource.tscn" id="13_ycdy4"]
 [ext_resource type="Resource" uid="uid://b5lhfvaex1tbh" path="res://assets/物品/资源/鱼.tres" id="14_w48qg"]
 [ext_resource type="PackedScene" uid="uid://cba2igvxd481l" path="res://assets/物品/装备/Equitment.tscn" id="15_2cqfq"]
-[ext_resource type="PackedScene" uid="uid://cenk3fyviu5iq" path="res://assets/AbyssLayer/depth.tscn" id="16_2cqfq"]
+[ext_resource type="PackedScene" uid="uid://cenk3fyviu5iq" path="res://assets/AbyssLayer/Scene.tscn" id="16_2cqfq"]
 [ext_resource type="Resource" uid="uid://dntioc7brul78" path="res://assets/物品/装备/armour防具/祈愿者的盖子.tres" id="16_yaehf"]
 [ext_resource type="Resource" uid="uid://cmli5pr88q6d" path="res://assets/AbyssLayer/layer/layer1/depthcard/1000m.tres" id="17_074og"]
 [ext_resource type="Resource" uid="uid://v7v7n33brkuk" path="res://base_data/card_pool/card_pool.tres" id="18_cegan"]
 [ext_resource type="Resource" uid="uid://b84vk56tstpon" path="res://assets/AbyssLayer/layer/layer1/depthcard/500m.tres" id="20_82xsv"]
 [ext_resource type="Script" uid="uid://bhwdhxluayto5" path="res://script_folder/card_craft_manager.gd" id="21_getpj"]
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="22_ryguw"]
-[ext_resource type="PackedScene" uid="uid://cs4aojjehfrjt" path="res://assets/小场景/scene.tscn" id="23_0odxb"]
+[ext_resource type="PackedScene" uid="uid://cs4aojjehfrjt" path="res://assets/小场景/Small_Scene.tscn" id="23_0odxb"]
 [ext_resource type="PackedScene" uid="uid://bm4r8w10jcbid" path="res://ui/ui_layer.tscn" id="23_d13ii"]
 [ext_resource type="Resource" uid="uid://c0t1pg4ohysod" path="res://assets/小场景/scene_card_pool/河流.tres" id="24_lswn8"]
 [ext_resource type="Resource" uid="uid://bvxngiedcur8" path="res://assets/小场景/scene_card_pool/小洞穴.tres" id="25_a6jrf"]
@@ -98,7 +98,7 @@ offset_left = 877.0
 offset_top = 391.0
 offset_right = 965.0
 offset_bottom = 506.0
-depthcard = ExtResource("17_074og")
+scene = ExtResource("17_074og")
 cardpool = ExtResource("18_cegan")
 
 [node name="500m" parent="." instance=ExtResource("16_2cqfq")]
@@ -106,7 +106,7 @@ offset_left = 955.0
 offset_top = 108.0
 offset_right = 1043.0
 offset_bottom = 223.0
-depthcard = ExtResource("20_82xsv")
+scene = ExtResource("20_82xsv")
 cardpool = ExtResource("18_cegan")
 
 [node name="CraftManager" type="Node" parent="."]
@@ -119,11 +119,19 @@ offset_left = 630.0
 offset_top = 446.0
 offset_right = 718.0
 offset_bottom = 561.0
-cardpool = ExtResource("24_lswn8")
+scene = ExtResource("25_a6jrf")
+spawn_offset = Vector2(0, 120)
+cardname = ""
+card_type = 0
+can_stack = true
 
 [node name="小场景" parent="." instance=ExtResource("23_0odxb")]
 offset_left = 448.0
 offset_top = 398.0
 offset_right = 536.0
 offset_bottom = 513.0
-cardpool = ExtResource("25_a6jrf")
+scene = ExtResource("24_lswn8")
+spawn_offset = Vector2(0, 120)
+cardname = ""
+card_type = 0
+can_stack = true
