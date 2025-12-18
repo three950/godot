@@ -5,6 +5,7 @@ var bag_area: Array[BagArea] = []  # 动态管理的背包列表
 
 var dragging_card: Card = null  # 当前正在拖拽的卡片
 var drag_start_position: Vector2 = Vector2.ZERO  # 拖拽开始时的位置
+var drag_start_slot: BagSlot = null  # 拖拽开始时所在的槽位（如果有）
 var current_highlight_slot: BagSlot = null  # 当前高亮的槽位
 
 func _ready() -> void:
@@ -28,6 +29,18 @@ func _on_card_drag_started(card: Card) -> void:
 	dragging_card = card
 	drag_start_position = card.global_position
 	print("【BagMover】卡片开始拖拽：", card.name)
+	
+	# 1. 计算卡片中心位置，用来判断它起始时是否在某个槽位中
+	var card_center = card.global_position + card.size * card.scale / 2.0
+	var start_bag_index = _get_bag_area_for_position(card_center)
+	drag_start_slot = null
+	if start_bag_index >= 0:
+		var bag = bag_area[start_bag_index]
+		drag_start_slot = _get_slot_for_position(bag, card_center)
+	
+	# 2. 如果是从某个槽位开始拖拽，只移除该槽位中卡片的属性效果（不移除节点）
+	if drag_start_slot:
+		drag_start_slot.unequip_only()
 
 func _process(_delta: float) -> void:
 	# 只在拖拽卡片时进行检测
@@ -150,27 +163,27 @@ func _on_card_dropped(card: Card) -> void:
 	# 如果没有有效的目标槽位，不做处理（让卡片自己的逻辑处理）
 	if not target_slot:
 		print("【BagMover】卡片未放置在背包槽位中")
+		# 如果一开始是从某个槽位拖出来的，此时已经在 _on_card_drag_started 里卸下过装备效果，
+		# 这里不再做属性变更，只是结束拖拽
 		dragging_card = null
+		drag_start_slot = null
 		return
-	
-	# 获取起始位置的背包和槽位
-	var start_bag_index = _get_bag_area_for_position(drag_start_position)
-	var start_slot = null
-	if start_bag_index >= 0:
-		start_slot = _get_slot_for_position(bag_area[start_bag_index], drag_start_position)
 	
 	# 检查目标槽位是否已有卡片
 	var existing_card = target_slot.get_card()
 	
 	if existing_card:
 		# 如果有卡片，交换位置
-		target_slot.remove_card()
-		if start_slot:
-			start_slot.remove_card()
-			start_slot.place_card(existing_card)
+		# 1. 从目标槽位卸下原有卡片（触发减属性）
+		var swapped_card: Card = target_slot.remove_card()
+		# 2. 如果一开始是从某个槽位拖拽出来的，就把这张被换出来的卡放回起始槽位（重新加上它的属性）
+		if drag_start_slot and swapped_card:
+			drag_start_slot.place_card(swapped_card)
+		# 3. 最后把正在拖拽的卡放入目标槽位（在 place_card 里重新加上它的属性）
 		target_slot.place_card(card)
 	else:
 		# 目标槽位为空，直接放入
 		target_slot.place_card(card)
 	
 	dragging_card = null
+	drag_start_slot = null

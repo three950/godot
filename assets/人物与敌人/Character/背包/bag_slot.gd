@@ -38,22 +38,35 @@ func is_empty() -> bool:
 	return get_card() == null
 
 ## 将卡片放入槽位（统一处理位置和缩放）
-func place_card(card: Card) -> void:
+## apply_effects = true 时会应用物品特性 / 装备效果；false 时只做视觉摆放
+func place_card(card: Card, apply_effects: bool = true) -> void:
 	# 1. 先从原父节点移除（如果有）
 	var old_parent = card.get_parent()
 	if old_parent:
-		print("哎呀移出啦")
+		print("哎呀移出啦, 原父节点: ", old_parent)
+		# 这里只负责从原父节点移除，不在这里做卸下装备逻辑
+		# 卸下装备的属性变更统一由 BagMover 在拖拽开始 / 交换时调用 remove_card 处理
 		old_parent.remove_child(card)
 
 	# 2. 添加到槽位
 	add_child(card)
-	# 3. 如果这是一个有“添加特性”的物品卡，把特性加到角色身上
-	var card_info := card.get_card_resource()
-	if card_info is ItemCard:
-		var item_card := card_info as ItemCard
-		if item_card.添加特性 != "":
-			owner_character.character.特性.append(item_card.添加特性)
-			print("【BagSlot】添加特性：", owner_character.character.特性)
+	# 3. 按需应用物品特性 / 装备效果
+	if apply_effects:
+		var card_info := card.get_card_resource()
+		if card_info is ItemCard:
+			var item_card := card_info as ItemCard
+			if item_card.添加特性 != "":
+				owner_character.character.特性.append(item_card.添加特性)
+				print("【BagSlot】添加特性：", owner_character.character.特性)
+		# 3.1 如果是装备卡，并且力量满足需求，则应用装备效果
+		if card_info is EquipmentCard and owner_character and owner_character.character:
+			var equip_card := card_info as EquipmentCard
+			if equip_card.need_power < owner_character.character.POW:
+				match equip_card.equip_type:
+					EquipmentCard.EquipType.攻击:
+						owner_character.character.ATK += equip_card.equip_effect
+					EquipmentCard.EquipType.防御:
+						owner_character.character.DEF += equip_card.equip_effect
 	var card_size = card.size
 	# 计算缩放比例，取较小值以确保卡片完全在槽位内
 	var scale_ratio = min(size.x / card_size.x, size.y / card_size.y)
@@ -69,14 +82,31 @@ func remove_card() -> Card:
 	var card = get_card()
 	if card:
 		remove_child(card)
-		# 移除卡片添加的特性
-		var card_info := card.get_card_resource()
-		if card_info is ItemCard:
-			var item_card := card_info as ItemCard
-			if item_card.添加特性 != "":
-				owner_character.character.特性.erase(item_card.添加特性)
-				print("【BagSlot】移除特性：", owner_character.character.特性)
+		# 移除卡片添加的特性 / 装备效果
+		_remove_card_effects(card)
 	return card
+
+## 仅移除当前槽位中卡片的效果，不移除节点（用于拖拽开始时预先扣除属性）
+func unequip_only() -> void:
+	var card = get_card()
+	if card:
+		_remove_card_effects(card)
+
+## 内部工具函数：根据卡片信息移除对应效果
+func _remove_card_effects(card: Card) -> void:
+	var card_info := card.get_card_resource()
+	if card_info is ItemCard:
+		var item_card := card_info as ItemCard
+		if item_card.添加特性 != "":
+			owner_character.character.特性.erase(item_card.添加特性)
+			print("【BagSlot】移除特性：", owner_character.character.特性)
+	if card_info is EquipmentCard:
+		var equip_card := card_info as EquipmentCard
+		match equip_card.equip_type:
+			0:
+				owner_character.character.ATK -= equip_card.equip_effect
+			1:
+				owner_character.character.DEF -= equip_card.equip_effect
 
 func show_owned_card(card_data:ThingsCard) -> void:
 	if not card_data:
@@ -88,8 +118,8 @@ func show_owned_card(card_data:ThingsCard) -> void:
 	var card = card_data.card_scene.instantiate()
 	if card.has_method("set_stats"):
 		card.set_stats(card_data)
-	# 使用统一的 place_card 方法
-	place_card(card)
+	# 使用统一的 place_card 方法，但初次加载背包时只做摆放，不重复应用特性 / 装备效果
+	place_card(card, false)
 	print("生成卡片")
 
 ## 设置高亮状态（拖拽时显示白色边框）

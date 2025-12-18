@@ -1,14 +1,17 @@
-[gd_resource type="Resource" script_class="CharacterCard" load_steps=4 format=3 uid="uid://dfpw7xhnxtvgh"]
+[gd_resource type="Resource" script_class="CharacterCard" load_steps=6 format=3 uid="uid://dfpw7xhnxtvgh"]
 
 [ext_resource type="Script" uid="uid://c4lf65wbktjbc" path="res://assets/人物与敌人/Character/CharacterCard.gd" id="1_33mer"]
 [ext_resource type="Texture2D" uid="uid://b11wupevcdiwd" path="res://assets/人物与敌人/Character/人物_莉可.png" id="1_e6vqo"]
 [ext_resource type="PackedScene" uid="uid://di7barbrn42cy" path="res://assets/人物与敌人/Character/character.tscn" id="1_vm5mx"]
+[ext_resource type="Script" uid="uid://pghaahofndwh" path="res://assets/物品/ThingsCard.gd" id="4_tmu5p"]
+[ext_resource type="Resource" uid="uid://bptle7yhbwdk8" path="res://assets/物品/装备/weapon/探窟稿.tres" id="5_x3g0x"]
 
 [resource]
 script = ExtResource("1_33mer")
 POW = 2
 aware = 80
 card_scene = ExtResource("1_vm5mx")
+"左右手" = Array[ExtResource("4_tmu5p")]([ExtResource("5_x3g0x"), null])
 MAX_HP = 10
 ATK = 2
 speed = 5

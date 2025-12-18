@@ -10,6 +10,7 @@
 [resource]
 script = ExtResource("1_onpdw")
 card_scene = ExtResource("1_klggm")
+equip_effect = 5
 has_craft_recipe = true
 craft_materials = Array[ExtResource("1_r6xg6")]([ExtResource("2_c3nyw"), ExtResource("3_kt6b8")])
 "合成时间" = 5.0
