@@ -53,10 +53,9 @@ func place_card(card: Card, apply_effects: bool = true) -> void:
 	# 3. 按需应用物品特性 / 装备效果
 	if apply_effects:
 		var card_info := card.get_card_resource()
-		if card_info is ItemCard:
-			var item_card := card_info as ItemCard
-			if item_card.添加特性 != "":
-				owner_character.character.特性.append(item_card.添加特性)
+		if card_info is ThingsCard:
+			if card_info.添加特性 != "":
+				owner_character.character.特性.append(card_info.添加特性)
 				print("【BagSlot】添加特性：", owner_character.character.特性)
 		# 3.1 如果是装备卡，并且力量满足需求，则应用装备效果
 		if card_info is EquipmentCard and owner_character and owner_character.character:
@@ -95,10 +94,9 @@ func unequip_only() -> void:
 ## 内部工具函数：根据卡片信息移除对应效果
 func _remove_card_effects(card: Card) -> void:
 	var card_info := card.get_card_resource()
-	if card_info is ItemCard:
-		var item_card := card_info as ItemCard
-		if item_card.添加特性 != "":
-			owner_character.character.特性.erase(item_card.添加特性)
+	if card_info is ThingsCard:
+		if card_info.添加特性 != "":
+			owner_character.character.特性.erase(card_info.添加特性)
 			print("【BagSlot】移除特性：", owner_character.character.特性)
 	if card_info is EquipmentCard:
 		var equip_card := card_info as EquipmentCard

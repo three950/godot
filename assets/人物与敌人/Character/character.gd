@@ -32,13 +32,11 @@ func _update_battle_card() -> void:
 
 func _update_features() -> void:
 	for card in character.左右手:
-		if card is ItemCard:
+		if card is ThingsCard:
 			if card.添加特性 != "" and not character.特性.has(card.添加特性):
 				character.特性.append(card.添加特性)
 				print("【Character】初始化添加特性：", card.添加特性, " 当前特性：", character.特性)
-				# 标记这件物品的特性已经在角色初始化阶段应用过一次，
-				# 后续第一次被放入背包槽位时就不要再重复加成
-				card.set_meta("init_applied", true)
+
 		if card is EquipmentCard:
 			print("【Character】初始化添加装备效果：", card.equip_type, " 当前装备效果：", card.equip_effect)
 			if card.need_power < character.POW:
@@ -46,6 +44,3 @@ func _update_features() -> void:
 				match card.equip_type:
 					0:character.ATK += card.equip_effect
 					1:character.DEF += card.equip_effect
-				# 标记这件装备的效果已经在角色初始化阶段应用过一次，
-				# 后续第一次被放入背包槽位时就不要再重复加成
-				card.set_meta("init_applied", true)

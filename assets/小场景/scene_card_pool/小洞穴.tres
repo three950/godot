@@ -10,6 +10,7 @@
 
 [resource]
 script = ExtResource("2_uehsh")
+"需要的参数" = "探窟加快"
 card_pool = Array[ExtResource("1_5kjiw")]([ExtResource("2_mecyf"), ExtResource("3_u58ud"), ExtResource("7_7q886")])
 card_scene = ExtResource("8_scene")
 name = "小洞穴"

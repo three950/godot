@@ -5,6 +5,7 @@ enum 稀有度{COMMON,NOTBAD,RARE,UNIQUE}
 @export var value: int = 1
 @export var 是遗物: 遗物等级 = 遗物等级.NO
 @export var 物品稀有度: 稀有度
+@export var 添加特性 :String
 @export var 可以从哪个场景开出:int
 @export var 可以在哪一层被开出:int
 
