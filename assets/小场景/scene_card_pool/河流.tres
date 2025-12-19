@@ -9,6 +9,7 @@
 
 [resource]
 script = ExtResource("2_ldocv")
+"需要的参数" = "钓鱼加快"
 card_pool = Array[ExtResource("1_f76dw")]([ExtResource("4_e8ejl"), ExtResource("3_ulb2o")])
 card_scene = ExtResource("4_i27j2")
 name = "河流"
