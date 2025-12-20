@@ -1,5 +1,6 @@
-[gd_scene load_steps=26 format=3 uid="uid://r1lb3ajxfx1j"]
+[gd_scene load_steps=27 format=3 uid="uid://r1lb3ajxfx1j"]
 
+[ext_resource type="AudioStream" uid="uid://b6c68bakgojm8" path="res://声音资产/Audio/ogg/Tracks/Forgotten Biomes.ogg" id="2_lswn8"]
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://background.tscn" id="3_h2yge"]
 [ext_resource type="Script" uid="uid://bbnp6ftl63g4m" path="res://script_folder/camera_controller.gd" id="4_camera"]
 [ext_resource type="PackedScene" uid="uid://di7barbrn42cy" path="res://assets/人物与敌人/Character/character.tscn" id="6_kek77"]
@@ -29,6 +30,7 @@
 [node name="Main" type="Node2D"]
 
 [node name="UI_Layer" parent="." instance=ExtResource("23_d13ii")]
+bgm = ExtResource("2_lswn8")
 
 [node name="backgroundUi" parent="." instance=ExtResource("3_h2yge")]
 metadata/_edit_lock_ = true

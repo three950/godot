@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://bxabmssyls556"
+path="res://.godot/imported/ambience - woods near suburbs.wav-bd4c3c4689d7bab4d4595097ca8ca6b7.sample"
+
+[deps]
+
+source_file="res://声音资产/useful/ambience - woods near suburbs.wav"
+dest_files=["res://.godot/imported/ambience - woods near suburbs.wav-bd4c3c4689d7bab4d4595097ca8ca6b7.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

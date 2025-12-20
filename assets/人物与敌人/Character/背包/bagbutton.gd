@@ -4,6 +4,7 @@ var is_open: bool = false
 var original_parent
 var character_node: Character = null
 var bag_scene: PackedScene = null
+@export var bag_sound: AudioStream
 func _ready() -> void:
 	original_parent = get_parent()
 	if original_parent is Character:
@@ -54,6 +55,7 @@ func open_bag() -> void:
 	original_parent.add_child(bag)
 	is_open = true
 	print("【背包按钮】背包显示完成")
+	SFXPlayer.play(bag_sound)
 
 # 关闭背包
 func close_bag() -> void:
@@ -64,3 +66,4 @@ func close_bag() -> void:
 		original_parent.remove_child(bag)
 	is_open = false
 	print("【背包按钮】背包已关闭")
+	SFXPlayer.play(bag_sound)

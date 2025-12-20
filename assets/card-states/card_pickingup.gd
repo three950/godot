@@ -14,7 +14,7 @@ func enter() -> void:
 	card.drag_started.emit()
 	# 通知全局事件系统
 	Events.card_drag_started.emit(card)
-	
+	SFXPlayer.play(card.pickup_sound, false, 12.0)
 func on_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		print("pick2")

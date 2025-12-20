@@ -6,7 +6,7 @@ extends CanvasLayer
 @onready var layer_label: Label = $TopRightUI/HBoxContainer/game_stats/HBoxContainer/layerstate
 @onready var progress_bar: ProgressBar = $TopRightUI/HBoxContainer/ProgressBar
 @onready var days_label: Label = $TopRightUI/HBoxContainer/ProgressBar/HBoxContainer/Label
-
+@export var bgm:AudioStream
 var elapsed_time: float = 0.0
 
 func _ready() -> void:
@@ -14,6 +14,7 @@ func _ready() -> void:
 	Events.food_need_update.connect(_on_food_need_update)
 	Events.food_have_update.connect(_on_food_have_update)
 	_update_stats()
+	MusicPlayer.play(bgm)
 
 func _on_food_need_update(amount: int) -> void:
 	game_stats.food_need += amount

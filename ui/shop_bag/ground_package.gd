@@ -13,6 +13,7 @@ signal package_bought(CardPackage)
 @onready var packagename: Label = %packagename
 @onready var value: Label = %value
 @onready var panel_3: Panel = $Panel3
+@export var coin_sound:AudioStream
 
 func _ready() -> void:
 	_update_display()
@@ -32,6 +33,7 @@ func _on_pressed() -> void:
 	package_bought.emit()
 	# 延迟生成卡牌
 	_spawn_card_delayed()
+	SFXPlayer.play(coin_sound)
 
 ## 延迟生成卡牌
 func _spawn_card_delayed() -> void:

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://c1ey1n8wfd5ml"
+path="res://.godot/imported/box of cereal handled 3.wav-b49d709633b02764a602a9f0cbc5be8b.sample"
+
+[deps]
+
+source_file="res://声音资产/useful/背包打开/box of cereal handled 3.wav"
+dest_files=["res://.godot/imported/box of cereal handled 3.wav-b49d709633b02764a602a9f0cbc5be8b.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

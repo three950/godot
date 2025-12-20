@@ -42,6 +42,7 @@ func enter() -> void:
 		if card.children_card != null:
 			card.update_children_position()
 		transition_requested.emit(self, CardState.State.fixed)
+	SFXPlayer.play(card.fall_sound)
 
 			
 	
