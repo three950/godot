@@ -34,6 +34,7 @@ size = Vector2(88, 16)
 size = Vector2(88, 74)
 
 [node name="Card" type="Control" groups=["Cards"]]
+y_sort_enabled = true
 layout_mode = 3
 anchors_preset = 0
 offset_right = 88.0
