@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://r1lb3ajxfx1j"]
+[gd_scene load_steps=28 format=3 uid="uid://r1lb3ajxfx1j"]
 
 [ext_resource type="AudioStream" uid="uid://b6c68bakgojm8" path="res://声音资产/Audio/ogg/Tracks/Forgotten Biomes.ogg" id="2_lswn8"]
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://background.tscn" id="3_h2yge"]
@@ -26,7 +26,6 @@
 [ext_resource type="PackedScene" uid="uid://bm4r8w10jcbid" path="res://ui/ui_layer.tscn" id="23_d13ii"]
 [ext_resource type="Resource" uid="uid://c0t1pg4ohysod" path="res://assets/小场景/scene_card_pool/河流.tres" id="24_lswn8"]
 [ext_resource type="Resource" uid="uid://bvxngiedcur8" path="res://assets/小场景/scene_card_pool/小洞穴.tres" id="25_a6jrf"]
-[ext_resource type="PackedScene" uid="uid://bbswec7w44tl1" path="res://ui/battle_scene.tscn" id="27_a6jrf"]
 [ext_resource type="Script" uid="uid://bxyb8ihft7c6l" path="res://script_folder/battle_manager.gd" id="28_xuqvo"]
 
 [node name="Main" type="Node2D"]
@@ -131,12 +130,6 @@ offset_top = 390.0
 offset_right = 777.0
 offset_bottom = 505.0
 scene = ExtResource("24_lswn8")
-
-[node name="BattleScene" parent="." instance=ExtResource("27_a6jrf")]
-offset_left = 436.0
-offset_top = 348.0
-offset_right = 564.0
-offset_bottom = 615.0
 
 [node name="BattleManager" type="Node" parent="."]
 script = ExtResource("28_xuqvo")
