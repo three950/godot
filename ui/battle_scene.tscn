@@ -1,8 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bbswec7w44tl1"]
-
-[ext_resource type="PackedScene" uid="uid://d33c5tbwan3si" path="res://assets/人物与敌人/Enemy/enemy.tscn" id="1_d5srp"]
-[ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="2_1tubo"]
-[ext_resource type="Resource" uid="uid://do4ivypcif1tw" path="res://assets/人物与敌人/Enemy/enemys/毒针线虫.tres" id="2_ceg7r"]
+[gd_scene load_steps=2 format=3 uid="uid://bbswec7w44tl1"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ceg7r"]
 bg_color = Color(0.33660772, 0.3366076, 0.33660755, 0.3647059)
@@ -20,7 +16,7 @@ corner_radius_bottom_left = 10
 custom_minimum_size = Vector2(100, 260)
 offset_right = 128.0
 offset_bottom = 267.0
-mouse_filter = 2
+mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_ceg7r")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -30,7 +26,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 theme_override_constants/separation = 10
 alignment = 1
 
@@ -38,20 +33,9 @@ alignment = 1
 custom_minimum_size = Vector2(88, 115)
 layout_mode = 2
 size_flags_horizontal = 4
-mouse_filter = 2
-
-[node name="EnemyCard" parent="VBoxContainer/enemy" instance=ExtResource("1_d5srp")]
-custom_minimum_size = Vector2(88, 115)
-layout_mode = 2
-enemy = ExtResource("2_ceg7r")
 
 [node name="character" type="HBoxContainer" parent="VBoxContainer"]
 custom_minimum_size = Vector2(88, 115)
 layout_mode = 2
 size_flags_horizontal = 4
-mouse_filter = 2
 theme_override_constants/separation = 0
-
-[node name="Card" parent="VBoxContainer/character" instance=ExtResource("2_1tubo")]
-custom_minimum_size = Vector2(88, 115)
-layout_mode = 2
