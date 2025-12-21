@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://r1lb3ajxfx1j"]
+[gd_scene load_steps=29 format=3 uid="uid://r1lb3ajxfx1j"]
 
 [ext_resource type="AudioStream" uid="uid://b6c68bakgojm8" path="res://声音资产/Audio/ogg/Tracks/Forgotten Biomes.ogg" id="2_lswn8"]
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://background.tscn" id="3_h2yge"]
@@ -7,7 +7,7 @@
 [ext_resource type="Resource" uid="uid://tk1nuwcbk0u2" path="res://assets/人物与敌人/Character/characters/娜娜奇.tres" id="7_4c57u"]
 [ext_resource type="Resource" uid="uid://dfpw7xhnxtvgh" path="res://assets/人物与敌人/Character/characters/莉可.tres" id="8_efxa6"]
 [ext_resource type="Resource" uid="uid://dsjxxvme1bq2n" path="res://assets/人物与敌人/Character/characters/雷古.tres" id="9_dg77c"]
-[ext_resource type="PackedScene" uid="uid://b1n4d84218ejx" path="res://assets/人物与敌人/Enemy/enemy.tscn" id="9_enemy_card"]
+[ext_resource type="PackedScene" uid="uid://d33c5tbwan3si" path="res://assets/人物与敌人/Enemy/enemy.tscn" id="9_enemy_card"]
 [ext_resource type="Resource" uid="uid://do4ivypcif1tw" path="res://assets/人物与敌人/Enemy/enemys/毒针线虫.tres" id="10_4c57u"]
 [ext_resource type="PackedScene" uid="uid://dnxa570k3cf" path="res://assets/物品/道具/item.tscn" id="11_dg77c"]
 [ext_resource type="Script" uid="uid://cp5b80hwejldr" path="res://script_folder/bag_mover.gd" id="11_efxa6"]
@@ -27,6 +27,7 @@
 [ext_resource type="Resource" uid="uid://c0t1pg4ohysod" path="res://assets/小场景/scene_card_pool/河流.tres" id="24_lswn8"]
 [ext_resource type="Resource" uid="uid://bvxngiedcur8" path="res://assets/小场景/scene_card_pool/小洞穴.tres" id="25_a6jrf"]
 [ext_resource type="PackedScene" uid="uid://bbswec7w44tl1" path="res://ui/battle_scene.tscn" id="27_a6jrf"]
+[ext_resource type="Script" uid="uid://bxyb8ihft7c6l" path="res://script_folder/battle_manager.gd" id="28_xuqvo"]
 
 [node name="Main" type="Node2D"]
 
@@ -41,7 +42,6 @@ offset_left = 92.0
 offset_top = 181.0
 offset_right = 180.0
 offset_bottom = 296.0
-pivot_offset = Vector2(0, 0)
 character = ExtResource("7_4c57u")
 
 [node name="莉可" parent="." instance=ExtResource("6_kek77")]
@@ -49,27 +49,21 @@ offset_left = 243.0
 offset_top = 180.0
 offset_right = 331.0
 offset_bottom = 295.0
-pivot_offset = Vector2(0, 0)
 character = ExtResource("8_efxa6")
-metadata/_edit_lock_ = true
 
 [node name="雷古" parent="." instance=ExtResource("6_kek77")]
 offset_left = 415.0
 offset_top = 181.0
 offset_right = 503.0
 offset_bottom = 296.0
-pivot_offset = Vector2(0, 0)
 character = ExtResource("9_dg77c")
-metadata/_edit_lock_ = true
 
 [node name="EnemyCard" parent="." instance=ExtResource("9_enemy_card")]
 offset_left = 272.0
 offset_top = 379.0
 offset_right = 360.0
 offset_bottom = 494.0
-pivot_offset = Vector2(0, 0)
 enemy = ExtResource("10_4c57u")
-metadata/_edit_lock_ = true
 
 [node name="BagMover" type="Node" parent="."]
 script = ExtResource("11_efxa6")
@@ -87,27 +81,21 @@ offset_left = 680.0
 offset_top = 234.0
 offset_right = 768.0
 offset_bottom = 349.0
-pivot_offset = Vector2(0, 0)
 item = ExtResource("12_dg77c")
-metadata/_edit_lock_ = true
 
 [node name="Recource" parent="." instance=ExtResource("13_ycdy4")]
 offset_left = 794.0
 offset_top = 237.0
 offset_right = 882.0
 offset_bottom = 352.0
-pivot_offset = Vector2(0, 0)
 recource = ExtResource("14_w48qg")
-metadata/_edit_lock_ = true
 
 [node name="Equipment" parent="." instance=ExtResource("15_2cqfq")]
 offset_left = 903.0
 offset_top = 237.0
 offset_right = 991.0
 offset_bottom = 352.0
-pivot_offset = Vector2(0, 0)
 equipment = ExtResource("16_yaehf")
-metadata/_edit_lock_ = true
 
 [node name="1000m" parent="." instance=ExtResource("16_2cqfq")]
 offset_left = 877.0
@@ -149,3 +137,6 @@ offset_left = 436.0
 offset_top = 348.0
 offset_right = 564.0
 offset_bottom = 615.0
+
+[node name="BattleManager" type="Node" parent="."]
+script = ExtResource("28_xuqvo")

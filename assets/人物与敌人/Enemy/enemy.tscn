@@ -1,9 +1,12 @@
-[gd_scene load_steps=5 format=3 uid="uid://b1n4d84218ejx"]
+[gd_scene load_steps=9 format=3 uid="uid://d33c5tbwan3si"]
 
-[ext_resource type="PackedScene" uid="uid://b1oqblyvspkqi" path="res://assets/人物与敌人/biology.tscn" id="1_yl3u4"]
+[ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="1_bbcg6"]
+[ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="2_b646a"]
 [ext_resource type="Script" uid="uid://cr4xcgnxahlhf" path="res://assets/人物与敌人/Enemy/enemy.gd" id="2_bbcg6"]
+[ext_resource type="Script" uid="uid://cvwtip1ly5e7f" path="res://script_folder/animations_shooter.gd" id="3_b646a"]
+[ext_resource type="Script" uid="uid://cq4u5v6w7x80a" path="res://assets/人物与敌人/attribute_labels.gd" id="3_krhvb"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_44hyf"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_krhvb"]
 bg_color = Color(0.8831649, 0.3872493, 0.34170684, 1)
 border_width_left = 2
 border_width_top = 2
@@ -11,20 +14,110 @@ border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6u40f"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hpx2h"]
 bg_color = Color(0.74368256, 0.27023113, 0.23480722, 1)
 border_width_bottom = 1
 border_color = Color(0, 0, 0, 1)
 
-[node name="EnemyCard" groups=["BattleCharacter", "BattleEnemy"] instance=ExtResource("1_yl3u4")]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_krhvb"]
+size = Vector2(88, 114)
+
+[node name="Enemy" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1064.0
+offset_bottom = -533.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("2_bbcg6")
-enemy = null
 
-[node name="CardPanel" parent="." index="0"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_44hyf")
+[node name="CardPanel" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 88.0
+offset_bottom = 114.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_krhvb")
 
-[node name="Panel" parent="." index="1"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_6u40f")
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 86.0
+offset_bottom = 16.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hpx2h")
 
-[node name="Label" parent="Panel" index="0"]
-text = "敌对生物"
+[node name="Label" type="Label" parent="Panel"]
+layout_mode = 0
+offset_right = 84.0
+offset_bottom = 14.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_bbcg6")
+theme_override_font_sizes/font_size = 10
+text = "莉可"
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 18.0
+offset_right = 83.583336
+offset_bottom = 87.0
+mouse_filter = 2
+texture = ExtResource("2_b646a")
+expand_mode = 1
+
+[node name="AttributeLabels" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 88.0
+offset_right = 86.0
+offset_bottom = 112.0
+mouse_filter = 2
+alignment = 1
+script = ExtResource("3_krhvb")
+
+[node name="HPLabel" type="Label" parent="AttributeLabels"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.8, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("1_bbcg6")
+theme_override_font_sizes/font_size = 9
+text = "10"
+vertical_alignment = 1
+
+[node name="RightStats" type="VBoxContainer" parent="AttributeLabels"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="ATKLabel" type="Label" parent="AttributeLabels/RightStats"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.6, 0.1, 1)
+theme_override_fonts/font = ExtResource("1_bbcg6")
+theme_override_font_sizes/font_size = 9
+text = "1"
+horizontal_alignment = 2
+
+[node name="DEFLabel" type="Label" parent="AttributeLabels/RightStats"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.5, 0.8, 1)
+theme_override_fonts/font = ExtResource("1_bbcg6")
+theme_override_font_sizes/font_size = 9
+text = "0"
+horizontal_alignment = 2
+
+[node name="BattleStartArea" type="Area2D" parent="."]
+position = Vector2(3, 3)
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BattleStartArea"]
+position = Vector2(41, 54)
+shape = SubResource("RectangleShape2D_krhvb")
+
+[node name="shooter" type="Node" parent="."]
+script = ExtResource("3_b646a")
+
+[connection signal="area_entered" from="BattleStartArea" to="." method="_on_battle_start_area_area_entered"]

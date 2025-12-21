@@ -22,6 +22,9 @@ signal array_changed()
 signal food_need_update(amount: int)
 signal food_have_update(amount: int)
 
+#战斗系统信号
+signal battle_start_requested(character: Character, enemy: Enemy)
+
 @export var spawn_card_info: CardInfo = null
 ## 根据卡牌资源类型创建对应的卡牌实例
 func _create_card_instance() -> Node:

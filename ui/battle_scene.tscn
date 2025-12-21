@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://bbswec7w44tl1"]
 
-[ext_resource type="PackedScene" uid="uid://b1n4d84218ejx" path="res://assets/人物与敌人/Enemy/enemy.tscn" id="1_d5srp"]
+[ext_resource type="PackedScene" uid="uid://d33c5tbwan3si" path="res://assets/人物与敌人/Enemy/enemy.tscn" id="1_d5srp"]
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="2_1tubo"]
 [ext_resource type="Resource" uid="uid://do4ivypcif1tw" path="res://assets/人物与敌人/Enemy/enemys/毒针线虫.tres" id="2_ceg7r"]
 

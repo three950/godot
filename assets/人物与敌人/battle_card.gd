@@ -1,4 +1,5 @@
-extends "res://assets/card.gd"
+extends Card
+class_name BattleCard
 # 战斗卡片的基类，包含 enemy 和 character 的共同功能
 
 var _needs_initial_update := false
