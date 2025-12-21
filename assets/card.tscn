@@ -1,6 +1,7 @@
-[gd_scene load_steps=18 format=3 uid="uid://cxgk8a5mjy27v"]
+[gd_scene load_steps=19 format=3 uid="uid://cxgk8a5mjy27v"]
 
 [ext_resource type="Script" uid="uid://ut5tbn2q80gh" path="res://assets/card.gd" id="1_q5obu"]
+[ext_resource type="Resource" uid="uid://cq6i5xpurm0al" path="res://base_data/Battle_stats.tres" id="2_agldc"]
 [ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="2_e484p"]
 [ext_resource type="AudioStream" uid="uid://csqitlghauxgb" path="res://声音资产/useful/卡牌拿起放下/cardpick.wav" id="2_mqa0q"]
 [ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="2_q5obu"]
@@ -40,6 +41,7 @@ anchors_preset = 0
 offset_right = 88.0
 offset_bottom = 115.0
 script = ExtResource("1_q5obu")
+battle = ExtResource("2_agldc")
 pickup_sound = ExtResource("2_mqa0q")
 fall_sound = ExtResource("3_agldc")
 metadata/_edit_lock_ = true
