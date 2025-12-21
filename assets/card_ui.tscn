@@ -70,3 +70,4 @@ collision_mask = 0
 position = Vector2(41, 5)
 shape = SubResource("RectangleShape2D_q5obu")
 
+

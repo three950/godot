@@ -84,6 +84,23 @@ func _on_battle_start_requested(character: Character, enemy: Enemy) -> void:
 	character_container.add_child(character)
 	print("【BattleManager】已将 character 和 enemy 添加到战斗场景")
 	
+	# 7. 设置卡牌的最小尺寸以确保能接受鼠标事件
+	# 为 enemy 设置最小尺寸
+	if enemy.has_node("Panel"):
+		var enemy_panel = enemy.get_node("Panel")
+		var enemy_size = enemy_panel.size
+		if enemy is Control:
+			enemy.custom_minimum_size = enemy_size
+			print("【BattleManager】已设置 enemy 最小尺寸: ", enemy_size)
+	
+	# 为 character 设置最小尺寸
+	if character.has_node("Panel"):
+		var character_panel = character.get_node("Panel")
+		var character_size = character_panel.size
+		if character is Control:
+			character.custom_minimum_size = character_size
+			print("【BattleManager】已设置 character 最小尺寸: ", character_size)
+	
 	print("【BattleManager】战斗场景已创建并初始化")
 	
 	# 处理完成后，等待一帧再重置标志（确保所有物理碰撞检测都已处理完）
