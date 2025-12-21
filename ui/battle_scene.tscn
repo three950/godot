@@ -1,0 +1,57 @@
+[gd_scene load_steps=5 format=3 uid="uid://bbswec7w44tl1"]
+
+[ext_resource type="PackedScene" uid="uid://b1n4d84218ejx" path="res://assets/人物与敌人/Enemy/enemy.tscn" id="1_d5srp"]
+[ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="2_1tubo"]
+[ext_resource type="Resource" uid="uid://do4ivypcif1tw" path="res://assets/人物与敌人/Enemy/enemys/毒针线虫.tres" id="2_ceg7r"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ceg7r"]
+bg_color = Color(0.33660772, 0.3366076, 0.33660755, 0.3647059)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.8846368, 0.20283303, 0.116062425, 0.8352941)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="BattleScene" type="Panel" groups=["Cards"]]
+custom_minimum_size = Vector2(100, 260)
+offset_right = 128.0
+offset_bottom = 267.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ceg7r")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="enemy" type="HBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(88, 115)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+
+[node name="EnemyCard" parent="VBoxContainer/enemy" instance=ExtResource("1_d5srp")]
+custom_minimum_size = Vector2(88, 115)
+layout_mode = 2
+enemy = ExtResource("2_ceg7r")
+
+[node name="character" type="HBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(88, 115)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="Card" parent="VBoxContainer/character" instance=ExtResource("2_1tubo")]
+custom_minimum_size = Vector2(88, 115)
+layout_mode = 2
