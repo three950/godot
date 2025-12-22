@@ -73,3 +73,17 @@ func 进入战斗状态() -> void:
 	fixed_state.enter()
 	state_machine.current_state = fixed_state
 	print("【character】已强制切换到 fixed 状态")
+
+func 退出战斗状态() -> void:
+	# 重置战斗标记
+	_battle_started = false
+	battle_start_area.monitoring = true
+	battle_start_area.monitorable = true
+	# 切换回 fixed 状态（默认空闲状态）
+	var state_machine = get_node("CardStateMachine")
+	var fixed_state = state_machine.states[CardState.State.fixed]
+	if state_machine.current_state:
+		state_machine.current_state.exit()
+	fixed_state.enter()
+	state_machine.current_state = fixed_state
+	print("【character】已退出战斗，恢复为 fixed 状态")
