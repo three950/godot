@@ -70,7 +70,11 @@ func 进入战斗状态() -> void:
 	var fixed_state = state_machine.states[CardState.State.fixed]
 	if state_machine.current_state:
 		state_machine.current_state.exit()
+	if follow_target:
+		follow_target.children_card=null
+		follow_target=null
 	fixed_state.enter()
+	z_index=1
 	state_machine.current_state = fixed_state
 	print("【character】已强制切换到 fixed 状态")
 

@@ -4,6 +4,8 @@ extends Node
 
 # 战斗场景预制体
 const BATTLE_SCENE = preload("res://ui/battle_scene.tscn")
+# 子弹预制体
+const BULLET_SCENE = preload("res://ui/bullet.tscn")
 
 # 标记是否正在处理战斗开始（防止重复触发）
 var _is_processing_battle := false
@@ -147,7 +149,7 @@ func _on_unit_attack(attacker: Control) -> void:
 		return
 	
 	# 执行攻击
-	_perform_remote_attack(attacker, target)
+	_perform_attack(attacker, target)
 	
 	# 检查战斗是否结束
 	_check_battle_end()
@@ -171,21 +173,49 @@ func _get_attack_target(attacker: Control) -> Control:
 	
 	return null
 
-func _perform_remote_attack(attacker: Control, target: Control) -> void:
-	pass
+func _play_remote_attack_animation(attacker: Control, target: Control) -> void:
+	# 获取attacker和target的中心位置
+	var attacker_center := attacker.global_position + attacker.size / 2.0
+	var target_center := target.global_position + target.size / 2.0
+	
+	# 创建子弹实例
+	var bullet := BULLET_SCENE.instantiate()
+	bullet.z_index=5
+	# 将子弹添加到战斗场景
+	active_battle_scene.add_child(bullet)
+	# 设置子弹的初始位置为attacker中心
+	bullet.global_position = attacker_center
+	
+	# 创建tween动画
+	var tween := create_tween()
+	tween.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_LINEAR)
+	
+	# 子弹移动到target中心（0.3秒）
+	tween.tween_property(bullet, "global_position", target_center, 0.3)
+	
+	# 等待动画完成
+	await tween.finished
+		
+	# 检查目标是否仍然有效（可能在动画期间被击败）
+	if is_instance_valid(target) and not target.is_queued_for_deletion():
+		# 播放受击效果
+		_play_hit_effect(target)
+	
+	# 移除子弹
+	bullet.queue_free()
 # 执行攻击
-func _perform_close_attack(attacker: Control, target: Control) -> void:
+func _perform_attack(attacker: Control, target: Control) -> void:
 	var attacker_resource: BattleStates = attacker.get_battle_resource()
 	var damage := attacker_resource.ATK
 	
 	print("【BattleManager】%s 攻击 %s，造成 %d 点伤害" % [attacker.name, target.name, damage])
 	
-	# 播放攻击动画（简单的抖动效果）
-	_play_attack_animation(attacker, target)
-	
+	# 播放远程攻击动画
+	_play_remote_attack_animation(attacker, target)
 	
 	# 造成伤害
 	target.take_damage(damage)
+
 
 # 播放受击效果
 # TODO 让被攻击的卡面一瞬间变白，然后恢复
@@ -195,7 +225,7 @@ func _play_hit_effect(target: Control) -> void:
 
 # 播放攻击动画
 # 创建一个简单的冲刺动画效果：攻击者向目标方向快速移动一小段距离，然后返回原位
-func _play_attack_animation(attacker: Control, target: Control) -> void:
+func _play_close_attack_animation(attacker: Control, target: Control) -> void:
 	# 保存攻击者的原始位置，用于动画结束后恢复
 	var original_pos := attacker.position
 	
