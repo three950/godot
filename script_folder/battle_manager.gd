@@ -147,7 +147,7 @@ func _on_unit_attack(attacker: Control) -> void:
 		return
 	
 	# 执行攻击
-	_perform_attack(attacker, target)
+	_perform_remote_attack(attacker, target)
 	
 	# 检查战斗是否结束
 	_check_battle_end()
@@ -171,8 +171,10 @@ func _get_attack_target(attacker: Control) -> Control:
 	
 	return null
 
+func _perform_remote_attack(attacker: Control, target: Control) -> void:
+	pass
 # 执行攻击
-func _perform_attack(attacker: Control, target: Control) -> void:
+func _perform_close_attack(attacker: Control, target: Control) -> void:
 	var attacker_resource: BattleStates = attacker.get_battle_resource()
 	var damage := attacker_resource.ATK
 	
@@ -181,8 +183,15 @@ func _perform_attack(attacker: Control, target: Control) -> void:
 	# 播放攻击动画（简单的抖动效果）
 	_play_attack_animation(attacker, target)
 	
+	
 	# 造成伤害
 	target.take_damage(damage)
+
+# 播放受击效果
+# TODO 让被攻击的卡面一瞬间变白，然后恢复
+func _play_hit_effect(target: Control) -> void:
+	pass
+
 
 # 播放攻击动画
 # 创建一个简单的冲刺动画效果：攻击者向目标方向快速移动一小段距离，然后返回原位
@@ -191,18 +200,7 @@ func _play_attack_animation(attacker: Control, target: Control) -> void:
 	var original_pos := attacker.position
 	
 	# 计算从攻击者指向目标的向量
-	# 使用 global_position 确保在不同坐标系下也能正确计算方向
 	var attack_vector := target.global_position - attacker.global_position
-	# 计算两个牌之间的直线距离
-	var distance := attack_vector.length()
-	# 获取归一化的方向向量
-	var attack_direction := attack_vector.normalized()
-	
-	# 计算攻击偏移量：使用两个牌之间的实际直线距离
-	# 注意：这里使用 position（局部坐标）而不是 global_position
-	# 所以需要将全局距离转换为局部坐标系的偏移量
-	# 由于方向已经归一化，直接使用距离即可
-	var attack_offset := attack_direction * distance
 	
 	# 创建补间动画对象，用于平滑地改变攻击者的位置
 	var tween := create_tween()
@@ -210,12 +208,10 @@ func _play_attack_animation(attacker: Control, target: Control) -> void:
 	tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	
 	# 第一阶段：向目标方向冲刺（0.1秒）
-	# 将攻击者从原始位置移动到原始位置+偏移量的位置
-	tween.tween_property(attacker, "position", original_pos + attack_offset, 0.1)
-	
+	tween.tween_property(attacker, "position", original_pos + attack_vector, 0.1)
+	# 播放受击效果（卡面变白）
+	_play_hit_effect(target)
 	# 第二阶段：返回原位（0.15秒）
-	# 将攻击者从冲刺位置平滑地移回原始位置
-	# 返回时间稍长，使动画看起来更自然
 	tween.tween_property(attacker, "position", original_pos, 0.15)
 
 # 检查战斗是否结束

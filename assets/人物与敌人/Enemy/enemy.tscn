@@ -32,7 +32,6 @@ offset_bottom = -533.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_bbcg6")
-_battle_started = null
 
 [node name="CardPanel" type="Panel" parent="."]
 layout_mode = 0
