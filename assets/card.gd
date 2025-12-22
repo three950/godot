@@ -31,7 +31,8 @@ const DRAG_TEMP_Z := 100
 var follow_target: Card = null  # 目标卡片，若为null则不跟随
 var stack_state: int = 0  # 堆叠状态位标记，参照 CardState.STACK_STATE_*
 var children_card: Card = null# 堆叠在卡片上的子卡片
-
+#战斗
+@export var battle:BattleState
 #音乐
 @export var pickup_sound:AudioStream
 @export var fall_sound:AudioStream

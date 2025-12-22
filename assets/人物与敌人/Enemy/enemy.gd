@@ -2,7 +2,7 @@
 class_name Enemy
 extends Control
 
-
+@export var _battle_started := false
 # 敌人卡片资源
 @export var enemy: EnemyCard : set = set_stats
 

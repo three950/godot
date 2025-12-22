@@ -1,8 +1,8 @@
 @tool
 class_name  Character
 extends "res://assets/人物与敌人/battle_card.gd"
+
 # 信号：战斗开始
-@export var battle:BattleState
 signal battlestart(enemy_node: Enemy, character_node: Character)
 @onready var battle_start_area: Area2D = $BattleStartArea
 # 标记战斗是否已经开始（防止重复触发）
@@ -15,6 +15,7 @@ func _ready() -> void:
 	if not Engine.is_editor_hint():
 		Events.food_need_update.emit(2)
 		_update_features()
+	battle = battle.duplicate()
 
 func _exit_tree() -> void:
 	# 角色被删除时发送食物需求减少信号（排除拖拽时的 reparent 情况）
@@ -53,9 +54,13 @@ func _update_features() -> void:
 func _on_battle_start_area_area_entered(area: Area2D) -> void:
 	# 检测到碰撞时，发出战斗开始信号
 	var enemy = area.get_parent()
-	if _battle_started:return
+	if _battle_started or enemy._battle_started:return
 	print("【character】检测到与角色碰撞，发出全局战斗开始请求")
+	enemy._battle_started = true
+	进入战斗状态()
+	Events.battle_start_requested.emit(self, enemy)
 
+func 进入战斗状态() -> void:
 	# 标记战斗已开始
 	_battle_started = true
 	battle_start_area.monitoring = false
@@ -68,6 +73,3 @@ func _on_battle_start_area_area_entered(area: Area2D) -> void:
 	fixed_state.enter()
 	state_machine.current_state = fixed_state
 	print("【character】已强制切换到 fixed 状态")
-
-	battle.current_state=battle.Phase.BATTLE
-	Events.battle_start_requested.emit(self, enemy)
