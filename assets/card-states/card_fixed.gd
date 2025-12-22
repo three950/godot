@@ -8,7 +8,7 @@ func enter() -> void:
 	Events.stack_changed.emit(card)
 
 func _on_control_gui_input(event: InputEvent) -> void:
-	if card.battle.current_state==BattleState.Phase.BATTLE:
+	if card is Character and card._battle_started:
 		return
 	if event.is_action_pressed("LMB"):
 		if card.card_type == Card.cardType.architecture:
