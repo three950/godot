@@ -1,7 +1,12 @@
 @tool
 class_name  Character
 extends "res://assets/人物与敌人/battle_card.gd"
-
+# 信号：战斗开始
+@export var battle:BattleState
+signal battlestart(enemy_node: Enemy, character_node: Character)
+@onready var battle_start_area: Area2D = $BattleStartArea
+# 标记战斗是否已经开始（防止重复触发）
+var _battle_started := false
 @export var character: CharacterCard : set = set_character_stats# 引用 characters 目录下的资源
 
 func _ready() -> void:
@@ -44,3 +49,25 @@ func _update_features() -> void:
 				match card.equip_type:
 					0:character.ATK += card.equip_effect
 					1:character.DEF += card.equip_effect
+					
+func _on_battle_start_area_area_entered(area: Area2D) -> void:
+	# 检测到碰撞时，发出战斗开始信号
+	var enemy = area.get_parent()
+	if _battle_started:return
+	print("【character】检测到与角色碰撞，发出全局战斗开始请求")
+
+	# 标记战斗已开始
+	_battle_started = true
+	battle_start_area.monitoring = false
+	battle_start_area.monitorable = false
+	#切换到fixed状态
+	var state_machine = get_node("CardStateMachine")
+	var fixed_state = state_machine.states[CardState.State.fixed]
+	if state_machine.current_state:
+		state_machine.current_state.exit()
+	fixed_state.enter()
+	state_machine.current_state = fixed_state
+	print("【character】已强制切换到 fixed 状态")
+
+	battle.current_state=battle.Phase.BATTLE
+	Events.battle_start_requested.emit(self, enemy)

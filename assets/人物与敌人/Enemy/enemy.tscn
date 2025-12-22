@@ -111,7 +111,7 @@ horizontal_alignment = 2
 [node name="BattleStartArea" type="Area2D" parent="."]
 position = Vector2(3, 3)
 collision_layer = 4
-collision_mask = 4
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BattleStartArea"]
 position = Vector2(41, 54)
@@ -119,5 +119,3 @@ shape = SubResource("RectangleShape2D_krhvb")
 
 [node name="shooter" type="Node" parent="."]
 script = ExtResource("3_b646a")
-
-[connection signal="area_entered" from="BattleStartArea" to="." method="_on_battle_start_area_area_entered"]
