@@ -58,6 +58,9 @@ func _battle_scene_prepare(character: Character, enemy: Enemy) -> void:
 	character.custom_minimum_size = card_size
 	print("【BattleManager】已设置最小尺寸: ", card_size)
 	
+	# 更新战斗场景的UI尺寸
+	active_battle_scene.update_panel_size()
+	
 	_is_processing_battle = false
 	_battle_start()
 func _battle_start():
@@ -82,3 +85,7 @@ func _new_unit_join(unit: Control) -> void:
 	var panel = unit.get_node_or_null("Panel")
 	if panel:
 		unit.custom_minimum_size = panel.size
+	
+	# 更新战斗场景的UI尺寸
+	if active_battle_scene:
+		active_battle_scene.update_panel_size()

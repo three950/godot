@@ -39,16 +39,17 @@ alignment = 1
 custom_minimum_size = Vector2(88, 115)
 layout_mode = 2
 size_flags_horizontal = 4
+theme_override_constants/separation = 12
 
 [node name="character" type="HBoxContainer" parent="VBoxContainer"]
 custom_minimum_size = Vector2(88, 115)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_constants/separation = 0
+theme_override_constants/separation = 12
 
 [node name="BattleArea" type="Area2D" parent="."]
 collision_layer = 0
-collision_mask = 4
+collision_mask = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BattleArea"]
 position = Vector2(64.5, 133.5)

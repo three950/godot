@@ -32,6 +32,7 @@ offset_bottom = -533.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_bbcg6")
+_battle_started = null
 
 [node name="CardPanel" type="Panel" parent="."]
 layout_mode = 0
@@ -110,7 +111,7 @@ horizontal_alignment = 2
 
 [node name="BattleStartArea" type="Area2D" parent="."]
 position = Vector2(3, 3)
-collision_layer = 4
+collision_layer = 12
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BattleStartArea"]
