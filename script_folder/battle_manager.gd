@@ -102,9 +102,7 @@ func _setup_unit_timers() -> void:
 # 为单个单位创建攻击定时器
 func _create_timer_for_unit(unit: Control) -> void:
 	var resource: BattleStates = unit.get_battle_resource()
-	if resource == null:
-		return
-	
+
 	# 根据speed计算攻击间隔：speed越高，攻击越快
 	var attack_interval := _calculate_attack_interval(resource.speed)
 	
@@ -261,54 +259,74 @@ func _handle_victory() -> void:
 	
 	# 将存活的角色移出战斗场景
 	var surviving_characters: Array[Control] = []
+	var character_positions: Array[Vector2] = []
 	for character in character_container.get_children() as Array[Character]:
 		if character.character.HP>0:
 			surviving_characters.append(character)
+			# 保存当前全局位置
+			character_positions.append(character.global_position)
 	
-	# 获取战斗场景的位置，用于放置存活角色
-	var battle_pos := active_battle_scene.global_position
-	
-
-	for i in range(surviving_characters.size()):
-		var character: Control = surviving_characters[i]
+	# 从容器中移除角色
+	for character in surviving_characters:
 		character_container.remove_child(character)
-		# 销毁战斗场景
+	
+	# 销毁战斗场景
 	if active_battle_scene:
 		print("准备删除")
 		active_battle_scene.free()
-		active_battle_scene = null
-		enemy_container = null
-		character_container = null
-		# 将角色移回Cards层
+	
+	# 将角色移回Cards层
 	var cards_group = get_tree().get_first_node_in_group("Cards")
 	if cards_group:
-			for i in range(surviving_characters.size()):
-				var character: Control = surviving_characters[i]
-				cards_group.add_child(character)
-		# 错开放置位置
-				character.global_position = battle_pos + Vector2(i * 100, 0)
-		
-		# 恢复角色状态（如果有这个方法的话）
-				if character.has_method("退出战斗状态"):
-					character.退出战斗状态()
-	
-
+		for i in range(surviving_characters.size()):
+			var character: Control = surviving_characters[i]
+			cards_group.add_child(character)
+			# 保持当前全局位置
+			character.global_position = character_positions[i]
+			
+			# 恢复角色状态（如果有这个方法的话）
+			if character.has_method("退出战斗状态"):
+				character.退出战斗状态()
 	
 	print("【BattleManager】战斗场景已清理，角色已恢复")
 
 # 处理失败
 func _handle_defeat() -> void:
-	# 延迟后清理战斗场景
-	await get_tree().create_timer(1.0).timeout
+	# 延迟一小段时间后清理战斗场景
+	await get_tree().create_timer(0.5).timeout
 	
-	# 销毁战斗场景（包括死亡的角色）
+	# 将存活的敌人移出战斗场景
+	var surviving_enemies: Array[Control] = []
+	var enemy_positions: Array[Vector2] = []
+	for enemy in enemy_container.get_children() as Array[Enemy]:
+		if enemy.enemy.HP > 0:
+			surviving_enemies.append(enemy)
+			# 保存当前全局位置
+			enemy_positions.append(enemy.global_position)
+	
+	# 从容器中移除敌人
+	for enemy in surviving_enemies:
+		enemy_container.remove_child(enemy)
+	
+	# 销毁战斗场景
 	if active_battle_scene:
+		print("准备删除")
 		active_battle_scene.free()
-		active_battle_scene = null
-		enemy_container = null
-		character_container = null
 	
-	print("【BattleManager】战斗场景已清理")
+	# 将敌人移回Cards层
+	var cards_group = get_tree().get_first_node_in_group("Cards")
+	if cards_group:
+		for i in range(surviving_enemies.size()):
+			var enemy: Control = surviving_enemies[i]
+			cards_group.add_child(enemy)
+			# 保持当前全局位置
+			enemy.global_position = enemy_positions[i]
+			
+			# 恢复敌人状态（如果有这个方法的话）
+			if enemy.has_method("退出战斗状态"):
+				enemy.退出战斗状态()
+	
+	print("【BattleManager】战斗场景已清理，敌人已恢复")
 
 # 移除单个单位的定时器
 func _remove_unit_timer(unit: Control) -> void:

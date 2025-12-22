@@ -76,3 +76,7 @@ func heal(amount: int) -> void:
 		return
 	
 	enemy.heal(amount)
+
+# 退出战斗状态
+func 退出战斗状态() -> void:
+	_battle_started = false

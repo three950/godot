@@ -28,6 +28,7 @@ func _on_battle_area_area_entered(area: Area2D) -> void:
 		return
 	# 检查是否已经在战斗场景中（避免重复添加）
 	if card.get_parent() != null and is_ancestor_of(card):
+		print("已经在战斗场景中")
 		return
 	print("【BattleScene】检测到单位进入: ", card.name)
 	new_unit_join.emit(card)
