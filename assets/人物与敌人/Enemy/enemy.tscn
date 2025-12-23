@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://d33c5tbwan3si"]
+[gd_scene load_steps=11 format=3 uid="uid://d33c5tbwan3si"]
 
 [ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="1_bbcg6"]
 [ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="2_b646a"]
 [ext_resource type="Script" uid="uid://cr4xcgnxahlhf" path="res://assets/人物与敌人/Enemy/enemy.gd" id="2_bbcg6"]
 [ext_resource type="Script" uid="uid://cvwtip1ly5e7f" path="res://script_folder/animations_shooter.gd" id="3_b646a"]
 [ext_resource type="Script" uid="uid://cq4u5v6w7x80a" path="res://assets/人物与敌人/attribute_labels.gd" id="3_krhvb"]
+[ext_resource type="PackedScene" uid="uid://cmnkn73ocu7av" path="res://ui/attack.tscn" id="5_qolkw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_krhvb"]
 bg_color = Color(0.8831649, 0.3872493, 0.34170684, 1)
@@ -118,6 +119,23 @@ layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_qolkw")
+
+[node name="Polygon2D" parent="white" instance=ExtResource("5_qolkw")]
+position = Vector2(15, 80)
+scale = Vector2(0.28096047, 0.28193393)
+
+[node name="attackLabel" type="Label" parent="white"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 69.0
+offset_right = 23.0
+offset_bottom = 89.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 14
+text = "6"
+horizontal_alignment = 1
 
 [node name="BattleStartArea" type="Area2D" parent="."]
 visible = false

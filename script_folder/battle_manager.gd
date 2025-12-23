@@ -180,12 +180,12 @@ func _perform_attack(attacker: Control, target: Control) -> void:
 	print("【BattleManager】%s 攻击 %s，造成 %d 点伤害" % [attacker.name, target.name, damage])
 	
 	# 播放远程攻击动画
-	_play_remote_attack_animation(attacker, target)
+	_play_remote_attack_animation(attacker, target, damage)
 	
 	# 造成伤害
 	target.take_damage(damage)
 #远程攻击动画
-func _play_remote_attack_animation(attacker: Control, target: Control) -> void:
+func _play_remote_attack_animation(attacker: Control, target: Control, damage: int) -> void:
 	# 获取attacker和target的中心位置
 	var attacker_center := attacker.global_position + attacker.size / 2.0
 	var target_center := target.global_position + target.size / 2.0
@@ -211,21 +211,67 @@ func _play_remote_attack_animation(attacker: Control, target: Control) -> void:
 	# 检查目标是否仍然有效（可能在动画期间被击败）
 	if is_instance_valid(target) and not target.is_queued_for_deletion():
 		# 播放受击效果
-		_play_hit_effect(target)
+		_play_hit_effect(target, damage)
 	
 	# 移除子弹
 	bullet.queue_free()
 
 
 # 播放受击效果
-# TODO 让被攻击的卡面一瞬间变白，然后恢复
-func _play_hit_effect(target: Control) -> void:
-	pass
+# 让被攻击的卡面一瞬间变白，然后恢复，同时添加剧烈抖动
+func _play_hit_effect(target: Control, damage: int) -> void:
+	# 获取白色遮罩节点
+	var white_panel = target.get_node("white")
+	# 获取伤害数字标签并显示伤害值
+	var attack_label = white_panel.get_node("attackLabel")
+	attack_label.text = str(damage)
+	attack_label.modulate.a = 1.0  # 重置标签透明度
+	# 保存原始位置用于抖动恢复
+	var original_position := target.position
+
+	# 显示白色遮罩和伤害数字
+	white_panel.visible = true
+	white_panel.self_modulate.a = 1.0  # 重置遮罩透明度
+	
+	# 创建抖动效果的 tween
+	var shake_tween := create_tween()
+	shake_tween.set_parallel(true)  # 允许同时执行多个动画
+	
+	# 剧烈抖动参数
+	var shake_intensity := 7.0  # 抖动强度（像素）
+	var shake_duration := 0.05  # 单次抖动时间
+	var shake_count := 4  # 抖动次数
+	
+	# 创建连续抖动动画
+	for i in range(shake_count):
+		var offset := Vector2(
+			randf_range(-shake_intensity, shake_intensity),
+			randf_range(-shake_intensity, shake_intensity)
+		)
+		shake_tween.chain().tween_property(target, "position", original_position + offset, shake_duration)
+	
+	# 最后恢复原位
+	shake_tween.chain().tween_property(target, "position", original_position, shake_duration)
+	
+	# 等待一小段时间后隐藏白色遮罩（使用 self_modulate 只影响 Panel 本身，不影响子节点）
+	await get_tree().create_timer(0.1).timeout
+	white_panel.self_modulate.a = 0.0  # 白色遮罩消失，但 attackLabel 仍然显示
+	
+	# 等待抖动动画完成
+	await shake_tween.finished
+	
+	# 伤害数字淡出动画
+	var fade_tween := create_tween()
+	fade_tween.tween_property(attack_label, "modulate:a", 0.0, 0.1)
+	await fade_tween.finished
+	
+	# 完全隐藏 white 节点
+	white_panel.visible = false
 
 
 # 近战攻击动画
 # 创建一个简单的冲刺动画效果：攻击者向目标方向快速移动一小段距离，然后返回原位
-func _play_close_attack_animation(attacker: Control, target: Control) -> void:
+func _play_close_attack_animation(attacker: Control, target: Control, damage: int) -> void:
 	# 保存攻击者的原始位置，用于动画结束后恢复
 	var original_pos := attacker.position
 	
@@ -240,7 +286,7 @@ func _play_close_attack_animation(attacker: Control, target: Control) -> void:
 	# 第一阶段：向目标方向冲刺（0.1秒）
 	tween.tween_property(attacker, "position", original_pos + attack_vector, 0.1)
 	# 播放受击效果（卡面变白）
-	_play_hit_effect(target)
+	_play_hit_effect(target, damage)
 	# 第二阶段：返回原位（0.15秒）
 	tween.tween_property(attacker, "position", original_pos, 0.15)
 
