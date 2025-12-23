@@ -180,7 +180,7 @@ func _perform_attack(attacker: Control, target: Control) -> void:
 	print("【BattleManager】%s 攻击 %s，造成 %d 点伤害" % [attacker.name, target.name, damage])
 	
 	# 播放远程攻击动画
-	_play_remote_attack_animation(attacker, target, damage)
+	_play_close_attack_animation(attacker, target, damage)
 	
 	# 造成伤害
 	target.take_damage(damage)
@@ -255,17 +255,27 @@ func _play_hit_effect(target: Control, damage: int) -> void:
 	
 	# 等待一小段时间后隐藏白色遮罩（使用 self_modulate 只影响 Panel 本身，不影响子节点）
 	await get_tree().create_timer(0.1).timeout
+	
+	# 检查节点是否仍然有效（目标可能在动画期间被销毁）
+	if not is_instance_valid(white_panel):
+		return
 	white_panel.self_modulate.a = 0.0  # 白色遮罩消失，但 attackLabel 仍然显示
 	
 	# 等待抖动动画完成
 	await shake_tween.finished
+	
+	# 再次检查节点有效性
+	if not is_instance_valid(attack_label):
+		return
 	
 	# 伤害数字淡出动画
 	var fade_tween := create_tween()
 	fade_tween.tween_property(attack_label, "modulate:a", 0.0, 0.1)
 	await fade_tween.finished
 	
-	# 完全隐藏 white 节点
+	# 检查节点有效性后再隐藏
+	if not is_instance_valid(white_panel):
+		return
 	white_panel.visible = false
 
 
