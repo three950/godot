@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://d33c5tbwan3si"]
+[gd_scene load_steps=10 format=3 uid="uid://d33c5tbwan3si"]
 
 [ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="1_bbcg6"]
 [ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="2_b646a"]
@@ -18,6 +18,9 @@ border_color = Color(0, 0, 0, 1)
 bg_color = Color(0.74368256, 0.27023113, 0.23480722, 1)
 border_width_bottom = 1
 border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qolkw"]
+bg_color = Color(1, 1, 1, 1)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_krhvb"]
 size = Vector2(88, 114)
@@ -108,7 +111,16 @@ theme_override_font_sizes/font_size = 9
 text = "0"
 horizontal_alignment = 2
 
+[node name="white" type="Panel" parent="."]
+visible = false
+custom_minimum_size = Vector2(88, 115)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_qolkw")
+
 [node name="BattleStartArea" type="Area2D" parent="."]
+visible = false
 position = Vector2(3, 3)
 collision_layer = 12
 collision_mask = 0
