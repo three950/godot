@@ -172,7 +172,19 @@ func _get_attack_target(attacker: Control) -> Control:
 			return unit
 	
 	return null
-
+# 执行攻击
+func _perform_attack(attacker: Control, target: Control) -> void:
+	var attacker_resource: BattleStates = attacker.get_battle_resource()
+	var damage := attacker_resource.ATK
+	
+	print("【BattleManager】%s 攻击 %s，造成 %d 点伤害" % [attacker.name, target.name, damage])
+	
+	# 播放远程攻击动画
+	_play_remote_attack_animation(attacker, target)
+	
+	# 造成伤害
+	target.take_damage(damage)
+#远程攻击动画
 func _play_remote_attack_animation(attacker: Control, target: Control) -> void:
 	# 获取attacker和target的中心位置
 	var attacker_center := attacker.global_position + attacker.size / 2.0
@@ -203,18 +215,6 @@ func _play_remote_attack_animation(attacker: Control, target: Control) -> void:
 	
 	# 移除子弹
 	bullet.queue_free()
-# 执行攻击
-func _perform_attack(attacker: Control, target: Control) -> void:
-	var attacker_resource: BattleStates = attacker.get_battle_resource()
-	var damage := attacker_resource.ATK
-	
-	print("【BattleManager】%s 攻击 %s，造成 %d 点伤害" % [attacker.name, target.name, damage])
-	
-	# 播放远程攻击动画
-	_play_remote_attack_animation(attacker, target)
-	
-	# 造成伤害
-	target.take_damage(damage)
 
 
 # 播放受击效果
@@ -223,7 +223,7 @@ func _play_hit_effect(target: Control) -> void:
 	pass
 
 
-# 播放攻击动画
+# 近战攻击动画
 # 创建一个简单的冲刺动画效果：攻击者向目标方向快速移动一小段距离，然后返回原位
 func _play_close_attack_animation(attacker: Control, target: Control) -> void:
 	# 保存攻击者的原始位置，用于动画结束后恢复
