@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://di7barbrn42cy"]
+[gd_scene load_steps=10 format=3 uid="uid://di7barbrn42cy"]
 
 [ext_resource type="PackedScene" uid="uid://b1oqblyvspkqi" path="res://assets/人物与敌人/biology.tscn" id="1_p58c1"]
 [ext_resource type="Script" uid="uid://blvsy21y0f4uy" path="res://assets/人物与敌人/Character/character.gd" id="2_dm7l3"]
@@ -6,9 +6,12 @@
 [ext_resource type="Script" uid="uid://bf2o85td7sner" path="res://base_data/battle_stats.gd" id="3_pntmc"]
 [ext_resource type="AudioStream" uid="uid://c1ey1n8wfd5ml" path="res://声音资产/useful/背包打开/box of cereal handled 3.wav" id="4_ig4cw"]
 
-[sub_resource type="Resource" id="Resource_7cwdw"]
+[sub_resource type="Resource" id="Resource_pntmc"]
 script = ExtResource("3_pntmc")
 metadata/_custom_type_script = "uid://bf2o85td7sner"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7cwdw"]
+bg_color = Color(1, 1, 1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p58c1"]
 bg_color = Color(1, 1, 1, 1)
@@ -26,11 +29,20 @@ corner_radius_bottom_left = 7
 size = Vector2(88, 114)
 
 [node name="character" instance=ExtResource("1_p58c1")]
+y_sort_enabled = false
 script = ExtResource("2_dm7l3")
 character = null
-battle = SubResource("Resource_7cwdw")
+battle = SubResource("Resource_pntmc")
 
-[node name="bagbutton" type="Button" parent="." index="4"]
+[node name="white" type="Panel" parent="." index="4"]
+visible = false
+custom_minimum_size = Vector2(88, 115)
+layout_mode = 0
+offset_right = 88.0
+offset_bottom = 115.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_7cwdw")
+
+[node name="bagbutton" type="Button" parent="." index="5"]
 layout_mode = 0
 offset_left = 81.0
 offset_top = 44.0
@@ -55,7 +67,8 @@ position = Vector2(41, 51)
 [node name="CradDragging" parent="CardStateMachine" index="2"]
 type = null
 
-[node name="BattleStartArea" type="Area2D" parent="." index="9"]
+[node name="BattleStartArea" type="Area2D" parent="." index="10"]
+visible = false
 position = Vector2(3, 3)
 collision_layer = 8
 collision_mask = 4
