@@ -23,14 +23,18 @@ SFXPlayer="*res://script_folder/audio_player/sfx_player.tscn"
 
 [display]
 
-window/stretch/mode="canvas_items"
-window/stretch/aspect="expand"
+window/size/viewport_width=1920
+window/size/viewport_height=1080
 window/vsync/vsync_mode=0
 
 [global_group]
 
 BattleEnemy="战斗时的敌人"
 BattleCharacter=""
+
+[gui]
+
+theme/default_font_multichannel_signed_distance_field=true
 
 [input]
 

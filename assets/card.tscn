@@ -4,7 +4,6 @@
 [ext_resource type="Resource" uid="uid://cq6i5xpurm0al" path="res://base_data/Battle_stats.tres" id="2_agldc"]
 [ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="2_e484p"]
 [ext_resource type="AudioStream" uid="uid://csqitlghauxgb" path="res://声音资产/useful/卡牌拿起放下/cardpick.wav" id="2_mqa0q"]
-[ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="2_q5obu"]
 [ext_resource type="AudioStream" uid="uid://cu1gnscbqcks2" path="res://声音资产/useful/卡牌拿起放下/cardfall.wav" id="3_agldc"]
 [ext_resource type="Script" uid="uid://b6yrrsooe1is3" path="res://assets/card_state_machine.gd" id="4_rjwbx"]
 [ext_resource type="Script" uid="uid://blwo6u4at8188" path="res://assets/card-states/card_fixed.gd" id="5_xi8kn"]
@@ -27,6 +26,8 @@ border_color = Color(0, 0, 0, 1)
 bg_color = Color(0.69803923, 0.65882355, 0.5137255, 1)
 border_width_bottom = 1
 border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="SystemFont" id="SystemFont_mqa0q"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q5obu"]
 size = Vector2(88, 16)
@@ -66,11 +67,12 @@ layout_mode = 0
 offset_right = 84.0
 offset_bottom = 14.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("2_q5obu")
+theme_override_fonts/font = SubResource("SystemFont_mqa0q")
 theme_override_font_sizes/font_size = 10
 text = "莉可"
 
 [node name="TextureRect" type="TextureRect" parent="."]
+texture_filter = 1
 layout_mode = 0
 offset_left = 5.0
 offset_top = 18.0
