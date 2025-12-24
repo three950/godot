@@ -8,6 +8,9 @@ extends Node3D
 var viewport_size: Vector2
 
 func _ready():
+	# 延迟一帧确保窗口尺寸正确
+	await get_tree().process_frame
+	
 	# 初始化设置
 	_update_viewport_size()
 	
