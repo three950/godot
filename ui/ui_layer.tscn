@@ -17,72 +17,91 @@ border_color = Color(0.05197095, 0.051970974, 0.051970884, 1)
 script = ExtResource("4_stats")
 game_stats = ExtResource("5_game_stats")
 
-[node name="TopRightUI" type="MarginContainer" parent="."]
-custom_minimum_size = Vector2(200, 0)
+[node name="UIContainer" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TopRightUI" type="MarginContainer" parent="UIContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -534.0
-offset_bottom = 35.0
+offset_left = -867.0
+offset_top = 3.0
+offset_right = -3.0
+offset_bottom = 73.0
 grow_horizontal = 0
 size_flags_horizontal = 8
 
-[node name="HBoxContainer" type="HBoxContainer" parent="TopRightUI"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UIContainer/TopRightUI"]
 layout_mode = 2
 alignment = 1
 
-[node name="game_stats" type="PanelContainer" parent="TopRightUI/HBoxContainer"]
-custom_minimum_size = Vector2(230, 0)
+[node name="game_stats" type="PanelContainer" parent="UIContainer/TopRightUI/HBoxContainer"]
+custom_minimum_size = Vector2(460, 0)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("1_00rn6")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="TopRightUI/HBoxContainer/game_stats"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UIContainer/TopRightUI/HBoxContainer/game_stats"]
 layout_mode = 2
 
-[node name="foodstate" type="HBoxContainer" parent="TopRightUI/HBoxContainer/game_stats/HBoxContainer"]
+[node name="foodstate" type="HBoxContainer" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 
-[node name="Label" type="Label" parent="TopRightUI/HBoxContainer/game_stats/HBoxContainer/foodstate"]
+[node name="FoodLabel" type="Label" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer/foodstate"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 32
 text = "8/6"
 
-[node name="TextureRect" type="TextureRect" parent="TopRightUI/HBoxContainer/game_stats/HBoxContainer/foodstate"]
-custom_minimum_size = Vector2(20, 20)
+[node name="TextureRect" type="TextureRect" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer/foodstate"]
+custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 texture = ExtResource("2_gjtyb")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="moneystate" type="HBoxContainer" parent="TopRightUI/HBoxContainer/game_stats/HBoxContainer"]
+[node name="moneystate" type="HBoxContainer" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 
-[node name="CoinLabel" type="Label" parent="TopRightUI/HBoxContainer/game_stats/HBoxContainer/moneystate"]
+[node name="CoinLabel" type="Label" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer/moneystate"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 32
 text = "5000"
 
-[node name="TextureRect" type="TextureRect" parent="TopRightUI/HBoxContainer/game_stats/HBoxContainer/moneystate"]
-custom_minimum_size = Vector2(30, 20)
+[node name="TextureRect" type="TextureRect" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer/moneystate"]
+custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 texture = ExtResource("5_8aggs")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="layerstate" type="Label" parent="TopRightUI/HBoxContainer/game_stats/HBoxContainer"]
+[node name="layerstate" type="Label" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 32
 text = "深渊1层"
 horizontal_alignment = 1
 
-[node name="ProgressBar" type="ProgressBar" parent="TopRightUI/HBoxContainer"]
-custom_minimum_size = Vector2(300, 35)
+[node name="ProgressBar" type="ProgressBar" parent="UIContainer/TopRightUI/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(400, 70)
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_styles/background = ExtResource("1_00rn6")
@@ -90,7 +109,7 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_00rn6")
 value = 50.0
 show_percentage = false
 
-[node name="HBoxContainer" type="HBoxContainer" parent="TopRightUI/HBoxContainer/ProgressBar"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UIContainer/TopRightUI/HBoxContainer/ProgressBar"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -100,20 +119,21 @@ offset_right = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Label" type="Label" parent="TopRightUI/HBoxContainer/ProgressBar/HBoxContainer"]
+[node name="Label" type="Label" parent="UIContainer/TopRightUI/HBoxContainer/ProgressBar/HBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 32
 text = "9天"
 
-[node name="Spacer" type="Control" parent="TopRightUI/HBoxContainer/ProgressBar/HBoxContainer"]
+[node name="Spacer" type="Control" parent="UIContainer/TopRightUI/HBoxContainer/ProgressBar/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PlayIcon" type="Label" parent="TopRightUI/HBoxContainer/ProgressBar/HBoxContainer"]
+[node name="PlayIcon" type="Label" parent="UIContainer/TopRightUI/HBoxContainer/ProgressBar/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 32
 text = "▶"

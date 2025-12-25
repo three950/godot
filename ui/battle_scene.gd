@@ -13,11 +13,11 @@ func update_panel_size() -> void:
 	var max_width = max(enemy_container.size.x, character_container.size.x)
 	
 	# Panel的宽度为最长的容器宽度加12像素
-	custom_minimum_size.x = max_width + 12
-	size.x = max_width + 30
+	custom_minimum_size.x = max_width + 30
+	size.x = max_width + 70
 	print("【BattleScene】更新Panel尺寸: ", size)
 	
-	collision_shape.shape.size = size
+	collision_shape.shape.size = size-Vector2(30,30)
 	collision_shape.position = size / 2
 	print("【BattleScene】更新BattleArea尺寸: ", size)
 

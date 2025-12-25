@@ -1,11 +1,11 @@
 extends CanvasLayer
 
 @export var game_stats: GameStats
-@onready var coin_label: Label = $TopRightUI/HBoxContainer/game_stats/HBoxContainer/moneystate/CoinLabel
-@onready var food_label: Label = $TopRightUI/HBoxContainer/game_stats/HBoxContainer/foodstate/Label
-@onready var layer_label: Label = $TopRightUI/HBoxContainer/game_stats/HBoxContainer/layerstate
-@onready var progress_bar: ProgressBar = $TopRightUI/HBoxContainer/ProgressBar
-@onready var days_label: Label = $TopRightUI/HBoxContainer/ProgressBar/HBoxContainer/Label
+@onready var food_label: Label = %FoodLabel
+@onready var coin_label: Label = %CoinLabel
+@onready var layer_label: Label = %layerstate
+@onready var progress_bar: ProgressBar = %ProgressBar
+@onready var days_label: Label = %Label
 @export var bgm:AudioStream
 var elapsed_time: float = 0.0
 

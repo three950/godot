@@ -10,6 +10,13 @@ border_width_top = 6
 border_width_right = 6
 border_width_bottom = 6
 border_color = Color(0.18866554, 0.2546709, 0.33002728, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+shadow_color = Color(0.18000486, 0.18000486, 0.18000486, 0.6)
+shadow_size = 6
+shadow_offset = Vector2(6, 6)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ja4eb"]
 bg_color = Color(0.2966325, 0.38666517, 0.48959756, 1)

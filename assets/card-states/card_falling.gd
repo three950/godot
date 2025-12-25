@@ -96,7 +96,7 @@ func stack_on_card(target_card: Card) -> void:
 	var label_node = target_card.get_node("Panel")
 	if label_node:
 		var label_pos = label_node.global_position
-		var label_size = label_node.size
+		var label_size = label_node.size-Vector2(0,3)
 		# 使用目标卡片的 x 坐标确保左右对齐，而不是 Label 的 x 坐标
 		card.global_position = Vector2(target_card.global_position.x, label_pos.y + label_size.y)
 	

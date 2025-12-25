@@ -7,10 +7,10 @@ bg_color = Color(0.09620472, 0.09620475, 0.09620469, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w8js5"]
 bg_color = Color(0.8560673, 0.8560673, 0.856067, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
 border_color = Color(0.09620472, 0.09620475, 0.09620469, 1)
 anti_aliasing = false
 anti_aliasing_size = 0.01

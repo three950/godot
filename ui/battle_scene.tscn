@@ -4,23 +4,24 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ceg7r"]
 bg_color = Color(0.33660772, 0.3366076, 0.33660755, 0.3647059)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
+border_width_left = 9
+border_width_top = 9
+border_width_right = 9
+border_width_bottom = 9
 border_color = Color(0.8846368, 0.20283303, 0.116062425, 0.8352941)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_64l6c"]
-size = Vector2(123, 263)
+size = Vector2(281, 762)
 
 [node name="BattleScene" type="Panel" groups=["Cards"]]
-custom_minimum_size = Vector2(100, 260)
-offset_right = 128.0
-offset_bottom = 267.0
+z_index = 5
+custom_minimum_size = Vector2(300, 780)
+offset_right = 300.0
+offset_bottom = 780.0
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_ceg7r")
 script = ExtResource("1_cvjyg")
@@ -32,27 +33,27 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 30
 alignment = 1
 
 [node name="enemy" type="HBoxContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(88, 115)
+custom_minimum_size = Vector2(264, 345)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_constants/separation = 12
+theme_override_constants/separation = 36
 
 [node name="character" type="HBoxContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(88, 115)
+custom_minimum_size = Vector2(264, 345)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_constants/separation = 12
+theme_override_constants/separation = 36
 
 [node name="BattleArea" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BattleArea"]
-position = Vector2(64.5, 133.5)
+position = Vector2(149.5, 390)
 shape = SubResource("RectangleShape2D_64l6c")
 
 [connection signal="area_entered" from="BattleArea" to="." method="_on_battle_area_area_entered"]

@@ -59,7 +59,7 @@ func _process(_delta: float) -> void:
 		global_position = get_global_mouse_position() - _drag_offset
 
 ## 生成卡牌相关
-@export var spawn_offset: Vector2 = Vector2(0, 120)
+@export var spawn_offset: Vector2 = Vector2(0, 360)
 var spawn_card_info: CardInfo
 
 func create_card() -> void:

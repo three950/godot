@@ -36,10 +36,10 @@ func open_bag() -> void:
 			bag = bag_scene.instantiate()
 			# 设置与原场景相同的属性
 			bag.layout_mode = 0
-			bag.offset_left = 94.0
-			bag.offset_top = -7.0
-			bag.offset_right = 282.0
-			bag.offset_bottom = 123.0
+			bag.offset_left = 94.0*3
+			bag.offset_top = -7.0*3
+			bag.offset_right = 282.0*3
+			bag.offset_bottom = 123.0*3
 			bag.mouse_filter = 2
 			bag.add_to_group("Cards")
 			

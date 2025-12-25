@@ -7,7 +7,7 @@ class_name Scene
 var spawn_card_info:CardInfo
 @export var scene: SceneCard
 #生成卡牌相关
-@export var spawn_offset: Vector2 = Vector2(0, 120)
+@export var spawn_offset: Vector2 = Vector2(0, 360)
 @export var cardpool:CardPool
 # 计时相关
 var _is_timing: bool = false

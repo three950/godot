@@ -7,33 +7,33 @@
 size = Vector2(186, 126)
 
 [node name="BagPanel" type="Panel"]
-offset_right = 188.0
-offset_bottom = 130.0
+offset_right = 564.0
+offset_bottom = 390.0
 script = ExtResource("1_bag")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 0
-offset_left = 3.0
-offset_top = 3.0
-offset_right = 185.0
-offset_bottom = 127.0
+offset_left = 9.0
+offset_top = 9.0
+offset_right = 555.0
+offset_bottom = 381.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 clip_contents = true
 layout_mode = 0
-offset_left = 4.0
-offset_top = 7.0
-offset_right = 179.0
-offset_bottom = 127.0
+offset_left = 12.0
+offset_top = 16.0
+offset_right = 553.0
+offset_bottom = 374.0
 localize_numeral_system = false
-theme_override_constants/separation = 2
+theme_override_constants/separation = 6
 
 [node name="左右手" type="VBoxContainer" parent="HBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 1
+theme_override_constants/separation = 3
 
 [node name="left" type="Panel" parent="HBoxContainer/左右手"]
-custom_minimum_size = Vector2(44, 59)
+custom_minimum_size = Vector2(132, 177)
 layout_mode = 2
 script = ExtResource("2_slot")
 
@@ -52,7 +52,7 @@ grow_vertical = 2
 color = Color(0.2, 0.2, 0.2, 0.5)
 
 [node name="right" type="Panel" parent="HBoxContainer/左右手"]
-custom_minimum_size = Vector2(44, 59)
+custom_minimum_size = Vector2(132, 177)
 layout_mode = 2
 script = ExtResource("2_slot")
 
@@ -73,12 +73,12 @@ color = Color(0.2, 0.2, 0.2, 0.5)
 [node name="背包" type="GridContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/h_separation = 1
-theme_override_constants/v_separation = 1
+theme_override_constants/h_separation = 3
+theme_override_constants/v_separation = 3
 columns = 3
 
 [node name="Slot1" type="Panel" parent="HBoxContainer/背包"]
-custom_minimum_size = Vector2(44, 59)
+custom_minimum_size = Vector2(132, 177)
 layout_mode = 2
 script = ExtResource("2_slot")
 
@@ -97,7 +97,7 @@ grow_vertical = 2
 color = Color(0.2, 0.2, 0.2, 0.5)
 
 [node name="Slot2" type="Panel" parent="HBoxContainer/背包"]
-custom_minimum_size = Vector2(44, 59)
+custom_minimum_size = Vector2(132, 177)
 layout_mode = 2
 script = ExtResource("2_slot")
 
@@ -116,7 +116,7 @@ grow_vertical = 2
 color = Color(0.2, 0.2, 0.2, 0.5)
 
 [node name="Slot3" type="Panel" parent="HBoxContainer/背包"]
-custom_minimum_size = Vector2(44, 59)
+custom_minimum_size = Vector2(132, 177)
 layout_mode = 2
 script = ExtResource("2_slot")
 
@@ -135,7 +135,7 @@ grow_vertical = 2
 color = Color(0.2, 0.2, 0.2, 0.5)
 
 [node name="Slot4" type="Panel" parent="HBoxContainer/背包"]
-custom_minimum_size = Vector2(44, 59)
+custom_minimum_size = Vector2(132, 177)
 layout_mode = 2
 script = ExtResource("2_slot")
 
@@ -154,7 +154,7 @@ grow_vertical = 2
 color = Color(0.2, 0.2, 0.2, 0.5)
 
 [node name="Slot5" type="Panel" parent="HBoxContainer/背包"]
-custom_minimum_size = Vector2(44, 59)
+custom_minimum_size = Vector2(132, 177)
 layout_mode = 2
 script = ExtResource("2_slot")
 
@@ -173,7 +173,7 @@ grow_vertical = 2
 color = Color(0.2, 0.2, 0.2, 0.5)
 
 [node name="Slot6" type="Panel" parent="HBoxContainer/背包"]
-custom_minimum_size = Vector2(44, 59)
+custom_minimum_size = Vector2(132, 177)
 layout_mode = 2
 script = ExtResource("2_slot")
 
@@ -192,6 +192,7 @@ grow_vertical = 2
 color = Color(0.2, 0.2, 0.2, 0.5)
 
 [node name="BagAreaDetector" type="Area2D" parent="."]
+visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BagAreaDetector"]
 position = Vector2(93, 65)

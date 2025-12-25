@@ -11,7 +11,7 @@
 [node name="500m" instance=ExtResource("1_ctdth")]
 script = ExtResource("2_3ocaq")
 scene = null
-spawn_offset = Vector2(0, 120)
+spawn_offset = Vector2(0, 360)
 cardpool = null
 
 [node name="Label" parent="Panel" index="0"]
@@ -22,10 +22,10 @@ texture = ExtResource("3_k132i")
 
 [node name="CardProgressBar" parent="." index="4" instance=ExtResource("4_afjxu")]
 layout_mode = 0
-offset_left = 0.0
-offset_top = -9.0
-offset_right = 84.0
-offset_bottom = -2.0
+offset_left = 6.0
+offset_top = -31.0
+offset_right = 258.0
+offset_bottom = -7.0
 mouse_filter = 2
 
 [node name="CardStateMachine" type="Node" parent="." index="5" node_paths=PackedStringArray("initial_state")]

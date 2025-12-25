@@ -8,7 +8,7 @@ signal package_bought(CardPackage)
 ## 卡牌生成延迟时间（秒）
 @export var spawn_delay: float = 2.0
 ## 卡牌生成位置偏移（相对于当前位置向下）
-@export var spawn_offset: Vector2 = Vector2(0, 20)
+@export var spawn_offset: Vector2 = Vector2(0, 360)
 @export var spawn_card_info: BagResource
 @onready var packagename: Label = %packagename
 @onready var value: Label = %value
@@ -48,7 +48,7 @@ func _spawn_card() -> void:
 	var card_instance = _create_card_instance()
 	
 	# 计算生成位置（当前位置的下方）
-	var spawn_position = Vector2(global_position.x,140)
+	var spawn_position = global_position+spawn_offset*1.1
 	card_instance.global_position = spawn_position
 	card_instance.z_index = 1
 	

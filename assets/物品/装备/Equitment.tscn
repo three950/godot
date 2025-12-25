@@ -5,15 +5,22 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rkhsv"]
 bg_color = Color(0.42062035, 0.47324538, 0.59481096, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
 border_color = Color(0.25404507, 0.29050142, 0.35350308, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+shadow_color = Color(0.18000486, 0.18000486, 0.18000486, 0.6)
+shadow_size = 6
+shadow_offset = Vector2(6, 6)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k2tfy"]
 bg_color = Color(0.5196221, 0.57732254, 0.7035407, 1)
-border_width_bottom = 1
+border_width_bottom = 3
 border_color = Color(0.27450982, 0.3137255, 0.38039216, 1)
 
 [node name="Equipment" instance=ExtResource("1_g8hp3")]
@@ -31,10 +38,28 @@ text = "武器"
 
 [node name="EffectLabel" type="Label" parent="." index="3"]
 layout_mode = 0
-offset_left = 180.0
-offset_top = 10.0
-offset_right = 253.0
-offset_bottom = 43.5
+offset_left = 96.0
+offset_top = 269.0
+offset_right = 169.0
+offset_bottom = 302.5
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "ATK+5"
+
+[node name="valueText" parent="." index="4"]
+offset_left = 86.0
+offset_top = 302.0
+offset_right = 158.0
+offset_bottom = 335.5
+
+[node name="ValueLabel" parent="." index="5"]
+offset_left = 145.0
+offset_top = 302.0
+offset_right = 187.0
+offset_bottom = 335.5
+
+[node name="CardLabel" parent="." index="6"]
+visible = false
+
+[node name="CardStackDetectorArea" parent="." index="7"]
+visible = false

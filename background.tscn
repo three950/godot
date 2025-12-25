@@ -63,7 +63,6 @@ sold_sound = ExtResource("5_cdpnt")
 custom_minimum_size = Vector2(264, 345)
 layout_mode = 2
 game_stats = ExtResource("5_eq6nc")
-spawn_offset = Vector2(0, 120)
 spawn_card_info = ExtResource("6_fishing")
 
 [node name="GroundPackage1" parent="HBoxContainer" instance=ExtResource("4_eq6nc")]
@@ -73,7 +72,6 @@ package_name = "深界一层
 阿比斯之渊"
 mean_layer = 1
 package_price = 5
-spawn_offset = Vector2(0, 120)
 spawn_card_info = ExtResource("5_gjjrj")
 coin_sound = ExtResource("9_8u6ia")
 
@@ -84,7 +82,6 @@ package_name = "深界二层
 诱惑之森"
 mean_layer = 2
 package_price = 8
-spawn_offset = Vector2(0, 120)
 spawn_card_info = ExtResource("8_fish")
 
 [node name="GroundPackage3" parent="HBoxContainer" instance=ExtResource("4_eq6nc")]
@@ -94,7 +91,6 @@ package_name = "深界三层
 大断层"
 mean_layer = 3
 package_price = 12
-spawn_offset = Vector2(0, 120)
 
 [node name="GroundPackage4" parent="HBoxContainer" instance=ExtResource("4_eq6nc")]
 layout_mode = 2
@@ -103,7 +99,6 @@ package_name = "深界四层
 巨人之杯"
 mean_layer = 4
 package_price = 18
-spawn_offset = Vector2(0, 120)
 
 [node name="GroundPackage5" parent="HBoxContainer" instance=ExtResource("4_eq6nc")]
 layout_mode = 2
@@ -112,7 +107,6 @@ package_name = "深界五层
 亡骸之海"
 mean_layer = 5
 package_price = 25
-spawn_offset = Vector2(0, 120)
 
 [node name="GroundPackage6" parent="HBoxContainer" instance=ExtResource("4_eq6nc")]
 layout_mode = 2
@@ -121,4 +115,3 @@ package_name = "深界六层
 来无回之都"
 mean_layer = 6
 package_price = 35
-spawn_offset = Vector2(0, 120)
