@@ -5,21 +5,20 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7lfsj"]
 bg_color = Color(0.28484476, 0.32436445, 0.38870683, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
 border_color = Color(0.18866554, 0.2546709, 0.33002728, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ja4eb"]
 bg_color = Color(0.2966325, 0.38666517, 0.48959756, 1)
-border_width_bottom = 1
+border_width_bottom = 3
 border_color = Color(0.18866554, 0.2546709, 0.33002728, 1)
 
 [node name="Item" instance=ExtResource("1_7lfsj")]
 script = ExtResource("2_ja4eb")
 item = null
-card_unique_type = 3
 
 [node name="CardPanel" parent="." index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_7lfsj")
@@ -32,5 +31,5 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "道具"
 
 [node name="valueText" parent="." index="3"]
-offset_left = 26.0
-offset_right = 50.0
+offset_left = 73.0
+offset_right = 145.0

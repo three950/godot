@@ -1,20 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://bxk8n5j7xam3q"]
+[gd_scene load_steps=6 format=3 uid="uid://bxk8n5j7xam3q"]
 
-[ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="1_q5obu"]
+[ext_resource type="StyleBox" uid="uid://b0256y5bp2byj" path="res://card.tres" id="1_lfceo"]
+[ext_resource type="StyleBox" uid="uid://bv510uix8lck3" path="res://cardpanel.tres" id="2_6n1xe"]
 [ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="2_e484p"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e6854"]
-bg_color = Color(0.89411765, 0.87058824, 0.7882353, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a3cqy"]
-bg_color = Color(0.69803923, 0.65882355, 0.5137255, 1)
-border_width_bottom = 1
-border_color = Color(0, 0, 0, 1)
+[ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://font.tres" id="3_h3ux7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q5obu"]
 size = Vector2(88, 16)
@@ -22,40 +11,40 @@ size = Vector2(88, 16)
 [node name="CardUI" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 88.0
-offset_bottom = 114.0
+offset_right = 264.0
+offset_bottom = 342.0
 
 [node name="CardPanel" type="Panel" parent="."]
 layout_mode = 0
-offset_right = 88.0
-offset_bottom = 114.0
+offset_right = 264.0
+offset_bottom = 342.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_e6854")
+theme_override_styles/panel = ExtResource("1_lfceo")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 0
-offset_left = 2.0
-offset_top = 2.0
-offset_right = 86.0
-offset_bottom = 16.0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 258.0
+offset_bottom = 48.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_a3cqy")
+theme_override_styles/panel = ExtResource("2_6n1xe")
 
 [node name="Label" type="Label" parent="Panel"]
 layout_mode = 0
 offset_right = 84.0
 offset_bottom = 14.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("1_q5obu")
-theme_override_font_sizes/font_size = 10
+theme_override_fonts/font = ExtResource("3_h3ux7")
+theme_override_font_sizes/font_size = 30
 text = "莉可"
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 18.0
-offset_right = 83.583336
-offset_bottom = 87.0
+offset_left = 13.0
+offset_top = 59.0
+offset_right = 253.0
+offset_bottom = 269.0
 mouse_filter = 2
 texture = ExtResource("2_e484p")
 expand_mode = 1
@@ -69,5 +58,3 @@ collision_mask = 0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CardLabel"]
 position = Vector2(41, 5)
 shape = SubResource("RectangleShape2D_q5obu")
-
-

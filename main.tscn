@@ -29,15 +29,15 @@
 [ext_resource type="Resource" uid="uid://bvxngiedcur8" path="res://assets/小场景/scene_card_pool/小洞穴.tres" id="25_a6jrf"]
 [ext_resource type="Script" uid="uid://bxyb8ihft7c6l" path="res://script_folder/battle_manager.gd" id="28_xuqvo"]
 
+[sub_resource type="Resource" id="Resource_xuqvo"]
+script = ExtResource("6_xuqvo")
+metadata/_custom_type_script = "uid://bf2o85td7sner"
+
 [sub_resource type="Resource" id="Resource_qsp4k"]
 script = ExtResource("6_xuqvo")
 metadata/_custom_type_script = "uid://bf2o85td7sner"
 
 [sub_resource type="Resource" id="Resource_kq58d"]
-script = ExtResource("6_xuqvo")
-metadata/_custom_type_script = "uid://bf2o85td7sner"
-
-[sub_resource type="Resource" id="Resource_seu75"]
 script = ExtResource("6_xuqvo")
 metadata/_custom_type_script = "uid://bf2o85td7sner"
 
@@ -50,35 +50,34 @@ bgm = ExtResource("2_lswn8")
 metadata/_edit_lock_ = true
 
 [node name="娜娜奇" parent="." instance=ExtResource("6_kek77")]
-offset_left = 92.0
-offset_top = 181.0
-offset_right = 180.0
-offset_bottom = 296.0
+offset_left = 123.0
+offset_top = 615.0
+offset_right = 211.0
+offset_bottom = 730.0
 character = ExtResource("7_4c57u")
-battle = SubResource("Resource_qsp4k")
+battle = SubResource("Resource_xuqvo")
 
 [node name="莉可" parent="." instance=ExtResource("6_kek77")]
-offset_left = 243.0
-offset_top = 180.0
-offset_right = 331.0
-offset_bottom = 295.0
+offset_left = 537.0
+offset_top = 611.0
+offset_right = 625.0
+offset_bottom = 726.0
 character = ExtResource("8_efxa6")
-battle = SubResource("Resource_kq58d")
+battle = SubResource("Resource_qsp4k")
 
 [node name="雷古" parent="." instance=ExtResource("6_kek77")]
-offset_left = 415.0
-offset_top = 181.0
-offset_right = 503.0
-offset_bottom = 296.0
+offset_left = 951.0
+offset_top = 600.0
+offset_right = 1039.0
+offset_bottom = 715.0
 character = ExtResource("9_dg77c")
-battle = SubResource("Resource_seu75")
+battle = SubResource("Resource_kq58d")
 
 [node name="EnemyCard" parent="." instance=ExtResource("9_enemy_card")]
-offset_left = 272.0
-offset_top = 379.0
-offset_right = 360.0
-offset_bottom = 494.0
-_battle_started = false
+offset_left = 754.0
+offset_top = 1566.0
+offset_right = 842.0
+offset_bottom = 1681.0
 enemy = ExtResource("10_4c57u")
 
 [node name="BagMover" type="Node" parent="."]
@@ -86,46 +85,46 @@ script = ExtResource("11_efxa6")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(576, 328)
-limit_left = -844
-limit_top = -392
-limit_right = 2152
-limit_bottom = 1202
+limit_left = 6
+limit_top = 4
+limit_right = 3472
+limit_bottom = 2140
 script = ExtResource("4_camera")
 
 [node name="Item" parent="." instance=ExtResource("11_dg77c")]
-offset_left = 680.0
-offset_top = 234.0
-offset_right = 768.0
-offset_bottom = 349.0
+offset_left = 1039.0
+offset_top = 1170.0
+offset_right = 1127.0
+offset_bottom = 1285.0
 item = ExtResource("12_dg77c")
 
 [node name="Recource" parent="." instance=ExtResource("13_ycdy4")]
-offset_left = 794.0
-offset_top = 237.0
-offset_right = 882.0
-offset_bottom = 352.0
+offset_left = 1484.0
+offset_top = 1159.0
+offset_right = 1572.0
+offset_bottom = 1274.0
 recource = ExtResource("14_w48qg")
 
 [node name="Equipment" parent="." instance=ExtResource("15_2cqfq")]
-offset_left = 903.0
-offset_top = 237.0
-offset_right = 991.0
-offset_bottom = 352.0
+offset_left = 1991.0
+offset_top = 921.0
+offset_right = 2079.0
+offset_bottom = 1036.0
 equipment = ExtResource("16_yaehf")
 
 [node name="1000m" parent="." instance=ExtResource("16_2cqfq")]
-offset_left = 877.0
-offset_top = 391.0
-offset_right = 965.0
-offset_bottom = 506.0
+offset_left = 2609.0
+offset_top = 1378.0
+offset_right = 2697.0
+offset_bottom = 1493.0
 scene = ExtResource("17_074og")
 cardpool = ExtResource("18_cegan")
 
 [node name="500m" parent="." instance=ExtResource("16_2cqfq")]
-offset_left = 955.0
-offset_top = 108.0
-offset_right = 1043.0
-offset_bottom = 223.0
+offset_left = 2872.0
+offset_top = 425.0
+offset_right = 2960.0
+offset_bottom = 540.0
 scene = ExtResource("20_82xsv")
 cardpool = ExtResource("18_cegan")
 
@@ -135,17 +134,17 @@ craft_pools = Array[ExtResource("22_ryguw")]([ExtResource("16_yaehf"), ExtResour
 metadata/_custom_type_script = "uid://bhwdhxluayto5"
 
 [node name="小场景2" parent="." instance=ExtResource("23_0odxb")]
-offset_left = 781.0
-offset_top = 390.0
-offset_right = 869.0
-offset_bottom = 505.0
+offset_left = 2419.0
+offset_top = 1380.0
+offset_right = 2507.0
+offset_bottom = 1495.0
 scene = ExtResource("25_a6jrf")
 
 [node name="小场景" parent="." instance=ExtResource("23_0odxb")]
-offset_left = 689.0
-offset_top = 390.0
-offset_right = 777.0
-offset_bottom = 505.0
+offset_left = 2247.0
+offset_top = 1374.0
+offset_right = 2335.0
+offset_bottom = 1489.0
 scene = ExtResource("24_lswn8")
 
 [node name="BattleManager" type="Node" parent="."]

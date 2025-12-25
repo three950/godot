@@ -1,6 +1,5 @@
-[gd_scene load_steps=12 format=3 uid="uid://d8vp1m0epvxf"]
+[gd_scene load_steps=11 format=3 uid="uid://d8vp1m0epvxf"]
 
-[ext_resource type="Texture2D" uid="uid://cwohluet7sc50" path="res://begintscn/地表.jpg" id="1_oabld"]
 [ext_resource type="StyleBox" uid="uid://to3672utuxwe" path="res://ui/棋盘.tres" id="2_vvxqx"]
 [ext_resource type="PackedScene" uid="uid://dde8q2r1usqpa" path="res://ui/shop_bag/GroundPackage.tscn" id="4_eq6nc"]
 [ext_resource type="PackedScene" uid="uid://bivykmwh7lskv" path="res://assets/固定场景建筑/探窟者协会/探窟者协会.tscn" id="4_splo0"]
@@ -13,35 +12,29 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cdpnt"]
 bg_color = Color(0.8170297, 0.75410753, 0.5967472, 1)
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
+border_width_left = 12
+border_width_top = 12
+border_width_right = 12
+border_width_bottom = 12
 border_color = Color(0, 0, 0, 1)
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
 
 [node name="backgroundUi" type="Node2D"]
 
-[node name="background" type="TextureRect" parent="."]
-offset_left = -843.0
-offset_top = -395.0
-offset_right = 2153.0
-offset_bottom = 1201.0
-texture = ExtResource("1_oabld")
-
 [node name="cardsArea" type="Panel" parent="." groups=["Cards"]]
-offset_top = 1.0
-offset_right = 1157.0
-offset_bottom = 713.0
+offset_right = 3471.0
+offset_bottom = 2136.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_cdpnt")
 
 [node name="ShopManager" type="Panel" parent="cardsArea" groups=["ShopManager"]]
 layout_mode = 0
 offset_top = -1.0
-offset_right = 1157.0
-offset_bottom = 135.0
+offset_right = 3471.0
+offset_bottom = 407.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("2_vvxqx")
 
@@ -50,10 +43,10 @@ anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = 134.0
-offset_top = 11.0
-offset_right = 1038.0
-offset_bottom = 126.0
+offset_left = 359.0
+offset_top = 29.0
+offset_right = 3071.0
+offset_bottom = 374.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2

@@ -12,22 +12,22 @@ text = "物品"
 
 [node name="valueText" type="Label" parent="." index="3"]
 layout_mode = 0
-offset_left = 24.0
-offset_top = 100.0
-offset_right = 48.0
-offset_bottom = 112.0
+offset_left = 72.0
+offset_top = 291.0
+offset_right = 144.0
+offset_bottom = 324.5
 theme_override_colors/font_color = Color(0.8174487, 0.67471844, 0.2704918, 1)
-theme_override_font_sizes/font_size = 8
+theme_override_font_sizes/font_size = 24
 text = "价值："
 
 [node name="ValueLabel" type="Label" parent="." index="4"]
 layout_mode = 0
-offset_left = 46.0
-offset_top = 100.0
-offset_right = 60.0
-offset_bottom = 112.0
+offset_left = 131.0
+offset_top = 292.0
+offset_right = 173.0
+offset_bottom = 325.5
 theme_override_colors/font_color = Color(0.8174487, 0.67471844, 0.2704918, 1)
-theme_override_font_sizes/font_size = 8
+theme_override_font_sizes/font_size = 24
 text = "100"
 horizontal_alignment = 2
 

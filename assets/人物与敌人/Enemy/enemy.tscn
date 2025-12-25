@@ -1,8 +1,8 @@
 [gd_scene load_steps=11 format=3 uid="uid://d33c5tbwan3si"]
 
-[ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="1_bbcg6"]
 [ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="2_b646a"]
 [ext_resource type="Script" uid="uid://cr4xcgnxahlhf" path="res://assets/人物与敌人/Enemy/enemy.gd" id="2_bbcg6"]
+[ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://font.tres" id="2_qolkw"]
 [ext_resource type="Script" uid="uid://cvwtip1ly5e7f" path="res://script_folder/animations_shooter.gd" id="3_b646a"]
 [ext_resource type="Script" uid="uid://cq4u5v6w7x80a" path="res://assets/人物与敌人/attribute_labels.gd" id="3_krhvb"]
 [ext_resource type="PackedScene" uid="uid://cmnkn73ocu7av" path="res://ui/attack.tscn" id="5_qolkw"]
@@ -58,7 +58,7 @@ layout_mode = 0
 offset_right = 84.0
 offset_bottom = 14.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("1_bbcg6")
+theme_override_fonts/font = ExtResource("2_qolkw")
 theme_override_font_sizes/font_size = 10
 text = "莉可"
 
@@ -86,7 +86,7 @@ script = ExtResource("3_krhvb")
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.8, 0.2, 0.2, 1)
-theme_override_fonts/font = ExtResource("1_bbcg6")
+theme_override_fonts/font = ExtResource("2_qolkw")
 theme_override_font_sizes/font_size = 9
 text = "10"
 vertical_alignment = 1
@@ -99,7 +99,7 @@ theme_override_constants/separation = 0
 [node name="ATKLabel" type="Label" parent="AttributeLabels/RightStats"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.6, 0.1, 1)
-theme_override_fonts/font = ExtResource("1_bbcg6")
+theme_override_fonts/font = ExtResource("2_qolkw")
 theme_override_font_sizes/font_size = 9
 text = "1"
 horizontal_alignment = 2
@@ -107,7 +107,7 @@ horizontal_alignment = 2
 [node name="DEFLabel" type="Label" parent="AttributeLabels/RightStats"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.5, 0.8, 1)
-theme_override_fonts/font = ExtResource("1_bbcg6")
+theme_override_fonts/font = ExtResource("2_qolkw")
 theme_override_font_sizes/font_size = 9
 text = "0"
 horizontal_alignment = 2

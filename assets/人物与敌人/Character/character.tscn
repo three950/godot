@@ -16,15 +16,15 @@ bg_color = Color(1, 1, 1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p58c1"]
 bg_color = Color(1, 1, 1, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
 border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 7
-corner_radius_top_right = 7
-corner_radius_bottom_right = 7
-corner_radius_bottom_left = 7
+corner_radius_top_left = 21
+corner_radius_top_right = 21
+corner_radius_bottom_right = 21
+corner_radius_bottom_left = 21
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ig4cw"]
 size = Vector2(88, 114)
@@ -39,36 +39,36 @@ battle = SubResource("Resource_7cwdw")
 visible = false
 custom_minimum_size = Vector2(88, 115)
 layout_mode = 0
-offset_right = 88.0
-offset_bottom = 115.0
+offset_right = 264.0
+offset_bottom = 346.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_7cwdw")
 
 [node name="Polygon2D" parent="white" index="0" instance=ExtResource("4_7cwdw")]
-position = Vector2(15, 80)
-scale = Vector2(0.28096047, 0.28193393)
+position = Vector2(43.000004, 268)
+scale = Vector2(0.7308323, 0.7333644)
 
 [node name="attackLabel" type="Label" parent="white" index="1"]
 layout_mode = 0
-offset_left = 4.0
-offset_top = 69.0
-offset_right = 23.0
-offset_bottom = 89.0
+offset_left = 28.0
+offset_top = 242.0
+offset_right = 52.0
+offset_bottom = 300.625
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 14
+theme_override_constants/outline_size = 12
+theme_override_font_sizes/font_size = 35
 text = "6"
 horizontal_alignment = 1
 
 [node name="bagbutton" type="Button" parent="." index="5"]
 layout_mode = 0
-offset_left = 81.0
-offset_top = 44.0
-offset_right = 93.0
-offset_bottom = 69.0
+offset_left = 244.0
+offset_top = 142.0
+offset_right = 280.0
+offset_bottom = 217.0
 focus_mode = 0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 7
+theme_override_font_sizes/font_size = 21
 theme_override_styles/normal = SubResource("StyleBoxFlat_p58c1")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_p58c1")
 theme_override_styles/hover = SubResource("StyleBoxFlat_p58c1")
