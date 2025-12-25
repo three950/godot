@@ -92,6 +92,7 @@ limit_bottom = 2140
 script = ExtResource("4_camera")
 
 [node name="Item" parent="." instance=ExtResource("11_dg77c")]
+y_sort_enabled = true
 offset_left = 1039.0
 offset_top = 1170.0
 offset_right = 1127.0
@@ -99,6 +100,7 @@ offset_bottom = 1285.0
 item = ExtResource("12_dg77c")
 
 [node name="Recource" parent="." instance=ExtResource("13_ycdy4")]
+y_sort_enabled = true
 offset_left = 1484.0
 offset_top = 1159.0
 offset_right = 1572.0
@@ -106,6 +108,7 @@ offset_bottom = 1274.0
 recource = ExtResource("14_w48qg")
 
 [node name="Equipment" parent="." instance=ExtResource("15_2cqfq")]
+y_sort_enabled = true
 offset_left = 1991.0
 offset_top = 921.0
 offset_right = 2079.0
@@ -113,10 +116,10 @@ offset_bottom = 1036.0
 equipment = ExtResource("16_yaehf")
 
 [node name="1000m" parent="." instance=ExtResource("16_2cqfq")]
-offset_left = 2609.0
-offset_top = 1378.0
-offset_right = 2697.0
-offset_bottom = 1493.0
+offset_left = 2781.0
+offset_top = 1368.0
+offset_right = 2869.0
+offset_bottom = 1483.0
 scene = ExtResource("17_074og")
 cardpool = ExtResource("18_cegan")
 
@@ -141,10 +144,10 @@ offset_bottom = 1495.0
 scene = ExtResource("25_a6jrf")
 
 [node name="小场景" parent="." instance=ExtResource("23_0odxb")]
-offset_left = 2247.0
-offset_top = 1374.0
-offset_right = 2335.0
-offset_bottom = 1489.0
+offset_left = 2075.0
+offset_top = 1379.0
+offset_right = 2163.0
+offset_bottom = 1494.0
 scene = ExtResource("24_lswn8")
 
 [node name="BattleManager" type="Node" parent="."]

@@ -5,15 +5,19 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2r54s"]
 bg_color = Color(0.2123048, 0.21230489, 0.21230471, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
 border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5ffud"]
 bg_color = Color(0.19434926, 0.19434929, 0.19434917, 1)
-border_width_bottom = 1
+border_width_bottom = 3
 border_color = Color(0, 0, 0, 1)
 
 [node name="固定场景建筑" instance=ExtResource("1_2r54s")]
@@ -30,8 +34,13 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "探窟者协会"
 
 [node name="TextureRect" parent="." index="2"]
-offset_left = 9.0
-offset_top = 26.0
-offset_right = 79.0
-offset_bottom = 96.0
+offset_left = -123.0
+offset_top = -113.5
+offset_bottom = 131.5
 stretch_mode = 6
+
+[node name="CardLabel" parent="." index="3"]
+visible = false
+
+[node name="CardStackDetectorArea" parent="." index="4"]
+visible = false

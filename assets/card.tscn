@@ -18,13 +18,12 @@
 [ext_resource type="Script" uid="uid://cvwtip1ly5e7f" path="res://script_folder/animations_shooter.gd" id="11_ram0e"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q5obu"]
-size = Vector2(88, 16)
+size = Vector2(264, 45)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e484p"]
-size = Vector2(88, 74)
+size = Vector2(264, 296)
 
 [node name="Card" type="Control" groups=["Cards"]]
-y_sort_enabled = true
 layout_mode = 3
 anchors_preset = 0
 offset_right = 264.0
@@ -78,22 +77,20 @@ texture = ExtResource("2_e484p")
 expand_mode = 1
 
 [node name="CardLabel" type="Area2D" parent="."]
-visible = false
 position = Vector2(3, 3)
 collision_layer = 2
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CardLabel"]
-position = Vector2(41, 5)
+position = Vector2(129, 19.5)
 shape = SubResource("RectangleShape2D_q5obu")
 
 [node name="CardStackDetectorArea" type="Area2D" parent="."]
-visible = false
 position = Vector2(3, 3)
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CardStackDetectorArea"]
-position = Vector2(41, 51.5)
+position = Vector2(129, 191)
 shape = SubResource("RectangleShape2D_e484p")
 
 [node name="CardStateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]

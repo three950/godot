@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://d33c5tbwan3si"]
+[gd_scene load_steps=12 format=3 uid="uid://d33c5tbwan3si"]
 
 [ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="2_b646a"]
 [ext_resource type="Script" uid="uid://cr4xcgnxahlhf" path="res://assets/人物与敌人/Enemy/enemy.gd" id="2_bbcg6"]
@@ -6,25 +6,33 @@
 [ext_resource type="Script" uid="uid://cvwtip1ly5e7f" path="res://script_folder/animations_shooter.gd" id="3_b646a"]
 [ext_resource type="Script" uid="uid://cq4u5v6w7x80a" path="res://assets/人物与敌人/attribute_labels.gd" id="3_krhvb"]
 [ext_resource type="PackedScene" uid="uid://cmnkn73ocu7av" path="res://ui/attack.tscn" id="5_qolkw"]
+[ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="6_62c3k"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_krhvb"]
 bg_color = Color(0.8831649, 0.3872493, 0.34170684, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
 border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+shadow_color = Color(0.1584723, 0.15847233, 0.1584723, 0.6)
+shadow_size = 6
+shadow_offset = Vector2(6, 6)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hpx2h"]
 bg_color = Color(0.74368256, 0.27023113, 0.23480722, 1)
-border_width_bottom = 1
+border_width_bottom = 3
 border_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qolkw"]
-bg_color = Color(1, 1, 1, 1)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_krhvb"]
-size = Vector2(88, 114)
+size = Vector2(263, 342)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wv3eb"]
+bg_color = Color(1, 1, 1, 1)
 
 [node name="Enemy" type="Control"]
 layout_mode = 3
@@ -39,17 +47,17 @@ script = ExtResource("2_bbcg6")
 
 [node name="CardPanel" type="Panel" parent="."]
 layout_mode = 0
-offset_right = 88.0
-offset_bottom = 114.0
+offset_right = 264.0
+offset_bottom = 342.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_krhvb")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 0
-offset_left = 2.0
-offset_top = 2.0
-offset_right = 86.0
-offset_bottom = 16.0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 258.0
+offset_bottom = 48.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_hpx2h")
 
@@ -59,25 +67,37 @@ offset_right = 84.0
 offset_bottom = 14.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("2_qolkw")
-theme_override_font_sizes/font_size = 10
+theme_override_font_sizes/font_size = 30
 text = "莉可"
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 18.0
-offset_right = 83.583336
-offset_bottom = 87.0
+offset_left = 15.0
+offset_top = 54.0
+offset_right = 250.749
+offset_bottom = 261.0
 mouse_filter = 2
 texture = ExtResource("2_b646a")
 expand_mode = 1
 
+[node name="BattleStartArea" type="Area2D" parent="."]
+position = Vector2(3, 3)
+collision_layer = 12
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BattleStartArea"]
+position = Vector2(129.5, 168)
+shape = SubResource("RectangleShape2D_krhvb")
+
+[node name="shooter" type="Node" parent="."]
+script = ExtResource("3_b646a")
+
 [node name="AttributeLabels" type="HBoxContainer" parent="."]
 layout_mode = 0
-offset_left = 2.0
-offset_top = 88.0
-offset_right = 86.0
-offset_bottom = 112.0
+offset_left = 7.0
+offset_top = 266.0
+offset_right = 255.0
+offset_bottom = 338.0
 mouse_filter = 2
 alignment = 1
 script = ExtResource("3_krhvb")
@@ -86,8 +106,8 @@ script = ExtResource("3_krhvb")
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.8, 0.2, 0.2, 1)
-theme_override_fonts/font = ExtResource("2_qolkw")
-theme_override_font_sizes/font_size = 9
+theme_override_fonts/font = ExtResource("6_62c3k")
+theme_override_font_sizes/font_size = 27
 text = "10"
 vertical_alignment = 1
 
@@ -99,16 +119,16 @@ theme_override_constants/separation = 0
 [node name="ATKLabel" type="Label" parent="AttributeLabels/RightStats"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.6, 0.1, 1)
-theme_override_fonts/font = ExtResource("2_qolkw")
-theme_override_font_sizes/font_size = 9
+theme_override_fonts/font = ExtResource("6_62c3k")
+theme_override_font_sizes/font_size = 27
 text = "1"
 horizontal_alignment = 2
 
 [node name="DEFLabel" type="Label" parent="AttributeLabels/RightStats"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.5, 0.8, 1)
-theme_override_fonts/font = ExtResource("2_qolkw")
-theme_override_font_sizes/font_size = 9
+theme_override_fonts/font = ExtResource("6_62c3k")
+theme_override_font_sizes/font_size = 27
 text = "0"
 horizontal_alignment = 2
 
@@ -116,36 +136,23 @@ horizontal_alignment = 2
 visible = false
 custom_minimum_size = Vector2(88, 115)
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_qolkw")
+offset_right = 264.0
+offset_bottom = 346.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_wv3eb")
 
 [node name="Polygon2D" parent="white" instance=ExtResource("5_qolkw")]
-position = Vector2(15, 80)
-scale = Vector2(0.28096047, 0.28193393)
+position = Vector2(43.000004, 268)
+scale = Vector2(0.7308323, 0.7333644)
 
 [node name="attackLabel" type="Label" parent="white"]
 layout_mode = 0
-offset_left = 4.0
-offset_top = 69.0
-offset_right = 23.0
-offset_bottom = 89.0
+offset_left = 28.0
+offset_top = 242.0
+offset_right = 52.0
+offset_bottom = 300.625
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 14
+theme_override_constants/outline_size = 12
+theme_override_font_sizes/font_size = 35
 text = "6"
 horizontal_alignment = 1
-
-[node name="BattleStartArea" type="Area2D" parent="."]
-visible = false
-position = Vector2(3, 3)
-collision_layer = 12
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BattleStartArea"]
-position = Vector2(41, 54)
-shape = SubResource("RectangleShape2D_krhvb")
-
-[node name="shooter" type="Node" parent="."]
-script = ExtResource("3_b646a")
