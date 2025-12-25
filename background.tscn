@@ -60,6 +60,7 @@ game_stats = ExtResource("5_eq6nc")
 sold_sound = ExtResource("5_cdpnt")
 
 [node name="GroundPackage" parent="HBoxContainer" instance=ExtResource("4_eq6nc")]
+custom_minimum_size = Vector2(264, 345)
 layout_mode = 2
 game_stats = ExtResource("5_eq6nc")
 spawn_offset = Vector2(0, 120)
@@ -121,6 +122,3 @@ package_name = "深界六层
 mean_layer = 6
 package_price = 35
 spawn_offset = Vector2(0, 120)
-
-[node name="Panel" type="Panel" parent="HBoxContainer"]
-layout_mode = 2

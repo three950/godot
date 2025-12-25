@@ -6,13 +6,15 @@
 [ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://font.tres" id="3_h3ux7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q5obu"]
-size = Vector2(88, 16)
+size = Vector2(265, 343)
 
 [node name="CardUI" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 264.0
-offset_bottom = 342.0
+offset_left = -132.0
+offset_top = -171.0
+offset_right = 132.0
+offset_bottom = 171.0
 
 [node name="CardPanel" type="Panel" parent="."]
 layout_mode = 0
@@ -50,11 +52,10 @@ texture = ExtResource("2_e484p")
 expand_mode = 1
 
 [node name="CardLabel" type="Area2D" parent="."]
-visible = false
 position = Vector2(3, 3)
 collision_layer = 2
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CardLabel"]
-position = Vector2(41, 5)
+position = Vector2(129.5, 168.5)
 shape = SubResource("RectangleShape2D_q5obu")

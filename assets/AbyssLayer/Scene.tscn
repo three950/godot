@@ -21,7 +21,6 @@ text = "500m"
 texture = ExtResource("3_k132i")
 
 [node name="CardProgressBar" parent="." index="4" instance=ExtResource("4_afjxu")]
-visible = false
 layout_mode = 0
 offset_left = 0.0
 offset_top = -9.0

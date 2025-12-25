@@ -17,8 +17,10 @@ size = Vector2(264, 319)
 [node name="fixedCard" type="Control" groups=["Cards"]]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 88.0
-offset_bottom = 115.0
+offset_left = -132.0
+offset_top = -171.0
+offset_right = 132.0
+offset_bottom = 174.0
 script = SubResource("GDScript_jsic4")
 metadata/_edit_lock_ = true
 

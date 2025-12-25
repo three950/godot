@@ -27,10 +27,11 @@ corner_radius_bottom_right = 21
 corner_radius_bottom_left = 21
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ig4cw"]
-size = Vector2(88, 114)
+size = Vector2(264, 341)
 
 [node name="character" instance=ExtResource("1_p58c1")]
-y_sort_enabled = false
+offset_top = -171.0
+offset_bottom = 174.0
 script = ExtResource("2_dm7l3")
 character = null
 battle = SubResource("Resource_7cwdw")
@@ -79,20 +80,19 @@ clip_text = true
 script = ExtResource("3_dm7l3")
 bag_sound = ExtResource("4_ig4cw")
 
-[node name="CollisionShape2D" parent="CardStackDetectorArea" index="0"]
-position = Vector2(41, 51)
+[node name="CollisionShape2D" parent="CardLabel" index="0"]
+position = Vector2(129, 20)
 
 [node name="CradDragging" parent="CardStateMachine" index="2"]
 type = null
 
 [node name="BattleStartArea" type="Area2D" parent="." index="10"]
-visible = false
 position = Vector2(3, 3)
 collision_layer = 8
 collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BattleStartArea" index="0"]
-position = Vector2(41, 54)
+position = Vector2(129, 167.5)
 shape = SubResource("RectangleShape2D_ig4cw")
 
 [connection signal="area_entered" from="BattleStartArea" to="." method="_on_battle_start_area_area_entered"]

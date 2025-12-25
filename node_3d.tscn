@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://6oebvrcns2i2" path="res://perspective_viewport.gd" id="2_script"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_1"]
-size = Vector2(1920, 1080)
+size = Vector2(3471, 2136)
 
 [node name="Node3D" type="Node3D"]
 script = ExtResource("2_script")
@@ -16,7 +16,7 @@ fov = 45.0
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
 msaa_2d = 2
-size = Vector2i(1920, 1080)
+size = Vector2i(3471, 2136)
 render_target_update_mode = 4
 
 [node name="Main" parent="SubViewport" instance=ExtResource("1_a202f")]
