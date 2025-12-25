@@ -7,6 +7,7 @@
 [node name="探窟者协会" instance=ExtResource("1_xkroh")]
 script = ExtResource("2_le5xf")
 game_stats = null
+sold_sound = null
 
 [node name="Label" parent="Panel" index="0"]
 text = "探窟者协会"

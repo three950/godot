@@ -54,7 +54,7 @@ theme_override_constants/separation = 25
 alignment = 1
 
 [node name="探窟者协会" parent="HBoxContainer" instance=ExtResource("4_splo0")]
-custom_minimum_size = Vector2(88, 115)
+custom_minimum_size = Vector2(264, 345)
 layout_mode = 2
 game_stats = ExtResource("5_eq6nc")
 sold_sound = ExtResource("5_cdpnt")
