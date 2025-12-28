@@ -23,8 +23,10 @@ var drag_offset: Vector2 = Vector2.ZERO  # 拖拽时鼠标相对于卡片的偏�
 @onready var card_state_machine:CardStateMachine=$CardStateMachine as CardStateMachine
 @onready var shooter: Shooter = $Shooter
 # 通用UI元素引用 - 子类可以重写这些路径
-@onready var card_label: Label = $Panel/Label
-@onready var card_texture: TextureRect = $TextureRect
+@onready var card_label: Label = $SubViewport/Panel/Label
+@onready var card_texture: TextureRect = $SubViewport/TextureRect
+
+
 # Area2D 重叠检测
 var overlapping_cards: Array[Control] = []  # 当前与此卡片 Area2D 重叠的其他卡片
 const DRAG_TEMP_Z := 100

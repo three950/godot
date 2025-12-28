@@ -1,7 +1,7 @@
-extends "res://assets/物品/things.gd"
+extends Things
 class_name Equipment
 
-@onready var effect_label: Label = $EffectLabel
+@onready var effect_label: Label = $SubViewport/EffectLabel
 
 @export var equipment: EquipmentCard
 

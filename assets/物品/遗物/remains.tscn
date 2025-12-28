@@ -1,7 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://dd7sln03nhigl"]
+[gd_scene load_steps=6 format=3 uid="uid://dd7sln03nhigl"]
 
 [ext_resource type="PackedScene" uid="uid://fopgb30s4q33" path="res://assets/物品/Things.tscn" id="1_hkc7c"]
 [ext_resource type="Script" uid="uid://c8iak2m5n7p1q" path="res://assets/物品/遗物/remains.gd" id="2_ssi8w"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ssi8w"]
+viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hkc7c"]
 bg_color = Color(0.7058824, 0.45490196, 0.62352943, 1)
@@ -27,16 +30,20 @@ border_color = Color(0.23529412, 0.14509805, 0.043137256, 1)
 script = ExtResource("2_ssi8w")
 remains = null
 
-[node name="CardPanel" parent="." index="0"]
+[node name="surface" parent="." index="1"]
+texture = SubResource("ViewportTexture_ssi8w")
+
+[node name="CardPanel" parent="SubViewport" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_hkc7c")
 
-[node name="Panel" parent="." index="1"]
+[node name="Panel" parent="SubViewport" index="1"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_ssi8w")
 
-[node name="Label" parent="Panel" index="0"]
+[node name="Label" parent="SubViewport/Panel" index="0"]
 text = "遗物"
 
-[node name="LevelLabel" type="Label" parent="Panel" index="1"]
+[node name="LevelLabel" type="Label" parent="SubViewport/Panel" index="1"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -46,3 +53,6 @@ offset_bottom = 17.0
 grow_horizontal = 0
 theme_override_font_sizes/font_size = 30
 text = "5"
+
+[node name="CardProgressBar" parent="." index="9"]
+offset_left = 0.0

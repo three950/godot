@@ -12,7 +12,7 @@ const RARITY_COLORS:={
 	Rarity.SUPER:Color("7a2569ff"),
 }
 
-@onready var grade_label: Label = $GradeLabel
+@onready var grade_label: Label = %LevelLabel
 
 # 遗物资源引用
 @export var remains: RemainsCard

@@ -1,7 +1,7 @@
-extends "res://assets/物品/things.gd"
+extends Things
 class_name Recource
 
-@onready var food_label: Label = $FoodLabel
+@onready var food_label: Label = %FoodLabel
 
 @export var recource: ResourceCard
 

@@ -22,8 +22,8 @@
 shader = ExtResource("8_xo5ip")
 shader_parameter/fov = 90.0
 shader_parameter/cull_back = true
-shader_parameter/y_rot = 8.549999989782009e-06
-shader_parameter/x_rot = 0.0
+shader_parameter/y_rot = 0.0
+shader_parameter/x_rot = 8.549999989782009e-06
 shader_parameter/inset = 0.0
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_xo5ip"]
@@ -47,13 +47,24 @@ battle = ExtResource("2_agldc")
 pickup_sound = ExtResource("2_mqa0q")
 fall_sound = ExtResource("3_agldc")
 
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="surface" type="TextureRect" parent="."]
 texture_filter = 1
 material = SubResource("ShaderMaterial_8iohq")
 layout_mode = 0
-offset_top = -1.0
-offset_right = 265.0
-offset_bottom = 344.0
+offset_right = 264.0
+offset_bottom = 345.0
 mouse_filter = 2
 texture = SubResource("ViewportTexture_xo5ip")
 
@@ -109,7 +120,8 @@ card = NodePath("..")
 metadata/_custom_type_script = "uid://cvwtip1ly5e7f"
 
 [node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(264, 345)
+transparent_bg = true
+size = Vector2i(262, 342)
 
 [node name="CardPanel" type="Panel" parent="SubViewport"]
 offset_right = 264.0
@@ -142,11 +154,12 @@ offset_right = 250.0
 offset_bottom = 261.0
 mouse_filter = 2
 texture = ExtResource("2_e484p")
+expand_mode = 1
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
-[connection signal="gui_input" from="." to="CardStateMachine/CardFixed" method="_on_card_gui_input"]
 [connection signal="gui_input" from="." to="CardStateMachine/CardFixed" method="_on_control_gui_input"]
-[connection signal="gui_input" from="." to="CardStateMachine/CardInstack" method="_on_cpntrol_gui_input"]
+[connection signal="gui_input" from="." to="CardStateMachine/CardFixed" method="_on_card_gui_input"]
 [connection signal="gui_input" from="." to="CardStateMachine/CardInstack" method="_on_control_gui_input"]
+[connection signal="gui_input" from="." to="CardStateMachine/CardInstack" method="_on_cpntrol_gui_input"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

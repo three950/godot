@@ -2,9 +2,9 @@ extends HBoxContainer
 class_name AttributeLabels
 
 # 标签引用
-@onready var hp_label: Label = $HPLabel
-@onready var atk_label: Label = $RightStats/ATKLabel
-@onready var def_label: Label = $RightStats/DEFLabel
+@onready var hp_label: Label = %HPLabel
+@onready var atk_label: Label = %ATKLabel
+@onready var def_label: Label = %DEFLabel
 
 # 更新所有属性标签显示
 func update_labels(hp_value: int, atk_value: int, def_value: int) -> void:

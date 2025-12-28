@@ -1,22 +1,38 @@
-[gd_scene load_steps=4 format=3 uid="uid://b1oqblyvspkqi"]
+[gd_scene load_steps=7 format=3 uid="uid://b1oqblyvspkqi"]
 
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="1_3c02q"]
 [ext_resource type="Script" uid="uid://cq4u5v6w7x80a" path="res://assets/人物与敌人/attribute_labels.gd" id="1_script"]
+[ext_resource type="Shader" uid="uid://pwq3r7ep4yey" path="res://shader/ 卡牌翻转.gdshader" id="2_43ghe"]
 [ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="2_font"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g27c4"]
+shader = ExtResource("2_43ghe")
+shader_parameter/fov = 90.0
+shader_parameter/cull_back = true
+shader_parameter/y_rot = 0.0
+shader_parameter/x_rot = 8.549999989782009e-06
+shader_parameter/inset = 0.0
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_i6tw2"]
+viewport_path = NodePath("SubViewport")
 
 [node name="BiologyCard" instance=ExtResource("1_3c02q")]
 
-[node name="AttributeLabels" type="HBoxContainer" parent="." index="2"]
-layout_mode = 0
+[node name="surface" parent="." index="1"]
+material = SubResource("ShaderMaterial_g27c4")
+texture = SubResource("ViewportTexture_i6tw2")
+
+[node name="AttributeLabels" type="HBoxContainer" parent="SubViewport" index="3"]
 offset_left = 7.0
-offset_top = 266.0
+offset_top = 265.0
 offset_right = 255.0
-offset_bottom = 338.0
+offset_bottom = 337.0
 mouse_filter = 2
 alignment = 1
 script = ExtResource("1_script")
 
-[node name="HPLabel" type="Label" parent="AttributeLabels" index="0"]
+[node name="HPLabel" type="Label" parent="SubViewport/AttributeLabels" index="0"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.8, 0.2, 0.2, 1)
@@ -25,12 +41,13 @@ theme_override_font_sizes/font_size = 27
 text = "10"
 vertical_alignment = 1
 
-[node name="RightStats" type="VBoxContainer" parent="AttributeLabels" index="1"]
+[node name="RightStats" type="VBoxContainer" parent="SubViewport/AttributeLabels" index="1"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 0
 
-[node name="ATKLabel" type="Label" parent="AttributeLabels/RightStats" index="0"]
+[node name="ATKLabel" type="Label" parent="SubViewport/AttributeLabels/RightStats" index="0"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.6, 0.1, 1)
 theme_override_fonts/font = ExtResource("2_font")
@@ -38,7 +55,8 @@ theme_override_font_sizes/font_size = 27
 text = "1"
 horizontal_alignment = 2
 
-[node name="DEFLabel" type="Label" parent="AttributeLabels/RightStats" index="1"]
+[node name="DEFLabel" type="Label" parent="SubViewport/AttributeLabels/RightStats" index="1"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.5, 0.8, 1)
 theme_override_fonts/font = ExtResource("2_font")

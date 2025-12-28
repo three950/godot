@@ -1,7 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://dtdlifuitpvq3"]
+[gd_scene load_steps=6 format=3 uid="uid://dtdlifuitpvq3"]
 
 [ext_resource type="PackedScene" uid="uid://fopgb30s4q33" path="res://assets/物品/Things.tscn" id="1_ughbl"]
 [ext_resource type="Script" uid="uid://rw0hwskw7del" path="res://assets/物品/资源/recource.gd" id="2_5s73d"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_5s73d"]
+viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5s73d"]
 bg_color = Color(0.9078308, 0.62965226, 0.6109663, 1)
@@ -27,27 +30,28 @@ border_color = Color(0.9490196, 0.78039217, 0.7607843, 1)
 script = ExtResource("2_5s73d")
 recource = null
 
-[node name="CardPanel" parent="." index="0"]
+[node name="surface" parent="." index="1"]
+texture = SubResource("ViewportTexture_5s73d")
+
+[node name="CardPanel" parent="SubViewport" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_5s73d")
 
-[node name="Panel" parent="." index="1"]
+[node name="Panel" parent="SubViewport" index="1"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_wdw0p")
 
-[node name="Label" parent="Panel" index="0"]
+[node name="Label" parent="SubViewport/Panel" index="0"]
 text = "食物"
 
-[node name="valueText" parent="." index="3"]
-theme_override_colors/font_color = Color(0.29045805, 0.28657466, 0.29657704, 1)
-
-[node name="FoodLabel" type="Label" parent="." index="4"]
+[node name="FoodLabel" type="Label" parent="SubViewport/Panel" index="1"]
+unique_name_in_owner = true
 layout_mode = 0
-offset_left = 239.0
-offset_top = 9.0
-offset_right = 253.0
-offset_bottom = 42.5
+offset_left = 230.0
+offset_top = 8.0
+offset_right = 244.0
+offset_bottom = 41.5
 theme_override_colors/font_color = Color(0.3990132, 0, 0.09163085, 1)
 theme_override_font_sizes/font_size = 24
 text = "2"
 
-[node name="ValueLabel" parent="." index="5"]
-theme_override_colors/font_color = Color(0.29045805, 0.28657466, 0.29657704, 1)
+[node name="CardProgressBar" parent="." index="9"]
+offset_left = 0.0

@@ -1,7 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://dnxa570k3cf"]
+[gd_scene load_steps=6 format=3 uid="uid://dnxa570k3cf"]
 
 [ext_resource type="PackedScene" uid="uid://fopgb30s4q33" path="res://assets/物品/Things.tscn" id="1_7lfsj"]
 [ext_resource type="Script" uid="uid://cio4rq8r14xrn" path="res://assets/物品/道具/item.gd" id="2_ja4eb"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ja4eb"]
+viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7lfsj"]
 bg_color = Color(0.28484476, 0.32436445, 0.38870683, 1)
@@ -27,16 +30,22 @@ border_color = Color(0.18866554, 0.2546709, 0.33002728, 1)
 script = ExtResource("2_ja4eb")
 item = null
 
-[node name="CardPanel" parent="." index="0"]
+[node name="surface" parent="." index="1"]
+texture = SubResource("ViewportTexture_ja4eb")
+
+[node name="valueText" parent="SubViewport" index="2"]
+offset_left = 73.0
+offset_right = 145.0
+
+[node name="CardPanel" parent="SubViewport" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_7lfsj")
 
-[node name="Panel" parent="." index="1"]
+[node name="Panel" parent="SubViewport" index="1"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_ja4eb")
 
-[node name="Label" parent="Panel" index="0"]
+[node name="Label" parent="SubViewport/Panel" index="0"]
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "道具"
 
-[node name="valueText" parent="." index="3"]
-offset_left = 73.0
-offset_right = 145.0
+[node name="CardProgressBar" parent="." index="9"]
+offset_left = 0.0
