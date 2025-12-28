@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://cxgk8a5mjy27v"]
+[gd_scene load_steps=22 format=3 uid="uid://cxgk8a5mjy27v"]
 
 [ext_resource type="Script" uid="uid://ut5tbn2q80gh" path="res://assets/card.gd" id="1_q5obu"]
 [ext_resource type="Resource" uid="uid://cq6i5xpurm0al" path="res://base_data/Battle_stats.tres" id="2_agldc"]
@@ -13,9 +13,21 @@
 [ext_resource type="Script" uid="uid://dw2dcs08at733" path="res://assets/card-states/crad_dragging.gd" id="7_a3cqy"]
 [ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://font.tres" id="7_xo5ip"]
 [ext_resource type="Script" uid="uid://bgkton1xcycf" path="res://assets/card-states/card_falling.gd" id="8_ram0e"]
+[ext_resource type="Shader" uid="uid://pwq3r7ep4yey" path="res://shader/ 卡牌翻转.gdshader" id="8_xo5ip"]
 [ext_resource type="Script" uid="uid://sxc0f1pavh3f" path="res://assets/card-states/card_instack.gd" id="9_kvflh"]
 [ext_resource type="Script" uid="uid://bwf2g3aljfb72" path="res://assets/card-states/card_instack_dragging.gd" id="10_a3cqy"]
 [ext_resource type="Script" uid="uid://cvwtip1ly5e7f" path="res://script_folder/animations_shooter.gd" id="11_ram0e"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8iohq"]
+shader = ExtResource("8_xo5ip")
+shader_parameter/fov = 90.0
+shader_parameter/cull_back = true
+shader_parameter/y_rot = 8.549999989782009e-06
+shader_parameter/x_rot = 0.0
+shader_parameter/inset = 0.0
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_xo5ip"]
+viewport_path = NodePath("SubViewport")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q5obu"]
 size = Vector2(264, 45)
@@ -35,43 +47,18 @@ battle = ExtResource("2_agldc")
 pickup_sound = ExtResource("2_mqa0q")
 fall_sound = ExtResource("3_agldc")
 
-[node name="CardPanel" type="Panel" parent="."]
-layout_mode = 0
-offset_right = 264.0
-offset_bottom = 342.0
-mouse_filter = 2
-theme_override_styles/panel = ExtResource("5_agldc")
-
-[node name="Panel" type="Panel" parent="."]
-layout_mode = 0
-offset_left = 6.0
-offset_top = 6.0
-offset_right = 258.0
-offset_bottom = 48.0
-mouse_filter = 2
-theme_override_styles/panel = ExtResource("6_3tu4f")
-
-[node name="Label" type="Label" parent="Panel"]
-layout_mode = 0
-offset_right = 84.0
-offset_bottom = 14.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("7_xo5ip")
-theme_override_font_sizes/font_size = 30
-text = "莉可"
-
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="surface" type="TextureRect" parent="."]
 texture_filter = 1
+material = SubResource("ShaderMaterial_8iohq")
 layout_mode = 0
-offset_left = 12.0
-offset_top = 59.0
-offset_right = 252.0
-offset_bottom = 269.0
+offset_top = -1.0
+offset_right = 265.0
+offset_bottom = 344.0
 mouse_filter = 2
-texture = ExtResource("2_e484p")
-expand_mode = 1
+texture = SubResource("ViewportTexture_xo5ip")
 
 [node name="CardLabel" type="Area2D" parent="."]
+visible = false
 position = Vector2(3, 3)
 collision_layer = 2
 collision_mask = 0
@@ -81,6 +68,7 @@ position = Vector2(129, 19.5)
 shape = SubResource("RectangleShape2D_q5obu")
 
 [node name="CardStackDetectorArea" type="Area2D" parent="."]
+visible = false
 position = Vector2(3, 3)
 collision_mask = 2
 
@@ -119,6 +107,41 @@ state = 5
 script = ExtResource("11_ram0e")
 card = NodePath("..")
 metadata/_custom_type_script = "uid://cvwtip1ly5e7f"
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(264, 345)
+
+[node name="CardPanel" type="Panel" parent="SubViewport"]
+offset_right = 264.0
+offset_bottom = 342.0
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("5_agldc")
+
+[node name="Panel" type="Panel" parent="SubViewport"]
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 258.0
+offset_bottom = 48.0
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("6_3tu4f")
+
+[node name="Label" type="Label" parent="SubViewport/Panel"]
+layout_mode = 0
+offset_right = 84.0
+offset_bottom = 14.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_xo5ip")
+theme_override_font_sizes/font_size = 30
+text = "莉可"
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport"]
+texture_filter = 1
+offset_left = 15.0
+offset_top = 54.0
+offset_right = 250.0
+offset_bottom = 261.0
+mouse_filter = 2
+texture = ExtResource("2_e484p")
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="gui_input" from="." to="CardStateMachine/CardFixed" method="_on_card_gui_input"]

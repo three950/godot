@@ -180,7 +180,7 @@ func _perform_attack(attacker: Control, target: Control) -> void:
 	print("【BattleManager】%s 攻击 %s，造成 %d 点伤害" % [attacker.name, target.name, damage])
 	
 	# 播放远程攻击动画
-	_play_close_attack_animation(attacker, target, damage)
+	_play_remote_attack_animation(attacker, target, damage)
 	
 	# 造成伤害
 	target.take_damage(damage)
