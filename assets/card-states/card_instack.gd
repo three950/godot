@@ -14,7 +14,7 @@ func enter() -> void:
 func exit() -> void:
 	last_position = Vector2.ZERO
 
-func _process(_delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	# 检查位置是否发生变化
 	if card.global_position != last_position:
 		# 位置发生变化，更新整个堆叠链

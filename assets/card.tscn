@@ -148,9 +148,8 @@ fall_sound = ExtResource("3_agldc")
 [node name="shadow" type="TextureRect" parent="."]
 material = SubResource("ShaderMaterial_xo5ip")
 layout_mode = 0
-offset_left = -4.0
 offset_top = 4.0
-offset_right = 260.0
+offset_right = 264.0
 offset_bottom = 349.0
 mouse_filter = 2
 texture = SubResource("GradientTexture2D_shadow")
