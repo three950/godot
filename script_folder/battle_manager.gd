@@ -443,7 +443,7 @@ func _new_unit_join(unit: Control) -> void:
 		print("【BattleManager】敌人 %s 加入战斗" % unit.name)
 	
 	# 设置最小尺寸
-	var panel = unit.get_node_or_null("Panel")
+	var panel = unit.get_node_or_null("SubViewport/CardPanel")
 	if panel:
 		unit.custom_minimum_size = panel.size
 	
