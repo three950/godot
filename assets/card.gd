@@ -131,7 +131,7 @@ func stop_stacking_on_me() -> void:
 	print("不要走")
 	# 不再被堆叠，重新允许其他卡堆到自己身上，恢复检测
 	set_stack_detector_enabled(true)
-	var card_panel:= get_node("CardPanel")
+	var card_panel:= get_node("SubViewport/CardPanel")
 	if card_panel:
 		size=card_panel.size
 	array_changed.emit()

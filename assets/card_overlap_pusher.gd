@@ -4,7 +4,7 @@ extends Node
 ## 当两张非父子关系的卡片重叠，且都不在拖拽状态时，自动缓慢分离
 
 ## 每帧移动的像素距离
-@export var push_speed: float = 2.0
+@export var push_speed: float = 4.0
 ## 最小分离距离（防止卡片完全重合时无法计算方向）
 @export var min_separation: float = 1.0
 
@@ -25,7 +25,7 @@ func _ready() -> void:
 		push_detector.area_entered.connect(_on_push_detector_area_entered)
 		push_detector.area_exited.connect(_on_push_detector_area_exited)
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if overlapping_push_cards.is_empty():
 		return
 	
@@ -62,10 +62,7 @@ func _can_be_pushed(check_card: Card) -> bool:
 	
 	var current_state = check_card.card_state_machine.current_state.state
 	# 在拖拽或堆叠拖拽状态时不进行推动
-	if current_state == CardState.State.dragging or current_state == CardState.State.instackdragging:
-		return false
-	# pickingup状态也不推动
-	if current_state == CardState.State.pickingup:
+	if current_state == CardState.State.dragging or current_state == CardState.State.instackdragging or current_state == CardState.State.pickingup:
 		return false
 	return true
 
@@ -122,10 +119,6 @@ func _push_cards_apart(card_a: Card, card_b: Card, delta: float) -> void:
 
 ## 重叠检测区域进入信号处理
 func _on_push_detector_area_entered(area: Area2D) -> void:
-	# 只处理CardPushDetectorArea类型的区域
-	if area.name != "CardPushDetectorArea":
-		return
-	
 	var other_card = area.get_parent() as Card
 	if not other_card or other_card == card:
 		return
@@ -144,9 +137,6 @@ func _on_push_detector_area_entered(area: Area2D) -> void:
 
 ## 重叠检测区域离开信号处理
 func _on_push_detector_area_exited(area: Area2D) -> void:
-	if area.name != "CardPushDetectorArea":
-		return
-	
 	var other_card = area.get_parent() as Card
 	if not other_card:
 		return
@@ -155,4 +145,3 @@ func _on_push_detector_area_exited(area: Area2D) -> void:
 	if overlapping_push_cards.has(other_card):
 		overlapping_push_cards.erase(other_card)
 		print("[Pusher] 卡片 %s 与 %s 结束重叠挤压" % [card.name, other_card.name])
-

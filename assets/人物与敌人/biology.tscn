@@ -19,9 +19,16 @@ viewport_path = NodePath("SubViewport")
 
 [node name="BiologyCard" instance=ExtResource("1_3c02q")]
 
+[node name="shadow" parent="." index="0"]
+mouse_filter = 2
+
 [node name="surface" parent="." index="1"]
 material = SubResource("ShaderMaterial_g27c4")
 texture = SubResource("ViewportTexture_i6tw2")
+
+[node name="CardPushDetectorArea" parent="." index="4"]
+collision_layer = 16
+collision_mask = 16
 
 [node name="AttributeLabels" type="HBoxContainer" parent="SubViewport" index="3"]
 unique_name_in_owner = true

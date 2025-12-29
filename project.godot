@@ -47,6 +47,12 @@ LMB={
 [layer_names]
 
 2d_physics/layer_1="StackDetectorArea"
+2d_physics/layer_4="战斗检测层"
+2d_physics/layer_5="卡片分离检测层"
+
+[physics]
+
+common/physics_ticks_per_second=30
 
 [rendering]
 

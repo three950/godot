@@ -98,6 +98,16 @@ bag_sound = ExtResource("4_ig4cw")
 [node name="CradDragging" parent="CardStateMachine" index="2"]
 type = null
 
+[node name="BattleStartArea" type="Area2D" parent="." index="10"]
+visible = false
+position = Vector2(3, 3)
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BattleStartArea" index="0"]
+position = Vector2(129, 167.5)
+shape = SubResource("RectangleShape2D_ig4cw")
+
 [node name="CardPanel" parent="SubViewport" index="0"]
 unique_name_in_owner = false
 
@@ -109,15 +119,5 @@ unique_name_in_owner = false
 
 [node name="TextureRect" parent="SubViewport" index="2"]
 unique_name_in_owner = false
-
-[node name="BattleStartArea" type="Area2D" parent="." index="10"]
-visible = false
-position = Vector2(3, 3)
-collision_layer = 8
-collision_mask = 4
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BattleStartArea" index="0"]
-position = Vector2(129, 167.5)
-shape = SubResource("RectangleShape2D_ig4cw")
 
 [connection signal="area_entered" from="BattleStartArea" to="." method="_on_battle_start_area_area_entered"]

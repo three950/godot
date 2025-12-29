@@ -84,7 +84,7 @@ expand_mode = 1
 
 [node name="BattleStartArea" type="Area2D" parent="."]
 position = Vector2(3, 3)
-collision_layer = 12
+collision_layer = 8
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BattleStartArea"]
