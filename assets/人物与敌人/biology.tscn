@@ -10,8 +10,9 @@ shader = ExtResource("2_43ghe")
 shader_parameter/fov = 90.0
 shader_parameter/cull_back = true
 shader_parameter/y_rot = 0.0
-shader_parameter/x_rot = 8.549999989782009e-06
+shader_parameter/x_rot = 0.0
 shader_parameter/inset = 0.0
+shader_parameter/back_color = Color(0, 0, 0, 1)
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_i6tw2"]
 viewport_path = NodePath("SubViewport")
@@ -23,6 +24,7 @@ material = SubResource("ShaderMaterial_g27c4")
 texture = SubResource("ViewportTexture_i6tw2")
 
 [node name="AttributeLabels" type="HBoxContainer" parent="SubViewport" index="3"]
+unique_name_in_owner = true
 offset_left = 7.0
 offset_top = 265.0
 offset_right = 255.0
