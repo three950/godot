@@ -17,7 +17,7 @@
 [ext_resource type="Script" uid="uid://sxc0f1pavh3f" path="res://assets/card-states/card_instack.gd" id="9_kvflh"]
 [ext_resource type="Script" uid="uid://bwf2g3aljfb72" path="res://assets/card-states/card_instack_dragging.gd" id="10_a3cqy"]
 [ext_resource type="Script" uid="uid://cvwtip1ly5e7f" path="res://script_folder/animations_shooter.gd" id="11_ram0e"]
-[ext_resource type="Script" uid="uid://c2rerytg2jn4" path="res://assets/card_overlap_pusher.gd" id="12_pusher"]
+[ext_resource type="Script" uid="uid://c2rerytg2jn4" path="res://script_folder/card_overlap_pusher.gd" id="12_pusher"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xo5ip"]
 shader = ExtResource("8_xo5ip")
@@ -182,8 +182,8 @@ position = Vector2(129, 192)
 shape = SubResource("RectangleShape2D_e484p")
 
 [node name="CardPushDetectorArea" type="Area2D" parent="."]
-collision_layer = 5
-collision_mask = 5
+collision_layer = 16
+collision_mask = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CardPushDetectorArea"]
 position = Vector2(132, 172.5)

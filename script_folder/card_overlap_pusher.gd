@@ -113,9 +113,9 @@ func _push_cards_apart(card_a: Card, card_b: Card, delta: float) -> void:
 	# 移动card_b向远离card_a的方向
 	card_b.global_position -= direction * half_move
 	
-	# 如果卡片有子卡片，也需要更新子卡片位置
-	card_a.update_children_position()
-	card_b.update_children_position()
+	# 更新整个堆叠链的位置（如果卡片在堆叠中，会从头卡开始更新整个链）
+	card_a.update_stack_chain_position()
+	card_b.update_stack_chain_position()
 
 ## 重叠检测区域进入信号处理
 func _on_push_detector_area_entered(area: Area2D) -> void:
@@ -127,13 +127,10 @@ func _on_push_detector_area_entered(area: Area2D) -> void:
 	if _is_parent_child_relation(card, other_card):
 		return
 	
-	# 检查两张卡片是否都不在拖拽状态
-	if not _can_be_pushed(card) or not _can_be_pushed(other_card):
-		return
-	
-	# 添加到重叠列表
+	# 添加到重叠列表（即使卡片在拖拽状态也添加，_physics_process 中会检查状态）
+	# 这样当拖拽结束后，如果卡片仍然重叠，就能自动触发分离
 	overlapping_push_cards[other_card] = true
-	print("[Pusher] 卡片 %s 与 %s 开始重叠挤压" % [card.name, other_card.name])
+	print("[Pusher] 卡片 %s 与 %s 开始重叠检测" % [card.name, other_card.name])
 
 ## 重叠检测区域离开信号处理
 func _on_push_detector_area_exited(area: Area2D) -> void:

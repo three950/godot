@@ -167,6 +167,22 @@ func update_children_position() -> void:
 	# 递归更新子卡牌的子卡牌
 	children_card.update_children_position()
 
+# 找到堆叠链的头卡（没有follow_target的卡）
+func get_stack_head() -> Card:
+	var current: Card = self
+	# 向上遍历找到头卡
+	while current.follow_target != null:
+		current = current.follow_target
+	return current
+
+# 从当前卡片开始，更新整个堆叠链的位置
+# 如果当前卡片在堆叠中，会先找到头卡，然后从头卡向下更新整个链
+func update_stack_chain_position() -> void:
+	# 如果当前卡片在堆叠中（有follow_target），找到头卡
+	var head_card: Card = get_stack_head()
+	# 从头卡开始向下更新整个堆叠链
+	head_card.update_children_position()
+
 #region 卡片翻转动画
 ## 播放卡片生成翻转动画
 func play_spawn_flip() -> void:
