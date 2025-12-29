@@ -14,6 +14,9 @@ uniform float x_rot : hint_range(-180, 180) = 0.0;
 uniform float inset : hint_range(0, 1) = 0.0;
 // Consider changing this to a uniform and changing it from code
 
+// 卡背颜色（当cull_back为false时生效）
+uniform vec4 back_color : source_color = vec4(0.0, 0.0, 0.0, 1.0);
+
 varying flat vec2 o;
 varying vec3 p;
 
@@ -48,8 +51,20 @@ void vertex(){
 }
 
 void fragment(){
-	if (cull_back && p.z <= 0.0) discard;
-	vec2 uv = (p.xy / p.z).xy - o;
-	COLOR = texture(TEXTURE, uv + 0.5);
-	COLOR.a *= step(max(abs(uv.x), abs(uv.y)), 0.5);
+	if (p.z <= 0.0) {
+		// 卡片背面
+		if (cull_back) {
+			discard;
+		} else {
+			// 显示卡背颜色
+			vec2 uv = (p.xy / -p.z).xy + o;
+			COLOR = back_color;
+			COLOR.a *= step(max(abs(uv.x), abs(uv.y)), 0.5);
+		}
+	} else {
+		// 卡片正面
+		vec2 uv = (p.xy / p.z).xy - o;
+		COLOR = texture(TEXTURE, uv + 0.5);
+		COLOR.a *= step(max(abs(uv.x), abs(uv.y)), 0.5);
+	}
 }

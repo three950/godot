@@ -25,13 +25,8 @@ var drag_offset: Vector2 = Vector2.ZERO  # 拖拽时鼠标相对于卡片的偏�
 # 通用UI元素引用 - 子类可以重写这些路径
 @onready var card_label: Label = $SubViewport/Panel/Label
 @onready var card_texture: TextureRect = $SubViewport/TextureRect
-# 翻转效果相关
-@onready var surface: TextureRect = $surface
-@onready var shadow: TextureRect = $shadow
-# 翻转动画参数
-var flip_tween: Tween = null
-var base_shadow_offset: Vector2 = Vector2(-5, 5)  # 阴影基础偏移
-var max_lift_height: float = 30.0  # 最大腾空高度
+# 动画播放器
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 
 # Area2D 重叠检测
@@ -48,6 +43,8 @@ var children_card: Card = null# 堆叠在卡片上的子卡片
 func _ready() -> void:
 	card_state_machine.init(self)
 	original_position = position
+	# 让材质唯一化，避免多个卡片共享同一个材质导致动画相互影响
+	_make_materials_unique()
 	# 连接 CardStackDetectorArea 信号
 	var stack_detector = get_node("CardStackDetectorArea")
 	if stack_detector:
@@ -55,6 +52,15 @@ func _ready() -> void:
 		stack_detector.area_exited.connect(_on_stack_detector_area_exited)
 	stacking_on_you.connect(bestacked_on_me)
 	stop_stacking_on_you.connect(stop_stacking_on_me)
+
+## 让卡片的材质唯一化，避免多个实例共享材质
+func _make_materials_unique() -> void:
+	var surface = get_node_or_null("surface")
+	var shadow = get_node_or_null("shadow")
+	if surface and surface.material:
+		surface.material = surface.material.duplicate()
+	if shadow and shadow.material:
+		shadow.material = shadow.material.duplicate()
 
 # 启用 / 禁用堆叠检测 Area
 func set_stack_detector_enabled(enabled: bool) -> void:
@@ -132,15 +138,6 @@ func stop_stacking_on_me() -> void:
 	Events.stack_changed.emit(self)
 func _input(event: InputEvent) -> void:
 	card_state_machine.on_input(event)
-	# === 测试翻转动画（测试完后删除这段） ===
-	if event is InputEventKey and event.pressed:
-		match event.keycode:
-			KEY_F:  # 按F键翻转到背面
-				flip_to_back()
-			KEY_G:  # 按G键翻转到正面
-				flip_to_front()
-			KEY_H:  # 按H键自定义翻转（倾斜效果）
-				play_flip_animation(45.0, 20.0, 0.5)
 
 func _on_gui_input(event: InputEvent) -> void:
 	card_state_machine.on_gui_input(event)
@@ -170,100 +167,8 @@ func update_children_position() -> void:
 	children_card.update_children_position()
 
 #region 卡片翻转动画
-## 播放卡片翻转动画
-## [param target_y_rot]: 目标Y轴旋转角度 (-180 到 180)
-## [param target_x_rot]: 目标X轴旋转角度 (-180 到 180)
-## [param duration]: 动画持续时间
-## [param ease_type]: 缓动类型
-func play_flip_animation(target_y_rot: float = 180.0, target_x_rot: float = 0.0, 
-		duration: float = 0.5, ease_type: Tween.EaseType = Tween.EASE_OUT) -> Tween:
-	# 停止之前的翻转动画
-	if flip_tween and flip_tween.is_valid():
-		flip_tween.kill()
-	
-	flip_tween = create_tween().set_ease(ease_type).set_trans(Tween.TRANS_CUBIC)
-	flip_tween.set_parallel(true)
-	
-	var surface_mat: ShaderMaterial = surface.material as ShaderMaterial
-	var shadow_mat: ShaderMaterial = shadow.material as ShaderMaterial
-	
-	if surface_mat:
-		flip_tween.tween_method(_update_flip_rotation.bind(surface_mat, shadow_mat), 0.0, 1.0, duration)
-		# 设置目标旋转值供插值使用
-		set_meta("target_y_rot", target_y_rot)
-		set_meta("target_x_rot", target_x_rot)
-		set_meta("start_y_rot", surface_mat.get_shader_parameter("y_rot"))
-		set_meta("start_x_rot", surface_mat.get_shader_parameter("x_rot"))
-	
-	return flip_tween
-
-## 更新翻转旋转（内部方法，被tween调用）
-func _update_flip_rotation(progress: float, surface_mat: ShaderMaterial, shadow_mat: ShaderMaterial) -> void:
-	var start_y: float = get_meta("start_y_rot", 0.0)
-	var start_x: float = get_meta("start_x_rot", 0.0)
-	var target_y: float = get_meta("target_y_rot", 180.0)
-	var target_x: float = get_meta("target_x_rot", 0.0)
-	
-	var current_y: float = lerp(start_y, target_y, progress)
-	var current_x: float = lerp(start_x, target_x, progress)
-	
-	# 更新卡面shader
-	surface_mat.set_shader_parameter("y_rot", current_y)
-	surface_mat.set_shader_parameter("x_rot", current_x)
-	
-	# 更新阴影shader
-	if shadow_mat:
-		shadow_mat.set_shader_parameter("y_rot", current_y)
-		shadow_mat.set_shader_parameter("x_rot", current_x)
-	
-	# 计算腾空效果
-	# 翻转角度越大，卡片越"腾空"
-	var flip_amount: float = max(abs(current_y), abs(current_x)) / 180.0
-	var lift_curve: float = sin(flip_amount * PI)  # 使用正弦曲线，翻转到一半时最高
-	
-	# 卡片向上移动（腾空）
-	surface.position.y = -lift_curve * max_lift_height
-	
-	# 阴影保持在地面，但偏移量增加（模拟高度差）
-	var shadow_extra_offset: float = lift_curve * 15.0
-	shadow.position = base_shadow_offset + Vector2(shadow_extra_offset, shadow_extra_offset)
-	
-	# 阴影透明度随高度变化
-	if shadow_mat:
-		shadow_mat.set_shader_parameter("lift_factor", lift_curve)
-
-## 快速翻转到正面
-func flip_to_front(duration: float = 0.4) -> Tween:
-	return play_flip_animation(0.0, 0.0, duration)
-
-## 快速翻转到背面
-func flip_to_back(duration: float = 0.4) -> Tween:
-	return play_flip_animation(180.0, 0.0, duration)
-
-## 设置即时翻转角度（无动画）
-func set_flip_rotation(y_rot: float, x_rot: float = 0.0) -> void:
-	var surface_mat: ShaderMaterial = surface.material as ShaderMaterial
-	var shadow_mat: ShaderMaterial = shadow.material as ShaderMaterial
-	
-	if surface_mat:
-		surface_mat.set_shader_parameter("y_rot", y_rot)
-		surface_mat.set_shader_parameter("x_rot", x_rot)
-	
-	if shadow_mat:
-		shadow_mat.set_shader_parameter("y_rot", y_rot)
-		shadow_mat.set_shader_parameter("x_rot", x_rot)
-		
-		# 计算腾空效果
-		var flip_amount: float = max(abs(y_rot), abs(x_rot)) / 180.0
-		var lift_curve: float = sin(flip_amount * PI)
-		
-		surface.position.y = -lift_curve * max_lift_height
-		shadow.position = base_shadow_offset + Vector2(lift_curve * 15.0, lift_curve * 15.0)
-		shadow_mat.set_shader_parameter("lift_factor", lift_curve)
-
-## 重置翻转状态
-func reset_flip() -> void:
-	set_flip_rotation(0.0, 0.0)
-	surface.position = Vector2.ZERO
-	shadow.position = base_shadow_offset
+## 播放卡片生成翻转动画
+func play_spawn_flip() -> void:
+	if animation_player:
+		animation_player.play("卡片生成翻转")
 #endregion

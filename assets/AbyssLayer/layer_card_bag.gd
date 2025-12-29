@@ -82,17 +82,26 @@ func _spawn_card() -> void:
 	# 根据卡牌资源类型选择正确的场景并实例化
 	var card_instance = _create_card_instance()
 	
-	# 计算生成位置（当前位置的下方）
-	var spawn_position = global_position + spawn_offset
+	# 计算目标位置（当前位置的下方）
+	var target_position = global_position + spawn_offset
 	card_instance.z_index = 1
 	
 	# 将卡牌添加到Cards分组的根节点
 	var cards_group = get_tree().get_first_node_in_group("Cards")
 	if cards_group:
 		cards_group.add_child(card_instance)
+	
+	# 设置初始位置为卡包位置
 	card_instance.global_position = global_position
-	card_instance.shooter.play_card_shooter(spawn_position)
-	print("卡牌已生成于位置: %s, 卡牌名称: %s" % [spawn_position, spawn_card_info.name if spawn_card_info else "默认"])
+	
+	# 播放生成翻转动画
+	card_instance.play_spawn_flip()
+	
+	# 使用 tween 移动到目标位置，持续1秒
+	var tween = create_tween()
+	tween.tween_property(card_instance, "global_position", target_position, 1.0).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	
+	print("卡牌已生成于位置: %s, 卡牌名称: %s" % [target_position, spawn_card_info.name if spawn_card_info else "默认"])
 
 ## 根据卡牌资源类型创建对应的卡牌实例
 func _create_card_instance() -> Node:
