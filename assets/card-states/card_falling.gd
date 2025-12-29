@@ -92,13 +92,13 @@ func stack_on_card(target_card: Card) -> void:
 		card.global_position = saved_global_pos
 		print("卡片 %s 移动到与 %s 相同的父节点" % [card.name, target_card.name])
 	
-	# 设置初始位置：跟随目标卡片的Label节点正下方
-	var label_node = target_card.get_node("Panel")
+	# 设置初始位置：需要使用 Panel 在卡片内的相对位置 + 卡片的全局位置来计算
+	var label_node = target_card.get_node("SubViewport/Panel")
 	if label_node:
-		var label_pos = label_node.global_position
-		var label_size = label_node.size-Vector2(0,3)
-		# 使用目标卡片的 x 坐标确保左右对齐，而不是 Label 的 x 坐标
-		card.global_position = Vector2(target_card.global_position.x, label_pos.y + label_size.y)
+		var label_relative_y = label_node.position.y  # Panel 相对于 SubViewport/卡片的 Y 位置
+		var label_size = label_node.size - Vector2(0, 3)
+		# 子卡片位置 = 父卡片全局位置.y + Panel相对位置.y + Panel高度
+		card.global_position = Vector2(target_card.global_position.x, target_card.global_position.y + label_relative_y + label_size.y)
 	
 	# 设置层级
 	card.z_index = target_card.z_index + 1

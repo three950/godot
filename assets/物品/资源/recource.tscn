@@ -33,13 +33,22 @@ recource = null
 [node name="surface" parent="." index="1"]
 texture = SubResource("ViewportTexture_5s73d")
 
+[node name="CardLabel" parent="." index="2"]
+visible = false
+
+[node name="CardStackDetectorArea" parent="." index="3"]
+visible = false
+
 [node name="CardPanel" parent="SubViewport" index="0"]
+unique_name_in_owner = false
 theme_override_styles/panel = SubResource("StyleBoxFlat_5s73d")
 
 [node name="Panel" parent="SubViewport" index="1"]
+unique_name_in_owner = false
 theme_override_styles/panel = SubResource("StyleBoxFlat_wdw0p")
 
 [node name="Label" parent="SubViewport/Panel" index="0"]
+unique_name_in_owner = false
 text = "食物"
 
 [node name="FoodLabel" type="Label" parent="SubViewport/Panel" index="1"]
@@ -53,5 +62,5 @@ theme_override_colors/font_color = Color(0.3990132, 0, 0.09163085, 1)
 theme_override_font_sizes/font_size = 24
 text = "2"
 
-[node name="CardProgressBar" parent="." index="9"]
-offset_left = 0.0
+[node name="TextureRect" parent="SubViewport" index="4"]
+unique_name_in_owner = false

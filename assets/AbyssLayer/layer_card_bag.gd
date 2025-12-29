@@ -99,7 +99,7 @@ func _spawn_card() -> void:
 	
 	# 使用 tween 移动到目标位置，持续1秒
 	var tween = create_tween()
-	tween.tween_property(card_instance, "global_position", target_position, 1.0).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(card_instance, "global_position", target_position, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	
 	print("卡牌已生成于位置: %s, 卡牌名称: %s" % [target_position, spawn_card_info.name if spawn_card_info else "默认"])
 

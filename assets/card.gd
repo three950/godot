@@ -119,7 +119,7 @@ func bestacked_on_me(children: Card) -> void:
 	print("一宿你")
 	# 当前卡牌作为“被堆叠的底卡”，不再需要参与新的堆叠检测，禁用检测区域
 	set_stack_detector_enabled(false)
-	var label_panel := get_node("Panel")
+	var label_panel := get_node("SubViewport/Panel")
 	if label_panel:
 		size = label_panel.size
 	array_changed.emit()
@@ -155,12 +155,13 @@ func update_children_position() -> void:
 	if children_card == null:
 		return
 	
-	# 更新直接子卡牌的位置
-	var label_node = get_node("Panel")
+	# 更新直接子卡牌的位置Panel 在卡片内的相对位置 + 卡片的全局位置来计算
+	var label_node = get_node("SubViewport/Panel")
 	if label_node:
-		var label_pos = label_node.global_position
+		var label_relative_y = label_node.position.y  # Panel 相对于 SubViewport/卡片的 Y 位置
 		var label_size = label_node.size
-		children_card.global_position = Vector2(global_position.x, label_pos.y + label_size.y)
+		# 子卡片位置 = 父卡片全局位置.y + Panel相对位置.y + Panel高度
+		children_card.global_position = Vector2(global_position.x, global_position.y + label_relative_y + label_size.y)
 		children_card.z_index = z_index + 1
 	
 	# 递归更新子卡牌的子卡牌

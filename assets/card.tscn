@@ -44,6 +44,45 @@ size = Vector2(264, 45)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e484p"]
 size = Vector2(264, 294)
 
+[sub_resource type="Animation" id="Animation_8iohq"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("surface:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("surface:material:shader_parameter/x_rot")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("shadow:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+
 [sub_resource type="Animation" id="Animation_xo5ip"]
 resource_name = "卡片生成翻转"
 length = 0.1
@@ -84,45 +123,6 @@ tracks/2/keys = {
 "values": [Vector2(0.8, 0.8), Vector2(1, 1)]
 }
 
-[sub_resource type="Animation" id="Animation_8iohq"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("surface:scale")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(1, 1)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("surface:material:shader_parameter/x_rot")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("shadow:scale")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(1, 1)]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2vbly"]
 _data = {
 &"RESET": SubResource("Animation_8iohq"),
@@ -148,7 +148,6 @@ offset_left = -4.0
 offset_top = 4.0
 offset_right = 260.0
 offset_bottom = 349.0
-scale = Vector2(1, 1)
 texture = SubResource("GradientTexture2D_shadow")
 
 [node name="surface" type="TextureRect" parent="."]
@@ -157,12 +156,10 @@ material = SubResource("ShaderMaterial_xo5ip")
 layout_mode = 0
 offset_right = 264.0
 offset_bottom = 345.0
-scale = Vector2(1, 1)
 mouse_filter = 2
 texture = SubResource("ViewportTexture_xo5ip")
 
 [node name="CardLabel" type="Area2D" parent="."]
-visible = false
 position = Vector2(3, 3)
 collision_layer = 2
 collision_mask = 0
@@ -172,7 +169,6 @@ position = Vector2(129, 19.5)
 shape = SubResource("RectangleShape2D_q5obu")
 
 [node name="CardStackDetectorArea" type="Area2D" parent="."]
-visible = false
 position = Vector2(3, 3)
 collision_mask = 2
 
@@ -218,12 +214,14 @@ size = Vector2i(262, 342)
 render_target_update_mode = 1
 
 [node name="CardPanel" type="Panel" parent="SubViewport"]
+unique_name_in_owner = true
 offset_right = 264.0
 offset_bottom = 342.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("5_agldc")
 
 [node name="Panel" type="Panel" parent="SubViewport"]
+unique_name_in_owner = true
 offset_left = 6.0
 offset_top = 6.0
 offset_right = 258.0
@@ -232,6 +230,7 @@ mouse_filter = 2
 theme_override_styles/panel = ExtResource("6_3tu4f")
 
 [node name="Label" type="Label" parent="SubViewport/Panel"]
+unique_name_in_owner = true
 layout_mode = 0
 offset_right = 84.0
 offset_bottom = 14.0
@@ -241,6 +240,7 @@ theme_override_font_sizes/font_size = 30
 text = "莉可"
 
 [node name="TextureRect" type="TextureRect" parent="SubViewport"]
+unique_name_in_owner = true
 texture_filter = 1
 offset_left = 15.0
 offset_top = 54.0

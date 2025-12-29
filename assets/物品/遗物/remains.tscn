@@ -33,13 +33,22 @@ remains = null
 [node name="surface" parent="." index="1"]
 texture = SubResource("ViewportTexture_ssi8w")
 
+[node name="CardLabel" parent="." index="2"]
+visible = false
+
+[node name="CardStackDetectorArea" parent="." index="3"]
+visible = false
+
 [node name="CardPanel" parent="SubViewport" index="0"]
+unique_name_in_owner = false
 theme_override_styles/panel = SubResource("StyleBoxFlat_hkc7c")
 
 [node name="Panel" parent="SubViewport" index="1"]
+unique_name_in_owner = false
 theme_override_styles/panel = SubResource("StyleBoxFlat_ssi8w")
 
 [node name="Label" parent="SubViewport/Panel" index="0"]
+unique_name_in_owner = false
 text = "遗物"
 
 [node name="LevelLabel" type="Label" parent="SubViewport/Panel" index="1"]
@@ -54,5 +63,5 @@ grow_horizontal = 0
 theme_override_font_sizes/font_size = 30
 text = "5"
 
-[node name="CardProgressBar" parent="." index="9"]
-offset_left = 0.0
+[node name="TextureRect" parent="SubViewport" index="4"]
+unique_name_in_owner = false

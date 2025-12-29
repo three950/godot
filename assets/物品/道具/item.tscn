@@ -33,19 +33,22 @@ item = null
 [node name="surface" parent="." index="1"]
 texture = SubResource("ViewportTexture_ja4eb")
 
+[node name="CardPanel" parent="SubViewport" index="0"]
+unique_name_in_owner = false
+theme_override_styles/panel = SubResource("StyleBoxFlat_7lfsj")
+
+[node name="Panel" parent="SubViewport" index="1"]
+unique_name_in_owner = false
+theme_override_styles/panel = SubResource("StyleBoxFlat_ja4eb")
+
+[node name="Label" parent="SubViewport/Panel" index="0"]
+unique_name_in_owner = false
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "道具"
+
 [node name="valueText" parent="SubViewport" index="2"]
 offset_left = 73.0
 offset_right = 145.0
 
-[node name="CardPanel" parent="SubViewport" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_7lfsj")
-
-[node name="Panel" parent="SubViewport" index="1"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_ja4eb")
-
-[node name="Label" parent="SubViewport/Panel" index="0"]
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "道具"
-
-[node name="CardProgressBar" parent="." index="9"]
-offset_left = 0.0
+[node name="TextureRect" parent="SubViewport" index="4"]
+unique_name_in_owner = false

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://di7barbrn42cy"]
+[gd_scene load_steps=12 format=3 uid="uid://di7barbrn42cy"]
 
 [ext_resource type="PackedScene" uid="uid://b1oqblyvspkqi" path="res://assets/人物与敌人/biology.tscn" id="1_p58c1"]
 [ext_resource type="Script" uid="uid://blvsy21y0f4uy" path="res://assets/人物与敌人/Character/character.gd" id="2_dm7l3"]
@@ -10,6 +10,9 @@
 [sub_resource type="Resource" id="Resource_7cwdw"]
 script = ExtResource("3_pntmc")
 metadata/_custom_type_script = "uid://bf2o85td7sner"
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_xjtrw"]
+viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7cwdw"]
 bg_color = Color(1, 1, 1, 1)
@@ -35,6 +38,18 @@ offset_bottom = 174.0
 script = ExtResource("2_dm7l3")
 character = null
 battle = SubResource("Resource_7cwdw")
+
+[node name="surface" parent="." index="1"]
+texture = SubResource("ViewportTexture_xjtrw")
+
+[node name="CardLabel" parent="." index="2"]
+visible = false
+
+[node name="CollisionShape2D" parent="CardLabel" index="0"]
+position = Vector2(129, 20)
+
+[node name="CardStackDetectorArea" parent="." index="3"]
+visible = false
 
 [node name="white" type="Panel" parent="." index="4"]
 visible = false
@@ -80,13 +95,23 @@ clip_text = true
 script = ExtResource("3_dm7l3")
 bag_sound = ExtResource("4_ig4cw")
 
-[node name="CollisionShape2D" parent="CardLabel" index="0"]
-position = Vector2(129, 20)
-
 [node name="CradDragging" parent="CardStateMachine" index="2"]
 type = null
 
+[node name="CardPanel" parent="SubViewport" index="0"]
+unique_name_in_owner = false
+
+[node name="Panel" parent="SubViewport" index="1"]
+unique_name_in_owner = false
+
+[node name="Label" parent="SubViewport/Panel" index="0"]
+unique_name_in_owner = false
+
+[node name="TextureRect" parent="SubViewport" index="2"]
+unique_name_in_owner = false
+
 [node name="BattleStartArea" type="Area2D" parent="." index="10"]
+visible = false
 position = Vector2(3, 3)
 collision_layer = 8
 collision_mask = 4

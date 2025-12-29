@@ -33,13 +33,22 @@ equipment = null
 [node name="surface" parent="." index="1"]
 texture = SubResource("ViewportTexture_rkhsv")
 
+[node name="CardLabel" parent="." index="2"]
+visible = false
+
+[node name="CardStackDetectorArea" parent="." index="3"]
+visible = false
+
 [node name="CardPanel" parent="SubViewport" index="0"]
+unique_name_in_owner = false
 theme_override_styles/panel = SubResource("StyleBoxFlat_rkhsv")
 
 [node name="Panel" parent="SubViewport" index="1"]
+unique_name_in_owner = false
 theme_override_styles/panel = SubResource("StyleBoxFlat_k2tfy")
 
 [node name="Label" parent="SubViewport/Panel" index="0"]
+unique_name_in_owner = false
 text = "武器"
 
 [node name="EffectLabel" type="Label" parent="SubViewport" index="2"]
@@ -52,5 +61,5 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "ATK+5"
 
-[node name="CardProgressBar" parent="." index="9"]
-offset_left = 0.0
+[node name="TextureRect" parent="SubViewport" index="5"]
+unique_name_in_owner = false
