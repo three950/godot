@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://cxgk8a5mjy27v"]
+[gd_scene load_steps=27 format=3 uid="uid://cxgk8a5mjy27v"]
 
 [ext_resource type="Script" uid="uid://ut5tbn2q80gh" path="res://assets/card.gd" id="1_q5obu"]
 [ext_resource type="Resource" uid="uid://cq6i5xpurm0al" path="res://base_data/Battle_stats.tres" id="2_agldc"]
@@ -21,20 +21,16 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xo5ip"]
 shader = ExtResource("8_xo5ip")
-shader_parameter/fov = 52.4210024424975
-shader_parameter/cull_back = false
-shader_parameter/y_rot = 8.549999989782009e-06
+shader_parameter/fov = 90.0
+shader_parameter/cull_back = true
+shader_parameter/y_rot = 0.0
 shader_parameter/x_rot = 0.0
 shader_parameter/inset = 0.0
 shader_parameter/back_color = Color(0, 0, 0, 1)
-
-[sub_resource type="Gradient" id="Gradient_shadow"]
-colors = PackedColorArray(0, 0, 0, 0.35, 0, 0, 0, 0.35)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_shadow"]
-gradient = SubResource("Gradient_shadow")
-width = 264
-height = 345
+shader_parameter/shadow_enabled = true
+shader_parameter/shadow_offset_x = 2.0
+shader_parameter/shadow_offset_y = 2.0
+shader_parameter/shadow_color = Color(0, 0, 0, 0.4)
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_xo5ip"]
 viewport_path = NodePath("SubViewport")
@@ -74,18 +70,6 @@ tracks/1/keys = {
 "update": 0,
 "values": [0.0]
 }
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("shadow:scale")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(1, 1)]
-}
 
 [sub_resource type="Animation" id="Animation_xo5ip"]
 resource_name = "卡片生成翻转"
@@ -114,18 +98,6 @@ tracks/1/keys = {
 "update": 0,
 "values": [-180.0, 0.0]
 }
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("shadow:scale")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(0.8, 0.8), Vector2(1, 1)]
-}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2vbly"]
 _data = {
@@ -141,18 +113,12 @@ offset_top = -172.0
 offset_right = 132.0
 offset_bottom = 173.0
 script = ExtResource("1_q5obu")
+cardname = null
+card_type = null
+can_stack = null
 battle = ExtResource("2_agldc")
 pickup_sound = ExtResource("2_mqa0q")
 fall_sound = ExtResource("3_agldc")
-
-[node name="shadow" type="TextureRect" parent="."]
-material = SubResource("ShaderMaterial_xo5ip")
-layout_mode = 0
-offset_top = 4.0
-offset_right = 264.0
-offset_bottom = 349.0
-mouse_filter = 2
-texture = SubResource("GradientTexture2D_shadow")
 
 [node name="surface" type="TextureRect" parent="."]
 texture_filter = 1

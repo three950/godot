@@ -1,4 +1,3 @@
-@tool
 extends Scene
 class_name Small_Scene
 

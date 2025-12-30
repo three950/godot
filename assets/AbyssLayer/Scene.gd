@@ -1,4 +1,3 @@
-@tool
 extends Card
 class_name Scene
 @onready var label: Label = $Panel/Label
