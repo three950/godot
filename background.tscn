@@ -1,6 +1,7 @@
-[gd_scene load_steps=11 format=3 uid="uid://d8vp1m0epvxf"]
+[gd_scene load_steps=12 format=3 uid="uid://d8vp1m0epvxf"]
 
 [ext_resource type="StyleBox" uid="uid://to3672utuxwe" path="res://ui/棋盘.tres" id="2_vvxqx"]
+[ext_resource type="Script" uid="uid://bbnp6ftl63g4m" path="res://script_folder/camera_controller.gd" id="3_camera"]
 [ext_resource type="PackedScene" uid="uid://dde8q2r1usqpa" path="res://ui/shop_bag/GroundPackage.tscn" id="4_eq6nc"]
 [ext_resource type="PackedScene" uid="uid://bivykmwh7lskv" path="res://assets/固定场景建筑/探窟者协会/探窟者协会.tscn" id="4_splo0"]
 [ext_resource type="AudioStream" uid="uid://cb0w4jfqxv6so" path="res://声音资产/useful/Gore Splat Stab Poke 03.wav" id="5_cdpnt"]

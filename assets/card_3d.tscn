@@ -1,0 +1,54 @@
+[gd_scene load_steps=6 format=3 uid="uid://card3d_scene_001"]
+
+[ext_resource type="Script" uid="uid://card3d_script_001" path="res://assets/card_3d.gd" id="1_card3d"]
+[ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="2_icon"]
+[ext_resource type="StyleBox" uid="uid://b0256y5bp2byj" path="res://card.tres" id="3_cardstyle"]
+[ext_resource type="StyleBox" uid="uid://bv510uix8lck3" path="res://cardpanel.tres" id="4_panelstyle"]
+[ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://font.tres" id="5_font"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_card3d"]
+size = Vector2(264, 345)
+
+[node name="Card3D" type="MeshInstance3D"]
+mesh = SubResource("QuadMesh_card3d")
+script = ExtResource("1_card3d")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(264, 345)
+render_target_update_mode = 4
+
+[node name="CardPanel" type="Panel" parent="SubViewport"]
+offset_right = 264.0
+offset_bottom = 345.0
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("3_cardstyle")
+
+[node name="Panel" type="Panel" parent="SubViewport"]
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 258.0
+offset_bottom = 48.0
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("4_panelstyle")
+
+[node name="Label" type="Label" parent="SubViewport/Panel"]
+layout_mode = 0
+offset_right = 246.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 30
+text = "卡牌名称"
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport"]
+texture_filter = 1
+offset_left = 15.0
+offset_top = 54.0
+offset_right = 250.0
+offset_bottom = 261.0
+mouse_filter = 2
+texture = ExtResource("2_icon")
+expand_mode = 1
+
