@@ -12,6 +12,8 @@ func enter() -> void:
 		card.update_children_position()
 	card.drag_offset = card.get_global_mouse_position()-card.global_position
 	card.drag_started.emit()
+	# 应用拾取偏移（卡片上移，阴影下移），包括子卡片
+	card.apply_pickup_offset()
 	# 通知全局事件系统
 	Events.card_drag_started.emit(card)
 	SFXPlayer.play(card.pickup_sound, false, 12.0)

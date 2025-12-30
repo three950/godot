@@ -8,6 +8,8 @@ func enter() -> void:
 	if card.follow_target == null:
 		print("没有目标兄弟")
 	follow_me.connect(follow_you)
+	# 重置卡片和阴影的偏移到原始位置
+	card.reset_offset()
 	# 记录初始位置
 	last_position = card.global_position
 

@@ -35,8 +35,14 @@ var surface_original_position: Vector2 = Vector2.ZERO
 var shadow_original_position: Vector2 = Vector2.ZERO
 # 悬停时向上移动的距离
 const HOVER_OFFSET_Y := -5.0
+# 拾取时额外向上移动的距离
+const PICKUP_OFFSET_Y := -8.0
 # shadow 的最大偏移量（根据位置计算）
 const SHADOW_MAX_OFFSET := 8.0
+# 当前是否处于悬停状态
+var is_hovered: bool = false
+# 当前是否处于拾取状态
+var is_picked_up: bool = false
 
 
 # Area2D 重叠检测
@@ -165,16 +171,72 @@ func _on_gui_input(event: InputEvent) -> void:
 
 func _on_mouse_entered() -> void:
 	card_state_machine.on_mouse_entered()
-	# 鼠标进入时，surface 向上移动
-	if surface:
-		surface.position.y = surface_original_position.y + HOVER_OFFSET_Y
-
+	# 如果卡片在堆叠中且有父卡（follow_target），不进行偏移
+	# 偏移由头卡递归应用
+	if follow_target != null:
+		return
+	# 鼠标进入时，应用悬停偏移
+	is_hovered = true
+	_apply_hover_offset()
 
 func _on_mouse_exited() -> void:
 	card_state_machine.on_mouse_exited()
-	# 鼠标移出时，surface 回到原位
+	# 如果卡片在堆叠中且有父卡（follow_target），不进行偏移
+	if follow_target != null:
+		return
+	# 鼠标移出时，移除悬停偏移（包括子卡片）
+	_remove_hover_offset()
+
+# 应用悬停偏移（卡片上移，阴影下移），并递归应用到子卡片
+func _apply_hover_offset() -> void:
+	_update_offset()
+	# 递归应用到子卡片（只处理surface，不处理shadow）
+	if children_card:
+		children_card.is_hovered = true
+		children_card._apply_hover_offset()
+
+# 移除悬停偏移，并递归移除子卡片的偏移
+func _remove_hover_offset() -> void:
+	is_hovered = false
+	_update_offset()
+	# 递归移除子卡片的偏移
+	if children_card:
+		children_card._remove_hover_offset()
+
+# 应用拾取偏移（在悬停偏移基础上再偏移），并递归应用到子卡片
+func apply_pickup_offset() -> void:
+	is_picked_up = true
+	_update_offset()
+	# 递归应用到子卡片
+	if children_card:
+		children_card.apply_pickup_offset()
+
+# 重置所有偏移到原始位置，并递归重置子卡片
+func reset_offset() -> void:
+	is_hovered = false
+	is_picked_up = false
+	_update_offset()
+	# 递归重置子卡片
+	if children_card:
+		children_card.reset_offset()
+
+# 根据当前状态更新 surface 和 shadow 的位置
+func _update_offset() -> void:
+	var total_surface_offset: float = 0.0
+	var total_shadow_offset: float = 0.0
+	
+	if is_hovered:
+		total_surface_offset += HOVER_OFFSET_Y
+		total_shadow_offset -= HOVER_OFFSET_Y  # 阴影反方向移动
+	
+	if is_picked_up:
+		total_surface_offset += PICKUP_OFFSET_Y
+		total_shadow_offset -= PICKUP_OFFSET_Y  # 阴影反方向移动
+	
 	if surface:
-		surface.position.y = surface_original_position.y
+		surface.position.y = surface_original_position.y + total_surface_offset
+	if shadow:
+		shadow.position.y = shadow_original_position.y + total_shadow_offset
 
 # 递归更新所有子卡牌的位置和z_index
 func update_children_position() -> void:
@@ -209,7 +271,7 @@ func update_stack_chain_position() -> void:
 	# 从头卡开始向下更新整个堆叠链
 	head_card.update_children_position()
 
-# 根据卡片在 cardsArea 中的全局位置更新 shadow 的偏移量
+# 根据卡片在 cardsArea 中的全局位置更新 shadow 的 X 轴偏移量
 func update_shadow_offset() -> void:
 	if not shadow:
 		return
@@ -233,8 +295,8 @@ func update_shadow_offset() -> void:
 	# 使用 -1.0 到 1.0 的范围，然后乘以最大偏移量
 	var offset_x = (relative_x * 2.0 - 1.0) * SHADOW_MAX_OFFSET
 	
-	# 更新 shadow 位置（基于原始位置加上计算出的偏移）
-	shadow.position = Vector2(shadow_original_position.x + offset_x, shadow_original_position.y)
+	# 只更新 shadow 的 X 轴位置，保留 Y 轴的状态偏移
+	shadow.position.x = shadow_original_position.x + offset_x
 
 #region 卡片翻转动画
 ## 播放卡片生成翻转动画

@@ -3,6 +3,8 @@ func enter() -> void:
 	if not card.is_node_ready():
 		await card.ready
 	print("fix状态开始")
+	# 重置卡片和阴影的偏移到原始位置
+	card.reset_offset()
 	card.reparent_requested.emit(card)
 	card.pivot_offset = Vector2.ZERO
 	Events.stack_changed.emit(card)
