@@ -6,7 +6,7 @@ func enter() -> void:
 		card.follow_target.stop_stacking_on_you.emit()
 		card.stack_state = 0
 		card.follow_target = null  # 清除跟随目标
-	#card.z_index = 100
+	card.z_index = 100
 	# 立即更新所有子卡的z_index
 	if card.children_card != null:
 		card.update_children_position()
