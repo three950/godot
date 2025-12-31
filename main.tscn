@@ -37,7 +37,7 @@ shader_parameter/shadow_offset_x = 0.05
 shader_parameter/shadow_offset_y = 0.05
 shader_parameter/shadow_rotation = 0.0
 shader_parameter/rotation_pivot = Vector2(0.5, 0.5)
-shader_parameter/shadow_blur_strength = 2.0
+shader_parameter/shadow_blur_strength = 0.0
 shader_parameter/shadow_blur_samples = 4
 shader_parameter/_blur_scale_factor = 1.0
 
@@ -81,9 +81,11 @@ metadata/_custom_type_script = "uid://bhwdhxluayto5"
 [node name="BattleManager" type="Node" parent="."]
 script = ExtResource("28_xuqvo")
 
-[node name="CanvasGroup" type="CanvasGroup" parent="."]
+[node name="CanvasGroup" type="CanvasGroup" parent="." groups=["Cards"]]
 material = SubResource("ShaderMaterial_kq58d")
 position = Vector2(15, -19)
+fit_margin = 1024.0
+clear_margin = 1024.0
 
 [node name="娜娜奇" parent="CanvasGroup" instance=ExtResource("6_kek77")]
 offset_left = 315.0
@@ -161,8 +163,8 @@ offset_bottom = 952.0
 equipment = ExtResource("16_yaehf")
 
 [node name="Recource" parent="CanvasGroup" instance=ExtResource("13_ycdy4")]
-offset_left = 937.0
-offset_top = 557.0
-offset_right = 1201.0
-offset_bottom = 902.0
+offset_left = 934.0
+offset_top = 544.0
+offset_right = 1198.0
+offset_bottom = 889.0
 recource = ExtResource("14_w48qg")
