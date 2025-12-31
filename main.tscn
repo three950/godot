@@ -33,10 +33,12 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kq58d"]
 shader = ExtResource("26_qsp4k")
 shader_parameter/drop_shadow_color = Color(0, 0, 0, 0.5)
-shader_parameter/shadow_offset_x = 0.05
-shader_parameter/shadow_offset_y = 0.05
 shader_parameter/shadow_rotation = 0.0
 shader_parameter/rotation_pivot = Vector2(0.5, 0.5)
+shader_parameter/use_position_based_offset = true
+shader_parameter/offset_variation_x = Vector2(0, 0.01)
+shader_parameter/offset_variation_y = Vector2(0, 0.01)
+shader_parameter/offset_gradient_direction = Vector2(1, 1)
 shader_parameter/shadow_blur_strength = 0.0
 shader_parameter/shadow_blur_samples = 4
 shader_parameter/_blur_scale_factor = 1.0
