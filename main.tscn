@@ -41,15 +41,15 @@ shader_parameter/shadow_blur_strength = 0.0
 shader_parameter/shadow_blur_samples = 4
 shader_parameter/_blur_scale_factor = 1.0
 
-[sub_resource type="Resource" id="Resource_xuqvo"]
-script = ExtResource("6_xuqvo")
-metadata/_custom_type_script = "uid://bf2o85td7sner"
-
 [sub_resource type="Resource" id="Resource_qsp4k"]
 script = ExtResource("6_xuqvo")
 metadata/_custom_type_script = "uid://bf2o85td7sner"
 
 [sub_resource type="Resource" id="Resource_kq58d"]
+script = ExtResource("6_xuqvo")
+metadata/_custom_type_script = "uid://bf2o85td7sner"
+
+[sub_resource type="Resource" id="Resource_seu75"]
 script = ExtResource("6_xuqvo")
 metadata/_custom_type_script = "uid://bf2o85td7sner"
 
@@ -93,7 +93,7 @@ offset_top = 1297.0
 offset_right = 579.0
 offset_bottom = 1642.0
 character = ExtResource("7_4c57u")
-battle = SubResource("Resource_xuqvo")
+battle = SubResource("Resource_qsp4k")
 
 [node name="莉可" parent="CanvasGroup" instance=ExtResource("6_kek77")]
 offset_left = 2251.0
@@ -101,7 +101,7 @@ offset_top = 603.0
 offset_right = 2515.0
 offset_bottom = 948.0
 character = ExtResource("8_efxa6")
-battle = SubResource("Resource_qsp4k")
+battle = SubResource("Resource_kq58d")
 
 [node name="雷古" parent="CanvasGroup" instance=ExtResource("6_kek77")]
 offset_left = 314.0
@@ -109,7 +109,7 @@ offset_top = 651.0
 offset_right = 578.0
 offset_bottom = 996.0
 character = ExtResource("9_dg77c")
-battle = SubResource("Resource_kq58d")
+battle = SubResource("Resource_seu75")
 
 [node name="EnemyCard" parent="CanvasGroup" instance=ExtResource("9_enemy_card")]
 offset_left = 1257.0
