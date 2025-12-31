@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://r1lb3ajxfx1j"]
+[gd_scene load_steps=34 format=3 uid="uid://r1lb3ajxfx1j"]
 
 [ext_resource type="AudioStream" uid="uid://b6c68bakgojm8" path="res://声音资产/Audio/ogg/Tracks/Forgotten Biomes.ogg" id="2_lswn8"]
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://background.tscn" id="3_h2yge"]
@@ -27,7 +27,19 @@
 [ext_resource type="PackedScene" uid="uid://bm4r8w10jcbid" path="res://ui/ui_layer.tscn" id="23_d13ii"]
 [ext_resource type="Resource" uid="uid://c0t1pg4ohysod" path="res://assets/小场景/scene_card_pool/河流.tres" id="24_lswn8"]
 [ext_resource type="Resource" uid="uid://bvxngiedcur8" path="res://assets/小场景/scene_card_pool/小洞穴.tres" id="25_a6jrf"]
+[ext_resource type="Shader" uid="uid://nt87lgpp8r44" path="res://shader/canvasgroup阴影.gdshader" id="26_qsp4k"]
 [ext_resource type="Script" uid="uid://bxyb8ihft7c6l" path="res://script_folder/battle_manager.gd" id="28_xuqvo"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kq58d"]
+shader = ExtResource("26_qsp4k")
+shader_parameter/drop_shadow_color = Color(0, 0, 0, 0.5)
+shader_parameter/shadow_offset_x = 0.05
+shader_parameter/shadow_offset_y = 0.05
+shader_parameter/shadow_rotation = 0.0
+shader_parameter/rotation_pivot = Vector2(0.5, 0.5)
+shader_parameter/shadow_blur_strength = 2.0
+shader_parameter/shadow_blur_samples = 4
+shader_parameter/_blur_scale_factor = 1.0
 
 [sub_resource type="Resource" id="Resource_xuqvo"]
 script = ExtResource("6_xuqvo")
@@ -49,37 +61,6 @@ bgm = ExtResource("2_lswn8")
 [node name="backgroundUi" parent="." instance=ExtResource("3_h2yge")]
 metadata/_edit_lock_ = true
 
-[node name="娜娜奇" parent="." instance=ExtResource("6_kek77")]
-offset_left = 330.0
-offset_top = 1278.0
-offset_right = 594.0
-offset_bottom = 1623.0
-character = ExtResource("7_4c57u")
-battle = SubResource("Resource_xuqvo")
-
-[node name="莉可" parent="." instance=ExtResource("6_kek77")]
-offset_left = 2266.0
-offset_top = 584.0
-offset_right = 2530.0
-offset_bottom = 929.0
-character = ExtResource("8_efxa6")
-battle = SubResource("Resource_qsp4k")
-
-[node name="雷古" parent="." instance=ExtResource("6_kek77")]
-offset_left = 329.0
-offset_top = 632.0
-offset_right = 593.0
-offset_bottom = 977.0
-character = ExtResource("9_dg77c")
-battle = SubResource("Resource_kq58d")
-
-[node name="EnemyCard" parent="." instance=ExtResource("9_enemy_card")]
-offset_left = 1272.0
-offset_top = 1241.0
-offset_right = 1272.0
-offset_bottom = 1241.0
-enemy = ExtResource("10_4c57u")
-
 [node name="BagMover" type="Node" parent="."]
 script = ExtResource("11_efxa6")
 
@@ -92,61 +73,96 @@ limit_bottom = 2140
 script = ExtResource("4_camera")
 min_zoom = 0.2
 
-[node name="Item" parent="." instance=ExtResource("11_dg77c")]
-offset_left = 1855.0
-offset_top = 672.0
-offset_right = 2119.0
-offset_bottom = 1017.0
-item = ExtResource("12_dg77c")
-
-[node name="Recource" parent="." instance=ExtResource("13_ycdy4")]
-offset_left = 809.0
-offset_top = 607.0
-offset_right = 1073.0
-offset_bottom = 952.0
-recource = ExtResource("14_w48qg")
-
-[node name="Equipment" parent="." instance=ExtResource("15_2cqfq")]
-offset_left = 1360.0
-offset_top = 627.0
-offset_right = 1624.0
-offset_bottom = 972.0
-equipment = ExtResource("16_yaehf")
-
-[node name="1000m" parent="." instance=ExtResource("16_2cqfq")]
-offset_left = 2740.0
-offset_top = 783.0
-offset_right = 2828.0
-offset_bottom = 898.0
-scene = ExtResource("17_074og")
-cardpool = ExtResource("18_cegan")
-
-[node name="500m" parent="." instance=ExtResource("16_2cqfq")]
-offset_left = 2947.0
-offset_top = 1272.0
-offset_right = 3035.0
-offset_bottom = 1387.0
-scene = ExtResource("20_82xsv")
-cardpool = ExtResource("18_cegan")
-
 [node name="CraftManager" type="Node" parent="."]
 script = ExtResource("21_getpj")
 craft_pools = Array[ExtResource("22_ryguw")]([ExtResource("16_yaehf"), ExtResource("12_dg77c")])
 metadata/_custom_type_script = "uid://bhwdhxluayto5"
 
-[node name="小场景2" parent="." instance=ExtResource("23_0odxb")]
-offset_left = 2642.0
-offset_top = 1272.0
-offset_right = 2730.0
-offset_bottom = 1387.0
-scene = ExtResource("25_a6jrf")
-
-[node name="小场景" parent="." instance=ExtResource("23_0odxb")]
-offset_left = 2287.0
-offset_top = 1284.0
-offset_right = 2375.0
-offset_bottom = 1399.0
-scene = ExtResource("24_lswn8")
-
 [node name="BattleManager" type="Node" parent="."]
 script = ExtResource("28_xuqvo")
+
+[node name="CanvasGroup" type="CanvasGroup" parent="."]
+material = SubResource("ShaderMaterial_kq58d")
+position = Vector2(15, -19)
+
+[node name="娜娜奇" parent="CanvasGroup" instance=ExtResource("6_kek77")]
+offset_left = 315.0
+offset_top = 1297.0
+offset_right = 579.0
+offset_bottom = 1642.0
+character = ExtResource("7_4c57u")
+battle = SubResource("Resource_xuqvo")
+
+[node name="莉可" parent="CanvasGroup" instance=ExtResource("6_kek77")]
+offset_left = 2251.0
+offset_top = 603.0
+offset_right = 2515.0
+offset_bottom = 948.0
+character = ExtResource("8_efxa6")
+battle = SubResource("Resource_qsp4k")
+
+[node name="雷古" parent="CanvasGroup" instance=ExtResource("6_kek77")]
+offset_left = 314.0
+offset_top = 651.0
+offset_right = 578.0
+offset_bottom = 996.0
+character = ExtResource("9_dg77c")
+battle = SubResource("Resource_kq58d")
+
+[node name="EnemyCard" parent="CanvasGroup" instance=ExtResource("9_enemy_card")]
+offset_left = 1257.0
+offset_top = 1260.0
+offset_right = 1257.0
+offset_bottom = 1260.0
+enemy = ExtResource("10_4c57u")
+
+[node name="Item" parent="CanvasGroup" instance=ExtResource("11_dg77c")]
+offset_left = 1840.0
+offset_top = 691.0
+offset_right = 2104.0
+offset_bottom = 1036.0
+item = ExtResource("12_dg77c")
+
+[node name="1000m" parent="CanvasGroup" instance=ExtResource("16_2cqfq")]
+offset_left = 2725.0
+offset_top = 802.0
+offset_right = 2813.0
+offset_bottom = 917.0
+scene = ExtResource("17_074og")
+cardpool = ExtResource("18_cegan")
+
+[node name="500m" parent="CanvasGroup" instance=ExtResource("16_2cqfq")]
+offset_left = 2932.0
+offset_top = 1291.0
+offset_right = 3020.0
+offset_bottom = 1406.0
+scene = ExtResource("20_82xsv")
+cardpool = ExtResource("18_cegan")
+
+[node name="小场景2" parent="CanvasGroup" instance=ExtResource("23_0odxb")]
+offset_left = 2627.0
+offset_top = 1291.0
+offset_right = 2715.0
+offset_bottom = 1406.0
+scene = ExtResource("25_a6jrf")
+
+[node name="小场景" parent="CanvasGroup" instance=ExtResource("23_0odxb")]
+offset_left = 2272.0
+offset_top = 1303.0
+offset_right = 2360.0
+offset_bottom = 1418.0
+scene = ExtResource("24_lswn8")
+
+[node name="Equipment" parent="CanvasGroup" instance=ExtResource("15_2cqfq")]
+offset_left = 1394.0
+offset_top = 607.0
+offset_right = 1658.0
+offset_bottom = 952.0
+equipment = ExtResource("16_yaehf")
+
+[node name="Recource" parent="CanvasGroup" instance=ExtResource("13_ycdy4")]
+offset_left = 937.0
+offset_top = 557.0
+offset_right = 1201.0
+offset_bottom = 902.0
+recource = ExtResource("14_w48qg")
