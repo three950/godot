@@ -82,6 +82,7 @@ metadata/_custom_type_script = "uid://bhwdhxluayto5"
 script = ExtResource("28_xuqvo")
 
 [node name="CanvasGroup" type="CanvasGroup" parent="." groups=["Cards"]]
+z_as_relative = false
 material = SubResource("ShaderMaterial_kq58d")
 position = Vector2(15, -19)
 fit_margin = 1024.0
