@@ -1,0 +1,28 @@
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://bvmwl56050l0g"]
+
+[ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://font.tres" id="1_bsmre"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_focus"]
+bg_color = Color(0, 0, 0, 0)
+border_width_bottom = 2
+border_color = Color(0.15127584, 0.1512762, 0.1512759, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bsmre"]
+bg_color = Color(0.8082192, 0.7718394, 0.6460222, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ouk20"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y3icr"]
+
+[resource]
+default_font = ExtResource("1_bsmre")
+Button/colors/font_color = Color(0.15127584, 0.1512762, 0.1512759, 1)
+Button/colors/font_focus_color = Color(0.15127584, 0.1512762, 0.1512759, 1)
+Button/colors/font_hover_color = Color(0.15127584, 0.1512762, 0.1512759, 1)
+Button/colors/font_hover_pressed_color = Color(0.15127584, 0.1512762, 0.1512759, 1)
+Button/colors/font_pressed_color = Color(0.15127584, 0.1512762, 0.1512759, 1)
+Button/constants/h_separation = 0
+Button/styles/focus = SubResource("StyleBoxFlat_focus")
+Button/styles/hover = SubResource("StyleBoxFlat_bsmre")
+Button/styles/normal = SubResource("StyleBoxEmpty_ouk20")
+Button/styles/pressed = SubResource("StyleBoxFlat_y3icr")

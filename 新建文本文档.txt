@@ -1,3 +1,4 @@
+主界面点击开始按钮后切换到游戏场景：get_tree().change_scene_to_file()
 instantiate方法的重构
 层级显示问题Ordering然后勾选Y Sort Enabled
 packedStringArray紧凑型字符串：赋值的时候可以="\n".join(packedStringArray),在每个字符串自建自动加上换行符

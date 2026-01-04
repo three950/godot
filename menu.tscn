@@ -1,0 +1,89 @@
+[gd_scene load_steps=5 format=3 uid="uid://dxe4645grffkx"]
+
+[ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://font.tres" id="1_lti8b"]
+[ext_resource type="Theme" uid="uid://bvmwl56050l0g" path="res://menu.tres" id="2_ouk20"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mae5d"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4hy44"]
+bg_color = Color(0.8082192, 0.7718394, 0.6460222, 1)
+
+[node name="main_menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="background" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = -53.0
+offset_top = -48.0
+offset_right = 1976.0
+offset_bottom = 1128.0
+color = Color(0.89411765, 0.87058824, 0.7882353, 1)
+
+[node name="gametitle" type="Label" parent="."]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 418.75
+theme_override_colors/font_color = Color(0.8103397, 0.47113687, 0.6079126, 1)
+theme_override_fonts/font = ExtResource("1_lti8b")
+theme_override_font_sizes/font_size = 300
+text = "来自深渊"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -634.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("2_ouk20")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+
+[node name="startbutton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.15127584, 0.1512762, 0.1512759, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_lti8b")
+theme_override_font_sizes/font_size = 100
+theme_override_styles/normal = SubResource("StyleBoxEmpty_mae5d")
+theme_override_styles/focus = SubResource("StyleBoxFlat_4hy44")
+text = "开始游戏"
+
+[node name="setting" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.15127584, 0.1512762, 0.1512759, 1)
+theme_override_fonts/font = ExtResource("1_lti8b")
+theme_override_font_sizes/font_size = 100
+theme_override_styles/normal = SubResource("StyleBoxEmpty_mae5d")
+theme_override_styles/focus = SubResource("StyleBoxFlat_4hy44")
+text = "设置"
+
+[node name="credits" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.15127584, 0.1512762, 0.1512759, 1)
+theme_override_fonts/font = ExtResource("1_lti8b")
+theme_override_font_sizes/font_size = 100
+theme_override_styles/normal = SubResource("StyleBoxEmpty_mae5d")
+theme_override_styles/focus = SubResource("StyleBoxFlat_4hy44")
+text = "制作人员"
+
+[node name="quit" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.15127584, 0.1512762, 0.1512759, 1)
+theme_override_fonts/font = ExtResource("1_lti8b")
+theme_override_font_sizes/font_size = 100
+theme_override_styles/normal = SubResource("StyleBoxEmpty_mae5d")
+theme_override_styles/focus = SubResource("StyleBoxFlat_4hy44")
+text = "退出"
