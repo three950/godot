@@ -22,6 +22,7 @@ var original_position: Vector2 = Vector2.ZERO  # 开始拖拽时的原始位置
 var drag_offset: Vector2 = Vector2.ZERO  # 拖拽时鼠标相对于卡片的偏移量
 @onready var card_state_machine:CardStateMachine=$CardStateMachine as CardStateMachine
 @onready var shooter: Shooter = $Shooter
+@onready var height_animator: CardHeightAnimator = $HeightAnimator
 # 通用UI元素引用 - 子类可以重写这些路径
 @onready var card_label: Label = $SubViewport/Panel/Label
 @onready var card_texture: TextureRect = $SubViewport/TextureRect
@@ -43,6 +44,17 @@ const SHADOW_MAX_OFFSET := 8.0
 var is_hovered: bool = false
 # 当前是否处于拾取状态
 var is_picked_up: bool = false
+
+#region 高度系统（伪3D效果）
+## 基础高度（默认值）
+var base_height: float = 0.0
+## 当前动态高度（0.0 = 在桌面上，>0 = 跳起状态）
+@export var current_height: float = 0.0 : set = set_current_height
+## 高度对阴影Y轴偏移的影响系数
+const HEIGHT_SHADOW_OFFSET_Y := 10.0
+## 高度对卡牌Y轴位置的影响（向上移动）
+const HEIGHT_POSITION_OFFSET_Y := -20.0
+#endregion
 
 
 # Area2D 重叠检测
@@ -74,6 +86,8 @@ func _ready() -> void:
 		stack_detector.area_exited.connect(_on_stack_detector_area_exited)
 	stacking_on_you.connect(bestacked_on_me)
 	stop_stacking_on_you.connect(stop_stacking_on_me)
+	# 初始化高度
+	current_height = base_height
 
 ## 让卡片的材质唯一化，避免多个实例共享材质
 func _make_materials_unique() -> void:
@@ -158,9 +172,6 @@ func stop_stacking_on_me() -> void:
 		size=card_panel.size
 	array_changed.emit()
 	Events.stack_changed.emit(self)
-func _physics_process(_delta: float) -> void:
-	# 根据卡片在 cardsArea 中的全局位置更新 shadow 偏移
-	update_shadow_offset()
 
 func _input(event: InputEvent) -> void:
 	card_state_machine.on_input(event)
@@ -233,11 +244,19 @@ func _update_offset() -> void:
 		total_surface_offset += PICKUP_OFFSET_Y
 		total_shadow_offset -= PICKUP_OFFSET_Y  # 阴影反方向移动
 	
+	# 高度对阴影的影响（高度越高，阴影偏移越远）
+	total_surface_offset += current_height * HEIGHT_POSITION_OFFSET_Y
+	total_shadow_offset += current_height * HEIGHT_SHADOW_OFFSET_Y
+	
 	if surface:
 		surface.position.y = surface_original_position.y + total_surface_offset
 	if shadow:
 		shadow.position.y = shadow_original_position.y + total_shadow_offset
 
+## 设置当前高度并更新视觉效果
+func set_current_height(value: float) -> void:
+	current_height = maxf(0.0, value)
+	_update_offset()
 # 递归更新所有子卡牌的位置和z_index
 func update_children_position() -> void:
 	if children_card == null:
@@ -270,37 +289,3 @@ func update_stack_chain_position() -> void:
 	var head_card: Card = get_stack_head()
 	# 从头卡开始向下更新整个堆叠链
 	head_card.update_children_position()
-
-# 根据卡片在 cardsArea 中的全局位置更新 shadow 的 X 轴偏移量
-func update_shadow_offset() -> void:
-	if not shadow:
-		return
-	
-	# 查找 cardsArea 节点
-	var cards_area: Control = null
-	var cards_nodes = get_tree().get_nodes_in_group("Cards")
-	for node in cards_nodes:
-		if node is Control and node.name == "cardsArea":
-			cards_area = node as Control
-			break
-	# 计算卡片在 cardsArea 中的相对位置（0.0 到 1.0）
-	var card_global_pos = global_position
-	var area_global_pos = cards_area.global_position
-	var relative_x = (card_global_pos.x - area_global_pos.x) / cards_area.size.x
-	
-	# 将相对位置限制在 0.0 到 1.0 之间
-	relative_x = clamp(relative_x, 0.0, 1.0)
-	
-	# 计算偏移量：左边偏左（负值），右边偏右（正值）
-	# 使用 -1.0 到 1.0 的范围，然后乘以最大偏移量
-	var offset_x = (relative_x * 2.0 - 1.0) * SHADOW_MAX_OFFSET
-	
-	# 只更新 shadow 的 X 轴位置，保留 Y 轴的状态偏移
-	shadow.position.x = shadow_original_position.x + offset_x
-
-#region 卡片翻转动画
-## 播放卡片生成翻转动画
-func play_spawn_flip() -> void:
-	if animation_player:
-		animation_player.play("卡片生成翻转")
-#endregion

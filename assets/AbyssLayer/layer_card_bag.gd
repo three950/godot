@@ -95,7 +95,7 @@ func _spawn_card() -> void:
 	card_instance.global_position = global_position
 	
 	# 播放生成翻转动画
-	card_instance.play_spawn_flip()
+	card_instance.height_animator.play_spawn_flip()
 	
 	# 使用 tween 移动到目标位置，持续1秒
 	var tween = create_tween()

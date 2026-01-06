@@ -1,0 +1,192 @@
+[gd_scene load_steps=4 format=3 uid="uid://test_jump_scene"]
+
+[ext_resource type="Script" path="res://test_jump/test_jump_scene.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="2_card"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(0.15, 0.18, 0.22, 1)
+
+[node name="TestJumpScene" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0.12, 0.14, 0.18, 1)
+
+[node name="cardsArea" type="Control" parent="." groups=["Cards"]]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = 100.0
+offset_top = 100.0
+offset_right = 1820.0
+offset_bottom = 880.0
+
+[node name="Card1" parent="cardsArea" instance=ExtResource("2_card")]
+offset_left = 200.0
+offset_top = 300.0
+offset_right = 464.0
+offset_bottom = 645.0
+
+[node name="Card2" parent="cardsArea" instance=ExtResource("2_card")]
+offset_left = 550.0
+offset_top = 300.0
+offset_right = 814.0
+offset_bottom = 645.0
+
+[node name="Card3" parent="cardsArea" instance=ExtResource("2_card")]
+offset_left = 900.0
+offset_top = 300.0
+offset_right = 1164.0
+offset_bottom = 645.0
+metadata/_edit_use_anchors_ = true
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI"]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 350.0
+offset_bottom = 500.0
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="UI/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "🎴 卡牌跳跃效果测试"
+
+[node name="Separator1" type="HSeparator" parent="UI/VBoxContainer"]
+layout_mode = 2
+
+[node name="SelectLabel" type="Label" parent="UI/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+text = "选择卡牌:"
+
+[node name="CardSelectButtons" type="HBoxContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SelectCard1" type="Button" parent="UI/VBoxContainer/CardSelectButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "卡牌 1"
+
+[node name="SelectCard2" type="Button" parent="UI/VBoxContainer/CardSelectButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "卡牌 2"
+
+[node name="SelectCard3" type="Button" parent="UI/VBoxContainer/CardSelectButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "卡牌 3"
+
+[node name="Separator2" type="HSeparator" parent="UI/VBoxContainer"]
+layout_mode = 2
+
+[node name="HeightLabel" type="Label" parent="UI/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+text = "手动调整高度:"
+
+[node name="HeightControl" type="HBoxContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HeightSlider" type="HSlider" parent="UI/VBoxContainer/HeightControl"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.0
+max_value = 2.0
+step = 0.05
+value = 0.0
+
+[node name="HeightValue" type="Label" parent="UI/VBoxContainer/HeightControl"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 18
+text = "0.00"
+
+[node name="Separator3" type="HSeparator" parent="UI/VBoxContainer"]
+layout_mode = 2
+
+[node name="AnimLabel" type="Label" parent="UI/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+text = "单卡动画:"
+
+[node name="SingleCardButtons" type="HBoxContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="JumpButton" type="Button" parent="UI/VBoxContainer/SingleCardButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "🦘 跳跃"
+
+[node name="HighJumpButton" type="Button" parent="UI/VBoxContainer/SingleCardButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "🚀 高跳"
+
+[node name="SingleCardButtons2" type="HBoxContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BounceButton" type="Button" parent="UI/VBoxContainer/SingleCardButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "🏀 弹跳"
+
+[node name="LandButton" type="Button" parent="UI/VBoxContainer/SingleCardButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "⬇️ 落地"
+
+[node name="Separator4" type="HSeparator" parent="UI/VBoxContainer"]
+layout_mode = 2
+
+[node name="AllLabel" type="Label" parent="UI/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+text = "全体动画:"
+
+[node name="AllCardButtons" type="HBoxContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="AllJumpButton" type="Button" parent="UI/VBoxContainer/AllCardButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "🎭 连续跳"
+
+[node name="AllBounceButton" type="Button" parent="UI/VBoxContainer/AllCardButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "🎪 同时弹"
+
+[node name="Instructions" type="Label" parent="UI/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.5, 0.5, 1)
+theme_override_font_sizes/font_size = 12
+text = "提示: 观察阴影随高度变化的偏移效果
+高度越高，阴影偏离越远"
+
+[connection signal="pressed" from="UI/VBoxContainer/CardSelectButtons/SelectCard1" to="." method="_on_select_card_1_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/CardSelectButtons/SelectCard2" to="." method="_on_select_card_2_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/CardSelectButtons/SelectCard3" to="." method="_on_select_card_3_pressed"]
+[connection signal="value_changed" from="UI/VBoxContainer/HeightControl/HeightSlider" to="." method="_on_height_slider_value_changed"]
+[connection signal="pressed" from="UI/VBoxContainer/SingleCardButtons/JumpButton" to="." method="_on_jump_button_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/SingleCardButtons/HighJumpButton" to="." method="_on_high_jump_button_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/SingleCardButtons2/BounceButton" to="." method="_on_bounce_button_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/SingleCardButtons2/LandButton" to="." method="_on_land_button_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/AllCardButtons/AllJumpButton" to="." method="_on_all_jump_button_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/AllCardButtons/AllBounceButton" to="." method="_on_all_bounce_button_pressed"]
+
