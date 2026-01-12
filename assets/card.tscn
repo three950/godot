@@ -223,8 +223,6 @@ mouse_filter = 2
 texture = SubResource("ViewportTexture_xo5ip")
 
 [node name="shadow" type="TextureRect" parent="."]
-modulate = Color(0, 0, 0, 0.5176471)
-self_modulate = Color(1, 1, 1, 0.27450982)
 z_index = -1
 texture_filter = 1
 material = SubResource("ShaderMaterial_bnwhc")
@@ -349,7 +347,7 @@ size = Vector2i(264, 345)
 custom_minimum_size = Vector2(264, 345)
 offset_right = 40.0
 offset_bottom = 40.0
-color = Color(0.21950102, 0.21950102, 0.21950093, 0.7607843)
+color = Color(0, 0, 0, 0.05)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
