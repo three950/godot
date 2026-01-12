@@ -51,7 +51,7 @@ var base_height: float = 0.0
 ## 当前动态高度（0.0 = 在桌面上，>0 = 跳起状态）
 @export var current_height: float = 0.0 : set = set_current_height
 ## 高度对阴影Y轴偏移的影响系数
-const HEIGHT_SHADOW_OFFSET_Y := 10.0
+const HEIGHT_SHADOW_OFFSET_Y := 2.0
 ## 高度对卡牌Y轴位置的影响（向上移动）
 const HEIGHT_POSITION_OFFSET_Y := -20.0
 #endregion

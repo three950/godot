@@ -1,10 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://cba2igvxd481l"]
+[gd_scene load_steps=7 format=3 uid="uid://cba2igvxd481l"]
 
 [ext_resource type="PackedScene" uid="uid://fopgb30s4q33" path="res://assets/物品/Things.tscn" id="1_g8hp3"]
 [ext_resource type="Script" uid="uid://d0sy3xm8egq7u" path="res://assets/物品/装备/equipment.gd" id="2_rkhsv"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_rkhsv"]
 viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_k2tfy"]
+viewport_path = NodePath("shadow2")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rkhsv"]
 bg_color = Color(0.42062035, 0.47324538, 0.59481096, 1)
@@ -30,8 +33,11 @@ border_color = Color(0.27450982, 0.3137255, 0.38039216, 1)
 script = ExtResource("2_rkhsv")
 equipment = null
 
-[node name="surface" parent="." index="1"]
+[node name="surface" parent="." index="0"]
 texture = SubResource("ViewportTexture_rkhsv")
+
+[node name="shadow" parent="." index="1"]
+texture = SubResource("ViewportTexture_k2tfy")
 
 [node name="CardLabel" parent="." index="2"]
 visible = false

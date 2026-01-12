@@ -76,3 +76,52 @@ func _on_all_bounce_button_pressed() -> void:
 	card1.height_animator.play_bounce_animation(2, 0.6, 0.6)
 	card2.height_animator.play_bounce_animation(2, 0.6, 0.6)
 	card3.height_animator.play_bounce_animation(2, 0.6, 0.6)
+
+#region 卡片生成翻转动画 + Shooter 方向移动
+## 播放翻转动画并移动到目标位置
+func _play_flip_and_shoot(target_offset: Vector2) -> void:
+	if selected_card:
+		# 先播放翻转动画
+		selected_card.animation_player.play("卡片生成翻转")
+		# 计算目标位置
+		var target_pos := selected_card.global_position + target_offset
+		# 使用 Shooter 移动到目标位置
+		selected_card.shooter.play_card_shooter(target_pos)
+
+func _on_flip_left_pressed() -> void:
+	_play_flip_and_shoot(Vector2(-200, 0))
+
+func _on_flip_right_pressed() -> void:
+	_play_flip_and_shoot(Vector2(200, 0))
+
+func _on_flip_up_pressed() -> void:
+	_play_flip_and_shoot(Vector2(0, -150))
+
+func _on_flip_down_pressed() -> void:
+	_play_flip_and_shoot(Vector2(0, 150))
+
+func _on_flip_near_pressed() -> void:
+	# 近距离：向右上方移动一小段
+	_play_flip_and_shoot(Vector2(80, -60))
+
+func _on_flip_far_pressed() -> void:
+	# 远距离：向右上方移动较长距离
+	_play_flip_and_shoot(Vector2(400, -200))
+
+func _on_flip_center_pressed() -> void:
+	if selected_card:
+		# 移动到屏幕中心
+		var center_pos := Vector2(960, 500)  # 大约屏幕中心
+		selected_card.animation_player.play("卡片生成翻转")
+		selected_card.shooter.play_card_shooter(center_pos)
+
+func _on_flip_random_pressed() -> void:
+	if selected_card:
+		# 随机方向和距离
+		var random_offset := Vector2(
+			randf_range(-300, 300),
+			randf_range(-200, 200)
+		)
+		selected_card.animation_player.play("卡片生成翻转")
+		selected_card.shooter.play_card_shooter(selected_card.global_position + random_offset)
+#endregion

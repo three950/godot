@@ -5,7 +5,6 @@ shader_type canvas_item;
 
 // Camera FOV
 uniform float fov : hint_range(1, 179) = 90;
-uniform bool cull_back = true;
 uniform float y_rot : hint_range(-180, 180) = 0.0;
 uniform float x_rot : hint_range(-180, 180) = 0.0;
 // At 0, the image retains its size when unrotated.
@@ -52,15 +51,10 @@ void vertex(){
 
 void fragment(){
 	if (p.z <= 0.0) {
-		// 卡片背面
-		if (cull_back) {
-			discard;
-		} else {
 			// 显示卡背颜色
 			vec2 uv = (p.xy / -p.z).xy + o;
 			COLOR = back_color;
 			COLOR.a *= step(max(abs(uv.x), abs(uv.y)), 0.5);
-		}
 	} else {
 		// 卡片正面
 		vec2 uv = (p.xy / p.z).xy - o;

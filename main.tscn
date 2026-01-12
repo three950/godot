@@ -61,6 +61,7 @@ metadata/_custom_type_script = "uid://bf2o85td7sner"
 bgm = ExtResource("2_lswn8")
 
 [node name="backgroundUi" parent="." instance=ExtResource("3_h2yge")]
+z_index = -100
 metadata/_edit_lock_ = true
 
 [node name="BagMover" type="Node" parent="."]
@@ -166,8 +167,8 @@ offset_bottom = 952.0
 equipment = ExtResource("16_yaehf")
 
 [node name="Recource" parent="CanvasGroup" instance=ExtResource("13_ycdy4")]
-offset_left = 934.0
-offset_top = 544.0
-offset_right = 1198.0
-offset_bottom = 889.0
+offset_left = 903.0
+offset_top = 539.0
+offset_right = 1167.0
+offset_bottom = 884.0
 recource = ExtResource("14_w48qg")

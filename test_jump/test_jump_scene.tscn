@@ -7,9 +7,10 @@
 script = ExtResource("1_script")
 
 [node name="Background" type="ColorRect" parent="."]
+z_index = -2
 offset_right = 1920.0
 offset_bottom = 1080.0
-color = Color(0.12, 0.14, 0.18, 1)
+color = Color(0.50941634, 0.5546324, 0.64438343, 1)
 
 [node name="cardsArea" type="Control" parent="." groups=["Cards"]]
 unique_name_in_owner = true
@@ -170,6 +171,71 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "🎪 同时弹"
 
+[node name="Separator5" type="HSeparator" parent="UI/VBoxContainer"]
+layout_mode = 2
+
+[node name="FlipLabel" type="Label" parent="UI/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+text = "翻转生成动画 (Shooter):"
+
+[node name="FlipButtons" type="HBoxContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="FlipLeftButton" type="Button" parent="UI/VBoxContainer/FlipButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "⬅️ 左"
+
+[node name="FlipRightButton" type="Button" parent="UI/VBoxContainer/FlipButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "➡️ 右"
+
+[node name="FlipButtons2" type="HBoxContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="FlipUpButton" type="Button" parent="UI/VBoxContainer/FlipButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "⬆️ 上"
+
+[node name="FlipDownButton" type="Button" parent="UI/VBoxContainer/FlipButtons2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "⬇️ 下"
+
+[node name="FlipButtons3" type="HBoxContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="FlipNearButton" type="Button" parent="UI/VBoxContainer/FlipButtons3"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "📍 近距离"
+
+[node name="FlipFarButton" type="Button" parent="UI/VBoxContainer/FlipButtons3"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "🚀 远距离"
+
+[node name="FlipButtons4" type="HBoxContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="FlipCenterButton" type="Button" parent="UI/VBoxContainer/FlipButtons4"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "🎯 中心"
+
+[node name="FlipRandomButton" type="Button" parent="UI/VBoxContainer/FlipButtons4"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "🎲 随机"
+
 [node name="Instructions" type="Label" parent="UI/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.5, 0.5, 0.5, 1)
@@ -187,3 +253,11 @@ text = "提示: 观察阴影随高度变化的偏移效果
 [connection signal="pressed" from="UI/VBoxContainer/SingleCardButtons2/LandButton" to="." method="_on_land_button_pressed"]
 [connection signal="pressed" from="UI/VBoxContainer/AllCardButtons/AllJumpButton" to="." method="_on_all_jump_button_pressed"]
 [connection signal="pressed" from="UI/VBoxContainer/AllCardButtons/AllBounceButton" to="." method="_on_all_bounce_button_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/FlipButtons/FlipLeftButton" to="." method="_on_flip_left_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/FlipButtons/FlipRightButton" to="." method="_on_flip_right_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/FlipButtons2/FlipUpButton" to="." method="_on_flip_up_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/FlipButtons2/FlipDownButton" to="." method="_on_flip_down_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/FlipButtons3/FlipNearButton" to="." method="_on_flip_near_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/FlipButtons3/FlipFarButton" to="." method="_on_flip_far_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/FlipButtons4/FlipCenterButton" to="." method="_on_flip_center_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/FlipButtons4/FlipRandomButton" to="." method="_on_flip_random_pressed"]
