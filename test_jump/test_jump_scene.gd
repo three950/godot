@@ -76,4 +76,3 @@ func _on_all_bounce_button_pressed() -> void:
 	card1.height_animator.play_bounce_animation(2, 0.6, 0.6)
 	card2.height_animator.play_bounce_animation(2, 0.6, 0.6)
 	card3.height_animator.play_bounce_animation(2, 0.6, 0.6)
-

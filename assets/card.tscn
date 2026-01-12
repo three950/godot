@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://cxgk8a5mjy27v"]
+[gd_scene load_steps=31 format=3 uid="uid://cxgk8a5mjy27v"]
 
 [ext_resource type="Script" uid="uid://ut5tbn2q80gh" path="res://assets/card.gd" id="1_q5obu"]
 [ext_resource type="Resource" uid="uid://cq6i5xpurm0al" path="res://base_data/Battle_stats.tres" id="2_agldc"]
@@ -6,6 +6,7 @@
 [ext_resource type="AudioStream" uid="uid://csqitlghauxgb" path="res://声音资产/useful/卡牌拿起放下/cardpick.wav" id="2_mqa0q"]
 [ext_resource type="AudioStream" uid="uid://cu1gnscbqcks2" path="res://声音资产/useful/卡牌拿起放下/cardfall.wav" id="3_agldc"]
 [ext_resource type="Script" uid="uid://b6yrrsooe1is3" path="res://assets/card_state_machine.gd" id="4_rjwbx"]
+[ext_resource type="Shader" uid="uid://pwq3r7ep4yey" path="res://shader/ 卡牌翻转.gdshader" id="5_2vbly"]
 [ext_resource type="StyleBox" uid="uid://b0256y5bp2byj" path="res://card.tres" id="5_agldc"]
 [ext_resource type="Script" uid="uid://blwo6u4at8188" path="res://assets/card-states/card_fixed.gd" id="5_xi8kn"]
 [ext_resource type="StyleBox" uid="uid://bv510uix8lck3" path="res://cardpanel.tres" id="6_3tu4f"]
@@ -19,10 +20,29 @@
 [ext_resource type="Script" uid="uid://c2rerytg2jn4" path="res://script_folder/card_overlap_pusher.gd" id="12_pusher"]
 [ext_resource type="Script" uid="uid://w3303dq5wl1q" path="res://script_folder/card_height_animator.gd" id="13_height"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_xo5ip"]
-viewport_path = NodePath("SubViewport")
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bnwhc"]
+shader = ExtResource("5_2vbly")
+shader_parameter/fov = 90.0
+shader_parameter/cull_back = true
+shader_parameter/y_rot = 0.0
+shader_parameter/x_rot = -180.0
+shader_parameter/inset = 0.0
+shader_parameter/back_color = Color(0, 0, 0, 1)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_2vbly"]
+viewport_path = NodePath("shadow2")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xo5ip"]
+shader = ExtResource("5_2vbly")
+shader_parameter/fov = 90.0
+shader_parameter/cull_back = false
+shader_parameter/y_rot = 0.0
+shader_parameter/x_rot = -180.0
+shader_parameter/inset = 0.0
+shader_parameter/back_color = Color(0, 0, 0, 1)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_xo5ip"]
+viewport_path = NodePath("SubViewport")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q5obu"]
 size = Vector2(264, 45)
@@ -35,40 +55,40 @@ size = Vector2(264, 345)
 
 [sub_resource type="Animation" id="Animation_8iohq"]
 length = 0.001
-tracks/0/type = "value"
+tracks/0/type = "bezier"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("surface:scale")
+tracks/0/path = NodePath(".:current_height")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(1, 1)]
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("surface:material:shader_parameter/x_rot")
+tracks/1/path = NodePath("shadow:scale")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(),
+"transitions": PackedFloat32Array(),
 "update": 0,
-"values": [0.0]
+"values": []
 }
-tracks/2/type = "bezier"
+tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath(".:current_height")
+tracks/2/path = NodePath("shadow:material:shader_parameter/x_rot")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-180.0]
 }
 
 [sub_resource type="Animation" id="Animation_xo5ip"]
@@ -98,22 +118,46 @@ tracks/1/keys = {
 "update": 0,
 "values": [-180.0, 0.0]
 }
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:current_height")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0, 0, 0, 0, 0),
+"points": PackedFloat32Array(0, 0, 0, 0.033333335, 0.5, 5, -0.03333333, 0.5, 0, 0, 0, -0.13333334, 6.5, 0, 0, 3, -0.021666666, -0.16666667, 0, 0, 0, -0.011666666, 0.5, 0, 0, 1, -0.010000001, 0, 0.0066666706, 0, 0, -0.016666671, 0, 0, 0),
+"times": PackedFloat32Array(0, 0.1, 0.3, 0.43, 0.5, 0.56, 0.6)
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("shadow:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0.8, 0.8), Vector2(1, 1)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("shadow:material:shader_parameter/x_rot")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [-180.0, 0.0]
+}
 
 [sub_resource type="Animation" id="Animation_2vbly"]
 resource_name = "卡牌弹跳"
 length = 0.6
 loop_mode = 1
-tracks/0/type = "bezier"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:current_height")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"handle_modes": PackedInt32Array(2, 2, 2, 2, 2, 2, 2),
-"points": PackedFloat32Array(0, 0, 0, 0.033333335, 0.5, 5, -0.03333333, 0.5, 0, 0, 0, -0.13333334, 6.5, 0, 0, 3, -0.021666666, -0.16666667, 0, 0, 0, -0.011666666, 0.5, 0, 0, 1, -0.010000001, 0, 0.0066666706, 0, 0, -0.016666671, 0, 0, 0),
-"times": PackedFloat32Array(0, 0.1, 0.3, 0.43, 0.5, 0.56, 0.6)
-}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2vbly"]
 _data = {
@@ -135,13 +179,20 @@ pickup_sound = ExtResource("2_mqa0q")
 fall_sound = ExtResource("3_agldc")
 
 [node name="shadow" type="TextureRect" parent="."]
-modulate = Color(0, 0, 0, 0.35)
+modulate = Color(0, 0, 0, 0.5176471)
+z_index = -1
+z_as_relative = false
 texture_filter = 1
+material = SubResource("ShaderMaterial_bnwhc")
 layout_mode = 0
-offset_right = 264.0
+offset_left = -248.99998
+offset_right = 15.000015
 offset_bottom = 345.0
+scale = Vector2(0.8565836, 0.8565836)
 mouse_filter = 2
-texture = SubResource("ViewportTexture_xo5ip")
+texture = SubResource("ViewportTexture_2vbly")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="surface" type="TextureRect" parent="."]
 texture_filter = 1
@@ -149,6 +200,7 @@ material = SubResource("ShaderMaterial_xo5ip")
 layout_mode = 0
 offset_right = 264.0
 offset_bottom = 345.0
+scale = Vector2(0.8565836, 0.8565836)
 mouse_filter = 2
 texture = SubResource("ViewportTexture_xo5ip")
 
@@ -257,6 +309,15 @@ offset_bottom = 261.0
 mouse_filter = 2
 texture = ExtResource("2_e484p")
 expand_mode = 1
+
+[node name="shadow2" type="SubViewport" parent="."]
+size = Vector2i(264, 345)
+
+[node name="ColorRect" type="ColorRect" parent="shadow2"]
+custom_minimum_size = Vector2(264, 345)
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.05490196, 0.05490196, 0.05490196, 0.7607843)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
