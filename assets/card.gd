@@ -137,8 +137,6 @@ func _update_shadow_global_position() -> void:
 	shadow_offset_y += current_height * HEIGHT_SHADOW_OFFSET_Y
 	
 	shadow.global_position = global_position + shadow_original_position + Vector2(0, shadow_offset_y)
-	# 同步z_index（确保shadow层级正确）
-	shadow.z_index = z_index
 
 ## 当card被删除时，清理shadow
 func _exit_tree() -> void:
