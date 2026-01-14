@@ -76,90 +76,84 @@ self_modulate = Color(1, 1, 1, 0.4)
 fit_margin = 2048.0
 clear_margin = 2048.0
 
-[node name="CanvasGroup" type="CanvasGroup" parent="." groups=["Cards"]]
-z_as_relative = false
-position = Vector2(15, -19)
-fit_margin = 1024.0
-clear_margin = 1024.0
-
-[node name="娜娜奇" parent="CanvasGroup" instance=ExtResource("6_kek77")]
-offset_left = 315.0
-offset_top = 1297.0
-offset_right = 579.0
-offset_bottom = 1642.0
+[node name="娜娜奇" parent="." instance=ExtResource("6_kek77")]
+offset_left = 330.0
+offset_top = 1278.0
+offset_right = 594.0
+offset_bottom = 1623.0
 character = ExtResource("7_4c57u")
 battle = SubResource("Resource_xuqvo")
 
-[node name="莉可" parent="CanvasGroup" instance=ExtResource("6_kek77")]
-offset_left = 2251.0
-offset_top = 603.0
-offset_right = 2515.0
-offset_bottom = 948.0
+[node name="莉可" parent="." instance=ExtResource("6_kek77")]
+offset_left = 2266.0
+offset_top = 584.0
+offset_right = 2530.0
+offset_bottom = 929.0
 character = ExtResource("8_efxa6")
 battle = SubResource("Resource_qsp4k")
 
-[node name="雷古" parent="CanvasGroup" instance=ExtResource("6_kek77")]
-offset_left = 314.0
-offset_top = 651.0
-offset_right = 578.0
-offset_bottom = 996.0
+[node name="雷古" parent="." instance=ExtResource("6_kek77")]
+offset_left = 329.0
+offset_top = 632.0
+offset_right = 593.0
+offset_bottom = 977.0
 character = ExtResource("9_dg77c")
 battle = SubResource("Resource_kq58d")
 
-[node name="EnemyCard" parent="CanvasGroup" instance=ExtResource("9_enemy_card")]
-offset_left = 1257.0
-offset_top = 1260.0
-offset_right = 1257.0
-offset_bottom = 1260.0
+[node name="EnemyCard" parent="." instance=ExtResource("9_enemy_card")]
+offset_left = 1272.0
+offset_top = 1241.0
+offset_right = 1272.0
+offset_bottom = 1241.0
 enemy = ExtResource("10_4c57u")
 
-[node name="Item" parent="CanvasGroup" instance=ExtResource("11_dg77c")]
-offset_left = 1840.0
-offset_top = 691.0
-offset_right = 2104.0
-offset_bottom = 1036.0
+[node name="Item" parent="." instance=ExtResource("11_dg77c")]
+offset_left = 1855.0
+offset_top = 672.0
+offset_right = 2119.0
+offset_bottom = 1017.0
 item = ExtResource("12_dg77c")
 
-[node name="1000m" parent="CanvasGroup" instance=ExtResource("16_2cqfq")]
-offset_left = 2725.0
-offset_top = 802.0
-offset_right = 2813.0
-offset_bottom = 917.0
+[node name="1000m" parent="." instance=ExtResource("16_2cqfq")]
+offset_left = 2740.0
+offset_top = 783.0
+offset_right = 2828.0
+offset_bottom = 898.0
 scene = ExtResource("17_074og")
 cardpool = ExtResource("18_cegan")
 
-[node name="500m" parent="CanvasGroup" instance=ExtResource("16_2cqfq")]
-offset_left = 2932.0
-offset_top = 1291.0
-offset_right = 3020.0
-offset_bottom = 1406.0
+[node name="500m" parent="." instance=ExtResource("16_2cqfq")]
+offset_left = 2947.0
+offset_top = 1272.0
+offset_right = 3035.0
+offset_bottom = 1387.0
 scene = ExtResource("20_82xsv")
 cardpool = ExtResource("18_cegan")
 
-[node name="小场景2" parent="CanvasGroup" instance=ExtResource("23_0odxb")]
-offset_left = 2627.0
-offset_top = 1291.0
-offset_right = 2715.0
-offset_bottom = 1406.0
+[node name="小场景2" parent="." instance=ExtResource("23_0odxb")]
+offset_left = 2642.0
+offset_top = 1272.0
+offset_right = 2730.0
+offset_bottom = 1387.0
 scene = ExtResource("25_a6jrf")
 
-[node name="小场景" parent="CanvasGroup" instance=ExtResource("23_0odxb")]
-offset_left = 2272.0
-offset_top = 1303.0
-offset_right = 2360.0
-offset_bottom = 1418.0
+[node name="小场景" parent="." instance=ExtResource("23_0odxb")]
+offset_left = 2287.0
+offset_top = 1284.0
+offset_right = 2375.0
+offset_bottom = 1399.0
 scene = ExtResource("24_lswn8")
 
-[node name="Equipment" parent="CanvasGroup" instance=ExtResource("15_2cqfq")]
-offset_left = 1394.0
-offset_top = 607.0
-offset_right = 1658.0
-offset_bottom = 952.0
+[node name="Equipment" parent="." instance=ExtResource("15_2cqfq")]
+offset_left = 1409.0
+offset_top = 588.0
+offset_right = 1673.0
+offset_bottom = 933.0
 equipment = ExtResource("16_yaehf")
 
-[node name="Recource" parent="CanvasGroup" instance=ExtResource("13_ycdy4")]
-offset_left = 903.0
-offset_top = 539.0
-offset_right = 1167.0
-offset_bottom = 884.0
+[node name="Recource" parent="." instance=ExtResource("13_ycdy4")]
+offset_left = 918.0
+offset_top = 520.0
+offset_right = 1182.0
+offset_bottom = 865.0
 recource = ExtResource("14_w48qg")
