@@ -28,6 +28,8 @@ var drag_offset: Vector2 = Vector2.ZERO  # 拖拽时鼠标相对于卡片的偏�
 @onready var card_texture: TextureRect = $SubViewport/TextureRect
 @onready var surface: TextureRect = $surface
 @onready var shadow: TextureRect = $shadow
+# 全局阴影容器引用
+var shadows_container: CanvasGroup = null
 # 动画播放器
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 # surface 的原始位置
@@ -88,6 +90,8 @@ func _ready() -> void:
 	stop_stacking_on_you.connect(stop_stacking_on_me)
 	# 初始化高度
 	current_height = base_height
+	# 将shadow移动到全局阴影容器（实现阴影叠加时透明度不累加的效果）
+	_setup_shadow_in_global_container()
 
 ## 让卡片的材质唯一化，避免多个实例共享材质
 func _make_materials_unique() -> void:
@@ -97,6 +101,49 @@ func _make_materials_unique() -> void:
 		surface.material = surface.material.duplicate()
 	if shadow and shadow.material:
 		shadow.material = shadow.material.duplicate()
+
+## 将shadow移动到全局阴影容器，实现阴影叠加时透明度不累加
+func _setup_shadow_in_global_container() -> void:
+	if shadow == null:
+		return
+	# 查找全局阴影容器
+	shadows_container = get_tree().get_first_node_in_group("Shadows") as CanvasGroup
+	if shadows_container == null:
+		# 如果没有找到全局容器，保持shadow在原位置
+		return
+	# 将shadow从当前card移动到全局容器
+	shadow.reparent(shadows_container)
+	# 立即更新shadow位置
+	_update_shadow_global_position()
+
+## 每帧更新shadow的全局位置（跟随card）
+func _process(_delta: float) -> void:
+	_update_shadow_global_position()
+
+## 更新shadow在全局容器中的位置
+func _update_shadow_global_position() -> void:
+	if shadow == null or shadows_container == null:
+		return
+	if not is_instance_valid(shadow):
+		shadow = null
+		return
+	# 计算shadow应该在的全局位置
+	# 基于card的global_position + shadow的原始偏移 + 动态偏移
+	var shadow_offset_y: float = 0.0
+	if is_hovered:
+		shadow_offset_y -= HOVER_OFFSET_Y
+	if is_picked_up:
+		shadow_offset_y -= PICKUP_OFFSET_Y
+	shadow_offset_y += current_height * HEIGHT_SHADOW_OFFSET_Y
+	
+	shadow.global_position = global_position + shadow_original_position + Vector2(0, shadow_offset_y)
+	# 同步z_index（确保shadow层级正确）
+	shadow.z_index = z_index
+
+## 当card被删除时，清理shadow
+func _exit_tree() -> void:
+	if shadow != null and is_instance_valid(shadow):
+		shadow.queue_free()
 
 # 启用 / 禁用堆叠检测 Area
 func set_stack_detector_enabled(enabled: bool) -> void:
@@ -234,24 +281,19 @@ func reset_offset() -> void:
 # 根据当前状态更新 surface 和 shadow 的位置
 func _update_offset() -> void:
 	var total_surface_offset: float = 0.0
-	var total_shadow_offset: float = 0.0
 	
 	if is_hovered:
 		total_surface_offset += HOVER_OFFSET_Y
-		total_shadow_offset -= HOVER_OFFSET_Y  # 阴影反方向移动
 	
 	if is_picked_up:
 		total_surface_offset += PICKUP_OFFSET_Y
-		total_shadow_offset -= PICKUP_OFFSET_Y  # 阴影反方向移动
 	
-	# 高度对阴影的影响（高度越高，阴影偏移越远）
+	# 高度对卡牌Y轴位置的影响
 	total_surface_offset += current_height * HEIGHT_POSITION_OFFSET_Y
-	total_shadow_offset += current_height * HEIGHT_SHADOW_OFFSET_Y
 	
 	if surface:
 		surface.position.y = surface_original_position.y + total_surface_offset
-	if shadow:
-		shadow.position.y = shadow_original_position.y + total_shadow_offset
+	# shadow的位置在 _update_shadow_global_position 中更新（因为它在全局容器中）
 
 ## 设置当前高度并更新视觉效果
 func set_current_height(value: float) -> void:
