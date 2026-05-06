@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://cxgk8a5mjy27v"]
+[gd_scene format=3 uid="uid://cxgk8a5mjy27v"]
 
 [ext_resource type="Script" uid="uid://ut5tbn2q80gh" path="res://assets/card.gd" id="1_q5obu"]
 [ext_resource type="Resource" uid="uid://cq6i5xpurm0al" path="res://base_data/Battle_stats.tres" id="2_agldc"]
@@ -125,7 +125,7 @@ _data = {
 &"卡片生成翻转": SubResource("Animation_xo5ip")
 }
 
-[node name="Card" type="Control" groups=["Cards"]]
+[node name="Card" type="Control" unique_id=33495198 groups=["Cards"]]
 layout_mode = 3
 anchors_preset = 0
 offset_left = -132.0
@@ -137,7 +137,7 @@ battle = ExtResource("2_agldc")
 pickup_sound = ExtResource("2_mqa0q")
 fall_sound = ExtResource("3_agldc")
 
-[node name="surface" type="TextureRect" parent="."]
+[node name="surface" type="TextureRect" parent="." unique_id=24442291]
 texture_filter = 1
 material = SubResource("ShaderMaterial_xo5ip")
 layout_mode = 0
@@ -146,79 +146,83 @@ offset_bottom = 345.0
 mouse_filter = 2
 texture = SubResource("ViewportTexture_xo5ip")
 
-[node name="CardLabel" type="Area2D" parent="."]
+[node name="CardLabel" type="Area2D" parent="." unique_id=195554578]
+visible = false
 position = Vector2(3, 3)
 collision_layer = 2
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CardLabel"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CardLabel" unique_id=54803345]
 position = Vector2(129, 19.5)
 shape = SubResource("RectangleShape2D_q5obu")
 
-[node name="CardStackDetectorArea" type="Area2D" parent="."]
+[node name="CardStackDetectorArea" type="Area2D" parent="." unique_id=1021535360]
+visible = false
 position = Vector2(3, 3)
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CardStackDetectorArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CardStackDetectorArea" unique_id=603997390]
 position = Vector2(129, 192)
 shape = SubResource("RectangleShape2D_e484p")
 
-[node name="CardPushDetectorArea" type="Area2D" parent="."]
+[node name="CardPushDetectorArea" type="Area2D" parent="." unique_id=1315464570]
+visible = false
 collision_layer = 16
 collision_mask = 16
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CardPushDetectorArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CardPushDetectorArea" unique_id=301992265]
+visible = false
 position = Vector2(132, 172.5)
 shape = SubResource("RectangleShape2D_pusher")
 
-[node name="CardOverlapPusher" type="Node" parent="."]
+[node name="CardOverlapPusher" type="Node" parent="." unique_id=1477353159]
 script = ExtResource("12_pusher")
 
-[node name="CardStateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
+[node name="CardStateMachine" type="Node" parent="." unique_id=1272979021 node_paths=PackedStringArray("initial_state")]
 script = ExtResource("4_rjwbx")
 initial_state = NodePath("CardFixed")
 
-[node name="CardFixed" type="Node" parent="CardStateMachine"]
+[node name="CardFixed" type="Node" parent="CardStateMachine" unique_id=1263188559]
 script = ExtResource("5_xi8kn")
 
-[node name="CardPickingup" type="Node" parent="CardStateMachine"]
+[node name="CardPickingup" type="Node" parent="CardStateMachine" unique_id=177027998]
 script = ExtResource("6_e6854")
 state = 1
 
-[node name="CradDragging" type="Node" parent="CardStateMachine"]
+[node name="CradDragging" type="Node" parent="CardStateMachine" unique_id=905161906]
 script = ExtResource("7_a3cqy")
 state = 2
 
-[node name="CardFalling" type="Node" parent="CardStateMachine"]
+[node name="CardFalling" type="Node" parent="CardStateMachine" unique_id=1997581314]
 script = ExtResource("8_ram0e")
 state = 3
 
-[node name="CardInstack" type="Node" parent="CardStateMachine"]
+[node name="CardInstack" type="Node" parent="CardStateMachine" unique_id=1232293896]
 script = ExtResource("9_kvflh")
 state = 4
 
-[node name="CardInstackDragging" type="Node" parent="CardStateMachine"]
+[node name="CardInstackDragging" type="Node" parent="CardStateMachine" unique_id=1397542537]
 script = ExtResource("10_a3cqy")
 state = 5
 
-[node name="Shooter" type="Node" parent="." node_paths=PackedStringArray("card")]
+[node name="Shooter" type="Node" parent="." unique_id=778610664 node_paths=PackedStringArray("card")]
 script = ExtResource("11_ram0e")
 card = NodePath("..")
 metadata/_custom_type_script = "uid://cvwtip1ly5e7f"
 
-[node name="SubViewport" type="SubViewport" parent="."]
+[node name="SubViewport" type="SubViewport" parent="." unique_id=1115109325]
 transparent_bg = true
 size = Vector2i(262, 342)
 render_target_update_mode = 1
 
-[node name="CardPanel" type="Panel" parent="SubViewport"]
+[node name="CardPanel" type="Panel" parent="SubViewport" unique_id=1495404947]
 unique_name_in_owner = true
 offset_right = 264.0
 offset_bottom = 342.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("5_agldc")
 
-[node name="Panel" type="Panel" parent="SubViewport"]
+[node name="Panel" type="Panel" parent="SubViewport" unique_id=1642299539]
 unique_name_in_owner = true
 offset_left = 6.0
 offset_top = 6.0
@@ -227,7 +231,7 @@ offset_bottom = 48.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("6_3tu4f")
 
-[node name="Label" type="Label" parent="SubViewport/Panel"]
+[node name="Label" type="Label" parent="SubViewport/Panel" unique_id=748114393]
 unique_name_in_owner = true
 layout_mode = 0
 offset_right = 84.0
@@ -237,7 +241,7 @@ theme_override_fonts/font = ExtResource("7_xo5ip")
 theme_override_font_sizes/font_size = 30
 text = "莉可"
 
-[node name="TextureRect" type="TextureRect" parent="SubViewport"]
+[node name="TextureRect" type="TextureRect" parent="SubViewport" unique_id=1571016305]
 unique_name_in_owner = true
 texture_filter = 1
 offset_left = 15.0
@@ -248,10 +252,8 @@ mouse_filter = 2
 texture = ExtResource("2_e484p")
 expand_mode = 1
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_2vbly")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1224997864]
+libraries/ = SubResource("AnimationLibrary_2vbly")
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="gui_input" from="." to="CardStateMachine/CardFixed" method="_on_card_gui_input"]
