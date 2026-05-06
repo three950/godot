@@ -1,25 +1,23 @@
-[gd_scene load_steps=4 format=3 uid="uid://divo6ckhoycvt"]
+[gd_scene format=3 uid="uid://divo6ckhoycvt"]
 
-[ext_resource type="PackedScene" uid="uid://r1lb3ajxfx1j" path="res://main.tscn" id="1_a202f"]
-[ext_resource type="Script" uid="uid://6oebvrcns2i2" path="res://perspective_viewport.gd" id="2_script"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
+size = Vector3(3471, 1, 2136)
 
-[sub_resource type="QuadMesh" id="QuadMesh_1"]
-size = Vector2(3471, 2136)
+[sub_resource type="BoxMesh" id="BoxMesh_noarx"]
+size = Vector3(3471, 2, 2136)
 
-[node name="Node3D" type="Node3D"]
-script = ExtResource("2_script")
+[node name="Node3D" type="Node3D" unique_id=880038554]
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.9975643, -0.069756486, 0, 0.069756486, 0.9975643, 0, -100, 450)
+[node name="Camera3D" type="Camera3D" parent="." unique_id=809929531]
+transform = Transform3D(1, 0, 0, 0, 0.17364822, 0.9848077, 0, -0.9848077, 0.17364822, 0, 2500, 500)
 fov = 45.0
 
-[node name="SubViewport" type="SubViewport" parent="."]
-transparent_bg = true
-msaa_2d = 2
-size = Vector2i(3471, 2136)
-render_target_update_mode = 4
+[node name="Ground" type="StaticBody3D" parent="." unique_id=1744047288]
 
-[node name="Main" parent="SubViewport" instance=ExtResource("1_a202f")]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=872046681]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+shape = SubResource("BoxShape3D_ground")
 
-[node name="GamePlane" type="MeshInstance3D" parent="."]
-mesh = SubResource("QuadMesh_1")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground" unique_id=1279057959]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+mesh = SubResource("BoxMesh_noarx")

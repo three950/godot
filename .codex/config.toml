@@ -1,0 +1,3 @@
+[mcp_servers.godot]
+command = "node"
+args = ["D:/godot-try/stackabyss/.agents/mcp/godot-mcp/build/index.js"]
