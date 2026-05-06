@@ -1,14 +1,19 @@
 [gd_scene format=3 uid="uid://kcugpneamvai"]
 
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://background.tscn" id="1_bg"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
-size = Vector3(34.71, 1, 21.36)
+[ext_resource type="Script" uid="uid://cryummosf23jg" path="res://script_folder/camera_controller_3d.gd" id="2_cam"]
+[ext_resource type="PackedScene" uid="uid://bm4r8w10jcbid" path="res://ui/ui_layer.tscn" id="3_ui"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_a202f"]
 viewport_path = NodePath("SubViewport")
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
+size = Vector3(34.71, 1, 21.36)
+
 [node name="Node3D" type="Node3D" unique_id=880038554]
+script = ExtResource("2_cam")
+
+[node name="UI_Layer" parent="." unique_id=750863690 instance=ExtResource("3_ui")]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=809929531]
 transform = Transform3D(1, 4.0494018e-07, -4.0775475e-08, 0, 0.100188404, 0.9949685, 4.0698797e-07, -0.9949685, 0.100188404, -0.2991175, 14.5398855, 2.394606)
@@ -23,10 +28,10 @@ render_target_update_mode = 1
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=1744047288]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=872046681]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
-shape = SubResource("BoxShape3D_ground")
-
 [node name="Sprite3D" type="Sprite3D" parent="Ground" unique_id=1430717003]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, -1, 0)
 texture = SubResource("ViewportTexture_a202f")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=872046681]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
+shape = SubResource("BoxShape3D_ground")
