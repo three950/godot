@@ -794,3 +794,17 @@ Work with Godot projects effectively by:
 5. **Testing incrementally** - Validate, test, commit frequently
 
 The key insight: Godot's text-based files are LLM-friendly when you respect the syntax differences between GDScript and resource serialization formats.
+
+## [USER-ADDED] 2D in 3D via SubViewport (With Collision)
+
+This section was added by user request (2026-05-06).
+
+For a complete guide, read:
+- `references/user-added-2d-in-3d-subviewport.md`
+
+Quick checklist:
+1. Add `SubViewport` under a `Node3D` container.
+2. Instance the 2D `.tscn` under `SubViewport`.
+3. Use `StaticBody3D + CollisionShape3D` for 3D collision.
+4. Add `Sprite3D` and set `texture` from the `SubViewport` output.
+5. Clear `GeometryInstance3D.material_override` on `Sprite3D`.

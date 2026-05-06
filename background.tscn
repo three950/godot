@@ -1,14 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://d8vp1m0epvxf"]
+[gd_scene format=3 uid="uid://d8vp1m0epvxf"]
 
 [ext_resource type="StyleBox" uid="uid://to3672utuxwe" path="res://ui/棋盘.tres" id="2_vvxqx"]
-[ext_resource type="PackedScene" uid="uid://dde8q2r1usqpa" path="res://ui/shop_bag/GroundPackage.tscn" id="4_eq6nc"]
-[ext_resource type="PackedScene" uid="uid://bivykmwh7lskv" path="res://assets/固定场景建筑/探窟者协会/探窟者协会.tscn" id="4_splo0"]
-[ext_resource type="AudioStream" uid="uid://cb0w4jfqxv6so" path="res://声音资产/useful/Gore Splat Stab Poke 03.wav" id="5_cdpnt"]
-[ext_resource type="Resource" uid="uid://flhywkkf61mb" path="res://base_data/game_stats.tres" id="5_eq6nc"]
-[ext_resource type="Resource" uid="uid://bmnohsw38p6a0" path="res://assets/AbyssLayer/layer1.tres" id="5_gjjrj"]
-[ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/cards/钓鱼竿.tres" id="6_fishing"]
-[ext_resource type="Resource" uid="uid://b5lhfvaex1tbh" path="res://assets/物品/资源/鱼.tres" id="8_fish"]
-[ext_resource type="AudioStream" uid="uid://cjq0vp7xl35vh" path="res://声音资产/useful/coin_sound.mp3" id="9_8u6ia"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cdpnt"]
 bg_color = Color(0.8170297, 0.75410753, 0.5967472, 1)
@@ -22,96 +14,18 @@ corner_radius_top_right = 24
 corner_radius_bottom_right = 24
 corner_radius_bottom_left = 24
 
-[node name="backgroundUi" type="Node2D"]
+[node name="backgroundUi" type="Node2D" unique_id=417959032]
 
-[node name="cardsArea" type="Panel" parent="." groups=["Cards"]]
+[node name="cardsArea" type="Panel" parent="." unique_id=1791356641 groups=["Cards"]]
 offset_right = 3471.0
 offset_bottom = 2136.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_cdpnt")
 
-[node name="ShopManager" type="Panel" parent="cardsArea" groups=["ShopManager"]]
+[node name="ShopManager" type="Panel" parent="cardsArea" unique_id=1390673482 groups=["ShopManager"]]
 layout_mode = 0
 offset_top = -1.0
 offset_right = 3471.0
 offset_bottom = 407.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("2_vvxqx")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = 359.0
-offset_top = 29.0
-offset_right = 3071.0
-offset_bottom = 374.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 25
-alignment = 1
-
-[node name="探窟者协会" parent="HBoxContainer" instance=ExtResource("4_splo0")]
-custom_minimum_size = Vector2(264, 345)
-layout_mode = 2
-game_stats = ExtResource("5_eq6nc")
-sold_sound = ExtResource("5_cdpnt")
-
-[node name="GroundPackage" parent="HBoxContainer" instance=ExtResource("4_eq6nc")]
-custom_minimum_size = Vector2(264, 345)
-layout_mode = 2
-game_stats = ExtResource("5_eq6nc")
-spawn_card_info = ExtResource("6_fishing")
-
-[node name="GroundPackage1" parent="HBoxContainer" instance=ExtResource("4_eq6nc")]
-layout_mode = 2
-game_stats = ExtResource("5_eq6nc")
-package_name = "深界一层
-阿比斯之渊"
-mean_layer = 1
-package_price = 5
-spawn_card_info = ExtResource("5_gjjrj")
-coin_sound = ExtResource("9_8u6ia")
-
-[node name="GroundPackage2" parent="HBoxContainer" instance=ExtResource("4_eq6nc")]
-layout_mode = 2
-game_stats = ExtResource("5_eq6nc")
-package_name = "深界二层
-诱惑之森"
-mean_layer = 2
-package_price = 8
-spawn_card_info = ExtResource("8_fish")
-
-[node name="GroundPackage3" parent="HBoxContainer" instance=ExtResource("4_eq6nc")]
-layout_mode = 2
-game_stats = ExtResource("5_eq6nc")
-package_name = "深界三层
-大断层"
-mean_layer = 3
-package_price = 12
-
-[node name="GroundPackage4" parent="HBoxContainer" instance=ExtResource("4_eq6nc")]
-layout_mode = 2
-game_stats = ExtResource("5_eq6nc")
-package_name = "深界四层
-巨人之杯"
-mean_layer = 4
-package_price = 18
-
-[node name="GroundPackage5" parent="HBoxContainer" instance=ExtResource("4_eq6nc")]
-layout_mode = 2
-game_stats = ExtResource("5_eq6nc")
-package_name = "深界五层
-亡骸之海"
-mean_layer = 5
-package_price = 25
-
-[node name="GroundPackage6" parent="HBoxContainer" instance=ExtResource("4_eq6nc")]
-layout_mode = 2
-game_stats = ExtResource("5_eq6nc")
-package_name = "深界六层
-来无回之都"
-mean_layer = 6
-package_price = 35
