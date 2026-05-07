@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SceneCard" load_steps=33 format=3 uid="uid://cmli5pr88q6d"]
+[gd_resource type="Resource" script_class="SceneCard" format=3 uid="uid://cmli5pr88q6d"]
 
 [ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="1_12kqh"]
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="1_b4tba"]
