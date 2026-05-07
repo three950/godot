@@ -54,6 +54,3 @@ offset_left = 0.0
 offset_top = 0.0
 offset_right = 264.0
 offset_bottom = 345.0
-
-[node name="Camera3D" type="Camera3D" parent="." unique_id=1586848351]
-transform = Transform3D(0.9999759, -0.006944766, 5.52994e-06, 0, 0.0007962743, 0.9999997, -0.006944768, -0.99997556, 0.0007962551, -0.17061746, 2.6711595, -0.08636853)

@@ -3,6 +3,8 @@
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://background.tscn" id="1_bg"]
 [ext_resource type="Script" uid="uid://cryummosf23jg" path="res://script_folder/camera_controller_3d.gd" id="2_cam"]
 [ext_resource type="PackedScene" uid="uid://bm4r8w10jcbid" path="res://ui/ui_layer.tscn" id="3_ui"]
+[ext_resource type="PackedScene" uid="uid://dkyb7xjbci7vv" path="res://card_3d.tscn" id="4_r3fl7"]
+[ext_resource type="Script" uid="uid://cu1myihpo87b" path="res://script_folder/card_throw_physics_test.gd" id="5_throw_test"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_a202f"]
 viewport_path = NodePath("SubViewport")
@@ -33,5 +35,10 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, -
 texture = SubResource("ViewportTexture_a202f")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=872046681]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 shape = SubResource("BoxShape3D_ground")
+
+[node name="Card3d" parent="." unique_id=1098745464 instance=ExtResource("4_r3fl7")]
+
+[node name="CardThrowPhysicsTest" type="Node" parent="." unique_id=872270510]
+script = ExtResource("5_throw_test")
