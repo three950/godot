@@ -5,16 +5,15 @@
 [ext_resource type="PackedScene" uid="uid://bm4r8w10jcbid" path="res://ui/ui_layer.tscn" id="3_ui"]
 [ext_resource type="PackedScene" uid="uid://dkyb7xjbci7vv" path="res://card_3d.tscn" id="4_r3fl7"]
 [ext_resource type="Script" uid="uid://cu1myihpo87b" path="res://script_folder/card_throw_physics_test.gd" id="5_throw_test"]
-[ext_resource type="Script" uid="uid://vgsut85afgn8" path="res://script_folder/subviewport_ground_material.gd" id="6_ground_material"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_i5arm"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_jka67"]
 viewport_path = NodePath("Ground/SubViewport")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wc5p8"]
 resource_local_to_scene = true
 resource_name = "GroundSubViewportMaterial"
 shading_mode = 0
-albedo_texture = SubResource("ViewportTexture_i5arm")
+albedo_texture = SubResource("ViewportTexture_jka67")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
 size = Vector2(34.71, 21.36)
@@ -49,7 +48,6 @@ render_target_update_mode = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 material_override = SubResource("StandardMaterial3D_wc5p8")
 mesh = SubResource("PlaneMesh_ground")
-script = ExtResource("6_ground_material")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=872046681]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
