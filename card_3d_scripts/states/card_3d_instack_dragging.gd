@@ -11,5 +11,11 @@ func enter() -> void:
 func stop_follow_you() -> void:
 	if card.children_card != null:
 		if card.children_card.card_state_machine and card.children_card.card_state_machine.current_state:
-			card.children_card.card_state_machine.current_state.stop_follow_me.emit()
+			card.log_state_event("instackdragging stop_follow: notify child stop, child=%s" % [
+				card.debug_card_name(card.children_card),
+			])
+			var child_state := card.children_card.card_state_machine.current_state
+			if child_state.has_signal("stop_follow_me"):
+				child_state.stop_follow_me.emit()
+	card.log_state_event("transition request: instackdragging -> instack")
 	transition_requested.emit(self, Card3DState.State.instack)

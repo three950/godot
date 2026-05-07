@@ -72,15 +72,32 @@ func _log_state_change(stage: String, from_state: Card3DState, to_state: Card3DS
 		return
 
 	var card_label := "unknown_card"
+	var children_label := "null"
+	var target_label := "null"
+	var stack_state_value := 0
 	if _card:
 		card_label = _card.cardname if _card.cardname != "" else _card.name
+		children_label = _linked_card_name(_card.children_card)
+		target_label = _linked_card_name(_card.follow_target)
+		stack_state_value = _card.stack_state
 
-	print("[Card3DStateMachine][%s] card=%s from=%s to=%s" % [
+	print("[Card3DStateMachine][%s] card=%s from=%s to=%s children=%s target=%s stack_state=%d" % [
 		stage,
 		card_label,
 		_state_name(from_state),
 		_state_name(to_state),
+		children_label,
+		target_label,
+		stack_state_value,
 	])
+
+
+func _linked_card_name(linked_card: Card3D) -> String:
+	if linked_card == null:
+		return "null"
+	if linked_card.cardname != "":
+		return linked_card.cardname
+	return linked_card.name
 
 
 func _state_name(state_node: Card3DState) -> String:

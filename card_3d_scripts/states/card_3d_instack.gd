@@ -27,7 +27,13 @@ func _physics_process(_delta: float) -> void:
 
 func follow_you() -> void:
 	if card.children_card and card.children_card.card_state_machine and card.children_card.card_state_machine.current_state:
-		card.children_card.card_state_machine.current_state.follow_me.emit()
+		card.log_state_event("instack follow: notify child follow, child=%s" % [
+			card.debug_card_name(card.children_card),
+		])
+		var child_state := card.children_card.card_state_machine.current_state
+		if child_state.has_signal("follow_me"):
+			child_state.follow_me.emit()
+	card.log_state_event("transition request: instack -> instackdragging (follow chain)")
 	transition_requested.emit(self, Card3DState.State.instackdragging)
 
 
@@ -36,4 +42,5 @@ func on_area_input(camera: Camera3D, event: InputEvent, event_position: Vector3,
 		var mouse_button := event as InputEventMouseButton
 		if mouse_button.button_index == MOUSE_BUTTON_LEFT and mouse_button.pressed:
 			card.begin_drag(camera, mouse_button.position, event_position)
+			card.log_state_event("transition request: instack -> pickingup (left click)")
 			transition_requested.emit(self, Card3DState.State.pickingup)
