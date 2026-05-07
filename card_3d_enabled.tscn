@@ -1,16 +1,25 @@
 [gd_scene format=3 uid="uid://bntgel7ybr1bb"]
 
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="1_3tbqy"]
+[ext_resource type="Script" uid="uid://bb4d4tgrwyjye" path="res://card_3d_scripts/card_3d.gd" id="2_card3d"]
+[ext_resource type="Script" uid="uid://b3q4uvlvni0pu" path="res://card_3d_scripts/card_3d_state_machine.gd" id="3_machine"]
+[ext_resource type="Script" uid="uid://b17vu4sh081o0" path="res://card_3d_scripts/states/card_3d_fixed.gd" id="4_fixed"]
+[ext_resource type="Script" uid="uid://chphef0oyvfoy" path="res://card_3d_scripts/states/card_3d_pickingup.gd" id="5_pickup"]
+[ext_resource type="Script" uid="uid://bta63xjv4djl5" path="res://card_3d_scripts/states/card_3d_dragging.gd" id="6_drag"]
+[ext_resource type="Script" uid="uid://bdu5oslu7jijs" path="res://card_3d_scripts/states/card_3d_falling.gd" id="7_fall"]
+[ext_resource type="Script" uid="uid://ckoavtjfv7hmc" path="res://card_3d_scripts/states/card_3d_instack.gd" id="8_instack"]
+[ext_resource type="Script" uid="uid://dk7r8p6btsrfb" path="res://card_3d_scripts/states/card_3d_instack_dragging.gd" id="9_instack_drag"]
+[ext_resource type="Script" uid="uid://dyxa1qfcee2ef" path="res://card_3d_scripts/card_3d_overlap_pusher.gd" id="10_pusher"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_1ekb5"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_sawag"]
 viewport_path = NodePath("FrontFace/SubViewport")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_front"]
 resource_local_to_scene = true
-resource_name = "Card3DFrontSubViewportMaterial"
+resource_name = "Card3DFrontMaterial"
 transparency = 1
 shading_mode = 0
-albedo_texture = SubResource("ViewportTexture_1ekb5")
+albedo_texture = SubResource("ViewportTexture_sawag")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_front_face"]
 size = Vector2(2.64, 3.45)
@@ -24,25 +33,89 @@ albedo_color = Color(0, 0, 0, 1)
 [sub_resource type="PlaneMesh" id="PlaneMesh_back_face"]
 size = Vector2(2.64, 3.45)
 
-[node name="Card3d" type="Node3D" unique_id=1098745464]
+[sub_resource type="BoxShape3D" id="BoxShape3D_card_label"]
+size = Vector3(2.64, 0.08, 0.45)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_stack_detector"]
+size = Vector3(2.64, 0.08, 2.94)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_push_detector"]
+size = Vector3(2.64, 0.08, 3.45)
+
+[node name="Card3d" type="Node3D" unique_id=1098745464 groups=["Cards3D"]]
+script = ExtResource("2_card3d")
 
 [node name="FrontFace" type="MeshInstance3D" parent="." unique_id=1833471304]
 material_override = SubResource("StandardMaterial3D_front")
 mesh = SubResource("PlaneMesh_front_face")
 
-[node name="SubViewport" type="SubViewport" parent="FrontFace" unique_id=1388346361]
+[node name="SubViewport" type="SubViewport" parent="FrontFace" unique_id=2002983404]
 disable_3d = true
 transparent_bg = true
 size = Vector2i(264, 345)
 render_target_update_mode = 1
 
-[node name="Card2D" parent="FrontFace/SubViewport" unique_id=429667055 instance=ExtResource("1_3tbqy")]
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 264.0
-offset_bottom = 345.0
+[node name="Card2D" parent="FrontFace/SubViewport" unique_id=33495198 instance=ExtResource("1_3tbqy")]
 
 [node name="BackFace" type="MeshInstance3D" parent="." unique_id=103283408]
 transform = Transform3D(1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_back")
 mesh = SubResource("PlaneMesh_back_face")
+
+[node name="CardLabel" type="Area3D" parent="." unique_id=195554578]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CardLabel" unique_id=54803345]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.5)
+shape = SubResource("BoxShape3D_card_label")
+
+[node name="CardStackDetectorArea" type="Area3D" parent="." unique_id=1021535360]
+collision_mask = 2
+input_ray_pickable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CardStackDetectorArea" unique_id=603997390]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.225)
+shape = SubResource("BoxShape3D_stack_detector")
+
+[node name="CardPushDetectorArea" type="Area3D" parent="." unique_id=1315464570]
+collision_layer = 16
+collision_mask = 16
+input_ray_pickable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CardPushDetectorArea" unique_id=301992265]
+shape = SubResource("BoxShape3D_push_detector")
+
+[node name="Card3DOverlapPusher" type="Node" parent="." unique_id=1477353159]
+script = ExtResource("10_pusher")
+
+[node name="Card3DStateMachine" type="Node" parent="." unique_id=1272979021 node_paths=PackedStringArray("initial_state")]
+script = ExtResource("3_machine")
+initial_state = NodePath("Card3DFixed")
+
+[node name="Card3DFixed" type="Node" parent="Card3DStateMachine" unique_id=1263188559]
+script = ExtResource("4_fixed")
+
+[node name="Card3DPickingup" type="Node" parent="Card3DStateMachine" unique_id=177027998]
+script = ExtResource("5_pickup")
+state = 1
+
+[node name="Card3DDragging" type="Node" parent="Card3DStateMachine" unique_id=905161906]
+script = ExtResource("6_drag")
+state = 2
+
+[node name="Card3DFalling" type="Node" parent="Card3DStateMachine" unique_id=1997581314]
+script = ExtResource("7_fall")
+state = 3
+
+[node name="Card3DInstack" type="Node" parent="Card3DStateMachine" unique_id=1232293896]
+script = ExtResource("8_instack")
+state = 4
+
+[node name="Card3DInstackDragging" type="Node" parent="Card3DStateMachine" unique_id=1397542537]
+script = ExtResource("9_instack_drag")
+state = 5
+
+[connection signal="input_event" from="CardLabel" to="." method="_on_card_input_event"]
+[connection signal="mouse_entered" from="CardLabel" to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="CardLabel" to="." method="_on_mouse_exited"]

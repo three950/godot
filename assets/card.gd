@@ -21,14 +21,14 @@ enum cardType{normal, selling, architecture}  # 卡片类型
 var original_position: Vector2 = Vector2.ZERO  # 开始拖拽时的原始位置
 var drag_offset: Vector2 = Vector2.ZERO  # 拖拽时鼠标相对于卡片的偏移量
 @onready var card_state_machine:CardStateMachine=$CardStateMachine as CardStateMachine
-@onready var shooter: Shooter = $Shooter
+@onready var shooter: Shooter = get_node_or_null("Shooter") as Shooter
 # 通用UI元素引用 - 子类可以重写这些路径
-@onready var card_label: Label = $SubViewport/Panel/Label
-@onready var card_texture: TextureRect = $SubViewport/TextureRect
-@onready var surface: TextureRect = $surface
-@onready var shadow: TextureRect = $shadow
+@onready var card_label: Label = get_node_or_null("Panel/Label") as Label
+@onready var card_texture: TextureRect = get_node_or_null("TextureRect") as TextureRect
+@onready var surface: TextureRect = get_node_or_null("surface") as TextureRect
+@onready var shadow: TextureRect = get_node_or_null("shadow") as TextureRect
 # 动画播放器
-@onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var animation_player: AnimationPlayer = get_node_or_null("AnimationPlayer") as AnimationPlayer
 # surface 的原始位置
 var surface_original_position: Vector2 = Vector2.ZERO
 # shadow 的原始位置
@@ -77,12 +77,12 @@ func _ready() -> void:
 
 ## 让卡片的材质唯一化，避免多个实例共享材质
 func _make_materials_unique() -> void:
-	var surface = get_node_or_null("surface")
-	var shadow = get_node_or_null("shadow")
-	if surface and surface.material:
-		surface.material = surface.material.duplicate()
-	if shadow and shadow.material:
-		shadow.material = shadow.material.duplicate()
+	var surface_node := get_node_or_null("surface") as TextureRect
+	var shadow_node := get_node_or_null("shadow") as TextureRect
+	if surface_node and surface_node.material:
+		surface_node.material = surface_node.material.duplicate()
+	if shadow_node and shadow_node.material:
+		shadow_node.material = shadow_node.material.duplicate()
 
 # 启用 / 禁用堆叠检测 Area
 func set_stack_detector_enabled(enabled: bool) -> void:
@@ -141,7 +141,7 @@ func bestacked_on_me(children: Card) -> void:
 	print("一宿你")
 	# 当前卡牌作为“被堆叠的底卡”，不再需要参与新的堆叠检测，禁用检测区域
 	set_stack_detector_enabled(false)
-	var label_panel := get_node("SubViewport/Panel")
+	var label_panel := get_node_or_null("Panel") as Control
 	if label_panel:
 		size = label_panel.size
 	array_changed.emit()
@@ -153,7 +153,7 @@ func stop_stacking_on_me() -> void:
 	print("不要走")
 	# 不再被堆叠，重新允许其他卡堆到自己身上，恢复检测
 	set_stack_detector_enabled(true)
-	var card_panel:= get_node("SubViewport/CardPanel")
+	var card_panel := get_node_or_null("CardPanel") as Control
 	if card_panel:
 		size=card_panel.size
 	array_changed.emit()
@@ -244,9 +244,9 @@ func update_children_position() -> void:
 		return
 	
 	# 更新直接子卡牌的位置Panel 在卡片内的相对位置 + 卡片的全局位置来计算
-	var label_node = get_node("SubViewport/Panel")
+	var label_node := get_node_or_null("Panel") as Control
 	if label_node:
-		var label_relative_y = label_node.position.y  # Panel 相对于 SubViewport/卡片的 Y 位置
+		var label_relative_y = label_node.position.y
 		var label_size = label_node.size
 		# 子卡片位置 = 父卡片全局位置.y + Panel相对位置.y + Panel高度
 		children_card.global_position = Vector2(global_position.x, global_position.y + label_relative_y + label_size.y)
@@ -283,6 +283,8 @@ func update_shadow_offset() -> void:
 		if node is Control and node.name == "cardsArea":
 			cards_area = node as Control
 			break
+	if cards_area == null:
+		return
 	# 计算卡片在 cardsArea 中的相对位置（0.0 到 1.0）
 	var card_global_pos = global_position
 	var area_global_pos = cards_area.global_position

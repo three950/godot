@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://presentation/background/background.tscn" id="1_bg"]
 [ext_resource type="Script" uid="uid://cryummosf23jg" path="res://script_folder/camera_controller_3d.gd" id="2_cam"]
 [ext_resource type="PackedScene" uid="uid://bm4r8w10jcbid" path="res://presentation/ui_layer.tscn" id="3_ui"]
-[ext_resource type="PackedScene" uid="uid://dkyb7xjbci7vv" path="res://card_3d.tscn" id="4_r3fl7"]
+[ext_resource type="PackedScene" uid="uid://bntgel7ybr1bb" path="res://card_3d_enabled.tscn" id="5_i5arm"]
 [ext_resource type="PackedScene" uid="uid://cpvvd1084dyc8" path="res://presentation/shop.tscn" id="5_shop"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_shop"]
@@ -32,8 +32,6 @@ script = ExtResource("2_cam")
 [node name="Camera3D" type="Camera3D" parent="." unique_id=809929531]
 transform = Transform3D(1, 4.0494018e-07, -4.0775475e-08, 0, 0.100188404, 0.9949685, 4.0698797e-07, -0.9949685, 0.100188404, -0.2991175, 14.5398855, 2.394606)
 
-[node name="Card3d" parent="." unique_id=1098745464 instance=ExtResource("4_r3fl7")]
-
 [node name="Shop" type="Sprite3D" parent="." unique_id=136831094]
 transform = Transform3D(1, 0, 0, 0, -3.6199901e-06, 1, 0, -1, -3.6199901e-06, 0, -0.999, -8.511694)
 texture = SubResource("ViewportTexture_shop")
@@ -45,6 +43,11 @@ size = Vector2i(2287, 345)
 render_target_update_mode = 4
 
 [node name="Shop" parent="Shop/ShopViewport" unique_id=1860764525 instance=ExtResource("5_shop")]
+
+[node name="Card3d2" parent="." unique_id=1058394043 instance=ExtResource("5_i5arm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.060543)
+
+[node name="Card3d" parent="." unique_id=1098745464 instance=ExtResource("5_i5arm")]
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=1744047288]
 

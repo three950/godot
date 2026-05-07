@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="stackabyss"
-run/main_scene="uid://r1lb3ajxfx1j"
+run/main_scene="uid://kcugpneamvai"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 

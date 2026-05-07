@@ -2,3 +2,6 @@
 command = "node"
 args = ["D:/godot-try/stackabyss/.agents/mcp/godot-mcp/build/index.js"]
 env = { GODOT_PATH = "D:/steam/steamapps/common/Godot Engine/godot.windows.opt.tools.64.exe" }
+
+[mcp_servers.godot.tools.stop_project]
+approval_mode = "approve"

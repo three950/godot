@@ -1,0 +1,400 @@
+class_name Card3D
+extends Node3D
+
+# 对外信号：用于堆叠、拖拽状态变化，以及请求外部重挂载节点。
+signal card_label_entered_stack_area(entering_card: Card3D)
+signal card_label_exited_stack_area(exiting_card: Card3D)
+signal stacking_on_you(children: Card3D)
+signal stop_stacking_on_you()
+signal dropped(source_state: Card3DState)
+signal drag_started()
+signal array_changed()
+signal reparent_requested(which_card: Card3D)
+
+enum cardType {normal, selling, architecture}
+
+# 基础配置：卡牌名称、类型、是否可堆叠。
+@export var cardname: String
+@export var card_type: cardType = cardType.normal
+@export var can_stack: bool = true
+
+@export_group("3D Motion")
+@export var hover_lift_y: float = 0.05
+@export var pickup_lift_y: float = 0.08
+@export var stack_offset_z: float = 0.48
+
+@export_group("3D Input")
+@export var ray_interaction_enabled: bool = true
+@export var face_size: Vector2 = Vector2(2.64, 3.45)
+@export var debug_ray_hits: bool = false
+
+@export_group("Audio")
+@export var pickup_sound: AudioStream
+@export var fall_sound: AudioStream
+
+@onready var card_state_machine: Card3DStateMachine = $Card3DStateMachine as Card3DStateMachine
+@onready var stack_detector: Area3D = $CardStackDetectorArea as Area3D
+@onready var front_face: Node3D = $FrontFace as Node3D
+@onready var back_face: Node3D = $BackFace as Node3D
+
+# 运行时堆叠/拖拽状态。
+var overlapping_cards: Array[Card3D] = []
+var follow_target: Card3D = null
+var stack_state: int = 0
+var children_card: Card3D = null
+var drag_offset: Vector3 = Vector3.ZERO
+var is_hovered: bool = false
+var is_picked_up: bool = false
+
+var _drag_camera: Camera3D = null
+var _drag_plane_y: float = 0.0
+var _front_face_original_position: Vector3 = Vector3.ZERO
+var _back_face_original_position: Vector3 = Vector3.ZERO
+var _ray_hovered: bool = false
+
+
+func _ready() -> void:
+	# 初始化组、缓存原始位置、状态机和检测器信号。
+	add_to_group("Cards3D")
+
+	if front_face:
+		_front_face_original_position = front_face.position
+	if back_face:
+		_back_face_original_position = back_face.position
+
+	if card_state_machine:
+		card_state_machine.init(self)
+
+	if stack_detector:
+		stack_detector.area_entered.connect(_on_stack_detector_area_entered)
+		stack_detector.area_exited.connect(_on_stack_detector_area_exited)
+
+	if not stacking_on_you.is_connected(bestacked_on_me):
+		stacking_on_you.connect(bestacked_on_me)
+	if not stop_stacking_on_you.is_connected(stop_stacking_on_me):
+		stop_stacking_on_you.connect(stop_stacking_on_me)
+
+
+func _input(event: InputEvent) -> void:
+	if card_state_machine == null or card_state_machine.current_state == null:
+		return
+
+	# 在“拿起/拖拽”相关状态时，把输入优先交给状态机处理。
+	var current := card_state_machine.current_state.state
+	if current == Card3DState.State.pickingup \
+			or current == Card3DState.State.dragging \
+			or current == Card3DState.State.instackdragging:
+		card_state_machine.on_input(event)
+		if _is_drag_input_event(event):
+			get_viewport().set_input_as_handled()
+		return
+
+	if ray_interaction_enabled:
+		# 非 Area 输入模式下，走手动射线检测点击和悬停。
+		_handle_ray_input(event)
+
+
+func begin_drag(camera: Camera3D, mouse_position: Vector2, event_position: Vector3) -> void:
+	# 记录拖拽参考平面（当前卡牌 y）和鼠标命中点偏移，避免吸附到中心。
+	_drag_camera = camera
+	_drag_plane_y = global_position.y
+
+	var hit_position := event_position
+	var projected := _project_mouse_to_y_plane(mouse_position, _drag_plane_y, camera)
+	if not projected.is_empty():
+		hit_position = projected["position"]
+
+	drag_offset = hit_position - global_position
+	drag_offset.y = 0.0
+
+
+func update_drag_from_mouse(mouse_position: Vector2) -> void:
+	# 按拖拽平面投影更新 x/z，保持 y 不变；并递归更新子卡位置。
+	var camera := _get_drag_camera()
+	if camera == null:
+		return
+
+	var projected := _project_mouse_to_y_plane(mouse_position, _drag_plane_y, camera)
+	if projected.is_empty():
+		return
+
+	var hit_position: Vector3 = projected["position"]
+	var next_position := global_position
+	next_position.x = hit_position.x - drag_offset.x
+	next_position.z = hit_position.z - drag_offset.z
+	global_position = next_position
+	update_children_position()
+
+
+func end_drag() -> void:
+	_drag_camera = null
+	drag_offset = Vector3.ZERO
+
+
+func set_stack_detector_enabled(enabled: bool) -> void:
+	if stack_detector:
+		stack_detector.set_deferred("monitoring", enabled)
+		stack_detector.set_deferred("monitorable", enabled)
+
+
+func bestacked_on_me(children: Card3D) -> void:
+	# 标记“被堆叠”状态：记录子卡并关闭检测器，避免重复检测。
+	stack_state |= Card3DState.STACK_STATE_BESTACKED
+	children_card = children
+	set_stack_detector_enabled(false)
+	array_changed.emit()
+
+
+func stop_stacking_on_me() -> void:
+	# 解除“被堆叠”状态并恢复检测器。
+	stack_state &= ~Card3DState.STACK_STATE_BESTACKED
+	children_card = null
+	set_stack_detector_enabled(true)
+	array_changed.emit()
+
+
+func apply_pickup_offset() -> void:
+	# 拿起时叠加抬升偏移，并同步到整个子卡链。
+	is_picked_up = true
+	_update_lift_offset()
+	if children_card:
+		children_card.apply_pickup_offset()
+
+
+func reset_offset() -> void:
+	# 重置 hover/拿起偏移，并递归清理子卡偏移。
+	is_hovered = false
+	is_picked_up = false
+	_update_lift_offset()
+	if children_card:
+		children_card.reset_offset()
+
+
+func update_children_position() -> void:
+	# 递归把子卡放到当前卡牌的“堆叠目标位置”。
+	if children_card == null:
+		return
+
+	children_card.global_position = get_child_stack_position()
+	children_card.update_children_position()
+
+
+func update_stack_chain_position() -> void:
+	var head_card := get_stack_head()
+	head_card.update_children_position()
+
+
+func get_stack_head() -> Card3D:
+	# 沿 follow_target 向上追到堆叠链头节点。
+	var current: Card3D = self
+	while current.follow_target != null:
+		current = current.follow_target
+	return current
+
+
+func get_child_stack_position() -> Vector3:
+	return Vector3(global_position.x, global_position.y, global_position.z + stack_offset_z)
+
+
+func _on_card_input_event(camera: Node, event: InputEvent, event_position: Vector3, normal: Vector3, shape_idx: int) -> void:
+	var input_camera := camera as Camera3D
+	if input_camera:
+		_drag_camera = input_camera
+	if card_state_machine:
+		card_state_machine.on_area_input(input_camera, event, event_position, normal, shape_idx)
+	if _is_drag_input_event(event):
+		get_viewport().set_input_as_handled()
+
+
+func _on_mouse_entered() -> void:
+	if card_state_machine:
+		card_state_machine.on_mouse_entered()
+	if follow_target != null:
+		return
+	is_hovered = true
+	_apply_hover_offset()
+
+
+func _on_mouse_exited() -> void:
+	if card_state_machine:
+		card_state_machine.on_mouse_exited()
+	if follow_target != null:
+		return
+	_remove_hover_offset()
+
+
+func _on_stack_detector_area_entered(area: Area3D) -> void:
+	# 进入堆叠检测区域：把“我”加入对方的重叠列表，供堆叠判定使用。
+	var entering_card := area.get_parent() as Card3D
+	if entering_card == null or entering_card == self:
+		return
+
+	if not entering_card.overlapping_cards.has(self):
+		entering_card.overlapping_cards.append(self)
+	card_label_entered_stack_area.emit(entering_card)
+
+
+func _on_stack_detector_area_exited(area: Area3D) -> void:
+	# 离开检测区域：从对方重叠列表移除。
+	var exiting_card := area.get_parent() as Card3D
+	if exiting_card == null or exiting_card == self:
+		return
+
+	if exiting_card.overlapping_cards.has(self):
+		exiting_card.overlapping_cards.erase(self)
+	card_label_exited_stack_area.emit(exiting_card)
+
+
+func _apply_hover_offset() -> void:
+	_update_lift_offset()
+	if children_card:
+		children_card.is_hovered = true
+		children_card._apply_hover_offset()
+
+
+func _remove_hover_offset() -> void:
+	is_hovered = false
+	_update_lift_offset()
+	if children_card:
+		children_card._remove_hover_offset()
+
+
+func _update_lift_offset() -> void:
+	# hover 和 pickup 的抬升量可叠加，直接改前后牌面的局部 y。
+	var total_lift := 0.0
+	if is_hovered:
+		total_lift += hover_lift_y
+	if is_picked_up:
+		total_lift += pickup_lift_y
+
+	if front_face:
+		var front_position := _front_face_original_position
+		front_position.y += total_lift
+		front_face.position = front_position
+	if back_face:
+		var back_position := _back_face_original_position
+		back_position.y += total_lift
+		back_face.position = back_position
+
+
+func _get_drag_camera() -> Camera3D:
+	if _drag_camera != null and is_instance_valid(_drag_camera):
+		return _drag_camera
+	return get_viewport().get_camera_3d()
+
+
+func _handle_ray_input(event: InputEvent) -> void:
+	# 统一处理射线悬停与左键点击（不依赖 Area 输入事件）。
+	if event is InputEventMouseMotion:
+		var mouse_motion := event as InputEventMouseMotion
+		_update_ray_hover(mouse_motion.position)
+		return
+
+	if event is InputEventMouseButton:
+		var mouse_button := event as InputEventMouseButton
+		if mouse_button.button_index != MOUSE_BUTTON_LEFT or not mouse_button.pressed:
+			return
+
+		var camera := get_viewport().get_camera_3d()
+		var hit := _get_top_card_hit(mouse_button.position, camera)
+		if hit.is_empty() or hit.get("card") != self:
+			return
+
+		if debug_ray_hits:
+			print("Card3D ray hit: %s at %s" % [name, hit["position"]])
+
+		card_state_machine.on_area_input(camera, mouse_button, hit["position"], hit["normal"], -1)
+		get_viewport().set_input_as_handled()
+
+
+func _update_ray_hover(mouse_position: Vector2) -> void:
+	# 仅当“最上层命中的卡牌是自己”时触发 enter/exit，避免多层卡误触。
+	var camera := get_viewport().get_camera_3d()
+	var hit := _get_top_card_hit(mouse_position, camera)
+	var is_hit: bool = not hit.is_empty() and hit.get("card") == self
+
+	if is_hit and not _ray_hovered:
+		_ray_hovered = true
+		_on_mouse_entered()
+	elif not is_hit and _ray_hovered:
+		_ray_hovered = false
+		_on_mouse_exited()
+
+
+func _get_top_card_hit(mouse_position: Vector2, camera: Camera3D) -> Dictionary:
+	# 遍历 Cards3D 组，取距离相机最近的命中点，作为当前可交互目标。
+	if camera == null:
+		return {}
+
+	var best_hit := {}
+	var best_distance := INF
+
+	for node in get_tree().get_nodes_in_group("Cards3D"):
+		var other_card := node as Card3D
+		if other_card == null or not is_instance_valid(other_card) or not other_card.is_inside_tree():
+			continue
+
+		var hit := other_card._intersect_face_ray(mouse_position, camera)
+		if hit.is_empty():
+			continue
+
+		var distance: float = hit["distance"]
+		if distance < best_distance:
+			best_distance = distance
+			best_hit = hit
+			best_hit["card"] = other_card
+
+	return best_hit
+
+
+func _intersect_face_ray(mouse_position: Vector2, camera: Camera3D) -> Dictionary:
+	# 把射线转到卡牌局部空间，与 y=0 牌面平面求交，再检查是否落在 face_size 内。
+	var ray_origin := camera.project_ray_origin(mouse_position)
+	var ray_normal := camera.project_ray_normal(mouse_position)
+	var local_origin := to_local(ray_origin)
+	var local_normal := global_transform.basis.inverse() * ray_normal
+
+	if absf(local_normal.y) < 0.00001:
+		return {}
+
+	var distance_to_plane := -local_origin.y / local_normal.y
+	if distance_to_plane < 0.0:
+		return {}
+
+	var local_hit := local_origin + local_normal * distance_to_plane
+	var half_size := face_size * 0.5
+	if absf(local_hit.x) > half_size.x or absf(local_hit.z) > half_size.y:
+		return {}
+
+	var global_hit := to_global(local_hit)
+	return {
+		"position": global_hit,
+		"normal": global_transform.basis.y.normalized(),
+		"distance": ray_origin.distance_to(global_hit),
+	}
+
+
+func _project_mouse_to_y_plane(mouse_position: Vector2, plane_y: float, camera: Camera3D) -> Dictionary:
+	# 计算鼠标射线与指定 y 平面的交点（用于平面拖拽）。
+	if camera == null:
+		return {}
+
+	var ray_origin := camera.project_ray_origin(mouse_position)
+	var ray_normal := camera.project_ray_normal(mouse_position)
+	if absf(ray_normal.y) < 0.00001:
+		return {}
+
+	var distance := (plane_y - ray_origin.y) / ray_normal.y
+	if distance < 0.0:
+		return {}
+
+	return {"position": ray_origin + ray_normal * distance}
+
+
+func _is_drag_input_event(event: InputEvent) -> bool:
+	if event is InputEventMouseMotion:
+		return true
+	if event is InputEventMouseButton:
+		var mouse_button := event as InputEventMouseButton
+		return mouse_button.button_index == MOUSE_BUTTON_LEFT
+	return false
