@@ -17,7 +17,6 @@ viewport_path = NodePath("FrontFace/SubViewport")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_front"]
 resource_local_to_scene = true
 resource_name = "Card3DFrontMaterial"
-transparency = 1
 shading_mode = 0
 albedo_texture = SubResource("ViewportTexture_sawag")
 
@@ -27,6 +26,7 @@ size = Vector2(2.64, 3.45)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_back"]
 resource_local_to_scene = true
 resource_name = "Card3DBackBlackMaterial"
+transparency = 1
 shading_mode = 0
 albedo_color = Color(0, 0, 0, 1)
 

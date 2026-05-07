@@ -817,3 +817,4 @@ Quick checklist:
 When a task involves `Viewport` or `SubViewport`:
 1. Ask the user which rendering mode they want before changing viewport setup.
 2. Keep `disable_3d = true` enabled
+3. For viewport output shown on 3D card surfaces, use `Transparency: Disabled` on the receiving material and keep `Transparent Bg = true` on the `SubViewport`.

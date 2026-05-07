@@ -5,6 +5,10 @@ func on_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		var mouse_motion := event as InputEventMouseMotion
 		card.update_drag_from_mouse(mouse_motion.position)
+		var next_position := card.global_position
+		next_position.y = 1.0
+		card.global_position = next_position
+		card.update_children_position()
 		return
 
 	if event is InputEventMouseButton:
