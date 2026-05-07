@@ -5,9 +5,19 @@
 [ext_resource type="PackedScene" uid="uid://bm4r8w10jcbid" path="res://ui/ui_layer.tscn" id="3_ui"]
 [ext_resource type="PackedScene" uid="uid://dkyb7xjbci7vv" path="res://card_3d.tscn" id="4_r3fl7"]
 [ext_resource type="Script" uid="uid://cu1myihpo87b" path="res://script_folder/card_throw_physics_test.gd" id="5_throw_test"]
+[ext_resource type="Script" uid="uid://vgsut85afgn8" path="res://script_folder/subviewport_ground_material.gd" id="6_ground_material"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_a202f"]
-viewport_path = NodePath("SubViewport")
+[sub_resource type="ViewportTexture" id="ViewportTexture_i5arm"]
+viewport_path = NodePath("Ground/SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wc5p8"]
+resource_local_to_scene = true
+resource_name = "GroundSubViewportMaterial"
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_i5arm")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
+size = Vector2(34.71, 21.36)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
 size = Vector3(34.71, 1, 21.36)
@@ -20,14 +30,6 @@ script = ExtResource("2_cam")
 [node name="Camera3D" type="Camera3D" parent="." unique_id=809929531]
 transform = Transform3D(1, 4.0494018e-07, -4.0775475e-08, 0, 0.100188404, 0.9949685, 4.0698797e-07, -0.9949685, 0.100188404, -0.2991175, 14.5398855, 2.394606)
 
-[node name="SubViewport" type="SubViewport" parent="." unique_id=1206803335]
-disable_3d = true
-transparent_bg = true
-size = Vector2i(3471, 2136)
-render_target_update_mode = 1
-
-[node name="backgroundUi" parent="SubViewport" unique_id=2123796363 instance=ExtResource("1_bg")]
-
 [node name="Card3d" parent="." unique_id=1098745464 instance=ExtResource("4_r3fl7")]
 
 [node name="CardThrowPhysicsTest" type="Node" parent="." unique_id=872270510]
@@ -35,9 +37,19 @@ script = ExtResource("5_throw_test")
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=1744047288]
 
-[node name="Sprite3D" type="Sprite3D" parent="Ground" unique_id=1430717003]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, -1, 0)
-texture = SubResource("ViewportTexture_a202f")
+[node name="SubViewport" type="SubViewport" parent="Ground" unique_id=1206803335]
+disable_3d = true
+transparent_bg = true
+size = Vector2i(3471, 2136)
+render_target_update_mode = 1
+
+[node name="backgroundUi" parent="Ground/SubViewport" unique_id=2123796363 instance=ExtResource("1_bg")]
+
+[node name="GroundMesh" type="MeshInstance3D" parent="Ground" unique_id=1430717003]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+material_override = SubResource("StandardMaterial3D_wc5p8")
+mesh = SubResource("PlaneMesh_ground")
+script = ExtResource("6_ground_material")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=872046681]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
