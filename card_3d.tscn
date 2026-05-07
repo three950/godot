@@ -3,19 +3,26 @@
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="1_card2d"]
 [ext_resource type="Script" uid="uid://bhjdxju1cbgpb" path="res://card_3d.gd" id="2_card3d_script"]
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_1ekb5"]
+viewport_path = NodePath("SubViewport")
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_front"]
 resource_local_to_scene = true
 resource_name = "Card3DFrontSubViewportMaterial"
 transparency = 1
 shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_1ekb5")
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_card_face"]
-size = Vector2(2.64, 3.45)
+[sub_resource type="ViewportTexture" id="ViewportTexture_m068u"]
+viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_back"]
 resource_name = "Card3DBackBlackMaterial"
 shading_mode = 0
 albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_back_face"]
+size = Vector2(2.64, 3.45)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_bndbr"]
 size = Vector3(2.64, 0.02, 3.45)
@@ -23,14 +30,15 @@ size = Vector3(2.64, 0.02, 3.45)
 [node name="Card3d" type="RigidBody3D" unique_id=1098745464]
 script = ExtResource("2_card3d_script")
 
-[node name="FrontFace" type="MeshInstance3D" parent="." unique_id=1331439837]
+[node name="FrontFace" type="Sprite3D" parent="." unique_id=1833471304]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_front")
-mesh = SubResource("PlaneMesh_card_face")
+texture = SubResource("ViewportTexture_m068u")
 
-[node name="BackFace" type="MeshInstance3D" parent="." unique_id=645090536]
+[node name="BackFace" type="MeshInstance3D" parent="." unique_id=103283408]
 transform = Transform3D(1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_back")
-mesh = SubResource("PlaneMesh_card_face")
+mesh = SubResource("PlaneMesh_back_face")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1159945269]
 shape = SubResource("BoxShape3D_bndbr")
