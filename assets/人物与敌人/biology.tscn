@@ -1,9 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://b1oqblyvspkqi"]
+[gd_scene format=3 uid="uid://b1oqblyvspkqi"]
 
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="1_3c02q"]
 [ext_resource type="Script" uid="uid://cq4u5v6w7x80a" path="res://assets/人物与敌人/attribute_labels.gd" id="1_script"]
-[ext_resource type="Shader" uid="uid://pwq3r7ep4yey" path="res://shader/ 卡牌翻转.gdshader" id="2_43ghe"]
-[ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="2_font"]
+[ext_resource type="Shader" path="res://shader/ 卡牌翻转.gdshader" id="2_43ghe"]
+[ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://presentation/fonts/Xolonium-Regular.ttf" id="2_font"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_g27c4"]
 shader = ExtResource("2_43ghe")

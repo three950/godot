@@ -297,10 +297,3 @@ func update_shadow_offset() -> void:
 	
 	# 只更新 shadow 的 X 轴位置，保留 Y 轴的状态偏移
 	shadow.position.x = shadow_original_position.x + offset_x
-
-#region 卡片翻转动画
-## 播放卡片生成翻转动画
-func play_spawn_flip() -> void:
-	if animation_player:
-		animation_player.play("卡片生成翻转")
-#endregion

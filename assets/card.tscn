@@ -6,13 +6,12 @@
 [ext_resource type="AudioStream" uid="uid://csqitlghauxgb" path="res://声音资产/useful/卡牌拿起放下/cardpick.wav" id="2_mqa0q"]
 [ext_resource type="AudioStream" uid="uid://cu1gnscbqcks2" path="res://声音资产/useful/卡牌拿起放下/cardfall.wav" id="3_agldc"]
 [ext_resource type="Script" uid="uid://b6yrrsooe1is3" path="res://assets/card_state_machine.gd" id="4_rjwbx"]
-[ext_resource type="Shader" uid="uid://pwq3r7ep4yey" path="res://shader/ 卡牌翻转.gdshader" id="5_8iohq"]
-[ext_resource type="StyleBox" uid="uid://b0256y5bp2byj" path="res://card.tres" id="5_agldc"]
+[ext_resource type="StyleBox" uid="uid://b0256y5bp2byj" path="res://assets/card.tres" id="5_agldc"]
 [ext_resource type="Script" uid="uid://blwo6u4at8188" path="res://assets/card-states/card_fixed.gd" id="5_xi8kn"]
-[ext_resource type="StyleBox" uid="uid://bv510uix8lck3" path="res://cardpanel.tres" id="6_3tu4f"]
+[ext_resource type="StyleBox" uid="uid://bv510uix8lck3" path="res://assets/cardpanel.tres" id="6_3tu4f"]
 [ext_resource type="Script" uid="uid://d3wrnnerhh2i0" path="res://assets/card-states/card_pickingup.gd" id="6_e6854"]
 [ext_resource type="Script" uid="uid://dw2dcs08at733" path="res://assets/card-states/crad_dragging.gd" id="7_a3cqy"]
-[ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://font.tres" id="7_xo5ip"]
+[ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://presentation/fonts/font.tres" id="7_xo5ip"]
 [ext_resource type="Script" uid="uid://bgkton1xcycf" path="res://assets/card-states/card_falling.gd" id="8_ram0e"]
 [ext_resource type="Script" uid="uid://sxc0f1pavh3f" path="res://assets/card-states/card_instack.gd" id="9_kvflh"]
 [ext_resource type="Script" uid="uid://bwf2g3aljfb72" path="res://assets/card-states/card_instack_dragging.gd" id="10_a3cqy"]
@@ -20,13 +19,6 @@
 [ext_resource type="Script" uid="uid://c2rerytg2jn4" path="res://script_folder/card_overlap_pusher.gd" id="12_pusher"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xo5ip"]
-shader = ExtResource("5_8iohq")
-shader_parameter/fov = 90.0
-shader_parameter/cull_back = false
-shader_parameter/y_rot = 0.0
-shader_parameter/x_rot = 0.0
-shader_parameter/inset = 0.0
-shader_parameter/back_color = Color(0, 0, 0, 1)
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_xo5ip"]
 viewport_path = NodePath("SubViewport")

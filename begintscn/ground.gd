@@ -1,5 +1,5 @@
 extends Node2D
-
+#已废弃，仅作对话系统的参考代码，本身无法允许
 # 引用对话资源
 const BeginDialogue = preload("res://dialogue/begin.tres")
 

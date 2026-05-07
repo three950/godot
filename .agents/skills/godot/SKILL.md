@@ -811,3 +811,9 @@ Quick checklist:
 3. Use `StaticBody3D + CollisionShape3D` for 3D collision.
 4. Add `Sprite3D` and set `texture` from the `SubViewport` output.
 5. Clear `GeometryInstance3D.material_override` on `Sprite3D`.
+
+## [USER-ADDED] Viewport Rendering Mode Rule
+
+When a task involves `Viewport` or `SubViewport`:
+1. Ask the user which rendering mode they want before changing viewport setup.
+2. Keep `disable_3d = true` enabled

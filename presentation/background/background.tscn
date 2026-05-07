@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://d8vp1m0epvxf"]
 
-[ext_resource type="StyleBox" uid="uid://to3672utuxwe" path="res://ui/棋盘.tres" id="2_vvxqx"]
+[ext_resource type="StyleBox" uid="uid://to3672utuxwe" path="res://presentation/background/棋盘.tres" id="2_vvxqx"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cdpnt"]
 bg_color = Color(0.8170297, 0.75410753, 0.5967472, 1)

@@ -5,7 +5,7 @@ extends Node
 # 战斗场景预制体
 const BATTLE_SCENE = preload("res://ui/battle_scene.tscn")
 # 子弹预制体
-const BULLET_SCENE = preload("res://ui/bullet.tscn")
+const BULLET_SCENE = preload("uid://cv0haxbbpsw84")
 
 # 标记是否正在处理战斗开始（防止重复触发）
 var _is_processing_battle := false

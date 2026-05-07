@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://cq8vx4h7n2k3b"]
+[gd_scene format=3 uid="uid://cq8vx4h7n2k3b"]
 
 [ext_resource type="Script" uid="uid://b7kyam2n3p5qw" path="res://assets/dialogue/dialogue_card.gd" id="1_dialogue"]
-[ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://fonts/Xolonium-Regular.ttf" id="2_font"]
+[ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://presentation/fonts/Xolonium-Regular.ttf" id="2_font"]
 
 [node name="DialogueCard" type="Control" node_paths=PackedStringArray("follow_target") groups=["Cards"]]
 layout_mode = 3

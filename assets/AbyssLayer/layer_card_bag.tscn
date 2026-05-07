@@ -1,8 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://bh2usa7ojp531"]
+[gd_scene format=3 uid="uid://bh2usa7ojp531"]
 
-[ext_resource type="Texture2D" uid="uid://cwohluet7sc50" path="res://begintscn/地表.jpg" id="1_til75"]
+[ext_resource type="Texture2D" path="res://begintscn/地表.jpg" id="1_til75"]
 [ext_resource type="Script" uid="uid://cao5f6hiln3f" path="res://assets/AbyssLayer/layer_card_bag.gd" id="1_xfley"]
-[ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://font.tres" id="2_i1sea"]
+[ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://presentation/fonts/font.tres" id="2_i1sea"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fpyd7"]
 bg_color = Color(0.16565639, 0.16565642, 0.16565636, 1)

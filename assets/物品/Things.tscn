@@ -1,8 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://fopgb30s4q33"]
+[gd_scene format=3 uid="uid://fopgb30s4q33"]
 
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="1_1jjow"]
 [ext_resource type="Script" uid="uid://xwsvanroj8nl" path="res://assets/物品/things.gd" id="2_xtrdk"]
-[ext_resource type="PackedScene" uid="uid://m6rrjkc625gk" path="res://ui/card_progress_bar.tscn" id="3_g60qt"]
+[ext_resource type="PackedScene" uid="uid://m6rrjkc625gk" path="res://presentation/card_progress_bar.tscn" id="3_g60qt"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_g60qt"]
 viewport_path = NodePath("SubViewport")

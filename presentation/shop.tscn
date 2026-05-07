@@ -1,0 +1,79 @@
+[gd_scene format=3 uid="uid://cpvvd1084dyc8"]
+
+[ext_resource type="PackedScene" uid="uid://bivykmwh7lskv" path="res://assets/固定场景建筑/探窟者协会/探窟者协会.tscn" id="1_i5mka"]
+[ext_resource type="Resource" uid="uid://flhywkkf61mb" path="res://base_data/game_stats.tres" id="2_tyvbe"]
+[ext_resource type="AudioStream" uid="uid://cb0w4jfqxv6so" path="res://声音资产/useful/Gore Splat Stab Poke 03.wav" id="3_tdjdk"]
+[ext_resource type="PackedScene" uid="uid://dde8q2r1usqpa" path="res://presentation/shop_bag/GroundPackage.tscn" id="4_fovme"]
+[ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/cards/钓鱼竿.tres" id="5_773qs"]
+[ext_resource type="Resource" uid="uid://bmnohsw38p6a0" path="res://assets/AbyssLayer/layer1.tres" id="6_6c2nj"]
+[ext_resource type="AudioStream" uid="uid://cjq0vp7xl35vh" path="res://声音资产/useful/coin_sound.mp3" id="7_8o2f1"]
+[ext_resource type="Resource" uid="uid://b5lhfvaex1tbh" path="res://assets/物品/资源/鱼.tres" id="8_7hq0p"]
+
+[node name="HBoxContainer" type="HBoxContainer" unique_id=1849008416]
+offset_right = 2287.0
+offset_bottom = 345.0
+mouse_filter = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="探窟者协会" parent="." unique_id=510464682 instance=ExtResource("1_i5mka")]
+custom_minimum_size = Vector2(264, 345)
+layout_mode = 2
+game_stats = ExtResource("2_tyvbe")
+sold_sound = ExtResource("3_tdjdk")
+
+[node name="GroundPackage" parent="." unique_id=2042522313 instance=ExtResource("4_fovme")]
+layout_mode = 2
+game_stats = ExtResource("2_tyvbe")
+spawn_card_info = ExtResource("5_773qs")
+
+[node name="GroundPackage1" parent="." unique_id=753576639 instance=ExtResource("4_fovme")]
+layout_mode = 2
+game_stats = ExtResource("2_tyvbe")
+package_name = "深界一层
+阿比斯之渊"
+mean_layer = 1
+package_price = 5
+spawn_card_info = ExtResource("6_6c2nj")
+coin_sound = ExtResource("7_8o2f1")
+
+[node name="GroundPackage2" parent="." unique_id=399810940 instance=ExtResource("4_fovme")]
+layout_mode = 2
+game_stats = ExtResource("2_tyvbe")
+package_name = "深界二层
+诱惑之森"
+mean_layer = 2
+package_price = 8
+spawn_card_info = ExtResource("8_7hq0p")
+
+[node name="GroundPackage3" parent="." unique_id=566522953 instance=ExtResource("4_fovme")]
+layout_mode = 2
+game_stats = ExtResource("2_tyvbe")
+package_name = "深界三层
+大断层"
+mean_layer = 3
+package_price = 12
+
+[node name="GroundPackage4" parent="." unique_id=938509066 instance=ExtResource("4_fovme")]
+layout_mode = 2
+game_stats = ExtResource("2_tyvbe")
+package_name = "深界四层
+巨人之杯"
+mean_layer = 4
+package_price = 18
+
+[node name="GroundPackage5" parent="." unique_id=294019065 instance=ExtResource("4_fovme")]
+layout_mode = 2
+game_stats = ExtResource("2_tyvbe")
+package_name = "深界五层
+亡骸之海"
+mean_layer = 5
+package_price = 25
+
+[node name="GroundPackage6" parent="." unique_id=1130141460 instance=ExtResource("4_fovme")]
+layout_mode = 2
+game_stats = ExtResource("2_tyvbe")
+package_name = "深界六层
+来无回之都"
+mean_layer = 6
+package_price = 35

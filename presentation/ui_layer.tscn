@@ -1,8 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://bm4r8w10jcbid"]
+[gd_scene format=3 uid="uid://bm4r8w10jcbid"]
 
-[ext_resource type="StyleBox" uid="uid://b6vu8exnid8yt" path="res://ui/ui_style.tres" id="1_00rn6"]
+[ext_resource type="StyleBox" uid="uid://b6vu8exnid8yt" path="res://presentation/background/ui_style.tres" id="1_00rn6"]
 [ext_resource type="Texture2D" uid="uid://yhr14dughpmr" path="res://assets/物品/资源/meat.png" id="2_gjtyb"]
-[ext_resource type="Script" uid="uid://dwsmjx8844mo2" path="res://ui/ui_stats_manager.gd" id="4_stats"]
+[ext_resource type="Script" uid="uid://dwsmjx8844mo2" path="res://presentation/ui_stats_manager.gd" id="4_stats"]
 [ext_resource type="Texture2D" uid="uid://bwcl8eoslb20c" path="res://美术资产/treasures/gold_coin.png" id="5_8aggs"]
 [ext_resource type="Resource" uid="uid://flhywkkf61mb" path="res://base_data/game_stats.tres" id="5_game_stats"]
 
@@ -13,11 +13,11 @@ border_width_top = 3
 border_width_bottom = 3
 border_color = Color(0.05197095, 0.051970974, 0.051970884, 1)
 
-[node name="UI_Layer" type="CanvasLayer"]
+[node name="UI_Layer" type="CanvasLayer" unique_id=1247200631]
 script = ExtResource("4_stats")
 game_stats = ExtResource("5_game_stats")
 
-[node name="UIContainer" type="Control" parent="."]
+[node name="UIContainer" type="Control" parent="." unique_id=1454529640]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -26,7 +26,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="TopRightUI" type="MarginContainer" parent="UIContainer"]
+[node name="TopRightUI" type="MarginContainer" parent="UIContainer" unique_id=1046858898]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 1
 anchors_preset = 1
@@ -39,57 +39,57 @@ offset_bottom = 73.0
 grow_horizontal = 0
 size_flags_horizontal = 8
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UIContainer/TopRightUI"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UIContainer/TopRightUI" unique_id=1929285882]
 layout_mode = 2
 alignment = 1
 
-[node name="game_stats" type="PanelContainer" parent="UIContainer/TopRightUI/HBoxContainer"]
+[node name="game_stats" type="PanelContainer" parent="UIContainer/TopRightUI/HBoxContainer" unique_id=917665145]
 custom_minimum_size = Vector2(460, 0)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("1_00rn6")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UIContainer/TopRightUI/HBoxContainer/game_stats"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UIContainer/TopRightUI/HBoxContainer/game_stats" unique_id=1536365988]
 layout_mode = 2
 
-[node name="foodstate" type="HBoxContainer" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer"]
+[node name="foodstate" type="HBoxContainer" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer" unique_id=693091641]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 
-[node name="FoodLabel" type="Label" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer/foodstate"]
+[node name="FoodLabel" type="Label" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer/foodstate" unique_id=1836855940]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 32
 text = "8/6"
 
-[node name="TextureRect" type="TextureRect" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer/foodstate"]
+[node name="TextureRect" type="TextureRect" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer/foodstate" unique_id=46931834]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 texture = ExtResource("2_gjtyb")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="moneystate" type="HBoxContainer" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer"]
+[node name="moneystate" type="HBoxContainer" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer" unique_id=1828691707]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 
-[node name="CoinLabel" type="Label" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer/moneystate"]
+[node name="CoinLabel" type="Label" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer/moneystate" unique_id=870586300]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 32
 text = "5000"
 
-[node name="TextureRect" type="TextureRect" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer/moneystate"]
+[node name="TextureRect" type="TextureRect" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer/moneystate" unique_id=1513411990]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 texture = ExtResource("5_8aggs")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="layerstate" type="Label" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer"]
+[node name="layerstate" type="Label" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer" unique_id=796274752]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
@@ -99,7 +99,7 @@ theme_override_font_sizes/font_size = 32
 text = "深渊1层"
 horizontal_alignment = 1
 
-[node name="ProgressBar" type="ProgressBar" parent="UIContainer/TopRightUI/HBoxContainer"]
+[node name="ProgressBar" type="ProgressBar" parent="UIContainer/TopRightUI/HBoxContainer" unique_id=2114870472]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(400, 70)
 layout_mode = 2
@@ -109,7 +109,7 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_00rn6")
 value = 50.0
 show_percentage = false
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UIContainer/TopRightUI/HBoxContainer/ProgressBar"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UIContainer/TopRightUI/HBoxContainer/ProgressBar" unique_id=255427703]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -119,7 +119,7 @@ offset_right = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Label" type="Label" parent="UIContainer/TopRightUI/HBoxContainer/ProgressBar/HBoxContainer"]
+[node name="Label" type="Label" parent="UIContainer/TopRightUI/HBoxContainer/ProgressBar/HBoxContainer" unique_id=614831017]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
@@ -127,11 +127,11 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 32
 text = "9天"
 
-[node name="Spacer" type="Control" parent="UIContainer/TopRightUI/HBoxContainer/ProgressBar/HBoxContainer"]
+[node name="Spacer" type="Control" parent="UIContainer/TopRightUI/HBoxContainer/ProgressBar/HBoxContainer" unique_id=179952973]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PlayIcon" type="Label" parent="UIContainer/TopRightUI/HBoxContainer/ProgressBar/HBoxContainer"]
+[node name="PlayIcon" type="Label" parent="UIContainer/TopRightUI/HBoxContainer/ProgressBar/HBoxContainer" unique_id=647545118]
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_colors/font_color = Color(0, 0, 0, 1)

@@ -1,6 +1,6 @@
 [gd_resource type="Theme" format=3 uid="uid://bvmwl56050l0g"]
 
-[ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://font.tres" id="1_bsmre"]
+[ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://presentation/fonts/font.tres" id="1_bsmre"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_focus"]
 bg_color = Color(0, 0, 0, 0)

@@ -1,6 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://bbswec7w44tl1"]
+[gd_scene format=3 uid="uid://bbswec7w44tl1"]
 
-[ext_resource type="Script" uid="uid://6erw8bbttwdv" path="res://ui/battle_scene.gd" id="1_cvjyg"]
+[ext_resource type="Script" uid="uid://6erw8bbttwdv" path="res://presentation/battle_scene.gd" id="1_cvjyg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ceg7r"]
 bg_color = Color(0.33660772, 0.3366076, 0.33660755, 0.3647059)
@@ -17,7 +17,7 @@ corner_radius_bottom_left = 30
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_64l6c"]
 size = Vector2(281, 762)
 
-[node name="BattleScene" type="Panel" groups=["Cards"]]
+[node name="BattleScene" type="Panel" unique_id=1743367895 groups=["Cards"]]
 z_index = 5
 custom_minimum_size = Vector2(300, 780)
 offset_right = 300.0
@@ -26,7 +26,7 @@ mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_ceg7r")
 script = ExtResource("1_cvjyg")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=582493735]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -36,23 +36,23 @@ grow_vertical = 2
 theme_override_constants/separation = 30
 alignment = 1
 
-[node name="enemy" type="HBoxContainer" parent="VBoxContainer"]
+[node name="enemy" type="HBoxContainer" parent="VBoxContainer" unique_id=2107222975]
 custom_minimum_size = Vector2(264, 345)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 36
 
-[node name="character" type="HBoxContainer" parent="VBoxContainer"]
+[node name="character" type="HBoxContainer" parent="VBoxContainer" unique_id=783251620]
 custom_minimum_size = Vector2(264, 345)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 36
 
-[node name="BattleArea" type="Area2D" parent="."]
+[node name="BattleArea" type="Area2D" parent="." unique_id=1671179647]
 collision_layer = 0
 collision_mask = 12
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BattleArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BattleArea" unique_id=1951628483]
 position = Vector2(149.5, 390)
 shape = SubResource("RectangleShape2D_64l6c")
 

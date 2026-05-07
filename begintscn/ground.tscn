@@ -1,34 +1,36 @@
-[gd_scene load_steps=4 format=3 uid="uid://mqnok60lesyq"]
+[gd_scene format=3 uid="uid://bb543fcj6wx"]
 
-[ext_resource type="Texture2D" uid="uid://cwohluet7sc50" path="res://begintscn/地表.jpg" id="1_pgxni"]
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="2_2bq1q"]
 [ext_resource type="Script" uid="uid://c3x0sf1cy31it" path="res://begintscn/ground.gd" id="3_ground"]
 
-[node name="Ground" type="Node2D"]
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_j4n4y"]
+load_path = "res://.godot/imported/地表.jpg-377d85d121727b742a152d1660392a63.ctex"
+
+[node name="Ground" type="Node2D" unique_id=1504942922]
 script = ExtResource("3_ground")
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1509723089]
 offset_left = -24.0
 offset_top = -8.0
 offset_right = 1160.0
 offset_bottom = 648.0
-texture = ExtResource("1_pgxni")
+texture = SubResource("CompressedTexture2D_j4n4y")
 stretch_mode = 6
 metadata/_edit_use_anchors_ = true
 
-[node name="Card_莉可" parent="." instance=ExtResource("2_2bq1q")]
+[node name="Card_莉可" parent="." unique_id=717161785 instance=ExtResource("2_2bq1q")]
 offset_left = 752.0
 offset_top = 456.0
 offset_right = 840.0
 offset_bottom = 571.0
 metadata/_edit_use_anchors_ = true
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=322316418]
 offset = Vector2(620, 350)
 anchor_mode = 0
 zoom = Vector2(2.2, 2.2)
 
-[node name="Card_莉可2" parent="." instance=ExtResource("2_2bq1q")]
+[node name="Card_莉可2" parent="." unique_id=1388611793 instance=ExtResource("2_2bq1q")]
 offset_left = 1000.0
 offset_top = 456.0
 offset_right = 1088.0

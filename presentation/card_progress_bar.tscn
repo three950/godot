@@ -1,6 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://m6rrjkc625gk"]
+[gd_scene format=3 uid="uid://m6rrjkc625gk"]
 
-[ext_resource type="Script" uid="uid://sntxcqaqke5v" path="res://ui/card_progress_bar.gd" id="1"]
+[ext_resource type="Script" uid="uid://sntxcqaqke5v" path="res://presentation/card_progress_bar.gd" id="1"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rjitd"]
 bg_color = Color(0.09620472, 0.09620475, 0.09620469, 1)
@@ -15,7 +15,7 @@ border_color = Color(0.09620472, 0.09620475, 0.09620469, 1)
 anti_aliasing = false
 anti_aliasing_size = 0.01
 
-[node name="CardProgressBar" type="ProgressBar"]
+[node name="CardProgressBar" type="ProgressBar" unique_id=1377382567]
 offset_left = 2.0
 offset_top = -33.0
 offset_right = 254.0
