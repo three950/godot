@@ -32,26 +32,20 @@ corner_radius_bottom_left = 21
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ig4cw"]
 size = Vector2(264, 341)
 
-[node name="character" instance=ExtResource("1_p58c1")]
+[node name="character" unique_id=1325524042 instance=ExtResource("1_p58c1")]
 offset_top = -171.0
 offset_bottom = 174.0
 script = ExtResource("2_dm7l3")
 character = null
 battle = SubResource("Resource_7cwdw")
 
-[node name="surface" parent="." index="1"]
+[node name="surface" parent="." index="0" unique_id=24442291]
 texture = SubResource("ViewportTexture_xjtrw")
 
-[node name="CardLabel" parent="." index="2"]
-visible = false
-
-[node name="CollisionShape2D" parent="CardLabel" index="0"]
+[node name="CollisionShape2D" parent="CardLabel" parent_id_path=PackedInt32Array(195554578) index="0" unique_id=54803345]
 position = Vector2(129, 20)
 
-[node name="CardStackDetectorArea" parent="." index="3"]
-visible = false
-
-[node name="white" type="Panel" parent="." index="4"]
+[node name="white" type="Panel" parent="." index="4" unique_id=1681073263]
 visible = false
 custom_minimum_size = Vector2(88, 115)
 layout_mode = 0
@@ -59,11 +53,11 @@ offset_right = 264.0
 offset_bottom = 346.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_7cwdw")
 
-[node name="Polygon2D" parent="white" index="0" instance=ExtResource("4_7cwdw")]
+[node name="Polygon2D" parent="white" index="0" unique_id=1449743058 instance=ExtResource("4_7cwdw")]
 position = Vector2(43.000004, 268)
 scale = Vector2(0.7308323, 0.7333644)
 
-[node name="attackLabel" type="Label" parent="white" index="1"]
+[node name="attackLabel" type="Label" parent="white" index="1" unique_id=942352485]
 layout_mode = 0
 offset_left = 28.0
 offset_top = 242.0
@@ -76,7 +70,7 @@ theme_override_font_sizes/font_size = 35
 text = "6"
 horizontal_alignment = 1
 
-[node name="bagbutton" type="Button" parent="." index="5"]
+[node name="bagbutton" type="Button" parent="." index="5" unique_id=77096557]
 layout_mode = 0
 offset_left = 244.0
 offset_top = 142.0
@@ -95,29 +89,17 @@ clip_text = true
 script = ExtResource("3_dm7l3")
 bag_sound = ExtResource("4_ig4cw")
 
-[node name="CradDragging" parent="CardStateMachine" index="2"]
+[node name="CradDragging" parent="CardStateMachine" parent_id_path=PackedInt32Array(1272979021) index="2" unique_id=905161906]
 type = null
 
-[node name="BattleStartArea" type="Area2D" parent="." index="10"]
+[node name="BattleStartArea" type="Area2D" parent="." index="10" unique_id=1801794464]
 visible = false
 position = Vector2(3, 3)
 collision_layer = 4
 collision_mask = 8
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BattleStartArea" index="0"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BattleStartArea" index="0" unique_id=401418083]
 position = Vector2(129, 167.5)
 shape = SubResource("RectangleShape2D_ig4cw")
-
-[node name="CardPanel" parent="SubViewport" index="0"]
-unique_name_in_owner = false
-
-[node name="Panel" parent="SubViewport" index="1"]
-unique_name_in_owner = false
-
-[node name="Label" parent="SubViewport/Panel" index="0"]
-unique_name_in_owner = false
-
-[node name="TextureRect" parent="SubViewport" index="2"]
-unique_name_in_owner = false
 
 [connection signal="area_entered" from="BattleStartArea" to="." method="_on_battle_start_area_area_entered"]

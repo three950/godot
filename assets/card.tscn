@@ -15,13 +15,7 @@
 [ext_resource type="Script" uid="uid://bgkton1xcycf" path="res://assets/card-states/card_falling.gd" id="8_ram0e"]
 [ext_resource type="Script" uid="uid://sxc0f1pavh3f" path="res://assets/card-states/card_instack.gd" id="9_kvflh"]
 [ext_resource type="Script" uid="uid://bwf2g3aljfb72" path="res://assets/card-states/card_instack_dragging.gd" id="10_a3cqy"]
-[ext_resource type="Script" uid="uid://cvwtip1ly5e7f" path="res://script_folder/animations_shooter.gd" id="11_ram0e"]
 [ext_resource type="Script" uid="uid://c2rerytg2jn4" path="res://script_folder/card_overlap_pusher.gd" id="12_pusher"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_xo5ip"]
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_xo5ip"]
-viewport_path = NodePath("SubViewport")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q5obu"]
 size = Vector2(264, 45)
@@ -32,114 +26,17 @@ size = Vector2(264, 294)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pusher"]
 size = Vector2(264, 345)
 
-[sub_resource type="Animation" id="Animation_8iohq"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("surface:scale")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(1, 1)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("surface:material:shader_parameter/x_rot")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("surface:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_xo5ip"]
-resource_name = "卡片生成翻转"
-length = 0.5
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("surface:scale")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0.13333334, 0.5),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(0.8, 0.8), Vector2(1, 1)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("surface:material:shader_parameter/x_rot")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0.13333334, 0.2522, 0.5),
-"transitions": PackedFloat32Array(1, 0.901253, 1),
-"update": 0,
-"values": [-180.0, -42.38699346338251, 0.0]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("surface:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector2(26.4, 34.5), Vector2(26.4, 34.5), Vector2(0, 0)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_2vbly"]
-_data = {
-&"RESET": SubResource("Animation_8iohq"),
-&"卡片生成翻转": SubResource("Animation_xo5ip")
-}
-
 [node name="Card" type="Control" unique_id=33495198 groups=["Cards"]]
 layout_mode = 3
 anchors_preset = 0
-offset_left = -132.0
-offset_top = -172.0
-offset_right = 132.0
-offset_bottom = 173.0
+offset_right = 264.0
+offset_bottom = 345.0
 script = ExtResource("1_q5obu")
 battle = ExtResource("2_agldc")
 pickup_sound = ExtResource("2_mqa0q")
 fall_sound = ExtResource("3_agldc")
 
-[node name="surface" type="TextureRect" parent="." unique_id=24442291]
-texture_filter = 1
-material = SubResource("ShaderMaterial_xo5ip")
-layout_mode = 0
-offset_right = 264.0
-offset_bottom = 345.0
-mouse_filter = 2
-texture = SubResource("ViewportTexture_xo5ip")
-
 [node name="CardLabel" type="Area2D" parent="." unique_id=195554578]
-visible = false
 position = Vector2(3, 3)
 collision_layer = 2
 collision_mask = 0
@@ -149,7 +46,6 @@ position = Vector2(129, 19.5)
 shape = SubResource("RectangleShape2D_q5obu")
 
 [node name="CardStackDetectorArea" type="Area2D" parent="." unique_id=1021535360]
-visible = false
 position = Vector2(3, 3)
 collision_mask = 2
 
@@ -158,12 +54,10 @@ position = Vector2(129, 192)
 shape = SubResource("RectangleShape2D_e484p")
 
 [node name="CardPushDetectorArea" type="Area2D" parent="." unique_id=1315464570]
-visible = false
 collision_layer = 16
 collision_mask = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CardPushDetectorArea" unique_id=301992265]
-visible = false
 position = Vector2(132, 172.5)
 shape = SubResource("RectangleShape2D_pusher")
 
@@ -197,25 +91,17 @@ state = 4
 script = ExtResource("10_a3cqy")
 state = 5
 
-[node name="Shooter" type="Node" parent="." unique_id=778610664 node_paths=PackedStringArray("card")]
-script = ExtResource("11_ram0e")
-card = NodePath("..")
-metadata/_custom_type_script = "uid://cvwtip1ly5e7f"
-
-[node name="SubViewport" type="SubViewport" parent="." unique_id=1115109325]
-transparent_bg = true
-size = Vector2i(262, 342)
-render_target_update_mode = 1
-
-[node name="CardPanel" type="Panel" parent="SubViewport" unique_id=1495404947]
+[node name="CardPanel" type="Panel" parent="." unique_id=1495404947]
 unique_name_in_owner = true
+layout_mode = 0
 offset_right = 264.0
 offset_bottom = 342.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("5_agldc")
 
-[node name="Panel" type="Panel" parent="SubViewport" unique_id=1642299539]
+[node name="Panel" type="Panel" parent="." unique_id=1642299539]
 unique_name_in_owner = true
+layout_mode = 0
 offset_left = 6.0
 offset_top = 6.0
 offset_right = 258.0
@@ -223,7 +109,7 @@ offset_bottom = 48.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("6_3tu4f")
 
-[node name="Label" type="Label" parent="SubViewport/Panel" unique_id=748114393]
+[node name="Label" type="Label" parent="Panel" unique_id=748114393]
 unique_name_in_owner = true
 layout_mode = 0
 offset_right = 84.0
@@ -233,19 +119,17 @@ theme_override_fonts/font = ExtResource("7_xo5ip")
 theme_override_font_sizes/font_size = 30
 text = "莉可"
 
-[node name="TextureRect" type="TextureRect" parent="SubViewport" unique_id=1571016305]
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1571016305]
 unique_name_in_owner = true
 texture_filter = 1
+layout_mode = 0
 offset_left = 15.0
-offset_top = 54.0
+offset_top = 67.0
 offset_right = 250.0
-offset_bottom = 261.0
+offset_bottom = 274.0
 mouse_filter = 2
 texture = ExtResource("2_e484p")
 expand_mode = 1
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1224997864]
-libraries/ = SubResource("AnimationLibrary_2vbly")
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="gui_input" from="." to="CardStateMachine/CardFixed" method="_on_card_gui_input"]
