@@ -637,7 +637,10 @@ Make configuration visible and editable:
 
 ## Using the Godot CLI
 
-The `godot` command-line tool is available for running the game and performing various operations without opening the editor.
+For this workspace , the `godot` executable is not available on the shell `PATH`, but the Godot MCP server is available and reports Godot `4.6.2.stable.steam.71f334935` .
+
+For local run checks, only run the scene/resource currently affected by the change; do not run the whole project as a default validation step.
+
 
 ### Running the Game
 
