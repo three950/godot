@@ -6,10 +6,10 @@ extends RigidBody3D
 
 
 func _ready() -> void:
-	call_deferred("_apply_front_viewport_texture")
+	call_deferred("_bind_front_viewport_texture")
 
 
-func _apply_front_viewport_texture() -> void:
+func _bind_front_viewport_texture() -> void:
 	var front_face := get_node_or_null(front_face_path) as MeshInstance3D
 	var sub_viewport := get_node_or_null(sub_viewport_path) as SubViewport
 	if front_face == null or sub_viewport == null:
