@@ -16,5 +16,4 @@ func on_area_input(camera: Camera3D, event: InputEvent, event_position: Vector3,
 			if card.card_type == Card3D.cardType.architecture:
 				return
 			card.begin_drag(camera, mouse_button.position, event_position)
-			card.log_state_event("transition request: fixed -> pickingup (left click)")
 			transition_requested.emit(self, Card3DState.State.pickingup)

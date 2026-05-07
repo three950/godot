@@ -11,7 +11,6 @@ var overlapping_push_cards := {}
 func _ready() -> void:
 	card = get_parent() as Card3D
 	if card == null:
-		push_error("Card3DOverlapPusher must be a child of a Card3D node.")
 		return
 
 	var push_detector := card.get_node_or_null("CardPushDetectorArea") as Area3D

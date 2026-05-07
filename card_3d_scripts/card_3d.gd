@@ -25,8 +25,6 @@ enum cardType {normal, selling, architecture}
 @export_group("3D Input")
 @export var ray_interaction_enabled: bool = true
 @export var face_size: Vector2 = Vector2(2.64, 3.45)
-@export var debug_ray_hits: bool = false
-@export var debug_state_events: bool = true
 
 @export_group("Audio")
 @export var pickup_sound: AudioStream
@@ -112,18 +110,13 @@ func start_pickup_feedback() -> void:
 		SFXPlayer.play(pickup_sound, false, 12.0)
 
 
-func detach_from_follow_target(log_reason: String) -> void:
+func detach_from_follow_target() -> void:
 	if not (stack_state & Card3DState.STACK_STATE_STACKING) or follow_target == null:
 		return
 
-	var previous_target := follow_target
 	follow_target.stop_stacking_on_you.emit()
 	stack_state = 0
 	follow_target = null
-	log_state_event("%s detach: follow_target %s -> null, stack_state -> 0" % [
-		log_reason,
-		debug_card_name(previous_target),
-	])
 
 
 func update_drag_from_mouse(mouse_position: Vector2) -> void:
@@ -155,28 +148,17 @@ func set_stack_detector_enabled(enabled: bool) -> void:
 
 
 func bestacked_on_me(children: Card3D) -> void:
-	var previous_child := children_card
 	stack_state |= Card3DState.STACK_STATE_BESTACKED
 	children_card = children
 	set_stack_detector_enabled(false)
 	array_changed.emit()
-	log_state_event("bestacked_on_me: children_card %s -> %s, stack_state=%d" % [
-		debug_card_name(previous_child),
-		debug_card_name(children_card),
-		stack_state,
-	])
 
 
 func stop_stacking_on_me() -> void:
-	var previous_child := children_card
 	stack_state &= ~Card3DState.STACK_STATE_BESTACKED
 	children_card = null
 	set_stack_detector_enabled(true)
 	array_changed.emit()
-	log_state_event("stop_stacking_on_me: children_card %s -> null (detached only), stack_state=%d" % [
-		debug_card_name(previous_child),
-		stack_state,
-	])
 
 
 func apply_pickup_offset() -> void:
@@ -324,9 +306,6 @@ func _handle_ray_input(event: InputEvent) -> void:
 		if hit.is_empty() or hit.get("card") != self:
 			return
 
-		if debug_ray_hits:
-			print("Card3D ray hit: %s at %s" % [name, hit["position"]])
-
 		card_state_machine.on_area_input(camera, mouse_button, hit["position"], hit["normal"], -1)
 		get_viewport().set_input_as_handled()
 
@@ -426,17 +405,3 @@ func _is_left_button_press(event: InputEvent) -> bool:
 
 	var mouse_button := event as InputEventMouseButton
 	return mouse_button.button_index == MOUSE_BUTTON_LEFT and mouse_button.pressed
-
-
-func debug_card_name(target: Card3D) -> String:
-	if target == null:
-		return "null"
-	if target.cardname != "":
-		return target.cardname
-	return target.name
-
-
-func log_state_event(message: String) -> void:
-	if not debug_state_events:
-		return
-	print("[Card3D][%s] %s" % [debug_card_name(self), message])
