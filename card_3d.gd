@@ -10,7 +10,7 @@ func _ready() -> void:
 
 
 func _bind_front_viewport_texture() -> void:
-	var front_face := get_node_or_null(front_face_path) as MeshInstance3D
+	var front_face := get_node_or_null(front_face_path) as Sprite3D
 	var sub_viewport := get_node_or_null(sub_viewport_path) as SubViewport
 	if front_face == null or sub_viewport == null:
 		return

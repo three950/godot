@@ -28,6 +28,11 @@ render_target_update_mode = 1
 
 [node name="backgroundUi" parent="SubViewport" unique_id=2123796363 instance=ExtResource("1_bg")]
 
+[node name="Card3d" parent="." unique_id=1098745464 instance=ExtResource("4_r3fl7")]
+
+[node name="CardThrowPhysicsTest" type="Node" parent="." unique_id=872270510]
+script = ExtResource("5_throw_test")
+
 [node name="Ground" type="StaticBody3D" parent="." unique_id=1744047288]
 
 [node name="Sprite3D" type="Sprite3D" parent="Ground" unique_id=1430717003]
@@ -37,8 +42,3 @@ texture = SubResource("ViewportTexture_a202f")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=872046681]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 shape = SubResource("BoxShape3D_ground")
-
-[node name="Card3d" parent="." unique_id=1098745464 instance=ExtResource("4_r3fl7")]
-
-[node name="CardThrowPhysicsTest" type="Node" parent="." unique_id=872270510]
-script = ExtResource("5_throw_test")
