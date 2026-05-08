@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="CharacterCard" load_steps=6 format=3 uid="uid://tk1nuwcbk0u2"]
+[gd_resource type="Resource" script_class="CharacterCard" format=3 uid="uid://tk1nuwcbk0u2"]
 
 [ext_resource type="PackedScene" uid="uid://di7barbrn42cy" path="res://assets/人物与敌人/Character/character.tscn" id="1_ebsdk"]
 [ext_resource type="Script" uid="uid://c4lf65wbktjbc" path="res://assets/人物与敌人/Character/CharacterCard.gd" id="1_i00u1"]
-[ext_resource type="Texture2D" uid="uid://2cp8gr68qu5g" path="res://assets/人物与敌人/Character/人物_娜娜奇.png" id="1_t1jnm"]
+[ext_resource type="Texture2D" uid="uid://d4ho03nfgmja2" path="res://美术资产/character/娜娜奇gpt.png" id="2_hmi2y"]
 [ext_resource type="Script" uid="uid://pghaahofndwh" path="res://assets/物品/ThingsCard.gd" id="4_ebsdk"]
 [ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/cards/钓鱼竿.tres" id="5_hmi2y"]
 
@@ -18,5 +18,5 @@ ATK = 6
 speed = 15
 DEF = 5
 name = " 娜娜奇"
-portrait = ExtResource("1_t1jnm")
+portrait = ExtResource("2_hmi2y")
 metadata/_custom_type_script = "uid://c4lf65wbktjbc"

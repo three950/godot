@@ -2,17 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="1_3c02q"]
 [ext_resource type="Script" uid="uid://cq4u5v6w7x80a" path="res://assets/人物与敌人/attribute_labels.gd" id="1_script"]
-[ext_resource type="Shader" path="res://shader/ 卡牌翻转.gdshader" id="2_43ghe"]
 [ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://presentation/fonts/Xolonium-Regular.ttf" id="2_font"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_g27c4"]
-shader = ExtResource("2_43ghe")
-shader_parameter/fov = 90.0
-shader_parameter/cull_back = true
-shader_parameter/y_rot = 0.0
-shader_parameter/x_rot = 0.0
-shader_parameter/inset = 0.0
-shader_parameter/back_color = Color(0, 0, 0, 1)
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_i6tw2"]
 viewport_path = NodePath("SubViewport")
@@ -23,7 +13,6 @@ viewport_path = NodePath("SubViewport")
 mouse_filter = 2
 
 [node name="surface" parent="." index="1"]
-material = SubResource("ShaderMaterial_g27c4")
 texture = SubResource("ViewportTexture_i6tw2")
 
 [node name="CardPushDetectorArea" parent="." index="4"]

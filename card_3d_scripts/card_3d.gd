@@ -16,6 +16,10 @@ enum cardType {normal, selling, architecture}
 @export var card_type: cardType = cardType.normal
 @export var can_stack: bool = true
 
+@export_group("Card Data")
+@export var card_info: CardInfo : set = set_card_info
+@export var battle: BattleState
+
 @export_group("3D Motion")
 @export var hover_lift_y: float = 0.05
 @export var pickup_lift_y: float = 0.1
@@ -34,6 +38,7 @@ enum cardType {normal, selling, architecture}
 @onready var stack_detector: Area3D = $CardStackDetectorArea as Area3D
 @onready var front_face: Node3D = $FrontFace as Node3D
 @onready var back_face: Node3D = $BackFace as Node3D
+@onready var card_viewport: SubViewport = $FrontFace/SubViewport as SubViewport
 
 var overlapping_cards: Array[Card3D] = []
 var follow_target: Card3D = null
@@ -49,11 +54,14 @@ var _base_plane_y: float = 0.0
 var _front_face_original_position: Vector3 = Vector3.ZERO
 var _back_face_original_position: Vector3 = Vector3.ZERO
 var _ray_hovered: bool = false
+var card_2d: Card = null
 
 
 func _ready() -> void:
 	add_to_group("Cards3D")
 	_base_plane_y = global_position.y
+	card_2d = card_viewport.get_node_or_null("Card2D") as Card if card_viewport else null
+	_apply_card_info_to_view()
 
 	if front_face:
 		_front_face_original_position = front_face.position
@@ -71,6 +79,33 @@ func _ready() -> void:
 		stacking_on_you.connect(bestacked_on_me)
 	if not stop_stacking_on_you.is_connected(stop_stacking_on_me):
 		stop_stacking_on_you.connect(stop_stacking_on_me)
+
+
+func set_card_info(value: CardInfo) -> void:
+	card_info = value
+	if is_node_ready():
+		_apply_card_info_to_view()
+
+
+func _apply_card_info_to_view() -> void:
+	if card_info == null:
+		return
+
+	cardname = card_info.name
+	can_stack = card_info.能被堆叠
+
+	if card_2d == null:
+		return
+
+	card_2d.name = card_info.name if card_info.name != "" else "Card2D"
+	card_2d.cardname = card_info.name
+	card_2d.can_stack = card_info.能被堆叠
+	if battle != null:
+		card_2d.battle = battle.duplicate()
+	if card_2d.card_label:
+		card_2d.card_label.text = card_info.name
+	if card_2d.card_texture:
+		card_2d.card_texture.texture = card_info.portrait
 
 
 func _input(event: InputEvent) -> void:
