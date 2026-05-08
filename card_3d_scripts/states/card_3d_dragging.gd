@@ -1,13 +1,17 @@
 extends Card3DState
 
 
+func enter() -> void:
+	if card.children_card and card.children_card.card_state_machine and card.children_card.card_state_machine.current_state:
+		var child_state := card.children_card.card_state_machine.current_state
+		if child_state.has_signal("follow_me"):
+			child_state.follow_me.emit()
+
+
 func on_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		var mouse_motion := event as InputEventMouseMotion
 		card.update_drag_from_mouse(mouse_motion.position)
-		var next_position := card.global_position
-		next_position.y = 1.0
-		card.global_position = next_position
 		card.update_children_position()
 		return
 

@@ -64,10 +64,13 @@ render_target_update_mode = 4
 
 [node name="Shop" parent="Shop/ShopViewport" unique_id=1860764525 instance=ExtResource("5_shop")]
 
+[node name="Card3d3" parent="." unique_id=1098745464 instance=ExtResource("5_i5arm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8.121086)
+
 [node name="Card3d2" parent="." unique_id=1058394043 instance=ExtResource("5_i5arm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.060543)
 
-[node name="Card3d" parent="." unique_id=1098745464 instance=ExtResource("5_i5arm")]
+[node name="Card3d" parent="." unique_id=1888242703 instance=ExtResource("5_i5arm")]
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=1744047288]
 

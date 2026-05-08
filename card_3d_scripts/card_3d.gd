@@ -18,8 +18,8 @@ enum cardType {normal, selling, architecture}
 
 @export_group("3D Motion")
 @export var hover_lift_y: float = 0.05
-@export var pickup_lift_y: float = 0.08
-@export var stack_offset_y: float = 0.03
+@export var pickup_lift_y: float = 0.1
+@export var stack_offset_y: float = 0.01
 @export var stack_offset_z: float = 0.48
 
 @export_group("3D Input")
