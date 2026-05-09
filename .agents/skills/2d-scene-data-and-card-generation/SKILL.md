@@ -1,6 +1,6 @@
 ---
 name: 2d-scene-data-and-card-generation
-description: Use for quickly understanding the legacy 2D card architecture: including scene data binding, real-time data update, stack-triggered timers, random card generation, card crafting logic, card/script/resource/scene inheritance chains, and parent-relative feature deltas (what each card scene adds or removes).
+description: "Use for quickly understanding the legacy 2D card architecture, including scene data binding, real-time data updates, stack-triggered timers, random card generation, card crafting logic, card/script/resource/scene inheritance chains, and parent-relative feature deltas (what each card scene adds or removes)."
 ---
 
 # 2D Scene Data And Card Generation Guide
