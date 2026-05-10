@@ -4,17 +4,13 @@
 [ext_resource type="Script" uid="uid://cryummosf23jg" path="res://script_folder/camera_controller_3d.gd" id="2_cam"]
 [ext_resource type="PackedScene" uid="uid://bm4r8w10jcbid" path="res://presentation/ui_layer.tscn" id="3_ui"]
 [ext_resource type="PackedScene" uid="uid://bntgel7ybr1bb" path="res://card_3d_enabled.tscn" id="5_i5arm"]
-[ext_resource type="PackedScene" uid="uid://cpvvd1084dyc8" path="res://presentation/shop.tscn" id="5_shop"]
 [ext_resource type="Script" uid="uid://bf2o85td7sner" path="res://base_data/battle_stats.gd" id="6_battle"]
 [ext_resource type="Resource" uid="uid://tk1nuwcbk0u2" path="res://assets/人物与敌人/Character/characters/娜娜奇.tres" id="7_nanachi"]
 [ext_resource type="Resource" uid="uid://dfpw7xhnxtvgh" path="res://assets/人物与敌人/Character/characters/莉可.tres" id="8_riko"]
 [ext_resource type="Resource" uid="uid://dsjxxvme1bq2n" path="res://assets/人物与敌人/Character/characters/雷古.tres" id="9_reg"]
-[ext_resource type="Resource" uid="uid://do4ivypcif1tw" path="res://assets/人物与敌人/Enemy/enemys/毒针线虫.tres" id="10_enemy"]
 [ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/cards/钓鱼竿.tres" id="11_fishing_rod"]
 [ext_resource type="Resource" uid="uid://dntioc7brul78" path="res://assets/物品/装备/armour防具/祈愿者的盖子.tres" id="12_cap"]
 [ext_resource type="Resource" uid="uid://b5lhfvaex1tbh" path="res://assets/物品/资源/鱼.tres" id="13_fish"]
-[ext_resource type="Resource" uid="uid://cmli5pr88q6d" path="res://assets/AbyssLayer/layer/layer1/depthcard/1000m.tres" id="14_1000m"]
-[ext_resource type="Resource" uid="uid://b84vk56tstpon" path="res://assets/AbyssLayer/layer/layer1/depthcard/500m.tres" id="15_500m"]
 [ext_resource type="Resource" uid="uid://c0t1pg4ohysod" path="res://assets/小场景/scene_card_pool/河流.tres" id="16_river"]
 [ext_resource type="Resource" uid="uid://bvxngiedcur8" path="res://assets/小场景/scene_card_pool/小洞穴.tres" id="17_cave"]
 
@@ -24,9 +20,6 @@ ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_sky_contribution = 0.0
 ambient_light_energy = 0.4
 reflected_light_source = 1
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_shop"]
-viewport_path = NodePath("Shop/ShopViewport")
 
 [sub_resource type="Resource" id="Resource_battle_nanachi"]
 script = ExtResource("6_battle")
@@ -75,64 +68,47 @@ environment = SubResource("Environment_card_shadow")
 [node name="Camera3D" type="Camera3D" parent="." unique_id=809929531]
 transform = Transform3D(1, 0, 0, 0, 0.087155804, 0.9961947, 0, -0.9961947, 0.087155804, 0, 15, 2.4)
 
-[node name="Shop" type="Sprite3D" parent="." unique_id=136831094]
-transform = Transform3D(1, 0, 0, 0, -3.6199901e-06, 1, 0, -1, -3.6199901e-06, 0, -0.001, -8.512)
-cast_shadow = 0
-texture = SubResource("ViewportTexture_shop")
-
-[node name="ShopViewport" type="SubViewport" parent="Shop" unique_id=1332458841]
-disable_3d = true
-transparent_bg = true
-size = Vector2i(2287, 345)
-render_target_update_mode = 4
-
-[node name="Shop" parent="Shop/ShopViewport" unique_id=1860764525 instance=ExtResource("5_shop")]
-
 [node name="娜娜奇" parent="." unique_id=1098745464 instance=ExtResource("5_i5arm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, -4)
+cardname = " 娜娜奇"
 card_info = ExtResource("7_nanachi")
 battle = SubResource("Resource_battle_nanachi")
 
 [node name="莉可" parent="." unique_id=1058394043 instance=ExtResource("5_i5arm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, -4)
+cardname = "莉可"
 card_info = ExtResource("8_riko")
 battle = SubResource("Resource_battle_riko")
 
 [node name="雷古" parent="." unique_id=1888242703 instance=ExtResource("5_i5arm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
+cardname = "雷古"
 card_info = ExtResource("9_reg")
 battle = SubResource("Resource_battle_reg")
 
-[node name="毒针线虫" parent="." unique_id=1137303093 instance=ExtResource("5_i5arm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, -4)
-card_info = ExtResource("10_enemy")
-
 [node name="钓鱼竿" parent="." unique_id=1544934035 instance=ExtResource("5_i5arm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, -4)
+cardname = "钓鱼竿"
 card_info = ExtResource("11_fishing_rod")
 
 [node name="祈愿者的盖子" parent="." unique_id=75465322 instance=ExtResource("5_i5arm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, 0.25)
+cardname = "祈愿者的盖子"
 card_info = ExtResource("12_cap")
 
 [node name="鱼" parent="." unique_id=364068770 instance=ExtResource("5_i5arm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, 0.25)
+cardname = "鱼"
 card_info = ExtResource("13_fish")
-
-[node name="1000m" parent="." unique_id=1343568928 instance=ExtResource("5_i5arm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.25)
-card_info = ExtResource("14_1000m")
-
-[node name="500m" parent="." unique_id=1931264490 instance=ExtResource("5_i5arm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, 0.25)
-card_info = ExtResource("15_500m")
 
 [node name="河流" parent="." unique_id=283769564 instance=ExtResource("5_i5arm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 0, 4.5)
+cardname = "河流"
 card_info = ExtResource("16_river")
 
 [node name="小洞穴" parent="." unique_id=1073769014 instance=ExtResource("5_i5arm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.75, 0, 4.5)
+cardname = "小洞穴"
 card_info = ExtResource("17_cave")
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=1744047288]
