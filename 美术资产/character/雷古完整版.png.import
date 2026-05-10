@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b11wupevcdiwd"
-path="res://.godot/imported/人物_莉可.png-e0021bf16aa4789ef21a08bdf3715076.ctex"
+uid="uid://pbfbfiblfi8"
+path="res://.godot/imported/雷古完整版.png-d4c0d6cd9ad4bafc206eb09e6eb4b1c4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/人物与敌人/Character/人物_莉可.png"
-dest_files=["res://.godot/imported/人物_莉可.png-e0021bf16aa4789ef21a08bdf3715076.ctex"]
+source_file="res://美术资产/character/雷古完整版.png"
+dest_files=["res://.godot/imported/雷古完整版.png-d4c0d6cd9ad4bafc206eb09e6eb4b1c4.ctex"]
 
 [params]
 

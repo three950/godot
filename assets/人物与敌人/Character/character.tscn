@@ -11,9 +11,6 @@
 script = ExtResource("3_pntmc")
 metadata/_custom_type_script = "uid://bf2o85td7sner"
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_xjtrw"]
-viewport_path = NodePath("SubViewport")
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7cwdw"]
 bg_color = Color(1, 1, 1, 1)
 
@@ -39,11 +36,17 @@ script = ExtResource("2_dm7l3")
 character = null
 battle = SubResource("Resource_7cwdw")
 
-[node name="surface" parent="." index="0" unique_id=24442291]
-texture = SubResource("ViewportTexture_xjtrw")
+[node name="SubViewport_AttributeLabels_RightStats#ATKLabel" parent="." index="0"]
+layout_mode = 0
 
-[node name="CollisionShape2D" parent="CardLabel" parent_id_path=PackedInt32Array(195554578) index="0" unique_id=54803345]
-position = Vector2(129, 20)
+[node name="SubViewport_AttributeLabels_RightStats#DEFLabel" parent="." index="1"]
+layout_mode = 0
+
+[node name="SubViewport_AttributeLabels#HPLabel" parent="." index="2"]
+layout_mode = 0
+
+[node name="SubViewport_AttributeLabels#RightStats" parent="." index="3"]
+layout_mode = 0
 
 [node name="white" type="Panel" parent="." index="4" unique_id=1681073263]
 visible = false
@@ -89,8 +92,11 @@ clip_text = true
 script = ExtResource("3_dm7l3")
 bag_sound = ExtResource("4_ig4cw")
 
-[node name="CradDragging" parent="CardStateMachine" parent_id_path=PackedInt32Array(1272979021) index="2" unique_id=905161906]
-type = null
+[node name="CollisionShape2D" parent="CardLabel" parent_id_path=PackedInt32Array(195554578) index="0" unique_id=54803345]
+position = Vector2(129, 20)
+
+[node name="SubViewport#AttributeLabels" parent="." index="9"]
+layout_mode = 0
 
 [node name="BattleStartArea" type="Area2D" parent="." index="10" unique_id=1801794464]
 visible = false
@@ -101,5 +107,8 @@ collision_mask = 8
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BattleStartArea" index="0" unique_id=401418083]
 position = Vector2(129, 167.5)
 shape = SubResource("RectangleShape2D_ig4cw")
+
+[node name="CradDragging" parent="CardStateMachine" parent_id_path=PackedInt32Array(1272979021) index="2" unique_id=905161906]
+type = null
 
 [connection signal="area_entered" from="BattleStartArea" to="." method="_on_battle_start_area_area_entered"]
