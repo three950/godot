@@ -15,7 +15,7 @@
 [ext_resource type="Script" uid="uid://sxc0f1pavh3f" path="res://assets/card-states/card_instack.gd" id="9_kvflh"]
 [ext_resource type="Script" uid="uid://bwf2g3aljfb72" path="res://assets/card-states/card_instack_dragging.gd" id="10_a3cqy"]
 [ext_resource type="Script" uid="uid://c2rerytg2jn4" path="res://script_folder/card_overlap_pusher.gd" id="12_pusher"]
-[ext_resource type="Texture2D" uid="uid://d4ho03nfgmja2" path="res://美术资产/character/娜娜奇gpt.png" id="16_3tu4f"]
+[ext_resource type="Texture2D" uid="uid://kkohhrkwmk7y" path="res://美术资产/character/娜娜奇完整版.png" id="16_3tu4f"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q5obu"]
 size = Vector2(264, 45)

@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="CharacterCard" load_steps=6 format=3 uid="uid://dfpw7xhnxtvgh"]
+[gd_resource type="Resource" script_class="CharacterCard" format=3 uid="uid://dfpw7xhnxtvgh"]
 
 [ext_resource type="Script" uid="uid://c4lf65wbktjbc" path="res://assets/人物与敌人/Character/CharacterCard.gd" id="1_33mer"]
-[ext_resource type="Texture2D" uid="uid://b11wupevcdiwd" path="res://assets/人物与敌人/Character/人物_莉可.png" id="1_e6vqo"]
 [ext_resource type="PackedScene" uid="uid://di7barbrn42cy" path="res://assets/人物与敌人/Character/character.tscn" id="1_vm5mx"]
+[ext_resource type="Texture2D" uid="uid://ds7qm8lgxbdhm" path="res://美术资产/character/莉可完整版.png" id="2_tmu5p"]
 [ext_resource type="Script" uid="uid://pghaahofndwh" path="res://assets/物品/ThingsCard.gd" id="4_tmu5p"]
 [ext_resource type="Resource" uid="uid://bptle7yhbwdk8" path="res://assets/物品/装备/weapon/探窟稿.tres" id="5_x3g0x"]
 
@@ -16,5 +16,5 @@ MAX_HP = 10
 ATK = 2
 speed = 5
 name = "莉可"
-portrait = ExtResource("1_e6vqo")
+portrait = ExtResource("2_tmu5p")
 metadata/_custom_type_script = "uid://c4lf65wbktjbc"
