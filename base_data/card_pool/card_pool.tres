@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CardPool" load_steps=31 format=3 uid="uid://v7v7n33brkuk"]
+[gd_resource type="Resource" script_class="CardPool" format=3 uid="uid://v7v7n33brkuk"]
 
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="1_74mtg"]
 [ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/cards/钓鱼竿.tres" id="2_10ut8"]
