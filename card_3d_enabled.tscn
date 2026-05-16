@@ -47,7 +47,7 @@ size = Vector3(2.64, 0.08, 3.45)
 [node name="Card3d" type="Node3D" unique_id=1098745464 groups=["Cards3D"]]
 script = ExtResource("2_card3d")
 
-[node name="FrontFace" type="MeshInstance3D" parent="." unique_id=1833471304]
+[node name="FrontFace" type="MeshInstance3D" parent="." unique_id=1833840304]
 cast_shadow = 2
 material_override = SubResource("StandardMaterial3D_front")
 mesh = SubResource("PlaneMesh_front_face")

@@ -639,6 +639,14 @@ Make configuration visible and editable:
 
 For this workspace , the `godot` executable is not available on the shell `PATH`, but the Godot MCP server is available and reports Godot `4.6.2.stable.steam.71f334935` .
 
+Cached workspace info as of 2026-05-16:
+- Project name: `stackabyss`
+- Project path: `D:\godot-try\stackabyss`
+- Godot version: `4.6.2.stable.steam.71f334935`
+- Project structure: 35 scenes, 71 scripts, 2513 assets, 2641 other files
+
+Do not call `get_project_info` or `get_godot_version` by default for routine tasks in this workspace. Use the cached values above unless the task specifically needs fresh project metadata, the cached values appear stale, or a Godot startup/version mismatch is part of the problem being debugged.
+
 For local run checks, only run the scene/resource currently affected by the change; do not run the whole project as a default validation step.
 
 

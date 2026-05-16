@@ -1,31 +1,11 @@
 [gd_scene format=3 uid="uid://d8vp1m0epvxf"]
 
-[ext_resource type="StyleBox" uid="uid://to3672utuxwe" path="res://presentation/background/棋盘.tres" id="2_vvxqx"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cdpnt"]
-bg_color = Color(0.8170297, 0.75410753, 0.5967472, 1)
-border_width_left = 12
-border_width_top = 12
-border_width_right = 12
-border_width_bottom = 12
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 24
-corner_radius_top_right = 24
-corner_radius_bottom_right = 24
-corner_radius_bottom_left = 24
+[ext_resource type="StyleBox" uid="uid://de6xl5almurio" path="res://tres/cardsArea.tres" id="1_b1pyb"]
 
 [node name="backgroundUi" type="Node2D" unique_id=417959032]
 
 [node name="cardsArea" type="Panel" parent="." unique_id=1791356641 groups=["Cards"]]
-offset_right = 3471.0
-offset_bottom = 2136.0
+offset_right = 3840.0
+offset_bottom = 2160.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_cdpnt")
-
-[node name="ShopManager" type="Panel" parent="cardsArea" unique_id=1390673482 groups=["ShopManager"]]
-layout_mode = 0
-offset_top = -1.0
-offset_right = 3471.0
-offset_bottom = 407.0
-mouse_filter = 2
-theme_override_styles/panel = ExtResource("2_vvxqx")
+theme_override_styles/panel = ExtResource("1_b1pyb")

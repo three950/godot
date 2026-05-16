@@ -26,7 +26,7 @@ size = Vector2(2.64, 3.45)
 
 [node name="Card3d" type="Node3D" unique_id=1098745464]
 
-[node name="FrontFace" type="MeshInstance3D" parent="." unique_id=1833471304]
+[node name="FrontFace" type="MeshInstance3D" parent="." unique_id=1833840304]
 material_override = SubResource("StandardMaterial3D_front")
 mesh = SubResource("PlaneMesh_front_face")
 
