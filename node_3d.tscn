@@ -48,6 +48,15 @@ albedo_texture = SubResource("ViewportTexture_jka67")
 [sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
 size = Vector2(34.71, 21.36)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground_lower_shadow"]
+resource_local_to_scene = true
+resource_name = "GroundLowerShadowMaterial"
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.43, 0.43, 0.43, 1)
+albedo_texture = SubResource("ViewportTexture_jka67")
+disable_receive_shadows = true
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
 size = Vector3(34.71, 1, 21.36)
 
@@ -150,6 +159,36 @@ material_override = SubResource("StandardMaterial3D_wc5p8")
 cast_shadow = 0
 mesh = SubResource("PlaneMesh_ground")
 metadata/_edit_lock_ = true
+
+[node name="GroundLayer01" type="MeshInstance3D" parent="Ground" unique_id=1745565372]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.052, 0)
+material_override = SubResource("StandardMaterial3D_ground_lower_shadow")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_ground")
+
+[node name="GroundLayer02" type="MeshInstance3D" parent="Ground" unique_id=1286425294]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6.052, 0)
+material_override = SubResource("StandardMaterial3D_ground_lower_shadow")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_ground")
+
+[node name="GroundLayer03" type="MeshInstance3D" parent="Ground" unique_id=1770093375]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -9.052, 0)
+material_override = SubResource("StandardMaterial3D_ground_lower_shadow")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_ground")
+
+[node name="GroundLayer04" type="MeshInstance3D" parent="Ground" unique_id=1169459625]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -12.052, 0)
+material_override = SubResource("StandardMaterial3D_ground_lower_shadow")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_ground")
+
+[node name="GroundLayer05" type="MeshInstance3D" parent="Ground" unique_id=1665373087]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -15.052, 0)
+material_override = SubResource("StandardMaterial3D_ground_lower_shadow")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_ground")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=872046681]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.002, 0)
