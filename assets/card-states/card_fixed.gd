@@ -7,7 +7,6 @@ func enter() -> void:
 	card.reset_offset()
 	card.reparent_requested.emit(card)
 	card.pivot_offset = Vector2.ZERO
-	Events.stack_changed.emit(card)
 
 func _on_control_gui_input(event: InputEvent) -> void:
 	if card is Character and card._battle_started:

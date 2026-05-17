@@ -145,7 +145,6 @@ func bestacked_on_me(children: Card) -> void:
 	if label_panel:
 		size = label_panel.size
 	array_changed.emit()
-	Events.stack_changed.emit(self)
 
 func stop_stacking_on_me() -> void:
 	stack_state &= ~CardState.STACK_STATE_BESTACKED
@@ -157,7 +156,6 @@ func stop_stacking_on_me() -> void:
 	if card_panel:
 		size=card_panel.size
 	array_changed.emit()
-	Events.stack_changed.emit(self)
 func _physics_process(_delta: float) -> void:
 	# 根据卡片在 cardsArea 中的全局位置更新 shadow 偏移
 	update_shadow_offset()

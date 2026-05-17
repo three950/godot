@@ -7,6 +7,8 @@ func enter() -> void:
 	card.reset_offset()
 	card.reparent_requested.emit(card)
 	card.end_drag()
+	print("[Card3DState] stack_changed emit from fixed: %s" % card.cardname)
+	Events.stack_changed.emit(card)
 
 
 func on_area_input(camera: Camera3D, event: InputEvent, event_position: Vector3, _normal: Vector3, _shape_idx: int) -> void:

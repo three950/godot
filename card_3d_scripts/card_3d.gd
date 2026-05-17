@@ -187,6 +187,8 @@ func bestacked_on_me(children: Card3D) -> void:
 	children_card = children
 	set_stack_detector_enabled(false)
 	array_changed.emit()
+	print("[Card3D] stack_changed emit: %s bestacked by %s" % [cardname, children.cardname])
+	Events.stack_changed.emit(self)
 
 
 func stop_stacking_on_me() -> void:
@@ -194,6 +196,8 @@ func stop_stacking_on_me() -> void:
 	children_card = null
 	set_stack_detector_enabled(true)
 	array_changed.emit()
+	print("[Card3D] stack_changed emit: %s stop_stacking_on_me" % cardname)
+	Events.stack_changed.emit(self)
 
 
 func apply_pickup_offset() -> void:

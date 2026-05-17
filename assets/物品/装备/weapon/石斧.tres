@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EquipmentCard" load_steps=7 format=3 uid="uid://betu8fkvv3loe"]
+[gd_resource type="Resource" script_class="EquipmentCard" format=3 uid="uid://betu8fkvv3loe"]
 
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="1_sn0tf"]
 [ext_resource type="PackedScene" uid="uid://cba2igvxd481l" path="res://assets/物品/装备/Equitment.tscn" id="1_yb085"]

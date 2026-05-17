@@ -1,5 +1,9 @@
 extends Node
 
+const CARD_3D_SCENE_PATH: String = "res://card_3d_enabled.tscn"
+const CRAFT_REVEAL_START_OFFSET: Vector3 = Vector3(-1.15, 0.08, -0.9)
+const CRAFT_REVEAL_PEAK_HEIGHT: float = 3.25
+
 enum Phase {
 	IDLE,
 	RISE_FLIP,
@@ -44,7 +48,6 @@ enum Phase {
 @export var print_motion_samples: bool = true
 @export var motion_sample_interval: float = 0.2
 
-var _card: RigidBody3D
 var _phase: Phase = Phase.IDLE
 var _phase_time: float = 0.0
 var _bounce_index: int = 0
@@ -55,12 +58,13 @@ var _flight_peak_position: Vector3
 var _bounce_count: int = 0
 var _bounce_direction: Vector3 = Vector3.ZERO
 var _impact_speed: float = 0.0
+var _card: Node3D
 
 
 func _ready() -> void:
-	_card = get_node_or_null(card_path) as RigidBody3D
+	_card = get_node_or_null(card_path) as Node3D
 	if _card == null:
-		push_error("CardThrowPhysicsTest: card_path does not point to a RigidBody3D.")
+		push_error("CardThrowPhysicsTest: card_path does not point to a Node3D.")
 		return
 
 	_front_basis = _basis_from_degrees(front_face_up_rotation_degrees)
@@ -69,6 +73,39 @@ func _ready() -> void:
 	if auto_play_on_ready:
 		await get_tree().physics_frame
 		play_card_reveal()
+
+
+static func spawn_revealed_card(card_info: CardInfo, spawn_position: Vector3, spawn_parent: Node) -> Card3D:
+	if spawn_parent == null:
+		push_error("CardThrowPhysicsTest: spawn_parent is null.")
+		return null
+
+	var card_3d_scene := load(CARD_3D_SCENE_PATH) as PackedScene
+	if card_3d_scene == null:
+		push_error("CardThrowPhysicsTest: failed to load %s." % CARD_3D_SCENE_PATH)
+		return null
+
+	var instance := card_3d_scene.instantiate() as Card3D
+	if instance == null:
+		push_error("CardThrowPhysicsTest: card scene did not instantiate as Card3D.")
+		return null
+
+	instance.card_info = card_info
+	spawn_parent.add_child(instance)
+	instance.global_position = spawn_position
+
+	var reveal: Node = load("res://script_folder/card_throw_physics_test.gd").new()
+	reveal.name = "CraftRevealThrow"
+	reveal.auto_play_on_ready = false
+	reveal.card_path = ^".."
+	reveal.start_position = spawn_position + CRAFT_REVEAL_START_OFFSET
+	reveal.landing_position = spawn_position
+	reveal.flight_peak_height = spawn_position.y + CRAFT_REVEAL_PEAK_HEIGHT
+	reveal.print_motion_samples = false
+	instance.add_child(reveal)
+	reveal.play_card_reveal()
+
+	return instance
 
 
 func _physics_process(delta: float) -> void:
@@ -91,10 +128,11 @@ func _physics_process(delta: float) -> void:
 
 
 func play_card_reveal() -> void:
-	_card.freeze = true
-	_card.sleeping = false
-	_card.linear_velocity = Vector3.ZERO
-	_card.angular_velocity = Vector3.ZERO
+	if not _ensure_card_ready():
+		return
+
+	_reset_card_physics(false)
+	_set_card_interaction_enabled(false)
 
 	_bounce_index = 0
 	_next_sample_time = 0.0
@@ -170,10 +208,8 @@ func _settle_card() -> void:
 	if final_snap_to_front:
 		_set_card_transform(_settle_position(), _front_basis)
 
-	_card.linear_velocity = Vector3.ZERO
-	_card.angular_velocity = Vector3.ZERO
-	_card.sleeping = true
-	_card.freeze = true
+	_reset_card_physics(true)
+	_set_card_interaction_enabled(true)
 	_phase = Phase.SETTLED
 	print("CardThrowPhysicsTest: settled front-side-up after %d bounces." % [_bounce_count])
 
@@ -213,6 +249,38 @@ func _prepare_motion() -> void:
 
 func _set_card_transform(position: Vector3, basis: Basis) -> void:
 	_card.global_transform = Transform3D(basis.orthonormalized(), position)
+
+
+func _ensure_card_ready() -> bool:
+	if _card == null:
+		_card = get_node_or_null(card_path) as Node3D
+	if _card == null:
+		push_error("CardThrowPhysicsTest: card_path does not point to a Node3D.")
+		return false
+
+	_front_basis = _basis_from_degrees(front_face_up_rotation_degrees)
+	_back_basis = _basis_from_degrees(back_face_up_rotation_degrees)
+	return true
+
+
+func _reset_card_physics(sleeping: bool) -> void:
+	var rigid_card := _card as RigidBody3D
+	if rigid_card == null:
+		return
+
+	rigid_card.freeze = true
+	rigid_card.sleeping = sleeping
+	rigid_card.linear_velocity = Vector3.ZERO
+	rigid_card.angular_velocity = Vector3.ZERO
+
+
+func _set_card_interaction_enabled(enabled: bool) -> void:
+	var card_3d := _card as Card3D
+	if card_3d == null:
+		return
+
+	card_3d.ray_interaction_enabled = enabled
+	card_3d.set_stack_detector_enabled(enabled)
 
 
 func _basis_from_degrees(rotation_degrees: Vector3) -> Basis:
