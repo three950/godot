@@ -25,7 +25,21 @@ signal food_have_update(amount: int)
 #战斗系统信号
 signal battle_start_requested(character: Character, enemy: Enemy)
 
+# 全局计时暂停状态
+signal timers_pause_changed(is_paused: bool)
+var timers_paused: bool = false
+
 @export var spawn_card_info: CardInfo = null
+
+func set_timers_paused(is_paused: bool) -> void:
+	if timers_paused == is_paused:
+		return
+	timers_paused = is_paused
+	timers_pause_changed.emit(timers_paused)
+
+func toggle_timers_paused() -> void:
+	set_timers_paused(not timers_paused)
+
 ## 根据卡牌资源类型创建对应的卡牌实例
 func _create_card_instance() -> Node:
 	var instance = spawn_card_info.card_scene.instantiate()

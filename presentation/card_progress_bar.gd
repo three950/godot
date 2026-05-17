@@ -8,12 +8,15 @@ signal progress_completed
 var _total_time: float = 0.0
 var _elapsed_time: float = 0.0
 var _is_running: bool = false
+var _is_paused: bool = false
 
 func _ready() -> void:
 	visible = false
+	Events.timers_pause_changed.connect(_on_timers_pause_changed)
+	_on_timers_pause_changed(Events.timers_paused)
 
 func _process(delta: float) -> void:
-	if not _is_running:
+	if not _is_running or _is_paused:
 		return
 	
 	_elapsed_time += delta
@@ -35,6 +38,7 @@ func start(duration: float) -> void:
 	value = 0.0
 	visible = true
 	_is_running = true
+	_is_paused = Events.timers_paused
 
 ## 停止进度条
 func stop() -> void:
@@ -42,19 +46,20 @@ func stop() -> void:
 
 func _stop() -> void:
 	_is_running = false
+	_is_paused = false
 	visible = false
 	_elapsed_time = 0.0
 	value = 0.0
 
 ## 暂停进度条
 func pause() -> void:
-	_is_running = false
+	_is_paused = true
 
 ## 恢复进度条
 func resume() -> void:
 	if _elapsed_time < _total_time and _total_time > 0:
-		_is_running = true
 		visible = true
+		_is_paused = false
 
 ## 获取当前进度（0.0 - 1.0）
 func get_progress_ratio() -> float:
@@ -91,3 +96,7 @@ func continue_with_new_duration(new_duration: float, preserve_progress: bool = t
 	value = _elapsed_time
 	visible = true
 	_is_running = true
+	_is_paused = Events.timers_paused
+
+func _on_timers_pause_changed(is_paused: bool) -> void:
+	_is_paused = is_paused
