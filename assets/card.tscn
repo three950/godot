@@ -1,40 +1,16 @@
 [gd_scene format=3 uid="uid://cxgk8a5mjy27v"]
 
-[ext_resource type="Script" uid="uid://ut5tbn2q80gh" path="res://assets/card.gd" id="1_q5obu"]
-[ext_resource type="Resource" uid="uid://cq6i5xpurm0al" path="res://base_data/Battle_stats.tres" id="2_agldc"]
-[ext_resource type="AudioStream" uid="uid://csqitlghauxgb" path="res://声音资产/useful/卡牌拿起放下/cardpick.wav" id="2_mqa0q"]
-[ext_resource type="AudioStream" uid="uid://cu1gnscbqcks2" path="res://声音资产/useful/卡牌拿起放下/cardfall.wav" id="3_agldc"]
 [ext_resource type="StyleBox" uid="uid://b0256y5bp2byj" path="res://assets/card.tres" id="5_agldc"]
 [ext_resource type="StyleBox" uid="uid://bv510uix8lck3" path="res://assets/cardpanel.tres" id="6_3tu4f"]
 [ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://presentation/fonts/font.tres" id="7_xo5ip"]
+[ext_resource type="Texture2D" uid="uid://be64xwxsumg26" path="res://presentation/线条.png" id="8_line"]
 [ext_resource type="Texture2D" uid="uid://kkohhrkwmk7y" path="res://美术资产/character/娜娜奇完整版.png" id="16_3tu4f"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dxh0d"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 8
-border_width_top = 8
-border_width_right = 8
-border_width_bottom = 8
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xo5ip"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_bottom = 4
-border_color = Color(0, 0, 0, 1)
-
-[node name="Card" type="Control" unique_id=33495198 groups=["Cards"]]
+[node name="Card" type="Control" unique_id=33495198]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 264.0
 offset_bottom = 345.0
-script = ExtResource("1_q5obu")
-battle = ExtResource("2_agldc")
-pickup_sound = ExtResource("2_mqa0q")
-fall_sound = ExtResource("3_agldc")
 
 [node name="CardColor" type="Control" parent="." unique_id=93157455]
 anchors_preset = 0
@@ -45,8 +21,10 @@ mouse_filter = 2
 [node name="CardPanel" type="Panel" parent="CardColor" unique_id=1495404947]
 unique_name_in_owner = true
 layout_mode = 0
-offset_right = 264.0
-offset_bottom = 342.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 260.0
+offset_bottom = 338.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("5_agldc")
 
@@ -83,19 +61,19 @@ offset_right = 264.0
 offset_bottom = 342.0
 mouse_filter = 2
 
-[node name="OuterBorder" type="Panel" parent="CardBorder" unique_id=699599071]
-layout_mode = 0
-offset_right = 264.0
-offset_bottom = 342.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_dxh0d")
+[node name="OuterBorder" type="Line2D" parent="CardBorder" unique_id=699599071]
+points = PackedVector2Array(8, 4, 256, 4, 257.5307, 4.3045, 258.8284, 5.1716, 259.6955, 6.4693, 260, 8, 260, 334, 259.6955, 335.5307, 258.8284, 336.8284, 257.5307, 337.6955, 256, 338, 8, 338, 6.4693, 337.6955, 5.1716, 336.8284, 4.3045, 335.5307, 4, 334, 4, 8, 4.3045, 6.4693, 5.1716, 5.1716, 6.4693, 4.3045)
+closed = true
+width = 8.0
+texture = ExtResource("8_line")
+texture_mode = 1
+joint_mode = 2
 
-[node name="OuterBorder2" type="Panel" parent="CardBorder" unique_id=1182773948]
-layout_mode = 0
-offset_right = 264.0
-offset_bottom = 57.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_xo5ip")
+[node name="OuterBorder2" type="Line2D" parent="CardBorder" unique_id=1182773948]
+points = PackedVector2Array(0, 53, 264, 53)
+width = 4.0
+texture = ExtResource("8_line")
+texture_mode = 1
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1571016305]
 unique_name_in_owner = true
@@ -103,12 +81,8 @@ texture_filter = 1
 layout_mode = 0
 offset_left = 7.0
 offset_top = 56.0
-offset_right = 259.0
-offset_bottom = 278.0
+offset_right = 256.0
+offset_bottom = 275.35712
 mouse_filter = 2
 texture = ExtResource("16_3tu4f")
 expand_mode = 1
-
-[connection signal="gui_input" from="." to="." method="_on_gui_input"]
-[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
-[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

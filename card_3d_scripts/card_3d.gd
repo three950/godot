@@ -54,13 +54,19 @@ var _base_plane_y: float = 0.0
 var _front_face_original_position: Vector3 = Vector3.ZERO
 var _back_face_original_position: Vector3 = Vector3.ZERO
 var _ray_hovered: bool = false
-var card_2d: Card = null
+var card_2d: Control = null
+var card_2d_label: Label = null
+var card_2d_texture: TextureRect = null
 
 
 func _ready() -> void:
 	add_to_group("Cards3D")
 	_base_plane_y = global_position.y
-	card_2d = card_viewport.get_node_or_null("Card2D") as Card if card_viewport else null
+	card_2d = card_viewport.get_node_or_null("Card2D") as Control if card_viewport else null
+	if card_2d:
+		# Card2D 只负责显示卡面，不能依赖 2D 卡牌交互脚本。
+		card_2d_label = card_2d.get_node_or_null("CardColor/Panel/Label") as Label
+		card_2d_texture = card_2d.get_node_or_null("TextureRect") as TextureRect
 	_apply_card_info_to_view()
 
 	if front_face:
@@ -98,14 +104,10 @@ func _apply_card_info_to_view() -> void:
 		return
 
 	card_2d.name = card_info.name if card_info.name != "" else "Card2D"
-	card_2d.cardname = card_info.name
-	card_2d.can_stack = card_info.能被堆叠
-	if battle != null:
-		card_2d.battle = battle.duplicate()
-	if card_2d.card_label:
-		card_2d.card_label.text = card_info.name
-	if card_2d.card_texture:
-		card_2d.card_texture.texture = card_info.portrait
+	if card_2d_label:
+		card_2d_label.text = card_info.name
+	if card_2d_texture:
+		card_2d_texture.texture = card_info.portrait
 
 
 func _input(event: InputEvent) -> void:
