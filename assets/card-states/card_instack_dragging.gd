@@ -1,7 +1,7 @@
 extends CardState
 signal stop_follow_me
 
-@export var follow_lerp_speed: float = 24.0
+@export var follow_lerp_speed: float = 36.0
 
 func enter() -> void:
 	print("%s跟着移动。。。"%card.name)
@@ -9,8 +9,6 @@ func enter() -> void:
 		stop_follow_me.connect(stop_follow_you)
 
 func _physics_process(delta: float) -> void:
-	if card == null or card.card_state_machine == null or card.card_state_machine.current_state != self:
-		return
 	if not is_instance_valid(card.follow_target):
 		return
 	

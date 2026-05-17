@@ -17,9 +17,6 @@ func exit() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if card == null or card.card_state_machine == null or card.card_state_machine.current_state != self:
-		return
-
 	if card.global_position != last_position:
 		card.update_stack_chain_position()
 		last_position = card.global_position

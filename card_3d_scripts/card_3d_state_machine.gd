@@ -20,9 +20,11 @@ func init(card: Card3D) -> void:
 		if not state_node.transition_requested.is_connected(_on_transition_requested):
 			state_node.transition_requested.connect(_on_transition_requested)
 		state_node.card = card
+		state_node.set_state_processing_enabled(false)
 
 	if initial_state:
 		current_state = initial_state
+		current_state.set_state_processing_enabled(true)
 		initial_state.enter()
 		initial_state.post_enter()
 
@@ -57,8 +59,10 @@ func _on_transition_requested(from: Card3DState, to: Card3DState.State) -> void:
 
 	if current_state:
 		current_state.exit()
+		current_state.set_state_processing_enabled(false)
 
 	current_state = new_state
+	new_state.set_state_processing_enabled(true)
 	new_state.enter()
 	new_state.post_enter()
 	var card_label := "unknown_card"

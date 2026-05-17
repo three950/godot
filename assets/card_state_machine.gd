@@ -11,12 +11,16 @@ func init(card: Card) -> void:
 	for child: CardState in get_children():
 		if child:
 			states[child.state] = child
-			child.transition_requested.connect(_on_transition_requested)
+			if not child.transition_requested.is_connected(_on_transition_requested):
+				child.transition_requested.connect(_on_transition_requested)
 			child.card = card
+			child.set_state_processing_enabled(false)
 	
 	if initial_state:
-		initial_state.enter()
 		current_state = initial_state
+		current_state.set_state_processing_enabled(true)
+		initial_state.enter()
+		initial_state.post_enter()
 
 
 func on_input(event: InputEvent) -> void:
@@ -49,7 +53,9 @@ func _on_transition_requested(from: CardState, to: CardState.State) -> void:
 	
 	if current_state:
 		current_state.exit()
+		current_state.set_state_processing_enabled(false)
 	
-	new_state.enter()
 	current_state = new_state
+	current_state.set_state_processing_enabled(true)
+	new_state.enter()
 	new_state.post_enter()

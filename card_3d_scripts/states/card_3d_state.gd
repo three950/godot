@@ -15,6 +15,17 @@ const STACK_STATE_STACKING := 2
 var card: Card3D
 
 
+func _ready() -> void:
+	set_state_processing_enabled(false)
+
+
+func set_state_processing_enabled(enabled: bool) -> void:
+	set_process(enabled)
+	set_physics_process(enabled)
+	set_process_input(enabled)
+	set_process_unhandled_input(enabled)
+
+
 func enter() -> void:
 	pass
 

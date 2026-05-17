@@ -7,7 +7,8 @@ func enter() -> void:
 	print("卡片%s instack状态"%card.name)	
 	if card.follow_target == null:
 		print("没有目标兄弟")
-	follow_me.connect(follow_you)
+	if not follow_me.is_connected(follow_you):
+		follow_me.connect(follow_you)
 	# 重置卡片和阴影的偏移到原始位置
 	card.reset_offset()
 	# 记录初始位置
