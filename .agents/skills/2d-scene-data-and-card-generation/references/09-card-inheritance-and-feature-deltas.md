@@ -15,13 +15,12 @@ graph TD
   Things --> Equipment["assets/物品/装备/equipment.gd (Equipment)"]
   Things --> Remains["assets/物品/遗物/remains.gd (Remains)"]
 
-  Card --> Scene["assets/AbyssLayer/Scene.gd (Scene)"]
-  Scene --> SmallScene["assets/小场景/Small_Scene.gd (Small_Scene)"]
+  Card --> SmallScene["assets/小场景/Small_Scene.gd (Small_Scene)"]
 
   Card --> BattleCard["assets/人物与敌人/battle_card.gd (BattleCard)"]
   BattleCard --> Character["assets/人物与敌人/Character/character.gd (Character)"]
 
-  Card --> BuildingCard["assets/固定场景建筑/building_card.gd (BuildingCard)"]
+  Card --> BuildingCard["assets/庇护所营地/building_card.gd (BuildingCard)"]
   Card --> DialogueCard["assets/dialogue/dialogue_card.gd (DialogueCard)"]
 ```
 
@@ -53,9 +52,8 @@ graph TD
   ThingsScene --> EquipmentScene["assets/物品/装备/Equitment.tscn"]
   ThingsScene --> RemainsScene["assets/物品/遗物/remains.tscn"]
 
-  CardScene --> FixedCard["assets/fixed_card.tscn"]
-  FixedCard --> AbyssScene["assets/AbyssLayer/Scene.tscn"]
-  AbyssScene --> SmallScene["assets/小场景/Small_Scene.tscn"]
+  FixedCard["assets/fixed_card.tscn"]
+  FixedCard --> SmallScene["assets/小场景/Small_Scene.tscn"]
 
   CardScene --> Biology["assets/人物与敌人/biology.tscn"]
   Biology --> Character["assets/人物与敌人/Character/character.tscn"]
@@ -65,6 +63,8 @@ graph TD
 ```
 
 Notes:
+- `assets/fixed_card.tscn` is standalone at the scene-instancing level; it does not instance `assets/card.tscn`.
+- `assets/fixed_card.tscn` still reuses card behavior through an inline script that extends `assets/card.gd`.
 - `assets/人物与敌人/Enemy/enemy.tscn` is standalone (not instanced from `card.tscn`).
 - `assets/dialogue/dialogue_card.tscn` is standalone (not instanced from `card.tscn`).
 
@@ -73,6 +73,10 @@ Notes:
 ### Base
 - `assets/card.tscn`
   - Provides full baseline: drag/stack detect area, state machine, SubViewport card rendering, shadow/surface handling, animation player, shooter node.
+- `assets/fixed_card.tscn`
+  - Standalone scene root, not a child scene of `assets/card.tscn`.
+  - Reuses core `Card` behavior through an inline script extending `assets/card.gd`.
+  - Provides a simplified fixed-card composition.
 
 ### Things Line
 - `assets/物品/Things.tscn` (parent: `assets/card.tscn`)
@@ -91,13 +95,10 @@ Notes:
   - Reduced/hidden: `CardLabel`, `CardStackDetectorArea` default hidden in scene config.
 
 ### Abyss/Small Scene Line
-- `assets/fixed_card.tscn` (script extends `assets/card.gd`)
-  - Reduced: simplified fixed card composition (lighter than full `card.tscn`).
-- `assets/AbyssLayer/Scene.tscn` (parent: `assets/fixed_card.tscn`)
-  - Added: `CardProgressBar`, abyss scene script logic (`set_stats`, timer spawn, stack-driven speed updates).
-  - Added state machine nodes back for fixed + instack path.
-- `assets/小场景/Small_Scene.tscn` (parent: `assets/AbyssLayer/Scene.tscn`)
-  - Added via script override: custom speed calculation + spawn pick strategy.
+- `assets/小场景/Small_Scene.tscn` (parent: `assets/fixed_card.tscn`)
+  - Added: `CardProgressBar`, state machine nodes back for fixed + instack path.
+  - Added script logic from the removed abyss scene layer: `set_stats`, timer spawn, stack-driven speed updates.
+  - Added small-scene-specific behavior: cumulative speed calculation + spawn pick strategy.
 
 ### Battle Line
 - `assets/人物与敌人/biology.tscn` (parent: `assets/card.tscn`)
@@ -108,9 +109,11 @@ Notes:
 ### Other Card Variants
 - `assets/固定场景建筑/固定场景建筑.tscn` (parent: `assets/card.tscn`)
   - Added: building card style/label variant.
+  - Script: uses `assets/庇护所营地/building_card.gd`.
   - Reduced/hidden: `CardLabel`, `CardStackDetectorArea` default hidden in scene config.
 - `assets/庇护所营地/building_card.tscn` (parent: `assets/card.tscn`)
   - Added: building card variant for camp flow.
+  - Script: uses `assets/庇护所营地/building_card.gd`.
 - `assets/人物与敌人/Enemy/enemy.tscn` (standalone)
   - Added: dedicated enemy panel + battle labels; does not reuse base card state machine chain.
 - `assets/dialogue/dialogue_card.tscn` (standalone)

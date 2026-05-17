@@ -15,7 +15,6 @@ func _ready() -> void:
 	super._ready()
 	# 建筑卡片设置为 architecture 类型，不能拖拽
 	card_type = cardType.architecture
-	cardCurrentState = cardState.fixed
 
 # rest() 函数：在夜晚结算时，食物和水补充的情况下，恢复生命
 func rest() -> void:

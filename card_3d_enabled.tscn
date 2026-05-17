@@ -18,8 +18,8 @@ viewport_path = NodePath("FrontFace/SubViewport")
 resource_local_to_scene = true
 resource_name = "Card3DFrontMaterial"
 shading_mode = 2
-disable_receive_shadows = true
 albedo_texture = SubResource("ViewportTexture_sawag")
+disable_receive_shadows = true
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_front_face"]
 size = Vector2(2.64, 3.45)
@@ -29,8 +29,8 @@ resource_local_to_scene = true
 resource_name = "Card3DBackBlackMaterial"
 transparency = 1
 shading_mode = 0
-disable_receive_shadows = true
 albedo_color = Color(0, 0, 0, 1)
+disable_receive_shadows = true
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_back_face"]
 size = Vector2(2.64, 3.45)
@@ -48,8 +48,8 @@ size = Vector3(2.64, 0.08, 3.45)
 script = ExtResource("2_card3d")
 
 [node name="FrontFace" type="MeshInstance3D" parent="." unique_id=1833840304]
-cast_shadow = 2
 material_override = SubResource("StandardMaterial3D_front")
+cast_shadow = 2
 mesh = SubResource("PlaneMesh_front_face")
 
 [node name="SubViewport" type="SubViewport" parent="FrontFace" unique_id=2002983404]
@@ -62,8 +62,8 @@ render_target_update_mode = 1
 
 [node name="BackFace" type="MeshInstance3D" parent="." unique_id=103283408]
 transform = Transform3D(1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0)
-cast_shadow = 2
 material_override = SubResource("StandardMaterial3D_back")
+cast_shadow = 2
 mesh = SubResource("PlaneMesh_back_face")
 
 [node name="CardLabel" type="Area3D" parent="." unique_id=195554578]

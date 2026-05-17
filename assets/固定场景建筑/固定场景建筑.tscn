@@ -1,7 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://bghrawg2wa0mf"]
+[gd_scene format=3 uid="uid://bghrawg2wa0mf"]
 
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="1_2r54s"]
-[ext_resource type="Script" uid="uid://bhmyggn7sc5wt" path="res://assets/固定场景建筑/building_card.gd" id="2_5ffud"]
+[ext_resource type="Script" uid="uid://bhmyggn7sc5wt" path="res://assets/庇护所营地/building_card.gd" id="2_5ffud"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2r54s"]
 bg_color = Color(0.2123048, 0.21230489, 0.21230471, 1)
@@ -20,27 +20,27 @@ bg_color = Color(0.19434926, 0.19434929, 0.19434917, 1)
 border_width_bottom = 3
 border_color = Color(0, 0, 0, 1)
 
-[node name="固定场景建筑" instance=ExtResource("1_2r54s")]
+[node name="固定场景建筑" unique_id=2115871679 instance=ExtResource("1_2r54s")]
 script = ExtResource("2_5ffud")
 
-[node name="CardPanel" parent="." index="0"]
+[node name="CardLabel" parent="." index="0" unique_id=195554578]
+visible = false
+
+[node name="CardStackDetectorArea" parent="." index="1" unique_id=1021535360]
+visible = false
+
+[node name="CardPanel" parent="." index="5" unique_id=1495404947]
 theme_override_styles/panel = SubResource("StyleBoxFlat_2r54s")
 
-[node name="Panel" parent="." index="1"]
+[node name="Panel" parent="." index="6" unique_id=1642299539]
 theme_override_styles/panel = SubResource("StyleBoxFlat_5ffud")
 
-[node name="Label" parent="Panel" index="0"]
+[node name="Label" parent="Panel" index="0" unique_id=748114393]
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "探窟者协会"
 
-[node name="TextureRect" parent="." index="2"]
+[node name="TextureRect" parent="." index="7" unique_id=1571016305]
 offset_left = -123.0
 offset_top = -113.5
 offset_bottom = 131.5
 stretch_mode = 6
-
-[node name="CardLabel" parent="." index="3"]
-visible = false
-
-[node name="CardStackDetectorArea" parent="." index="4"]
-visible = false

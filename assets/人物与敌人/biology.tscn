@@ -4,34 +4,29 @@
 [ext_resource type="Script" uid="uid://cq4u5v6w7x80a" path="res://assets/人物与敌人/attribute_labels.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://presentation/fonts/Xolonium-Regular.ttf" id="2_font"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_i6tw2"]
-viewport_path = NodePath("SubViewport")
+[node name="BiologyCard" unique_id=763618913 instance=ExtResource("1_3c02q")]
 
-[node name="BiologyCard" instance=ExtResource("1_3c02q")]
-
-[node name="shadow" parent="." index="0"]
-mouse_filter = 2
-
-[node name="surface" parent="." index="1"]
-texture = SubResource("ViewportTexture_i6tw2")
-
-[node name="CardPushDetectorArea" parent="." index="4"]
-collision_layer = 16
-collision_mask = 16
-
-[node name="AttributeLabels" type="HBoxContainer" parent="SubViewport" index="3"]
+[node name="SubViewport_AttributeLabels_RightStats#ATKLabel" type="Label" parent="." index="0" unique_id=235588389]
 unique_name_in_owner = true
-offset_left = 7.0
-offset_top = 265.0
-offset_right = 255.0
-offset_bottom = 337.0
-mouse_filter = 2
-alignment = 1
-script = ExtResource("1_script")
+layout_mode = 0
+theme_override_colors/font_color = Color(0.9, 0.6, 0.1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 27
+text = "1"
+horizontal_alignment = 2
 
-[node name="HPLabel" type="Label" parent="SubViewport/AttributeLabels" index="0"]
+[node name="SubViewport_AttributeLabels_RightStats#DEFLabel" type="Label" parent="." index="1" unique_id=1420225139]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 0
+theme_override_colors/font_color = Color(0.2, 0.5, 0.8, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 27
+text = "0"
+horizontal_alignment = 2
+
+[node name="SubViewport_AttributeLabels#HPLabel" type="Label" parent="." index="2" unique_id=161215820]
+unique_name_in_owner = true
+layout_mode = 0
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.8, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_font")
@@ -39,25 +34,18 @@ theme_override_font_sizes/font_size = 27
 text = "10"
 vertical_alignment = 1
 
-[node name="RightStats" type="VBoxContainer" parent="SubViewport/AttributeLabels" index="1"]
-layout_mode = 2
+[node name="SubViewport_AttributeLabels#RightStats" type="VBoxContainer" parent="." index="3" unique_id=1956390952]
+layout_mode = 0
 mouse_filter = 2
 theme_override_constants/separation = 0
 
-[node name="ATKLabel" type="Label" parent="SubViewport/AttributeLabels/RightStats" index="0"]
+[node name="SubViewport#AttributeLabels" type="HBoxContainer" parent="." index="7" unique_id=1427162710]
 unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.6, 0.1, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 27
-text = "1"
-horizontal_alignment = 2
-
-[node name="DEFLabel" type="Label" parent="SubViewport/AttributeLabels/RightStats" index="1"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.5, 0.8, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 27
-text = "0"
-horizontal_alignment = 2
+layout_mode = 0
+offset_left = 7.0
+offset_top = 265.0
+offset_right = 255.0
+offset_bottom = 337.0
+mouse_filter = 2
+alignment = 1
+script = ExtResource("1_script")

@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://bh2usa7ojp531"]
 
-[ext_resource type="Texture2D" uid="uid://bl24ms4d6ii3h" path="res://assets/AbyssLayer/500m.png" id="1_til75"]
 [ext_resource type="Script" uid="uid://cao5f6hiln3f" path="res://assets/AbyssLayer/layer_card_bag.gd" id="1_xfley"]
 [ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://presentation/fonts/font.tres" id="2_i1sea"]
 
@@ -18,16 +17,16 @@ corner_radius_bottom_left = 27
 shadow_color = Color(0.9428228, 0.94282264, 0.94282264, 0.6)
 shadow_size = 12
 
-[node name="LayerCardBag" type="Node2D"]
+[node name="LayerCardBag" type="Node2D" unique_id=1146513041]
 script = ExtResource("1_xfley")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="." unique_id=138022680]
 offset_right = 264.0
 offset_bottom = 345.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_fpyd7")
 metadata/_edit_use_anchors_ = true
 
-[node name="Label2" type="Label" parent="Panel"]
+[node name="Label2" type="Label" parent="Panel" unique_id=829370008]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.41666666
@@ -45,7 +44,7 @@ theme_override_font_sizes/font_size = 30
 text = "卡包"
 metadata/_edit_use_anchors_ = true
 
-[node name="Label" type="Label" parent="Panel"]
+[node name="Label" type="Label" parent="Panel" unique_id=644120567]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.20833333
@@ -67,7 +66,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="layername" type="Label" parent="Panel"]
+[node name="layername" type="Label" parent="Panel" unique_id=910138049]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -83,21 +82,5 @@ theme_override_fonts/font = ExtResource("2_i1sea")
 theme_override_font_sizes/font_size = 48
 text = "巨穴之口"
 metadata/_edit_use_anchors_ = true
-
-[node name="TextureRect" type="TextureRect" parent="Panel"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -68.0
-offset_top = -41.5
-offset_right = 75.0
-offset_bottom = 101.5
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("1_til75")
-expand_mode = 1
 
 [connection signal="gui_input" from="Panel" to="." method="_on_panel_gui_input"]

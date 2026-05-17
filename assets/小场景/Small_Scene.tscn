@@ -1,7 +1,33 @@
-[gd_scene load_steps=3 format=3 uid="uid://cs4aojjehfrjt"]
+[gd_scene load_steps=7 format=3 uid="uid://cs4aojjehfrjt"]
 
-[ext_resource type="PackedScene" uid="uid://cenk3fyviu5iq" path="res://assets/AbyssLayer/Scene.tscn" id="1_sjn7l"]
+[ext_resource type="PackedScene" uid="uid://chd1450hb3kko" path="res://assets/fixed_card.tscn" id="1_sjn7l"]
 [ext_resource type="Script" uid="uid://cemfiiymj2it" path="res://assets/小场景/Small_Scene.gd" id="2_7mk8l"]
+[ext_resource type="PackedScene" uid="uid://m6rrjkc625gk" path="res://presentation/card_progress_bar.tscn" id="3_lgl2x"]
+[ext_resource type="Script" uid="uid://b6yrrsooe1is3" path="res://assets/card_state_machine.gd" id="4_h6hsp"]
+[ext_resource type="Script" uid="uid://blwo6u4at8188" path="res://assets/card-states/card_fixed.gd" id="5_yweo5"]
+[ext_resource type="Script" uid="uid://sxc0f1pavh3f" path="res://assets/card-states/card_instack.gd" id="6_t18jv"]
 
 [node name="小场景" instance=ExtResource("1_sjn7l")]
 script = ExtResource("2_7mk8l")
+scene = null
+spawn_offset = Vector2(0, 360)
+cardpool = null
+
+[node name="CardProgressBar" parent="." index="4" instance=ExtResource("3_lgl2x")]
+layout_mode = 0
+offset_left = 6.0
+offset_top = -31.0
+offset_right = 258.0
+offset_bottom = -7.0
+mouse_filter = 2
+
+[node name="CardStateMachine" type="Node" parent="." index="5" node_paths=PackedStringArray("initial_state")]
+script = ExtResource("4_h6hsp")
+initial_state = NodePath("CardFixed")
+
+[node name="CardFixed" type="Node" parent="CardStateMachine" index="0"]
+script = ExtResource("5_yweo5")
+
+[node name="CardInstack" type="Node" parent="CardStateMachine" index="1"]
+script = ExtResource("6_t18jv")
+state = 4

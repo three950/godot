@@ -1,18 +1,19 @@
-[gd_scene load_steps=3 format=3 uid="uid://bgelpw48a6s82"]
+[gd_scene format=3 uid="uid://bgelpw48a6s82"]
 
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="1_3q2x2"]
-[ext_resource type="Script" uid="uid://bhmyggn7sc5wt" path="res://assets/固定场景建筑/building_card.gd" id="2_224m6"]
+[ext_resource type="Script" uid="uid://bhmyggn7sc5wt" path="res://assets/庇护所营地/building_card.gd" id="2_224m6"]
 
-[node name="BuildingCard" instance=ExtResource("1_3q2x2")]
+[node name="BuildingCard" unique_id=370388772 instance=ExtResource("1_3q2x2")]
 script = ExtResource("2_224m6")
 card_type = 2
 follow_target = NodePath("Control/ColorRect/Label")
 
-[node name="Control_ColorRect#CapacityLabel" type="Label" parent="." index="2"]
+[node name="CapacityLabel" type="Label" parent="." index="8" unique_id=691709592]
 layout_mode = 0
-offset_top = 96.0
-offset_right = 82.0
-offset_bottom = 109.0
+offset_left = 40.0
+offset_top = 304.0
+offset_right = 216.0
+offset_bottom = 317.0
 theme_override_colors/font_color = Color(0.3, 0.3, 0.6, 1)
 theme_override_font_sizes/font_size = 9
 text = "容量: 1"

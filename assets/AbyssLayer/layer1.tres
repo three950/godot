@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="BagResource" load_steps=4 format=3 uid="uid://bmnohsw38p6a0"]
+[gd_resource type="Resource" script_class="BagResource" format=3 uid="uid://bmnohsw38p6a0"]
 
 [ext_resource type="Script" uid="uid://boc3ah606qrcy" path="res://assets/AbyssLayer/layer_card_bag_resource.gd" id="1_87140"]
 [ext_resource type="PackedScene" uid="uid://bh2usa7ojp531" path="res://assets/AbyssLayer/layer_card_bag.tscn" id="1_npm6a"]

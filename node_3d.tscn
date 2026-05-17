@@ -23,17 +23,21 @@ ambient_light_sky_contribution = 0.0
 ambient_light_energy = 0.4
 reflected_light_source = 1
 
-[sub_resource type="Resource" id="Resource_battle_nanachi"]
-script = ExtResource("6_battle")
-metadata/_custom_type_script = "uid://bf2o85td7sner"
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ocean"]
+resource_name = "OceanWavesMaterial"
+render_priority = 0
+shader = ExtResource("14_ocean")
+shader_parameter/water_color = Color(0.447, 0.612, 0.827, 1)
+shader_parameter/wave_color = Color(0.78, 0.93, 1, 1)
+shader_parameter/inner_half_size = Vector2(17, 10)
+shader_parameter/wave_spacing = 7.2
+shader_parameter/wave_speed = 0.28
+shader_parameter/wave_amplitude = 0.32
+shader_parameter/wave_frequency = 0.9
+shader_parameter/wave_thickness = 0.045
 
-[sub_resource type="Resource" id="Resource_battle_riko"]
-script = ExtResource("6_battle")
-metadata/_custom_type_script = "uid://bf2o85td7sner"
-
-[sub_resource type="Resource" id="Resource_battle_reg"]
-script = ExtResource("6_battle")
-metadata/_custom_type_script = "uid://bf2o85td7sner"
+[sub_resource type="PlaneMesh" id="PlaneMesh_ocean"]
+size = Vector2(80, 50)
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_jka67"]
 viewport_path = NodePath("Ground/SubViewport")
@@ -60,21 +64,17 @@ disable_receive_shadows = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
 size = Vector3(34.71, 1, 21.36)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ocean"]
-resource_name = "OceanWavesMaterial"
-render_priority = 0
-shader = ExtResource("14_ocean")
-shader_parameter/water_color = Color(0.447, 0.612, 0.827, 1)
-shader_parameter/wave_color = Color(0.78, 0.93, 1, 1)
-shader_parameter/inner_half_size = Vector2(17, 10)
-shader_parameter/wave_spacing = 7.2
-shader_parameter/wave_speed = 0.28
-shader_parameter/wave_amplitude = 0.32
-shader_parameter/wave_frequency = 0.9
-shader_parameter/wave_thickness = 0.045
+[sub_resource type="Resource" id="Resource_battle_nanachi"]
+script = ExtResource("6_battle")
+metadata/_custom_type_script = "uid://bf2o85td7sner"
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_ocean"]
-size = Vector2(80, 50)
+[sub_resource type="Resource" id="Resource_battle_riko"]
+script = ExtResource("6_battle")
+metadata/_custom_type_script = "uid://bf2o85td7sner"
+
+[sub_resource type="Resource" id="Resource_battle_reg"]
+script = ExtResource("6_battle")
+metadata/_custom_type_script = "uid://bf2o85td7sner"
 
 [node name="Node3D" type="Node3D" unique_id=880038554]
 script = ExtResource("2_cam")
@@ -92,55 +92,11 @@ metadata/_edit_lock_ = true
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1950653901]
 environment = SubResource("Environment_card_shadow")
 
-[node name="UI_Layer" parent="." unique_id=750863690 instance=ExtResource("3_ui")]
-bgm = ExtResource("3_bgm")
-
-[node name="Camera3D" type="Camera3D" parent="." unique_id=809929531]
-transform = Transform3D(1, 0, 0, 0, 0.087155804, 0.9961947, 0, -0.9961947, 0.087155804, 0, 15, 2.4)
-metadata/_edit_lock_ = true
-
-[node name="娜娜奇" parent="." unique_id=1098745464 instance=ExtResource("5_i5arm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, -4)
-cardname = " 娜娜奇"
-card_info = ExtResource("7_nanachi")
-battle = SubResource("Resource_battle_nanachi")
-
-[node name="莉可" parent="." unique_id=1058394043 instance=ExtResource("5_i5arm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, -4)
-cardname = "莉可"
-card_info = ExtResource("8_riko")
-battle = SubResource("Resource_battle_riko")
-
-[node name="雷古" parent="." unique_id=1888242703 instance=ExtResource("5_i5arm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
-cardname = "雷古"
-card_info = ExtResource("9_reg")
-battle = SubResource("Resource_battle_reg")
-
-[node name="钓鱼竿" parent="." unique_id=1544934035 instance=ExtResource("5_i5arm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, -4)
-cardname = "钓鱼竿"
-card_info = ExtResource("11_fishing_rod")
-
-[node name="祈愿者的盖子" parent="." unique_id=75465322 instance=ExtResource("5_i5arm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, 0.25)
-cardname = "祈愿者的盖子"
-card_info = ExtResource("12_cap")
-
-[node name="鱼" parent="." unique_id=364068770 instance=ExtResource("5_i5arm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, 0.25)
-cardname = "鱼"
-card_info = ExtResource("13_fish")
-
-[node name="河流" parent="." unique_id=283769564 instance=ExtResource("5_i5arm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 0, 4.5)
-cardname = "河流"
-card_info = ExtResource("16_river")
-
-[node name="小洞穴" parent="." unique_id=1073769014 instance=ExtResource("5_i5arm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.75, 0, 4.5)
-cardname = "小洞穴"
-card_info = ExtResource("17_cave")
+[node name="OceanMesh" type="MeshInstance3D" parent="." unique_id=2032477660]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, -0.1)
+material_override = SubResource("ShaderMaterial_ocean")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_ocean")
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=1744047288]
 metadata/_edit_lock_ = true
@@ -195,8 +151,52 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.002, 0)
 shape = SubResource("BoxShape3D_ground")
 metadata/_edit_lock_ = true
 
-[node name="OceanMesh" type="MeshInstance3D" parent="." unique_id=2032477660]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, -0.1)
-material_override = SubResource("ShaderMaterial_ocean")
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_ocean")
+[node name="Camera3D" type="Camera3D" parent="." unique_id=809929531]
+transform = Transform3D(1, 0, 0, 0, 0.087155804, 0.9961947, 0, -0.9961947, 0.087155804, 0, 15, 2.4)
+metadata/_edit_lock_ = true
+
+[node name="娜娜奇" parent="." unique_id=1098745464 instance=ExtResource("5_i5arm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, -4)
+cardname = " 娜娜奇"
+card_info = ExtResource("7_nanachi")
+battle = SubResource("Resource_battle_nanachi")
+
+[node name="莉可" parent="." unique_id=1058394043 instance=ExtResource("5_i5arm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, -4)
+cardname = "莉可"
+card_info = ExtResource("8_riko")
+battle = SubResource("Resource_battle_riko")
+
+[node name="雷古" parent="." unique_id=1888242703 instance=ExtResource("5_i5arm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
+cardname = "雷古"
+card_info = ExtResource("9_reg")
+battle = SubResource("Resource_battle_reg")
+
+[node name="钓鱼竿" parent="." unique_id=1544934035 instance=ExtResource("5_i5arm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, -4)
+cardname = "钓鱼竿"
+card_info = ExtResource("11_fishing_rod")
+
+[node name="祈愿者的盖子" parent="." unique_id=75465322 instance=ExtResource("5_i5arm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, 0.25)
+cardname = "祈愿者的盖子"
+card_info = ExtResource("12_cap")
+
+[node name="鱼" parent="." unique_id=364068770 instance=ExtResource("5_i5arm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, 0.25)
+cardname = "鱼"
+card_info = ExtResource("13_fish")
+
+[node name="河流" parent="." unique_id=283769564 instance=ExtResource("5_i5arm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 0, 4.5)
+cardname = "河流"
+card_info = ExtResource("16_river")
+
+[node name="小洞穴" parent="." unique_id=1073769014 instance=ExtResource("5_i5arm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.75, 0, 4.5)
+cardname = "小洞穴"
+card_info = ExtResource("17_cave")
+
+[node name="UI_Layer" parent="." unique_id=750863690 instance=ExtResource("3_ui")]
+bgm = ExtResource("3_bgm")
