@@ -17,6 +17,6 @@ MAX_HP = 30
 ATK = 6
 speed = 15
 DEF = 5
-name = " 娜娜奇"
+name = "娜娜奇"
 portrait = ExtResource("2_hmi2y")
 metadata/_custom_type_script = "uid://c4lf65wbktjbc"
