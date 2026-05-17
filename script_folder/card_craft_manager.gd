@@ -2,6 +2,12 @@ class_name CraftManager
 extends Node
 
 const CARD_THROW_PHYSICS_SCRIPT: GDScript = preload("res://script_folder/card_throw_physics_test.gd")
+const CARD_PROGRESS_BAR_SCENE: PackedScene = preload("res://presentation/card_progress_bar.tscn")
+const CARD_PROGRESS_BAR_NODE_NAME := "CardProgressBar"
+const CARD_PROGRESS_BAR_3D_NODE_NAME := "CardProgressBar3D"
+const CARD_PROGRESS_VIEWPORT_NODE_NAME := "ProgressViewport"
+const CARD_PROGRESS_MESH_NODE_NAME := "ProgressMesh3D"
+const CARD_PROGRESS_VIEWPORT_SIZE := Vector2i(264, 32)
 
 @export var craft_pools: Array[CardInfo] = []
 var _recipe_map: Dictionary = {}
@@ -74,10 +80,11 @@ func _get_array(card: Card3D) -> void:
 ## 开始合成：显示进度条并计时
 func _start_crafting(top_card: Card3D, cards_to_free: Array[Card3D], card_info: ThingsCard, spawn_position: Vector3) -> void:
 	print("[CraftManager] _start_crafting: top=%s result=%s position=%s" % [top_card.cardname, card_info.name, spawn_position])
-	var progress_bar = top_card.get_node_or_null("CardProgressBar") as CardProgressBar
+	var progress_bar := _get_or_create_progress_bar(top_card)
+	if progress_bar == null:
+		push_error("[CraftManager] failed to create CardProgressBar for: %s" % top_card.name)
+		return
 	var craft_key: Object = progress_bar
-	if craft_key == null:
-		craft_key = top_card
 
 	# 记录合成任务
 	var craft_data := {
@@ -96,19 +103,64 @@ func _start_crafting(top_card: Card3D, cards_to_free: Array[Card3D], card_info: 
 			var callback = func(): _cancel_crafting(craft_key)
 			c.array_changed.connect(callback, CONNECT_ONE_SHOT)
 	
-	if progress_bar != null:
-		progress_bar.progress_completed.connect(
-			func(): _on_craft_completed(craft_key),
-			CONNECT_ONE_SHOT
-		)
-		progress_bar.start(card_info.合成时间)
-	else:
-		print("[CraftManager] no CardProgressBar on 3D card, using timer fallback: %s" % top_card.name)
-		get_tree().create_timer(card_info.合成时间).timeout.connect(
-			func(): _on_craft_completed(craft_key),
-			CONNECT_ONE_SHOT
-		)
+	progress_bar.progress_completed.connect(
+		func(): _on_craft_completed(craft_key),
+		CONNECT_ONE_SHOT
+	)
+	progress_bar.start(card_info.合成时间)
 	print("开始合成: ", card_info.name, " 需要 ", card_info.合成时间, " 秒")
+
+func _get_or_create_progress_bar(card: Node) -> CardProgressBar:
+	var progress_bar := card.get_node_or_null("%s/%s/%s" % [
+		CARD_PROGRESS_BAR_3D_NODE_NAME,
+		CARD_PROGRESS_VIEWPORT_NODE_NAME,
+		CARD_PROGRESS_BAR_NODE_NAME
+	]) as CardProgressBar
+	if progress_bar != null:
+		return progress_bar
+	
+	var progress_container := Node3D.new()
+	progress_container.name = CARD_PROGRESS_BAR_3D_NODE_NAME
+	progress_container.position = Vector3(0.0, 0.0, -1.95)
+	card.add_child(progress_container)
+	
+	var progress_viewport := SubViewport.new()
+	progress_viewport.name = CARD_PROGRESS_VIEWPORT_NODE_NAME
+	progress_viewport.disable_3d = true
+	progress_viewport.transparent_bg = true
+	progress_viewport.size = CARD_PROGRESS_VIEWPORT_SIZE
+	progress_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	progress_container.add_child(progress_viewport)
+	
+	progress_bar = CARD_PROGRESS_BAR_SCENE.instantiate() as CardProgressBar
+	if progress_bar == null:
+		return null
+	
+	progress_viewport.add_child(progress_bar)
+	progress_bar.name = CARD_PROGRESS_BAR_NODE_NAME
+	progress_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	progress_bar.position = Vector2(6.0, 4.0)
+	progress_bar.size = Vector2(252.0, 24.0)
+	
+	var progress_mesh := MeshInstance3D.new()
+	progress_mesh.name = CARD_PROGRESS_MESH_NODE_NAME
+	var quad_mesh := QuadMesh.new()
+	quad_mesh.size = Vector2(0.18, 0.027)
+	progress_mesh.mesh = quad_mesh
+	progress_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var material := StandardMaterial3D.new()
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	material.fixed_size = true
+	material.no_depth_test = true
+	material.render_priority = 127
+	material.albedo_texture = progress_viewport.get_texture()
+	progress_mesh.material_override = material
+	progress_container.add_child(progress_mesh)
+	
+	print("[CraftManager] attached 3D CardProgressBar above ground to card child: %s" % card.name)
+	return progress_bar
 
 ## 当卡组发生变化时取消合成
 func _cancel_crafting(craft_key: Object) -> void:
