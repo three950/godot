@@ -168,7 +168,6 @@ func update_drag_from_mouse(mouse_position: Vector2) -> void:
 	next_position.x = hit_position.x - drag_offset.x
 	next_position.z = hit_position.z - drag_offset.z
 	global_position = next_position
-	update_children_position()
 
 
 func end_drag() -> void:

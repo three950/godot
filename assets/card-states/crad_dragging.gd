@@ -24,8 +24,5 @@ func on_input(event: InputEvent) -> void:
 		
 		card.global_position = pos
 	
-	# 主动更新所有子卡牌的位置
-	card.update_children_position()
-	
 	if event.is_action_released("LMB") or event.is_action_pressed("LMB"):
 		transition_requested.emit(self, CardState.State.falling)

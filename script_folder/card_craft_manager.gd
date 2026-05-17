@@ -202,6 +202,7 @@ func _finish_crafting(cards_to_free: Array[Card3D], card_info: ThingsCard, top_c
 	if is_instance_valid(top_card):
 		spawn_position = top_card.global_position
 		spawn_parent = top_card.get_parent()
+		_detach_top_card_if_stacked(top_card)
 	
 	# 销毁所有相关卡片
 	for c in cards_to_free:
@@ -210,6 +211,22 @@ func _finish_crafting(cards_to_free: Array[Card3D], card_info: ThingsCard, top_c
 			c.queue_free()
 	# 生成新卡片
 	_spawn_crafted_card(card_info, spawn_position, spawn_parent)
+
+func _detach_top_card_if_stacked(top_card: Card3D) -> void:
+	if not is_instance_valid(top_card) or top_card.card_state_machine == null:
+		return
+	
+	var current_state := top_card.card_state_machine.current_state
+	if current_state == null:
+		return
+	
+	var is_in_stack_queue := current_state.state == Card3DState.State.instack \
+			or current_state.state == Card3DState.State.instackdragging
+	if not is_in_stack_queue:
+		return
+	
+	# 合成期间头卡可能被堆到其他卡上；销毁前先断开，避免目标卡留下 children_card 空引用。
+	top_card.detach_from_follow_target()
 
 func _spawn_crafted_card(card_info: CardInfo, spawn_position: Vector3, spawn_parent: Node) -> void:
 	print("[CraftManager] _spawn_crafted_card: %s at %s" % [card_info.name, spawn_position])
