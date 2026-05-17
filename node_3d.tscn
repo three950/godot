@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://cryummosf23jg" path="res://script_folder/camera_controller_3d.gd" id="2_cam"]
 [ext_resource type="AudioStream" uid="uid://b6c68bakgojm8" path="res://声音资产/Audio/ogg/Tracks/Forgotten Biomes.ogg" id="3_bgm"]
 [ext_resource type="PackedScene" uid="uid://bm4r8w10jcbid" path="res://presentation/ui_layer.tscn" id="3_ui"]
-[ext_resource type="PackedScene" uid="uid://bntgel7ybr1bb" path="res://card_3d_enabled.tscn" id="5_i5arm"]
+[ext_resource type="PackedScene" uid="uid://bntgel7ybr1bb" path="res://card_3d.tscn" id="5_i5arm"]
 [ext_resource type="Script" uid="uid://bf2o85td7sner" path="res://base_data/battle_stats.gd" id="6_battle"]
 [ext_resource type="Resource" uid="uid://bptle7yhbwdk8" path="res://assets/物品/装备/weapon/探窟稿.tres" id="6_jsnrv"]
 [ext_resource type="Resource" uid="uid://tk1nuwcbk0u2" path="res://assets/人物与敌人/Character/characters/娜娜奇.tres" id="7_nanachi"]

@@ -1,6 +1,6 @@
 extends Node
 
-const CARD_3D_SCENE_PATH: String = "res://card_3d_enabled.tscn"
+const CARD_3D_SCENE_PATH: String = "res://card_3d.tscn"
 const CRAFT_REVEAL_START_OFFSET: Vector3 = Vector3(-1.15, 0.08, -0.9)
 const CRAFT_REVEAL_PEAK_HEIGHT: float = 3.25
 
