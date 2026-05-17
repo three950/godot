@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://d8vp1m0epvxf"]
 
-[ext_resource type="Texture2D" uid="uid://duvau7fgx21p" path="res://presentation/background/空洞地表.png" id="1_6qfqf"]
+[ext_resource type="Texture2D" uid="uid://2wwc4nx8wke2" path="res://presentation/background/有人烟的地表.png" id="1_6qfqf"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_white_border"]
 draw_center = false
@@ -14,9 +14,33 @@ corner_radius_top_right = 64
 corner_radius_bottom_right = 64
 corner_radius_bottom_left = 64
 
+[sub_resource type="Shader" id="Shader_rounded_image_clip"]
+code = "shader_type canvas_item;
+
+uniform vec2 rect_size = vec2(3840.0, 2160.0);
+uniform float corner_radius = 64.0;
+
+void fragment() {
+	vec4 tex_color = COLOR;
+	vec2 pixel_position = UV * rect_size;
+	vec2 half_size = rect_size * 0.5;
+	vec2 corner_delta = abs(pixel_position - half_size) - (half_size - vec2(corner_radius));
+	float signed_distance = length(max(corner_delta, vec2(0.0))) + min(max(corner_delta.x, corner_delta.y), 0.0) - corner_radius;
+	float feather = max(fwidth(signed_distance), 1.0);
+	tex_color.a *= 1.0 - smoothstep(0.0, feather, signed_distance);
+	COLOR = tex_color;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rounded_image_clip"]
+shader = SubResource("Shader_rounded_image_clip")
+shader_parameter/rect_size = Vector2(3840, 2160)
+shader_parameter/corner_radius = 64.0
+
 [node name="backgroundUi" type="Node2D" unique_id=417959032]
 
 [node name="cardsArea" type="TextureRect" parent="." unique_id=1791356641 groups=["Cards"]]
+material = SubResource("ShaderMaterial_rounded_image_clip")
 offset_right = 3840.0
 offset_bottom = 2160.0
 mouse_filter = 2
