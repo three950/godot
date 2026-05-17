@@ -1,6 +1,6 @@
 extends Node
 
-const CARD_3D_SCENE_PATH: String = "res://card_3d.tscn"
+const CARD_3D_SCENE_UID: String = "uid://bntgel7ybr1bb"
 const CRAFT_REVEAL_START_OFFSET: Vector3 = Vector3(-1.15, 0.08, -0.9)
 const CRAFT_REVEAL_PEAK_HEIGHT: float = 3.25
 
@@ -80,9 +80,9 @@ static func spawn_revealed_card(card_info: CardInfo, spawn_position: Vector3, sp
 		push_error("CardThrowPhysicsTest: spawn_parent is null.")
 		return null
 
-	var card_3d_scene := load(CARD_3D_SCENE_PATH) as PackedScene
+	var card_3d_scene := load(CARD_3D_SCENE_UID) as PackedScene
 	if card_3d_scene == null:
-		push_error("CardThrowPhysicsTest: failed to load %s." % CARD_3D_SCENE_PATH)
+		push_error("CardThrowPhysicsTest: failed to load %s." % CARD_3D_SCENE_UID)
 		return null
 
 	var instance := card_3d_scene.instantiate() as Card3D
@@ -106,7 +106,6 @@ static func spawn_revealed_card(card_info: CardInfo, spawn_position: Vector3, sp
 	reveal.play_card_reveal()
 
 	return instance
-
 
 func _physics_process(delta: float) -> void:
 	if _card == null or _phase == Phase.IDLE or _phase == Phase.SETTLED:
@@ -139,7 +138,6 @@ func play_card_reveal() -> void:
 	_prepare_motion()
 	_set_card_transform(start_position, _back_basis)
 	_enter_phase(Phase.RISE_FLIP)
-	print("CardThrowPhysicsTest: start back-side-up reveal.")
 
 
 func _update_rise_flip() -> void:
@@ -176,7 +174,7 @@ func _update_fall() -> void:
 	if t >= 1.0:
 		_bounce_index = 0
 		_enter_phase(Phase.BOUNCE)
-		print("CardThrowPhysicsTest: landed front-side-up, starting %d bounces." % [_bounce_count])
+
 
 
 func _update_bounce() -> void:
@@ -194,7 +192,6 @@ func _update_bounce() -> void:
 	_set_card_transform(position, _front_basis)
 
 	if t >= 1.0:
-		print("CardThrowPhysicsTest: bounce %d finished." % [_bounce_index + 1])
 		_bounce_index += 1
 		if _bounce_index >= _bounce_count:
 			_enter_phase(Phase.SETTLED)
@@ -211,7 +208,6 @@ func _settle_card() -> void:
 	_reset_card_physics(true)
 	_set_card_interaction_enabled(true)
 	_phase = Phase.SETTLED
-	print("CardThrowPhysicsTest: settled front-side-up after %d bounces." % [_bounce_count])
 
 
 func _enter_phase(next_phase: Phase) -> void:
