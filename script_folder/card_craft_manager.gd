@@ -1,8 +1,8 @@
 class_name CraftManager
 extends Node
 
-const CARD_THROW_PHYSICS_SCRIPT: GDScript = preload("res://script_folder/card_throw_physics_test.gd")
-const CARD_PROGRESS_BAR_SCENE: PackedScene = preload("res://presentation/card_progress_bar.tscn")
+const CARD_THROW_PHYSICS_SCRIPT: GDScript = preload("uid://cu1myihpo87b")
+const CARD_PROGRESS_BAR_SCENE: PackedScene = preload("uid://m6rrjkc625gk")
 const CARD_PROGRESS_BAR_NODE_NAME := "CardProgressBar"
 const CARD_PROGRESS_BAR_3D_NODE_NAME := "CardProgressBar3D"
 const CARD_PROGRESS_VIEWPORT_NODE_NAME := "ProgressViewport"
@@ -11,7 +11,7 @@ const CARD_PROGRESS_VIEWPORT_SIZE := Vector2i(264, 32)
 
 @export var craft_pools: Array[CardInfo] = []
 var _recipe_map: Dictionary = {}
-# 正在合成的任务: { key: { "cards": Array[Card3D], "card_info": ThingsCard, "spawn_position": Vector3, "spawn_parent": Node, "progress_bar": CardProgressBar } }
+# 正在合成的任务: { key: { "cards": Array[Card3D], "card_info": ThingsCard, "top_card": Card3D, "progress_bar": CardProgressBar } }
 var _active_crafts: Dictionary = {}
 
 #检测解析所有合成配方，实时检测堆叠数组并识别是否可合成
@@ -67,19 +67,17 @@ func _get_array(card: Card3D) -> void:
 		print("配方匹配成功: ", result, " -> ", card_info.name)
 		
 		cards_to_free.append(card)
-		var spawn_position: Vector3 = top_card.global_position
-		
 		# 检查合成时间
 		if card_info.合成时间 > 0:
-			_start_crafting(top_card, cards_to_free, card_info, spawn_position)
+			_start_crafting(top_card, cards_to_free, card_info)
 		else:
 			print("[CraftManager] recipe matched but craft time is 0: %s" % card_info.name)
 	else:
 		print("[CraftManager] no recipe matched for: ", result)
 
 ## 开始合成：显示进度条并计时
-func _start_crafting(top_card: Card3D, cards_to_free: Array[Card3D], card_info: ThingsCard, spawn_position: Vector3) -> void:
-	print("[CraftManager] _start_crafting: top=%s result=%s position=%s" % [top_card.cardname, card_info.name, spawn_position])
+func _start_crafting(top_card: Card3D, cards_to_free: Array[Card3D], card_info: ThingsCard) -> void:
+	print("[CraftManager] _start_crafting: top=%s result=%s position=%s" % [top_card.cardname, card_info.name, top_card.global_position])
 	var progress_bar := _get_or_create_progress_bar(top_card)
 	if progress_bar == null:
 		push_error("[CraftManager] failed to create CardProgressBar for: %s" % top_card.name)
@@ -90,8 +88,7 @@ func _start_crafting(top_card: Card3D, cards_to_free: Array[Card3D], card_info: 
 	var craft_data := {
 		"cards": cards_to_free,
 		"card_info": card_info,
-		"spawn_position": spawn_position,
-		"spawn_parent": top_card.get_parent(),
+		"top_card": top_card,
 		"progress_bar": progress_bar
 	}
 	_active_crafts[craft_key] = craft_data
@@ -134,6 +131,7 @@ func _get_or_create_progress_bar(card: Node) -> CardProgressBar:
 	
 	progress_bar = CARD_PROGRESS_BAR_SCENE.instantiate() as CardProgressBar
 	if progress_bar == null:
+		progress_container.queue_free()
 		return null
 	
 	progress_viewport.add_child(progress_bar)
@@ -145,14 +143,13 @@ func _get_or_create_progress_bar(card: Node) -> CardProgressBar:
 	var progress_mesh := MeshInstance3D.new()
 	progress_mesh.name = CARD_PROGRESS_MESH_NODE_NAME
 	var quad_mesh := QuadMesh.new()
-	quad_mesh.size = Vector2(0.18, 0.027)
+	quad_mesh.size = Vector2(2.8, 0.38)
 	progress_mesh.mesh = quad_mesh
 	progress_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	var material := StandardMaterial3D.new()
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	material.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
-	material.fixed_size = true
 	material.no_depth_test = true
 	material.render_priority = 127
 	material.albedo_texture = progress_viewport.get_texture()
@@ -175,6 +172,15 @@ func _cancel_crafting(craft_key: Object) -> void:
 	var progress_bar := craft_data["progress_bar"] as CardProgressBar
 	if progress_bar != null:
 		progress_bar.stop()
+		_free_progress_bar_3d(progress_bar)
+
+func _free_progress_bar_3d(progress_bar: CardProgressBar) -> void:
+	var progress_viewport := progress_bar.get_parent()
+	if progress_viewport == null:
+		return
+	var progress_container := progress_viewport.get_parent()
+	if progress_container != null:
+		progress_container.queue_free()
 
 ## 合成进度完成回调
 func _on_craft_completed(craft_key: Object) -> void:
@@ -186,11 +192,17 @@ func _on_craft_completed(craft_key: Object) -> void:
 	print("[CraftManager] craft completed: ", craft_data["card_info"].name)
 	
 	_active_crafts.erase(craft_key)
-	_finish_crafting(craft_data["cards"], craft_data["card_info"], craft_data["spawn_position"], craft_data["spawn_parent"])
+	_finish_crafting(craft_data["cards"], craft_data["card_info"], craft_data["top_card"])
 
 ## 完成合成：销毁材料卡片，生成新卡片
-func _finish_crafting(cards_to_free: Array[Card3D], card_info: ThingsCard, spawn_position: Vector3, spawn_parent: Node) -> void:
+func _finish_crafting(cards_to_free: Array[Card3D], card_info: ThingsCard, top_card: Card3D) -> void:
 	print("[CraftManager] _finish_crafting: freeing %d cards, spawning %s" % [cards_to_free.size(), card_info.name])
+	var spawn_position := Vector3.ZERO
+	var spawn_parent: Node = self
+	if is_instance_valid(top_card):
+		spawn_position = top_card.global_position
+		spawn_parent = top_card.get_parent()
+	
 	# 销毁所有相关卡片
 	for c in cards_to_free:
 		if is_instance_valid(c):
