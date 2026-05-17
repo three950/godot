@@ -8,7 +8,18 @@
 [ext_resource type="StyleBox" uid="uid://bv510uix8lck3" path="res://assets/cardpanel.tres" id="6_3tu4f"]
 [ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://presentation/fonts/font.tres" id="7_xo5ip"]
 [ext_resource type="Texture2D" uid="uid://kkohhrkwmk7y" path="res://美术资产/character/娜娜奇完整版.png" id="16_3tu4f"]
-[ext_resource type="StyleBox" uid="uid://bvwjiyah8s1yh" path="res://assets/card_border.tres" id="17_border"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dxh0d"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xo5ip"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -77,7 +88,7 @@ layout_mode = 0
 offset_right = 264.0
 offset_bottom = 342.0
 mouse_filter = 2
-theme_override_styles/panel = ExtResource("17_border")
+theme_override_styles/panel = SubResource("StyleBoxFlat_dxh0d")
 
 [node name="OuterBorder2" type="Panel" parent="CardBorder" unique_id=1182773948]
 layout_mode = 0
