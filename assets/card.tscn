@@ -4,27 +4,16 @@
 [ext_resource type="Resource" uid="uid://cq6i5xpurm0al" path="res://base_data/Battle_stats.tres" id="2_agldc"]
 [ext_resource type="AudioStream" uid="uid://csqitlghauxgb" path="res://声音资产/useful/卡牌拿起放下/cardpick.wav" id="2_mqa0q"]
 [ext_resource type="AudioStream" uid="uid://cu1gnscbqcks2" path="res://声音资产/useful/卡牌拿起放下/cardfall.wav" id="3_agldc"]
-[ext_resource type="Script" uid="uid://b6yrrsooe1is3" path="res://assets/card_state_machine.gd" id="4_rjwbx"]
 [ext_resource type="StyleBox" uid="uid://b0256y5bp2byj" path="res://assets/card.tres" id="5_agldc"]
-[ext_resource type="Script" uid="uid://blwo6u4at8188" path="res://assets/card-states/card_fixed.gd" id="5_xi8kn"]
 [ext_resource type="StyleBox" uid="uid://bv510uix8lck3" path="res://assets/cardpanel.tres" id="6_3tu4f"]
-[ext_resource type="Script" uid="uid://d3wrnnerhh2i0" path="res://assets/card-states/card_pickingup.gd" id="6_e6854"]
-[ext_resource type="Script" uid="uid://dw2dcs08at733" path="res://assets/card-states/crad_dragging.gd" id="7_a3cqy"]
 [ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://presentation/fonts/font.tres" id="7_xo5ip"]
-[ext_resource type="Script" uid="uid://bgkton1xcycf" path="res://assets/card-states/card_falling.gd" id="8_ram0e"]
-[ext_resource type="Script" uid="uid://sxc0f1pavh3f" path="res://assets/card-states/card_instack.gd" id="9_kvflh"]
-[ext_resource type="Script" uid="uid://bwf2g3aljfb72" path="res://assets/card-states/card_instack_dragging.gd" id="10_a3cqy"]
-[ext_resource type="Script" uid="uid://c2rerytg2jn4" path="res://script_folder/card_overlap_pusher.gd" id="12_pusher"]
 [ext_resource type="Texture2D" uid="uid://kkohhrkwmk7y" path="res://美术资产/character/娜娜奇完整版.png" id="16_3tu4f"]
+[ext_resource type="StyleBox" uid="uid://bvwjiyah8s1yh" path="res://assets/card_border.tres" id="17_border"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_q5obu"]
-size = Vector2(264, 45)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_e484p"]
-size = Vector2(264, 294)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_pusher"]
-size = Vector2(264, 345)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xo5ip"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_bottom = 4
+border_color = Color(0, 0, 0, 1)
 
 [node name="Card" type="Control" unique_id=33495198 groups=["Cards"]]
 layout_mode = 3
@@ -36,62 +25,13 @@ battle = ExtResource("2_agldc")
 pickup_sound = ExtResource("2_mqa0q")
 fall_sound = ExtResource("3_agldc")
 
-[node name="CardLabel" type="Area2D" parent="." unique_id=195554578]
-position = Vector2(3, 3)
-collision_layer = 2
-collision_mask = 0
+[node name="CardColor" type="Control" parent="." unique_id=93157455]
+anchors_preset = 0
+offset_right = 264.0
+offset_bottom = 342.0
+mouse_filter = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CardLabel" unique_id=54803345]
-position = Vector2(129, 19.5)
-shape = SubResource("RectangleShape2D_q5obu")
-
-[node name="CardStackDetectorArea" type="Area2D" parent="." unique_id=1021535360]
-position = Vector2(3, 3)
-collision_mask = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CardStackDetectorArea" unique_id=603997390]
-position = Vector2(129, 192)
-shape = SubResource("RectangleShape2D_e484p")
-
-[node name="CardPushDetectorArea" type="Area2D" parent="." unique_id=1315464570]
-collision_layer = 16
-collision_mask = 16
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CardPushDetectorArea" unique_id=301992265]
-position = Vector2(132, 172.5)
-shape = SubResource("RectangleShape2D_pusher")
-
-[node name="CardOverlapPusher" type="Node" parent="." unique_id=1477353159]
-script = ExtResource("12_pusher")
-
-[node name="CardStateMachine" type="Node" parent="." unique_id=1272979021 node_paths=PackedStringArray("initial_state")]
-script = ExtResource("4_rjwbx")
-initial_state = NodePath("CardFixed")
-
-[node name="CardFixed" type="Node" parent="CardStateMachine" unique_id=1263188559]
-script = ExtResource("5_xi8kn")
-
-[node name="CardPickingup" type="Node" parent="CardStateMachine" unique_id=177027998]
-script = ExtResource("6_e6854")
-state = 1
-
-[node name="CradDragging" type="Node" parent="CardStateMachine" unique_id=905161906]
-script = ExtResource("7_a3cqy")
-state = 2
-
-[node name="CardFalling" type="Node" parent="CardStateMachine" unique_id=1997581314]
-script = ExtResource("8_ram0e")
-state = 3
-
-[node name="CardInstack" type="Node" parent="CardStateMachine" unique_id=1232293896]
-script = ExtResource("9_kvflh")
-state = 4
-
-[node name="CardInstackDragging" type="Node" parent="CardStateMachine" unique_id=1397542537]
-script = ExtResource("10_a3cqy")
-state = 5
-
-[node name="CardPanel" type="Panel" parent="." unique_id=1495404947]
+[node name="CardPanel" type="Panel" parent="CardColor" unique_id=1495404947]
 unique_name_in_owner = true
 layout_mode = 0
 offset_right = 264.0
@@ -99,7 +39,7 @@ offset_bottom = 342.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("5_agldc")
 
-[node name="Panel" type="Panel" parent="." unique_id=1642299539]
+[node name="Panel" type="Panel" parent="CardColor" unique_id=1642299539]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 6.0
@@ -109,7 +49,7 @@ offset_bottom = 56.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("6_3tu4f")
 
-[node name="Label" type="Label" parent="Panel" unique_id=748114393]
+[node name="Label" type="Label" parent="CardColor/Panel" unique_id=748114393]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 4
@@ -125,6 +65,27 @@ theme_override_fonts/font = ExtResource("7_xo5ip")
 theme_override_font_sizes/font_size = 30
 text = "莉可"
 
+[node name="CardBorder" type="Control" parent="." unique_id=700144272]
+z_index = 1
+anchors_preset = 0
+offset_right = 264.0
+offset_bottom = 342.0
+mouse_filter = 2
+
+[node name="OuterBorder" type="Panel" parent="CardBorder" unique_id=699599071]
+layout_mode = 0
+offset_right = 264.0
+offset_bottom = 342.0
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("17_border")
+
+[node name="OuterBorder2" type="Panel" parent="CardBorder" unique_id=1182773948]
+layout_mode = 0
+offset_right = 264.0
+offset_bottom = 57.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xo5ip")
+
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1571016305]
 unique_name_in_owner = true
 texture_filter = 1
@@ -138,9 +99,5 @@ texture = ExtResource("16_3tu4f")
 expand_mode = 1
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
-[connection signal="gui_input" from="." to="CardStateMachine/CardFixed" method="_on_card_gui_input"]
-[connection signal="gui_input" from="." to="CardStateMachine/CardFixed" method="_on_control_gui_input"]
-[connection signal="gui_input" from="." to="CardStateMachine/CardInstack" method="_on_cpntrol_gui_input"]
-[connection signal="gui_input" from="." to="CardStateMachine/CardInstack" method="_on_control_gui_input"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

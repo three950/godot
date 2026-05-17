@@ -7,26 +7,17 @@
 [ext_resource type="Script" uid="uid://cq4u5v6w7x80a" path="res://assets/人物与敌人/attribute_labels.gd" id="3_krhvb"]
 [ext_resource type="PackedScene" uid="uid://cmnkn73ocu7av" path="res://presentation/特效/attack.tscn" id="5_qolkw"]
 [ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://presentation/fonts/Xolonium-Regular.ttf" id="6_62c3k"]
+[ext_resource type="StyleBox" path="res://assets/card_border.tres" id="7_border"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_krhvb"]
 bg_color = Color(0.8831649, 0.3872493, 0.34170684, 1)
-border_width_left = 6
-border_width_top = 6
-border_width_right = 6
-border_width_bottom = 6
-border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
-shadow_color = Color(0.1584723, 0.15847233, 0.1584723, 0.6)
-shadow_size = 6
-shadow_offset = Vector2(6, 6)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hpx2h"]
 bg_color = Color(0.74368256, 0.27023113, 0.23480722, 1)
-border_width_bottom = 3
-border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_krhvb"]
 size = Vector2(263, 342)
@@ -47,14 +38,20 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_bbcg6")
 
-[node name="CardPanel" type="Panel" parent="."]
+[node name="cardColor" type="Control" parent="."]
+layout_mode = 0
+offset_right = 264.0
+offset_bottom = 342.0
+mouse_filter = 2
+
+[node name="CardPanel" type="Panel" parent="cardColor"]
 layout_mode = 0
 offset_right = 264.0
 offset_bottom = 342.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_krhvb")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="cardColor"]
 layout_mode = 0
 offset_left = 6.0
 offset_top = 6.0
@@ -63,7 +60,7 @@ offset_bottom = 48.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_hpx2h")
 
-[node name="Label" type="Label" parent="Panel"]
+[node name="Label" type="Label" parent="cardColor/Panel"]
 layout_mode = 0
 offset_right = 84.0
 offset_bottom = 14.0
@@ -71,6 +68,29 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("2_qolkw")
 theme_override_font_sizes/font_size = 30
 text = "莉可"
+
+[node name="CardBorder" type="Control" parent="."]
+layout_mode = 0
+offset_right = 264.0
+offset_bottom = 342.0
+mouse_filter = 2
+z_index = 1
+
+[node name="OuterBorder" type="Panel" parent="CardBorder"]
+layout_mode = 0
+offset_right = 264.0
+offset_bottom = 342.0
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("7_border")
+
+[node name="TitleBottomBorder" type="ColorRect" parent="CardBorder"]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 45.0
+offset_right = 258.0
+offset_bottom = 48.0
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0

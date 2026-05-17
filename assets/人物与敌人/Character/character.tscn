@@ -36,18 +36,6 @@ script = ExtResource("2_dm7l3")
 character = null
 battle = SubResource("Resource_7cwdw")
 
-[node name="SubViewport_AttributeLabels_RightStats#ATKLabel" parent="." index="0"]
-layout_mode = 0
-
-[node name="SubViewport_AttributeLabels_RightStats#DEFLabel" parent="." index="1"]
-layout_mode = 0
-
-[node name="SubViewport_AttributeLabels#HPLabel" parent="." index="2"]
-layout_mode = 0
-
-[node name="SubViewport_AttributeLabels#RightStats" parent="." index="3"]
-layout_mode = 0
-
 [node name="white" type="Panel" parent="." index="4" unique_id=1681073263]
 visible = false
 custom_minimum_size = Vector2(88, 115)
@@ -94,9 +82,6 @@ bag_sound = ExtResource("4_ig4cw")
 
 [node name="CollisionShape2D" parent="CardLabel" parent_id_path=PackedInt32Array(195554578) index="0" unique_id=54803345]
 position = Vector2(129, 20)
-
-[node name="SubViewport#AttributeLabels" parent="." index="9"]
-layout_mode = 0
 
 [node name="BattleStartArea" type="Area2D" parent="." index="10" unique_id=1801794464]
 visible = false

@@ -1,54 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://dnxa570k3cf"]
+[gd_scene format=3 uid="uid://dnxa570k3cf"]
 
 [ext_resource type="PackedScene" uid="uid://fopgb30s4q33" path="res://assets/物品/Things.tscn" id="1_7lfsj"]
 [ext_resource type="Script" uid="uid://cio4rq8r14xrn" path="res://assets/物品/道具/item.gd" id="2_ja4eb"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_ja4eb"]
-viewport_path = NodePath("SubViewport")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7lfsj"]
-bg_color = Color(0.28484476, 0.32436445, 0.38870683, 1)
-border_width_left = 6
-border_width_top = 6
-border_width_right = 6
-border_width_bottom = 6
-border_color = Color(0.18866554, 0.2546709, 0.33002728, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-shadow_color = Color(0.18000486, 0.18000486, 0.18000486, 0.6)
-shadow_size = 6
-shadow_offset = Vector2(6, 6)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ja4eb"]
-bg_color = Color(0.2966325, 0.38666517, 0.48959756, 1)
-border_width_bottom = 3
-border_color = Color(0.18866554, 0.2546709, 0.33002728, 1)
-
-[node name="Item" instance=ExtResource("1_7lfsj")]
+[node name="Item" unique_id=1222517551 instance=ExtResource("1_7lfsj")]
 script = ExtResource("2_ja4eb")
 item = null
 
-[node name="surface" parent="." index="1"]
-texture = SubResource("ViewportTexture_ja4eb")
-
-[node name="CardPanel" parent="SubViewport" index="0"]
-unique_name_in_owner = false
-theme_override_styles/panel = SubResource("StyleBoxFlat_7lfsj")
-
-[node name="Panel" parent="SubViewport" index="1"]
-unique_name_in_owner = false
-theme_override_styles/panel = SubResource("StyleBoxFlat_ja4eb")
-
-[node name="Label" parent="SubViewport/Panel" index="0"]
-unique_name_in_owner = false
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "道具"
-
-[node name="valueText" parent="SubViewport" index="2"]
-offset_left = 73.0
-offset_right = 145.0
-
-[node name="TextureRect" parent="SubViewport" index="4"]
+[node name="TextureRect" parent="." index="4" unique_id=1571016305]
 unique_name_in_owner = false

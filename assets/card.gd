@@ -23,7 +23,7 @@ var drag_offset: Vector2 = Vector2.ZERO  # 拖拽时鼠标相对于卡片的偏�
 @onready var card_state_machine:CardStateMachine=$CardStateMachine as CardStateMachine
 @onready var shooter: Shooter = get_node_or_null("Shooter") as Shooter
 # 通用UI元素引用 - 子类可以重写这些路径
-@onready var card_label: Label = get_node_or_null("Panel/Label") as Label
+@onready var card_label: Label = get_node_or_null("cardColor/Panel/Label") as Label
 @onready var card_texture: TextureRect = get_node_or_null("TextureRect") as TextureRect
 @onready var surface: TextureRect = get_node_or_null("surface") as TextureRect
 @onready var shadow: TextureRect = get_node_or_null("shadow") as TextureRect
@@ -141,7 +141,7 @@ func bestacked_on_me(children: Card) -> void:
 	print("一宿你")
 	# 当前卡牌作为“被堆叠的底卡”，不再需要参与新的堆叠检测，禁用检测区域
 	set_stack_detector_enabled(false)
-	var label_panel := get_node_or_null("Panel") as Control
+	var label_panel := get_node_or_null("cardColor/Panel") as Control
 	if label_panel:
 		size = label_panel.size
 	array_changed.emit()
@@ -152,7 +152,7 @@ func stop_stacking_on_me() -> void:
 	print("不要走")
 	# 不再被堆叠，重新允许其他卡堆到自己身上，恢复检测
 	set_stack_detector_enabled(true)
-	var card_panel := get_node_or_null("CardPanel") as Control
+	var card_panel := get_node_or_null("cardColor/CardPanel") as Control
 	if card_panel:
 		size=card_panel.size
 	array_changed.emit()
@@ -242,7 +242,7 @@ func update_children_position() -> void:
 		return
 	
 	# 更新直接子卡牌的位置Panel 在卡片内的相对位置 + 卡片的全局位置来计算
-	var label_node := get_node_or_null("Panel") as Control
+	var label_node := get_node_or_null("cardColor/Panel") as Control
 	if label_node:
 		var label_relative_y = label_node.position.y
 		var label_size = label_node.size

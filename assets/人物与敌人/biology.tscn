@@ -6,40 +6,7 @@
 
 [node name="BiologyCard" unique_id=763618913 instance=ExtResource("1_3c02q")]
 
-[node name="SubViewport_AttributeLabels_RightStats#ATKLabel" type="Label" parent="." index="0" unique_id=235588389]
-unique_name_in_owner = true
-layout_mode = 0
-theme_override_colors/font_color = Color(0.9, 0.6, 0.1, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 27
-text = "1"
-horizontal_alignment = 2
-
-[node name="SubViewport_AttributeLabels_RightStats#DEFLabel" type="Label" parent="." index="1" unique_id=1420225139]
-unique_name_in_owner = true
-layout_mode = 0
-theme_override_colors/font_color = Color(0.2, 0.5, 0.8, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 27
-text = "0"
-horizontal_alignment = 2
-
-[node name="SubViewport_AttributeLabels#HPLabel" type="Label" parent="." index="2" unique_id=161215820]
-unique_name_in_owner = true
-layout_mode = 0
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.8, 0.2, 0.2, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 27
-text = "10"
-vertical_alignment = 1
-
-[node name="SubViewport_AttributeLabels#RightStats" type="VBoxContainer" parent="." index="3" unique_id=1956390952]
-layout_mode = 0
-mouse_filter = 2
-theme_override_constants/separation = 0
-
-[node name="SubViewport#AttributeLabels" type="HBoxContainer" parent="." index="7" unique_id=1427162710]
+[node name="AttributeLabels" type="HBoxContainer" parent="." index="7" unique_id=1427162710]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 7.0
@@ -49,3 +16,36 @@ offset_bottom = 337.0
 mouse_filter = 2
 alignment = 1
 script = ExtResource("1_script")
+
+[node name="HPLabel" type="Label" parent="AttributeLabels" index="0" unique_id=161215820]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.8, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 27
+text = "10"
+vertical_alignment = 1
+
+[node name="RightStats" type="VBoxContainer" parent="AttributeLabels" index="1" unique_id=1956390952]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="ATKLabel" type="Label" parent="AttributeLabels/RightStats" index="0" unique_id=235588389]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.6, 0.1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 27
+text = "1"
+horizontal_alignment = 2
+
+[node name="DEFLabel" type="Label" parent="AttributeLabels/RightStats" index="1" unique_id=1420225139]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.5, 0.8, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 27
+text = "0"
+horizontal_alignment = 2

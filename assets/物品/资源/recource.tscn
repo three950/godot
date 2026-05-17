@@ -1,57 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://dtdlifuitpvq3"]
+[gd_scene format=3 uid="uid://dtdlifuitpvq3"]
 
 [ext_resource type="PackedScene" uid="uid://fopgb30s4q33" path="res://assets/物品/Things.tscn" id="1_ughbl"]
 [ext_resource type="Script" uid="uid://rw0hwskw7del" path="res://assets/物品/资源/recource.gd" id="2_5s73d"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_5s73d"]
-viewport_path = NodePath("SubViewport")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5s73d"]
-bg_color = Color(0.9078308, 0.62965226, 0.6109663, 1)
-border_width_left = 6
-border_width_top = 6
-border_width_right = 6
-border_width_bottom = 6
-border_color = Color(0.33682287, 0.138874, 0.12746808, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-shadow_color = Color(0.18000486, 0.18000486, 0.18000486, 0.6)
-shadow_size = 6
-shadow_offset = Vector2(6, 6)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wdw0p"]
-bg_color = Color(0.85329366, 0.50729734, 0.48764396, 1)
-border_width_bottom = 3
-border_color = Color(0.9490196, 0.78039217, 0.7607843, 1)
-
-[node name="Recource" instance=ExtResource("1_ughbl")]
+[node name="Recource" unique_id=1044869378 instance=ExtResource("1_ughbl")]
 script = ExtResource("2_5s73d")
 recource = null
 
-[node name="surface" parent="." index="1"]
-texture = SubResource("ViewportTexture_5s73d")
-
-[node name="CardLabel" parent="." index="2"]
-visible = false
-
-[node name="CardStackDetectorArea" parent="." index="3"]
-visible = false
-
-[node name="CardPanel" parent="SubViewport" index="0"]
-unique_name_in_owner = false
-theme_override_styles/panel = SubResource("StyleBoxFlat_5s73d")
-
-[node name="Panel" parent="SubViewport" index="1"]
-unique_name_in_owner = false
-theme_override_styles/panel = SubResource("StyleBoxFlat_wdw0p")
-
-[node name="Label" parent="SubViewport/Panel" index="0"]
-unique_name_in_owner = false
-text = "食物"
-
-[node name="FoodLabel" type="Label" parent="SubViewport/Panel" index="1"]
+[node name="FoodLabel" type="Label" parent="." index="1" unique_id=1080838522]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 230.0
@@ -62,5 +18,5 @@ theme_override_colors/font_color = Color(0.3990132, 0, 0.09163085, 1)
 theme_override_font_sizes/font_size = 24
 text = "2"
 
-[node name="TextureRect" parent="SubViewport" index="4"]
+[node name="TextureRect" parent="." index="5" unique_id=1571016305]
 unique_name_in_owner = false
