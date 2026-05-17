@@ -63,6 +63,7 @@ func _ready() -> void:
 	add_to_group("Cards3D")
 	_base_plane_y = global_position.y
 	card_2d = card_viewport.get_node_or_null("Card2D") as Control if card_viewport else null
+	_bind_viewport_texture_to_front_material()
 	if card_2d:
 		# Card2D 只负责显示卡面，不能依赖 2D 卡牌交互脚本。
 		card_2d_label = card_2d.get_node_or_null("CardColor/Panel/Label") as Label
@@ -85,6 +86,21 @@ func _ready() -> void:
 		stacking_on_you.connect(bestacked_on_me)
 	if not stop_stacking_on_you.is_connected(stop_stacking_on_me):
 		stop_stacking_on_you.connect(stop_stacking_on_me)
+
+
+func _bind_viewport_texture_to_front_material() -> void:
+	var front_mesh := front_face as MeshInstance3D
+	if front_mesh == null or card_viewport == null:
+		return
+
+	var material := front_mesh.material_override as StandardMaterial3D
+	if material == null:
+		return
+
+	# 每张 3D 卡牌都绑定自己的 SubViewport，避免 ViewportTexture 路径在实例化时失效。
+	var instance_material := material.duplicate() as StandardMaterial3D
+	instance_material.albedo_texture = card_viewport.get_texture()
+	front_mesh.material_override = instance_material
 
 
 func set_card_info(value: CardInfo) -> void:
