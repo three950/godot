@@ -1,3 +1,4 @@
+@tool
 class_name Card3D
 extends Node3D
 
@@ -60,20 +61,22 @@ var card_2d_texture: TextureRect = null
 
 
 func _ready() -> void:
-	add_to_group("Cards3D")
 	_base_plane_y = global_position.y
-	card_2d = card_viewport.get_node_or_null("Card2D") as Control if card_viewport else null
+	_cache_card_view_nodes()
 	_bind_viewport_texture_to_front_material()
-	if card_2d:
-		# Card2D 只负责显示卡面，不能依赖 2D 卡牌交互脚本。
-		card_2d_label = card_2d.get_node_or_null("CardColor/Panel/Label") as Label
-		card_2d_texture = card_2d.get_node_or_null("TextureRect") as TextureRect
 	_apply_card_info_to_view()
 
 	if front_face:
 		_front_face_original_position = front_face.position
 	if back_face:
 		_back_face_original_position = back_face.position
+
+	if Engine.is_editor_hint():
+		if card_viewport:
+			card_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+		return
+
+	add_to_group("Cards3D")
 
 	if card_state_machine:
 		card_state_machine.init(self)
@@ -103,9 +106,22 @@ func _bind_viewport_texture_to_front_material() -> void:
 	front_mesh.material_override = instance_material
 
 
+func _cache_card_view_nodes() -> void:
+	card_2d = card_viewport.get_node_or_null("Card2D") as Control if card_viewport else null
+	if card_2d == null:
+		card_2d_label = null
+		card_2d_texture = null
+		return
+
+	# Card2D 只负责显示卡面，不能依赖 2D 卡牌交互脚本。
+	card_2d_label = card_2d.get_node_or_null("CardColor/Panel/Label") as Label
+	card_2d_texture = card_2d.get_node_or_null("TextureRect") as TextureRect
+
+
 func set_card_info(value: CardInfo) -> void:
 	card_info = value
-	if is_node_ready():
+	if is_inside_tree():
+		_cache_card_view_nodes()
 		_apply_card_info_to_view()
 
 
@@ -127,6 +143,9 @@ func _apply_card_info_to_view() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if Engine.is_editor_hint():
+		return
+
 	if card_state_machine == null or card_state_machine.current_state == null:
 		return
 

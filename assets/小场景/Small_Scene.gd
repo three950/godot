@@ -1,4 +1,3 @@
-@tool
 extends Card
 class_name Small_Scene
 

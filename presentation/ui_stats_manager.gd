@@ -11,7 +11,6 @@ extends CanvasLayer
 @onready var pause_label: Label = $UIContainer/PauseOverlay/PauseLabel
 @export var bgm:AudioStream
 var elapsed_time: float = 0.0
-var _pause_tween: Tween
 
 func _ready() -> void:
 	game_stats.changed.connect(_update_stats)
@@ -62,17 +61,9 @@ func _on_timers_pause_changed(is_paused: bool) -> void:
 		_stop_pause_bounce()
 
 func _start_pause_bounce() -> void:
-	_stop_pause_bounce()
 	pause_label.pivot_offset = pause_label.size * 0.5
 	pause_label.scale = Vector2.ONE
-	_pause_tween = create_tween()
-	_pause_tween.set_loops()
-	_pause_tween.set_trans(Tween.TRANS_SINE)
-	_pause_tween.set_ease(Tween.EASE_IN_OUT)
 
 func _stop_pause_bounce() -> void:
-	if _pause_tween != null:
-		_pause_tween.kill()
-		_pause_tween = null
 	if is_node_ready():
 		pause_label.scale = Vector2.ONE
