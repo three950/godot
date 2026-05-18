@@ -1,5 +1,5 @@
 # 3D 原生多场战斗方案
-
+把res://presentation/battle_scene.tscn和res://script_folder/battle_manager.gd放入res://node_3d.tscn建立3d战斗。
 **Summary**
 - 将旧的单例式 `BattleManager` 重构为“战斗调度器”，它不再直接保存一场战斗的单位、容器和计时器，而是负责创建、登记、合并、移除多个 `BattleScene3D`。
 - 新增 `battle_scene_3d.tscn`，每个实例代表一场独立战斗，自己维护参战卡牌、战斗区域、攻击计时、卡牌摆放和结束清理。
