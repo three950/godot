@@ -68,9 +68,9 @@ BattleManager 是全局 3D 战斗调度器。它不直接处理攻击、HP、卡
   4. 战斗场景位置放在两张卡全局位置的中点，y 固定为 0。
   5. 加入 active_battle_scenes。
   6. 连接 BattleScene3D 的三个信号：
-     - card_entered_battle_area
-     - battle_area_touched
-     - battle_finished
+	 - card_entered_battle_area
+	 - battle_area_touched
+	 - battle_finished
   7. 连接 tree_exiting，确保战斗场景释放时从 active_battle_scenes 移除。
   8. 把两张卡加入战斗，先不逐张 relayout，最后统一 relayout_cards()。
   9. 调用 start_battle()。

@@ -251,7 +251,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.628418, 0, -8.000308)
 cardname = "化石树的树枝"
 card_info = ExtResource("15_ealrb")
 
-[node name="Card3d" parent="." unique_id=1785825953 instance=ExtResource("5_i5arm")]
+[node name="毒针线虫" parent="." unique_id=1785825953 instance=ExtResource("5_i5arm")]
 cardname = "毒针线虫"
 card_info = ExtResource("21_lggff")
 battle = SubResource("Resource_s0gvp")
