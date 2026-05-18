@@ -2,7 +2,7 @@ extends Card
 class_name Things
 
 # 通用UI元素引用 - Things 类额外的 value_label
-@onready var value_label: Label = $SubViewport/ValueLabel
+@onready var value_label: Label = %ValueLabel
 
 # 子类需要重写此方法，返回对应的 ThingsCard 资源
 func get_things_resource() -> ThingsCard:

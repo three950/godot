@@ -1,7 +1,7 @@
 extends Things
 class_name Equipment
 
-@onready var effect_label: Label = $SubViewport/EffectLabel
+@onready var effect_label: Label = %EffectLabel
 
 @export var equipment: EquipmentCard
 
