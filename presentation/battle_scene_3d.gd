@@ -420,7 +420,7 @@ func _get_release_parent() -> Node:
 	return tree.root
 
 
-func _remove_dead_unit(unit: Card3D) -> void:
+func _remove_dead_unit(unit) -> void:
 	if unit == null:
 		return
 	_remove_unit_timer(unit)
@@ -431,7 +431,7 @@ func _remove_dead_unit(unit: Card3D) -> void:
 	relayout_cards()
 
 
-func _remove_unit_timer(unit: Card3D) -> void:
+func _remove_unit_timer(unit) -> void:
 	if not unit_timers.has(unit):
 		return
 	var timer := unit_timers[unit] as Timer
@@ -480,17 +480,20 @@ func _has_both_sides() -> bool:
 	return _count_alive(characters) > 0 and _count_alive(enemies) > 0
 
 
-func _is_alive(card: Card3D) -> bool:
+func _is_alive(card) -> bool:
 	if card == null or not is_instance_valid(card):
 		return false
 	var resource := _get_battle_resource(card)
 	return resource != null and resource.HP > 0
 
 
-func _get_battle_resource(card: Card3D) -> BattleStates:
-	if card == null:
+func _get_battle_resource(card) -> BattleStates:
+	if card == null or not is_instance_valid(card):
 		return null
-	return card.card_info as BattleStates
+	var card_3d := card as Card3D
+	if card_3d == null:
+		return null
+	return card_3d.card_info as BattleStates
 
 
 func _now() -> float:

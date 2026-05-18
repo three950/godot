@@ -82,7 +82,7 @@ func _start_crafting(top_card: Card3D, cards_to_free: Array[Card3D], card_info: 
 	if progress_bar == null:
 		push_error("[CraftManager] failed to create CardProgressBar for: %s" % top_card.name)
 		return
-	var craft_key: Object = progress_bar
+	var craft_key := progress_bar.get_instance_id()
 
 	# 记录合成任务
 	var craft_data := {
@@ -96,7 +96,7 @@ func _start_crafting(top_card: Card3D, cards_to_free: Array[Card3D], card_info: 
 	# 为卡组中的每张卡片连接 array_changed 信号
 	for c in cards_to_free:
 		if is_instance_valid(c):
-			# 使用 lambda 捕获 craft_key
+			# 只捕获实例 id，避免进度条节点释放后 lambda 捕获悬空 Object。
 			var callback = func(): _cancel_crafting(craft_key)
 			c.array_changed.connect(callback, CONNECT_ONE_SHOT)
 	
@@ -160,7 +160,7 @@ func _get_or_create_progress_bar(card: Node) -> CardProgressBar:
 	return progress_bar
 
 ## 当卡组发生变化时取消合成
-func _cancel_crafting(craft_key: Object) -> void:
+func _cancel_crafting(craft_key: int) -> void:
 	if not _active_crafts.has(craft_key):
 		return
 	
@@ -170,7 +170,7 @@ func _cancel_crafting(craft_key: Object) -> void:
 	# 先从字典移除，再停止进度条
 	_active_crafts.erase(craft_key)
 	var progress_bar := craft_data["progress_bar"] as CardProgressBar
-	if progress_bar != null:
+	if progress_bar != null and is_instance_valid(progress_bar):
 		progress_bar.stop()
 		_free_progress_bar_3d(progress_bar)
 
@@ -183,7 +183,7 @@ func _free_progress_bar_3d(progress_bar: CardProgressBar) -> void:
 		progress_container.queue_free()
 
 ## 合成进度完成回调
-func _on_craft_completed(craft_key: Object) -> void:
+func _on_craft_completed(craft_key: int) -> void:
 	# 如果任务不存在（已被取消），直接返回
 	if not _active_crafts.has(craft_key):
 		return
