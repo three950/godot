@@ -49,10 +49,18 @@ func on_mouse_exited() -> void:
 		current_state.on_mouse_exited()
 
 
+func force_transition(to: Card3DState.State) -> void:
+	_transition_to(to)
+
+
 func _on_transition_requested(from: Card3DState, to: Card3DState.State) -> void:
 	if from != current_state:
 		return
 
+	_transition_to(to)
+
+
+func _transition_to(to: Card3DState.State) -> void:
 	var new_state := states.get(to) as Card3DState
 	if new_state == null:
 		return

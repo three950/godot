@@ -178,11 +178,11 @@ func _on_battle_area_area_entered(area: Area3D) -> void:
 	if _is_finishing:
 		return
 
-	if _card_guard.push_area_entry_if_non_battle_card(area):
-		return
-
 	var card := area.get_parent() as Card3D
 	if card != null:
+		if not _card_guard.is_battle_card(card):
+			_emit_cards_entered_battle_area(_card_guard.push_non_battle_card_from_area(card))
+			return
 		card_entered_battle_area.emit(self, card)
 		return
 
@@ -204,7 +204,17 @@ func _cleanup_non_battle_cards_in_area() -> void:
 	if _is_finishing or not is_inside_tree():
 		return
 
-	_card_guard.cleanup_non_battle_cards_in_area(self)
+	_emit_cards_entered_battle_area(_card_guard.cleanup_non_battle_cards_in_area(self))
+
+
+func _emit_cards_entered_battle_area(cards: Array[Card3D]) -> void:
+	for card in cards:
+		if card == null or not is_instance_valid(card):
+			continue
+		if not _card_guard.is_battle_card(card):
+			continue
+		if _card_guard.is_card_overlapping_battle_area(card):
+			card_entered_battle_area.emit(self, card)
 
 
 func _connect_global_timer_pause() -> void:

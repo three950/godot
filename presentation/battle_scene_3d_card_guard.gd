@@ -25,6 +25,7 @@ func lock_card_for_battle(card: Card3D, battle_scene: Node) -> void:
 	if card == null or not is_instance_valid(card):
 		return
 
+	_cancel_active_card_motion(card)
 	if not card.has_meta(PREV_CAN_STACK_META_KEY):
 		card.set_meta(PREV_CAN_STACK_META_KEY, card.can_stack)
 	if not card.has_meta(PREV_RAY_META_KEY):
@@ -43,6 +44,15 @@ func lock_card_for_battle(card: Card3D, battle_scene: Node) -> void:
 	card.set_meta(BATTLE_META_KEY, battle_scene)
 	if card.battle:
 		card.battle.current_state = BattleState.Phase.BATTLE
+
+
+func push_non_battle_card_from_area(card: Card3D) -> Array[Card3D]:
+	if card == null or is_battle_card(card):
+		return []
+
+	var detached_battle_cards := _detach_battle_cards_from_stack(card)
+	force_card_outside_battle_area(card)
+	return detached_battle_cards
 
 
 func restore_card_after_battle(card: Card3D) -> void:
@@ -69,22 +79,14 @@ func restore_card_after_battle(card: Card3D) -> void:
 		card.battle.current_state = BattleState.Phase.COMMON
 
 
-func push_area_entry_if_non_battle_card(area: Area3D) -> bool:
-	var card := area.get_parent() as Card3D
-	if card == null or is_battle_card(card):
-		return false
-
-	force_card_outside_battle_area(card)
-	return true
-
-
-func cleanup_non_battle_cards_in_area(tree_owner: Node) -> void:
+func cleanup_non_battle_cards_in_area(tree_owner: Node) -> Array[Card3D]:
+	var detached_battle_cards: Array[Card3D] = []
 	if tree_owner == null or not tree_owner.is_inside_tree():
-		return
+		return detached_battle_cards
 
 	var tree := tree_owner.get_tree()
 	if tree == null:
-		return
+		return detached_battle_cards
 
 	for node in tree.get_nodes_in_group("Cards3D"):
 		var card := node as Card3D
@@ -92,8 +94,12 @@ func cleanup_non_battle_cards_in_area(tree_owner: Node) -> void:
 			continue
 		if is_battle_card(card):
 			continue
-		if _is_card_overlapping_battle_area(card):
-			force_card_outside_battle_area(card)
+		if is_card_overlapping_battle_area(card):
+			for battle_card in push_non_battle_card_from_area(card):
+				if not detached_battle_cards.has(battle_card):
+					detached_battle_cards.append(battle_card)
+
+	return detached_battle_cards
 
 
 func release_survivor_card(card: Card3D, release_parent: Node) -> void:
@@ -144,7 +150,7 @@ func force_card_outside_battle_area(card: Card3D) -> void:
 	move_card.update_stack_chain_position()
 
 
-func _is_card_overlapping_battle_area(card: Card3D) -> bool:
+func is_card_overlapping_battle_area(card: Card3D) -> bool:
 	if card == null or _battle_area_shape == null:
 		return false
 
@@ -161,3 +167,40 @@ func _is_card_overlapping_battle_area(card: Card3D) -> bool:
 
 func _signed_distance(value: float, distance: float) -> float:
 	return -distance if value < 0.0 else distance
+
+
+func _cancel_active_card_motion(card: Card3D) -> void:
+	card.end_drag()
+	if card.card_state_machine == null or card.card_state_machine.current_state == null:
+		return
+
+	var state := card.card_state_machine.current_state.state
+	if state == Card3DState.State.pickingup \
+			or state == Card3DState.State.dragging \
+			or state == Card3DState.State.instack \
+			or state == Card3DState.State.instackdragging:
+		# 战斗接管卡牌时必须退出拖拽态，否则鼠标移动仍会改 global_position。
+		card.card_state_machine.force_transition(Card3DState.State.fixed)
+
+
+func _detach_battle_cards_from_stack(card: Card3D) -> Array[Card3D]:
+	var battle_cards: Array[Card3D] = []
+	if card == null or not is_instance_valid(card):
+		return battle_cards
+
+	var current := card.get_stack_head()
+	while current != null and is_instance_valid(current):
+		var next := current.children_card
+		if is_battle_card(current):
+			battle_cards.append(current)
+		current = next
+
+	for battle_card in battle_cards:
+		# 先拆出混合堆里的战斗卡，避免推出非战斗卡时把战斗单位一起带走。
+		if battle_card.follow_target != null:
+			battle_card.detach_from_follow_target()
+		if battle_card.children_card != null:
+			battle_card.children_card.detach_from_follow_target()
+		_cancel_active_card_motion(battle_card)
+
+	return battle_cards
