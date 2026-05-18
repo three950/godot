@@ -1,0 +1,390 @@
+3D 战斗脚本功能总结
+====================
+
+本文档总结当前两个核心脚本的全部功能和运行逻辑：
+- res://script_folder/battle_manager.gd
+- res://presentation/battle_scene_3d.gd
+
+
+一、script_folder/battle_manager.gd
+-----------------------------------
+
+定位：
+BattleManager 是全局 3D 战斗调度器。它不直接处理攻击、HP、卡牌站位或动画，只负责监听 Card3D 之间的接触、创建 BattleScene3D、登记活跃战斗、处理战斗合并，以及在战斗结束时移除记录。
+
+关键常量和字段：
+- BATTLE_SCENE_3D：预加载 res://presentation/battle_scene_3d.tscn，用于创建单场 3D 战斗。
+- BATTLE_META_KEY：字符串 battle_scene_3d，用于从 Card3D 的 metadata 中读取它当前所属的 BattleScene3D。
+- active_battle_scenes：当前所有活跃 BattleScene3D。
+- _connected_cards：已连接接触信号的 Card3D 字典，避免重复连接。
+- _next_creation_index：BattleScene3D 创建顺序编号，用于合并时的人数相同判定。
+- _active_merge_keys：正在处理的战斗合并 key，避免同一对战斗重复触发合并。
+
+初始化流程：
+1. _ready() 连接 SceneTree.node_added，用于捕获运行时新增的 Card3D。
+2. _ready() 延迟调用 _connect_existing_cards()，扫描当前场景中所有 Cards3D group 的节点。
+3. 每张 Card3D 都会通过 _connect_card() 连接 card_label_entered_stack_area 信号。
+
+卡牌信号连接：
+- _connect_existing_cards()：
+  扫描 get_tree().get_nodes_in_group("Cards3D")，把所有 Card3D 交给 _connect_card()。
+- _on_node_added(node)：
+  当新节点进入场景树时，如果是 Card3D，等待它 ready 后连接信号。
+- _connect_card(card)：
+  防重后连接 card.card_label_entered_stack_area。
+  连接时用 bind(card)，让回调同时拿到 entering_card 和 target_card。
+  card 退出树时，从 _connected_cards 中移除。
+
+卡牌接触处理：
+- _on_card_contact(entering_card, target_card) 是战斗创建和加入的入口。
+- 它会先过滤：
+  - 空对象。
+  - 已失效对象。
+  - 自己碰自己。
+  - card_info 不是 CharacterCard 或 EnemyCard 的普通卡。
+- 然后读取两张卡当前所属战斗：
+  - entering_scene = _get_card_battle_scene(entering_card)
+  - target_scene = _get_card_battle_scene(target_card)
+
+接触后的分支：
+1. 两张卡都已在战斗中：
+   - 如果属于不同 BattleScene3D，则请求合并。
+   - 如果属于同一 BattleScene3D，忽略。
+2. entering_card 已在战斗中，target_card 不在：
+   - 把 target_card 加入 entering_scene。
+   - 调用 start_battle()。
+3. target_card 已在战斗中，entering_card 不在：
+   - 把 entering_card 加入 target_scene。
+   - 调用 start_battle()。
+4. 两张卡都不在战斗中：
+   - 如果一方是 CharacterCard，另一方是 EnemyCard，则创建新 BattleScene3D。
+   - 同阵营或非战斗卡不会创建战斗。
+
+创建战斗：
+- _create_battle_scene(first_card, second_card)
+  1. 实例化 BATTLE_SCENE_3D。
+  2. 写入 creation_index，并递增 _next_creation_index。
+  3. 把 BattleScene3D 加到 BattleManager 的父节点下。
+  4. 战斗场景位置放在两张卡全局位置的中点，y 固定为 0。
+  5. 加入 active_battle_scenes。
+  6. 连接 BattleScene3D 的三个信号：
+     - card_entered_battle_area
+     - battle_area_touched
+     - battle_finished
+  7. 连接 tree_exiting，确保战斗场景释放时从 active_battle_scenes 移除。
+  8. 把两张卡加入战斗，先不逐张 relayout，最后统一 relayout_cards()。
+  9. 调用 start_battle()。
+
+战斗区域接触：
+- _on_battle_card_entered(battle_scene, card)
+  处理卡牌进入某个 BattleScene3D 的 BattleArea。
+  如果卡已经属于该战斗，忽略。
+  如果卡属于其他战斗，请求两个战斗合并。
+  如果卡不属于任何战斗，则加入该战斗并尝试 start_battle()。
+
+- _on_battle_area_touched(battle_scene, other_scene)
+  处理两个 BattleScene3D 的 BattleArea 接触，直接请求合并。
+
+合并请求：
+- _request_merge(first_scene, second_scene)
+  1. 过滤空对象、相同对象、失效对象。
+  2. 确认两者都在 active_battle_scenes。
+  3. 生成稳定 merge_key。
+  4. 如果同一 merge_key 已在处理中，忽略。
+  5. 标记处理中，并 call_deferred("_merge_battle_scenes", ...)。
+
+合并执行：
+- _merge_battle_scenes(first_scene, second_scene, merge_key)
+  1. 再次确认两个场景有效。
+  2. 用 _choose_merge_keeper() 选出保留方 keeper。
+  3. 另一个场景作为 merged。
+  4. 根据 merged.global_position.x 是否小于 keeper.global_position.x 决定插入左侧还是右侧。
+  5. await merged.extract_cards_for_merge()，等待被合并方动画结束、停止计时器并取出卡牌和下一次攻击时间。
+  6. 把每张迁移卡加入 keeper，并传入保留的 next_attack_time。
+  7. keeper.relayout_cards() 统一重排和更新场景宽度。
+  8. keeper.start_battle() 确保合并后继续战斗。
+  9. 从 active_battle_scenes 移除 merged。
+  10. merged.shutdown_after_merge() 释放被合并方。
+  11. 清除 _active_merge_keys 中的 merge_key。
+
+保留方选择：
+- _choose_merge_keeper(first_scene, second_scene)
+  1. 单位总数多的一方保留。
+  2. 人数相同，creation_index 更小的一方保留，也就是更早创建的一方保留。
+
+辅助函数：
+- _on_battle_finished(battle_scene)：战斗结束后从 active_battle_scenes 移除。
+- _get_card_battle_scene(card)：从 Card3D metadata 中读取所属 BattleScene3D；如果引用失效则清理 metadata。
+- _get_merge_key(first_scene, second_scene)：按 instance_id 排序生成稳定字符串 key。
+- _is_battle_card(card)：判断 card.card_info 是否为 CharacterCard 或 EnemyCard。
+- _are_opponents(first_card, second_card)：判断两张卡是否为角色阵营和敌人阵营的对立组合。
+
+
+二、presentation/battle_scene_3d.gd
+----------------------------------
+
+定位：
+BattleScene3D 表示一场独立的 3D 战斗。它自己维护参战角色卡、敌人卡、攻击计时器、下一次攻击时间、战斗区域、动态可视底面和边框、卡牌锁定/恢复、攻击表现、单位死亡、战斗结束和合并迁出。
+
+信号：
+- card_entered_battle_area(battle_scene, card)
+  BattleArea 检测到 Card3D 进入时发出，交给 BattleManager 决定加入或合并。
+- battle_area_touched(battle_scene, other_scene)
+  BattleArea 检测到另一个 BattleScene3D 时发出，交给 BattleManager 合并。
+- battle_finished(battle_scene)
+  本场战斗结束并开始释放时发出，BattleManager 用它移除活跃记录。
+
+关键常量：
+- BASE_ATTACK_INTERVAL = 2.0
+- MIN_ATTACK_INTERVAL = 0.3
+- BATTLE_META_KEY = battle_scene_3d
+- PREV_CAN_STACK_META_KEY / PREV_RAY_META_KEY / PREV_STACK_MONITORING_META_KEY / PREV_STACK_MONITORABLE_META_KEY：
+  用于保存卡牌进入战斗前的普通交互状态，退出战斗时恢复。
+
+导出参数：
+- creation_index：创建顺序，由 BattleManager 写入，用于合并保留规则。
+- card_spacing：同阵营横向排列间距。
+- character_row_z：角色阵营所在 z 行。
+- enemy_row_z：敌人阵营所在 z 行。
+- card_move_duration：重排卡牌时 tween 移动时间。
+- min_visual_size：战斗场景可视底面最小尺寸。
+- visual_padding：可视区域相对卡牌内容的内边距。
+- detection_padding：BattleArea 相对可视区域额外扩大的检测边距。
+- border_thickness：边框厚度。
+- border_height：边框高度。
+
+节点引用：
+- BattleArea：Area3D，负责检测卡牌和其他战斗区域。
+- BattleArea/CollisionShape3D：检测盒，会根据战斗尺寸动态改 BoxShape3D.size。
+- Visual/Fill：半透明底面 MeshInstance3D，会动态修改 PlaneMesh.size。
+- Visual/TopBorder、BottomBorder、LeftBorder、RightBorder：四条边框 MeshInstance3D，会动态修改 BoxMesh.size 和位置。
+- Effects：攻击特效挂点，用于子弹 MeshInstance3D。
+
+运行状态：
+- characters：本场战斗的角色阵营 Card3D 数组。
+- enemies：本场战斗的敌人阵营 Card3D 数组。
+- unit_timers：每个单位当前攻击 Timer。
+- next_attack_times：每个单位下一次攻击的绝对时间。
+- is_battle_active：本场战斗是否已开始。
+- _running_tweens：当前还在运行的动画 tween，用于合并和结束时等待。
+- _is_finishing：本场战斗是否正在结束或被合并，避免重复处理。
+
+初始化：
+- _ready()
+  1. 加入 BattleScenes3D group。
+  2. 调用 _make_visual_resources_unique()，复制 mesh 和 shape，避免多个实例共享尺寸资源。
+  3. 调用 update_scene_bounds()，初始化底面、边框和检测盒尺寸。
+  4. 连接 BattleArea.area_entered 到 _on_battle_area_area_entered()。
+
+加入卡牌：
+- add_card(card, insert_left=false, next_attack_time=-1.0, relayout=true)
+  1. 过滤空对象、失效对象、正在结束的战斗、非战斗卡、已在本战斗的卡。
+  2. 调用 _lock_card_for_battle(card)，锁定卡牌普通交互并写入所属战斗 metadata。
+  3. 如果卡不在本节点下，reparent 到本 BattleScene3D，保持全局位置。
+  4. 按 card.card_info 类型加入 characters 或 enemies。
+  5. insert_left 为 true 时插入阵营数组左侧，否则插入右侧。
+  6. relayout 为 true 时调用 relayout_cards()；否则只 update_scene_bounds()。
+  7. 如果战斗已开始，为新单位创建计时器，并可传入保留的 next_attack_time。
+  8. 如果战斗未开始但双方都有单位，则 start_battle()。
+
+开始战斗：
+- start_battle()
+  只在未开始、双方都有存活单位、且不是 finishing 时生效。
+  设置 is_battle_active = true，并为所有卡牌创建攻击 Timer。
+
+获取单位：
+- get_all_cards()
+  返回 characters + enemies 的新数组。
+- get_unit_count()
+  返回双方总单位数，用于合并保留规则。
+
+合并迁出：
+- extract_cards_for_merge()
+  1. 设置 _is_finishing = true，is_battle_active = false。
+  2. await wait_for_animations()，等待本场所有 tween 结束。
+  3. 遍历 characters 和 enemies，记录每张卡和它的 next_attack_time。
+  4. 停止所有 Timer。
+  5. 清空 characters 和 enemies。
+  6. 返回迁移数据数组，交给 BattleManager 加入保留方。
+
+重排和动态尺寸：
+- relayout_cards()
+  1. update_scene_bounds() 更新可视底面、边框和 BattleArea。
+  2. _layout_side(characters, character_row_z) 排角色阵营。
+  3. _layout_side(enemies, enemy_row_z) 排敌人阵营。
+
+- update_scene_bounds()
+  1. _calculate_visual_size() 按当前两边最大人数和 Card3D.face_size 计算可视区域大小。
+  2. _update_visual_size() 修改 Fill PlaneMesh 和四条边框 BoxMesh。
+  3. _update_detection_size() 把 BattleArea BoxShape3D 扩大到可视尺寸 + detection_padding * 2。
+
+- _layout_side(cards, row_z)
+  按阵营数组顺序横向排列卡牌。
+  计算居中的 start_x，然后给每张卡创建 tween 移动到目标 global_position。
+
+动画跟踪：
+- _track_tween(tween)
+  把 tween 加入 _running_tweens，并在 tween.finished 后自动移除。
+- wait_for_animations()
+  循环等待 _running_tweens 中所有还在运行的 tween。
+
+BattleArea 检测：
+- _on_battle_area_area_entered(area)
+  1. 如果战斗正在 finishing，忽略。
+  2. 如果 area.get_parent() 是 Card3D，发出 card_entered_battle_area。
+  3. 如果 area.get_parent() 是其他 BattleScene3D，发出 battle_area_touched。
+
+卡牌进入战斗时的锁定：
+- _lock_card_for_battle(card)
+  1. 保存 can_stack、ray_interaction_enabled、stack_detector.monitoring、stack_detector.monitorable。
+  2. detach_from_follow_target()，脱离堆叠父卡。
+  3. reset_offset()，清除 hover/pickup 偏移。
+  4. can_stack = false。
+  5. ray_interaction_enabled = false。
+  6. set_stack_detector_enabled(false)。
+  7. set_meta(BATTLE_META_KEY, self)，记录所属战斗。
+  8. 如果 card.battle 存在，把 current_state 标为 BattleState.Phase.BATTLE。
+
+卡牌退出战斗时的恢复：
+- _restore_card_after_battle(card)
+  1. 从 metadata 恢复 can_stack。
+  2. 从 metadata 恢复 ray_interaction_enabled。
+  3. 从 metadata 恢复 stack_detector.monitoring/monitorable。
+  4. 移除 BATTLE_META_KEY。
+  5. 如果 card.battle 存在，把 current_state 标为 BattleState.Phase.COMMON。
+
+攻击计时：
+- _create_timer_for_unit(unit, preserved_next_attack_time=-1.0)
+  1. 过滤空对象、失效对象、已有 Timer、无资源、HP <= 0。
+  2. 用 speed 计算攻击间隔。
+  3. 如果传入 preserved_next_attack_time，则用它计算剩余等待时间；否则等待完整攻击间隔。
+  4. Timer 是 one_shot。
+  5. timeout 连接 _on_unit_attack(unit)。
+  6. 写入 unit_timers 和 next_attack_times。
+
+- _on_unit_attack(attacker)
+  1. 先移除当前 Timer。
+  2. 如果战斗已停、正在 finishing、攻击者无效或死亡，则清理并检查战斗结束。
+  3. 获取目标；没有目标就检查战斗结束。
+  4. await _perform_attack(attacker, target)。
+  5. 攻击后检查战斗结束。
+  6. 如果攻击者仍存活且战斗仍活跃，则按 speed 计算下一次绝对攻击时间并创建新 Timer。
+
+目标选择和攻击：
+- _get_attack_target(attacker)
+  如果攻击者是 CharacterCard，目标阵营是 enemies；否则目标阵营是 characters。
+  返回目标阵营中第一个存活单位。
+
+- _perform_attack(attacker, target)
+  1. 读取 attacker BattleStates。
+  2. damage = attacker_resource.ATK。
+  3. 播放 _play_projectile()。
+  4. 再次确认目标有效。
+  5. target_resource.take_damage(damage)。
+  6. 播放 _play_hit_effect()。
+  7. 如果目标 HP <= 0，调用 _remove_dead_unit(target)。
+
+攻击表现：
+- _play_projectile(from_position, to_position)
+  运行时创建一个 SphereMesh 的 MeshInstance3D 作为子弹。
+  子弹挂到 Effects。
+  用 tween 从攻击者位置飞到目标位置。
+  tween 完成后 queue_free 子弹。
+
+- _play_hit_effect(target)
+  对目标 Card3D global_position 做短暂抖动，然后回到原位。
+
+战斗结束：
+- _check_battle_end()
+  如果角色或敌人任一方存活数为 0，则 _finish_battle()。
+
+- _finish_battle()
+  1. 设置 _is_finishing = true，is_battle_active = false。
+  2. 停止所有 Timer。
+  3. 等待所有 tween。
+  4. 存活卡牌恢复普通交互，并 reparent 回 BattleScene3D 的父节点，保持全局位置。
+  5. 死亡卡牌 queue_free。
+  6. 清空 characters 和 enemies。
+  7. 发出 battle_finished。
+  8. queue_free 本 BattleScene3D。
+
+单位死亡：
+- _remove_dead_unit(unit)
+  1. 移除该单位 Timer。
+  2. 从 characters 和 enemies 中删除。
+  3. queue_free 卡牌。
+  4. relayout_cards()，让战斗场景自动缩窄并重排剩余单位。
+
+Timer 清理：
+- _remove_unit_timer(unit)
+  停止并释放单个 Timer，同时从 unit_timers 和 next_attack_times 移除。
+- _clear_all_timers()
+  停止并释放所有 Timer，清空两个字典。
+
+战斗数值辅助：
+- _get_preserved_attack_time(unit)
+  优先返回 next_attack_times 中记录的绝对时间；没有记录则用当前时间 + speed 对应攻击间隔。
+- _calculate_attack_interval(speed)
+  BASE_ATTACK_INTERVAL - speed / 50.0，并限制不低于 MIN_ATTACK_INTERVAL。
+- _count_alive(cards)
+  统计数组中 HP > 0 的单位。
+- _has_both_sides()
+  characters 和 enemies 都至少有一个存活单位。
+- _is_alive(card)
+  判断 card 有效、资源存在且 HP > 0。
+- _is_battle_card(card)
+  判断 card_info 是 CharacterCard 或 EnemyCard。
+- _get_battle_resource(card)
+  返回 card.card_info as BattleStates。
+- _now()
+  返回 Time.get_ticks_msec() / 1000.0，用作绝对时间。
+
+可视尺寸辅助：
+- _make_visual_resources_unique()
+  复制 Fill、四条边框和 BattleArea shape 的资源，避免多个 BattleScene3D 实例共享同一个 mesh/shape 导致尺寸互相影响。
+- _calculate_visual_size()
+  以双方较多的一边为宽度依据：
+  content_width = card_width + (max_side_count - 1) * card_spacing。
+  content_height = abs(character_row_z - enemy_row_z) + card_height。
+  最终尺寸不小于 min_visual_size，并加 visual_padding。
+- _get_card_face_size()
+  从当前任意参战 Card3D 读取 face_size；没有卡时默认 Vector2(2.64, 3.45)。
+- _update_visual_size(size)
+  更新 Fill PlaneMesh.size。
+  更新上下边框宽度和左右边框高度。
+  根据 size 的半宽半高重新放置四条边框。
+- _update_detection_size(size)
+  更新 BattleArea 的 BoxShape3D.size，y 固定为 0.8，x/z 使用传入尺寸。
+
+
+三、整体运行链路
+----------------
+
+1. node_3d.tscn 启动，BattleManager ready。
+2. BattleManager 连接所有已有和新增 Card3D 的 card_label_entered_stack_area。
+3. 两张战斗卡接触：
+   - 如果一张 CharacterCard 和一张 EnemyCard 都不在战斗中，创建 BattleScene3D。
+   - 如果一张卡已在战斗中，另一张卡加入现有 BattleScene3D。
+   - 如果两张卡属于不同 BattleScene3D，请求合并。
+4. BattleScene3D 接管参战卡牌：
+   - reparent 卡牌。
+   - 锁定拖拽、堆叠和射线交互。
+   - 按阵营放入 characters 或 enemies。
+   - 更新可视底面、边框、检测区域和站位。
+5. 双方都有单位后开始战斗：
+   - 每个单位有独立 one_shot Timer。
+   - Timer 到时攻击对方阵营第一个存活单位。
+   - 攻击后按 speed 创建下一轮 Timer。
+6. 新卡进入 BattleArea：
+   - 未参战则加入本 BattleScene3D。
+   - 已属于其他 BattleScene3D 则触发合并。
+7. 两个 BattleArea 接触：
+   - BattleManager 选择保留方。
+   - 被合并方等待动画结束，迁出所有卡牌和 next_attack_time。
+   - 保留方接收卡牌并继续战斗。
+8. 一方全部死亡：
+   - BattleScene3D 停止 Timer。
+   - 等待动画结束。
+   - 存活卡牌恢复普通状态并放回父节点。
+   - 死亡卡牌释放。
+   - BattleScene3D 发出 battle_finished 并释放自己。
