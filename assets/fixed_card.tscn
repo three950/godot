@@ -12,9 +12,6 @@ script/source = "extends \"res://assets/card.gd\"
 #放不能移动的卡片的简化逻辑脚本
 "
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_e484p"]
-size = Vector2(264, 319)
-
 [node name="fixedCard" type="Control" groups=["Cards"]]
 layout_mode = 3
 anchors_preset = 0
@@ -89,19 +86,7 @@ mouse_filter = 2
 texture = ExtResource("3_p0bds")
 expand_mode = 1
 
-[node name="CardStackDetectorArea" type="Area2D" parent="."]
-position = Vector2(3, 3)
-collision_mask = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CardStackDetectorArea"]
-position = Vector2(129, 178.5)
-shape = SubResource("RectangleShape2D_e484p")
-
 [node name="Shooter" type="Node" parent="." node_paths=PackedStringArray("card")]
 script = ExtResource("4_shooter")
 card = NodePath("..")
 metadata/_custom_type_script = "uid://cvwtip1ly5e7f"
-
-[connection signal="gui_input" from="." to="." method="_on_gui_input"]
-[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
-[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

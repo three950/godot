@@ -14,6 +14,3 @@ text = "探窟者协会"
 
 [node name="TextureRect" parent="." index="2"]
 texture = ExtResource("3_le5xf")
-
-[connection signal="area_entered" from="CardStackDetectorArea" to="." method="_on_card_stack_detector_area_area_entered"]
-[connection signal="area_exited" from="CardStackDetectorArea" to="." method="_on_card_stack_detector_area_area_exited"]

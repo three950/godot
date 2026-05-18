@@ -80,9 +80,6 @@ clip_text = true
 script = ExtResource("3_dm7l3")
 bag_sound = ExtResource("4_ig4cw")
 
-[node name="CollisionShape2D" parent="CardLabel" parent_id_path=PackedInt32Array(195554578) index="0" unique_id=54803345]
-position = Vector2(129, 20)
-
 [node name="BattleStartArea" type="Area2D" parent="." index="10" unique_id=1801794464]
 visible = false
 position = Vector2(3, 3)
@@ -92,8 +89,5 @@ collision_mask = 8
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BattleStartArea" index="0" unique_id=401418083]
 position = Vector2(129, 167.5)
 shape = SubResource("RectangleShape2D_ig4cw")
-
-[node name="CradDragging" parent="CardStateMachine" parent_id_path=PackedInt32Array(1272979021) index="2" unique_id=905161906]
-type = null
 
 [connection signal="area_entered" from="BattleStartArea" to="." method="_on_battle_start_area_area_entered"]

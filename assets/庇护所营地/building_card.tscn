@@ -5,8 +5,6 @@
 
 [node name="BuildingCard" unique_id=370388772 instance=ExtResource("1_3q2x2")]
 script = ExtResource("2_224m6")
-card_type = 2
-follow_target = NodePath("Control/ColorRect/Label")
 
 [node name="CapacityLabel" type="Label" parent="." index="3" unique_id=691709592]
 layout_mode = 0

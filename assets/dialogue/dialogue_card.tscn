@@ -3,13 +3,12 @@
 [ext_resource type="Script" uid="uid://b7kyam2n3p5qw" path="res://assets/dialogue/dialogue_card.gd" id="1_dialogue"]
 [ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://presentation/fonts/Xolonium-Regular.ttf" id="2_font"]
 
-[node name="DialogueCard" type="Control" node_paths=PackedStringArray("follow_target") groups=["Cards"]]
+[node name="DialogueCard" type="Control" groups=["Cards"]]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 88.0
 offset_bottom = 115.0
 script = ExtResource("1_dialogue")
-follow_target = NodePath("Control/ColorRect/Label")
 
 [node name="Control" type="Control" parent="."]
 anchors_preset = 0
@@ -49,14 +48,3 @@ theme_override_font_sizes/font_size = 9
 text = "对话内容"
 autowrap_mode = 3
 clip_text = true
-
-[node name="Button" type="Button" parent="."]
-self_modulate = Color(1, 1, 1, 0)
-layout_mode = 0
-offset_right = 88.0
-offset_bottom = 114.0
-theme_override_fonts/font = ExtResource("2_font")
-
-[connection signal="button_down" from="Button" to="." method="_on_button_button_down"]
-[connection signal="button_up" from="Button" to="." method="_on_button_button_up"]
-

@@ -62,8 +62,8 @@ var card_2d_texture: TextureRect = null
 
 func _ready() -> void:
 	_base_plane_y = global_position.y
-	_cache_card_view_nodes()
 	_bind_viewport_texture_to_front_material()
+	_rebuild_card_view()
 	_apply_card_info_to_view()
 
 	if front_face:
@@ -113,16 +113,88 @@ func _cache_card_view_nodes() -> void:
 		card_2d_texture = null
 		return
 
-	# Card2D 只负责显示卡面，不能依赖 2D 卡牌交互脚本。
 	card_2d_label = card_2d.get_node_or_null("CardColor/Panel/Label") as Label
-	card_2d_texture = card_2d.get_node_or_null("TextureRect") as TextureRect
+	if card_2d_label == null:
+		card_2d_label = card_2d.get_node_or_null("cardColor/Panel/Label") as Label
+	if card_2d_label == null:
+		card_2d_label = card_2d.find_child("Label", true, false) as Label
+	card_2d_texture = card_2d.find_child("TextureRect", true, false) as TextureRect
 
 
 func set_card_info(value: CardInfo) -> void:
 	card_info = value
 	if is_inside_tree():
-		_cache_card_view_nodes()
+		_rebuild_card_view()
 		_apply_card_info_to_view()
+
+
+func _rebuild_card_view() -> void:
+	if card_viewport == null:
+		card_2d = null
+		card_2d_label = null
+		card_2d_texture = null
+		return
+
+	for child in card_viewport.get_children():
+		card_viewport.remove_child(child)
+		child.queue_free()
+
+	card_2d = null
+	card_2d_label = null
+	card_2d_texture = null
+
+	if card_info == null:
+		return
+
+	var card_scene := card_info.get("card_scene") as PackedScene
+	if card_scene == null:
+		push_warning("Card3D: card_info %s has no card_scene." % card_info.name)
+		return
+
+	var instance := card_scene.instantiate()
+	if instance == null:
+		push_warning("Card3D: failed to instantiate card_scene for %s." % card_info.name)
+		return
+
+	instance.name = "Card2D"
+	_assign_card_info_to_2d_view(instance)
+	card_viewport.add_child(instance)
+
+	card_2d = instance as Control
+	_prepare_card_2d_control()
+	_cache_card_view_nodes()
+
+
+func _assign_card_info_to_2d_view(view: Node) -> void:
+	if view.has_method("set_stats"):
+		view.call("set_stats", card_info)
+		return
+	if view.has_method("set_character_stats"):
+		view.call("set_character_stats", card_info)
+		return
+
+	for property_name in ["character", "enemy", "scene", "item", "equipment", "recource", "remains"]:
+		if _node_has_property(view, property_name):
+			view.set(property_name, card_info)
+			return
+
+
+func _node_has_property(node: Object, property_name: String) -> bool:
+	for property in node.get_property_list():
+		if property.get("name") == property_name:
+			return true
+	return false
+
+
+func _prepare_card_2d_control() -> void:
+	if card_2d == null:
+		return
+
+	card_2d.set_anchors_preset(Control.PRESET_TOP_LEFT, false)
+	card_2d.position = Vector2.ZERO
+	if card_viewport:
+		card_2d.size = Vector2(card_viewport.size.x, card_viewport.size.y)
+	card_2d.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
 func _apply_card_info_to_view() -> void:
