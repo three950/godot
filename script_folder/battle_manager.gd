@@ -43,6 +43,10 @@ func _connect_card(card: Card3D) -> void:
 
 
 func _on_card_contact(entering_card: Card3D, target_card: Card3D) -> void:
+	call_deferred("_handle_card_contact", entering_card, target_card)
+
+
+func _handle_card_contact(entering_card: Card3D, target_card: Card3D) -> void:
 	if entering_card == null or target_card == null:
 		return
 	if not is_instance_valid(entering_card) or not is_instance_valid(target_card):
@@ -108,6 +112,10 @@ func _create_battle_scene(first_card: Card3D, second_card: Card3D) -> BattleScen
 
 
 func _on_battle_card_entered(battle_scene: BattleScene3D, card: Card3D) -> void:
+	call_deferred("_handle_battle_card_entered", battle_scene, card)
+
+
+func _handle_battle_card_entered(battle_scene: BattleScene3D, card: Card3D) -> void:
 	if battle_scene == null or card == null:
 		return
 	if not active_battle_scenes.has(battle_scene):
@@ -156,10 +164,12 @@ func _merge_battle_scenes(first_scene: BattleScene3D, second_scene: BattleScene3
 	var insert_left := merged.global_position.x < keeper.global_position.x
 
 	print("【BattleManager】合并 3D 战斗: 保留 #%d，迁移 #%d" % [keeper.creation_index, merged.creation_index])
-	var migrated_units := await merged.extract_cards_for_merge()
+	var migrated_units := merged.extract_cards_for_merge()
 
 	for unit_data in migrated_units:
 		var card := unit_data["card"] as Card3D
+		if card == null or not is_instance_valid(card):
+			continue
 		var next_attack_time := float(unit_data["next_attack_time"])
 		keeper.add_card(card, insert_left, next_attack_time, false)
 

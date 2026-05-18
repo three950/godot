@@ -21,16 +21,16 @@ const PREV_STACK_MONITORABLE_META_KEY := "battle_3d_prev_stack_monitorable"
 @export var min_visual_size: Vector2 = Vector2(9.0, 7.0)
 @export var visual_padding: Vector2 = Vector2(0.7, 0.9)
 @export var detection_padding: Vector2 = Vector2(1.0, 1.0)
-@export var border_thickness: float = 0.12
 @export var border_height: float = 0.06
+@export var border_viewport_pixels_per_unit: float = 100.0
+@export var non_battle_card_push_margin: float = 0.35
 
 @onready var battle_area: Area3D = $BattleArea as Area3D
 @onready var battle_area_shape: CollisionShape3D = $BattleArea/CollisionShape3D as CollisionShape3D
 @onready var fill_mesh: MeshInstance3D = $Visual/Fill as MeshInstance3D
-@onready var top_border: MeshInstance3D = $Visual/TopBorder as MeshInstance3D
-@onready var bottom_border: MeshInstance3D = $Visual/BottomBorder as MeshInstance3D
-@onready var left_border: MeshInstance3D = $Visual/LeftBorder as MeshInstance3D
-@onready var right_border: MeshInstance3D = $Visual/RightBorder as MeshInstance3D
+@onready var border_viewport: SubViewport = $Visual/BorderViewport as SubViewport
+@onready var border_panel: Panel = $Visual/BorderViewport/BorderPanel as Panel
+@onready var border_frame: MeshInstance3D = $Visual/BorderFrame as MeshInstance3D
 @onready var effects_root: Node3D = $Effects as Node3D
 
 var characters: Array[Card3D] = []
@@ -41,11 +41,13 @@ var is_battle_active := false
 
 var _running_tweens: Array[Tween] = []
 var _is_finishing := false
+var _non_battle_cleanup_pending := false
 
 
 func _ready() -> void:
 	add_to_group("BattleScenes3D")
 	_make_visual_resources_unique()
+	_setup_border_viewport()
 	update_scene_bounds()
 	if battle_area and not battle_area.area_entered.is_connected(_on_battle_area_area_entered):
 		battle_area.area_entered.connect(_on_battle_area_area_entered)
@@ -84,6 +86,7 @@ func add_card(card: Card3D, insert_left := false, next_attack_time := -1.0, rela
 	elif _has_both_sides():
 		start_battle()
 
+	_request_non_battle_card_cleanup()
 	return true
 
 
@@ -111,24 +114,30 @@ func get_unit_count() -> int:
 func extract_cards_for_merge() -> Array:
 	_is_finishing = true
 	is_battle_active = false
-	await wait_for_animations()
 
 	var result := []
 	for card in characters.duplicate():
-		result.append({
-			"card": card,
-			"next_attack_time": _get_preserved_attack_time(card),
-		})
+		_append_merge_card(result, card)
 	for card in enemies.duplicate():
-		result.append({
-			"card": card,
-			"next_attack_time": _get_preserved_attack_time(card),
-		})
+		_append_merge_card(result, card)
 
 	_clear_all_timers()
+	_stop_running_tweens()
 	characters.clear()
 	enemies.clear()
 	return result
+
+
+func _append_merge_card(result: Array, card: Card3D) -> void:
+	if card == null or not is_instance_valid(card):
+		return
+	if not _is_battle_card(card):
+		return
+
+	result.append({
+		"card": card,
+		"next_attack_time": _get_preserved_attack_time(card),
+	})
 
 
 func relayout_cards() -> void:
@@ -141,6 +150,7 @@ func update_scene_bounds() -> void:
 	var visual_size := _calculate_visual_size()
 	_update_visual_size(visual_size)
 	_update_detection_size(visual_size + detection_padding * 2.0)
+	_request_non_battle_card_cleanup()
 
 
 func wait_for_animations() -> void:
@@ -163,6 +173,9 @@ func _on_battle_area_area_entered(area: Area3D) -> void:
 
 	var card := area.get_parent() as Card3D
 	if card != null:
+		if not _is_battle_card(card):
+			_force_card_outside_battle_area(card)
+			return
 		card_entered_battle_area.emit(self, card)
 		return
 
@@ -182,11 +195,16 @@ func _layout_side(cards: Array[Card3D], row_z: float) -> void:
 		if card == null or not is_instance_valid(card):
 			continue
 
-		var target_position := to_global(Vector3(start_x + card_spacing * index, 0.0, row_z))
+		var target_position := _get_slot_global_position(start_x + card_spacing * index, row_z)
 		var tween := create_tween()
 		_track_tween(tween)
 		tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 		tween.tween_property(card, "global_position", target_position, card_move_duration)
+
+
+func _get_slot_global_position(slot_x: float, row_z: float) -> Vector3:
+	# 卡牌原点就是牌面中心，因此槽位目标点也使用中心坐标。
+	return to_global(Vector3(slot_x, 0.0, row_z))
 
 
 func _track_tween(tween: Tween) -> void:
@@ -296,7 +314,7 @@ func _get_attack_target(attacker: Card3D) -> Card3D:
 
 
 func _perform_attack(attacker: Card3D, target: Card3D) -> void:
-	if not is_instance_valid(attacker) or not is_instance_valid(target):
+	if not _is_alive(attacker) or not _is_alive(target):
 		return
 
 	var attacker_resource := _get_battle_resource(attacker)
@@ -306,7 +324,7 @@ func _perform_attack(attacker: Card3D, target: Card3D) -> void:
 	var damage := attacker_resource.ATK
 	await _play_projectile(attacker.global_position, target.global_position)
 
-	if not is_instance_valid(target):
+	if not _is_alive(attacker) or not _is_alive(target):
 		return
 
 	var target_resource := _get_battle_resource(target)
@@ -316,6 +334,8 @@ func _perform_attack(attacker: Card3D, target: Card3D) -> void:
 	target_resource.take_damage(damage)
 	await _play_hit_effect(target)
 
+	if not is_instance_valid(target):
+		return
 	if target_resource.HP <= 0:
 		_remove_dead_unit(target)
 
@@ -350,14 +370,22 @@ func _play_hit_effect(target: Card3D) -> void:
 	if target == null or not is_instance_valid(target):
 		return
 
+	var tree := get_tree()
+	if tree == null:
+		return
+
 	var original_position := target.global_position
-	var tween := create_tween()
-	_track_tween(tween)
 	for _i in range(3):
+		if target == null or not is_instance_valid(target):
+			return
 		var offset := Vector3(randf_range(-0.08, 0.08), 0.05, randf_range(-0.08, 0.08))
-		tween.tween_property(target, "global_position", original_position + offset, 0.04)
-	tween.tween_property(target, "global_position", original_position, 0.04)
-	await tween.finished
+		target.global_position = original_position + offset
+		await tree.create_timer(0.04).timeout
+
+	if target == null or not is_instance_valid(target):
+		return
+	target.global_position = original_position
+	await tree.create_timer(0.04).timeout
 
 
 func _check_battle_end() -> void:
@@ -376,14 +404,12 @@ func _finish_battle() -> void:
 	_clear_all_timers()
 	await wait_for_animations()
 
-	var release_parent := get_parent()
+	var release_parent := _get_release_parent()
 	for card in get_all_cards():
 		if card == null or not is_instance_valid(card):
 			continue
 		if _is_alive(card):
-			_restore_card_after_battle(card)
-			if release_parent != null:
-				card.reparent(release_parent, true)
+			_release_survivor_card(card, release_parent)
 		else:
 			card.queue_free()
 
@@ -391,6 +417,35 @@ func _finish_battle() -> void:
 	enemies.clear()
 	battle_finished.emit(self)
 	queue_free()
+
+
+func _get_release_parent() -> Node:
+	var release_parent := get_parent()
+	if release_parent != null and is_instance_valid(release_parent):
+		return release_parent
+
+	var tree := get_tree()
+	if tree == null:
+		return null
+	if tree.current_scene != null and tree.current_scene != self:
+		return tree.current_scene
+	return tree.root
+
+
+func _release_survivor_card(card: Card3D, release_parent: Node) -> void:
+	if card == null or not is_instance_valid(card):
+		return
+
+	var preserved_transform := card.global_transform
+	_restore_card_after_battle(card)
+	if release_parent == null or not is_instance_valid(release_parent):
+		push_warning("【BattleScene3D】战斗结束时无法释放存活卡牌: %s" % card.name)
+		return
+
+	# reparent 后显式恢复全局变换，避免父节点释放时把存活单位一起带走。
+	if card.get_parent() != release_parent:
+		card.reparent(release_parent, false)
+	card.global_transform = preserved_transform
 
 
 func _remove_dead_unit(unit: Card3D) -> void:
@@ -425,10 +480,20 @@ func _clear_all_timers() -> void:
 	next_attack_times.clear()
 
 
+func _stop_running_tweens() -> void:
+	for tween in _running_tweens.duplicate():
+		if tween != null and tween.is_running():
+			tween.kill()
+	_running_tweens.clear()
+
+
 func _get_preserved_attack_time(unit: Card3D) -> float:
 	if next_attack_times.has(unit):
 		return next_attack_times[unit]
-	return _now() + _calculate_attack_interval(_get_battle_resource(unit).speed)
+	var resource := _get_battle_resource(unit)
+	if resource == null:
+		return _now()
+	return _now() + _calculate_attack_interval(resource.speed)
 
 
 func _calculate_attack_interval(speed: int) -> float:
@@ -471,12 +536,36 @@ func _now() -> float:
 func _make_visual_resources_unique() -> void:
 	if fill_mesh and fill_mesh.mesh:
 		fill_mesh.mesh = fill_mesh.mesh.duplicate()
-	for border in [top_border, bottom_border, left_border, right_border]:
-		var border_mesh := border as MeshInstance3D
-		if border_mesh and border_mesh.mesh:
-			border_mesh.mesh = border_mesh.mesh.duplicate()
+	if border_frame and border_frame.mesh:
+		border_frame.mesh = border_frame.mesh.duplicate()
+	if border_frame and border_frame.material_override:
+		border_frame.material_override = border_frame.material_override.duplicate()
 	if battle_area_shape and battle_area_shape.shape:
 		battle_area_shape.shape = battle_area_shape.shape.duplicate()
+
+
+func _setup_border_viewport() -> void:
+	if border_viewport == null:
+		return
+
+	border_viewport.disable_3d = true
+	border_viewport.transparent_bg = true
+	border_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	border_viewport.render_target_clear_mode = SubViewport.CLEAR_MODE_ALWAYS
+
+	if border_panel:
+		border_panel.anchor_left = 0.0
+		border_panel.anchor_top = 0.0
+		border_panel.anchor_right = 0.0
+		border_panel.anchor_bottom = 0.0
+		border_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var material: StandardMaterial3D = null
+	if border_frame:
+		material = border_frame.material_override as StandardMaterial3D
+	if material:
+		# StyleBoxTexture 先画到 2D viewport，再作为贴图显示到 3D 平面上。
+		material.albedo_texture = border_viewport.get_texture()
 
 
 func _calculate_visual_size() -> Vector2:
@@ -507,40 +596,29 @@ func _update_visual_size(size: Vector2) -> void:
 	if fill_plane:
 		fill_plane.size = size
 
-	var horizontal_mesh: BoxMesh = null
-	if top_border:
-		horizontal_mesh = top_border.mesh as BoxMesh
-	if horizontal_mesh:
-		horizontal_mesh.size = Vector3(size.x, border_height, border_thickness)
+	_update_border_frame_size(size)
 
-	var bottom_horizontal_mesh: BoxMesh = null
-	if bottom_border:
-		bottom_horizontal_mesh = bottom_border.mesh as BoxMesh
-	if bottom_horizontal_mesh:
-		bottom_horizontal_mesh.size = Vector3(size.x, border_height, border_thickness)
 
-	var vertical_mesh: BoxMesh = null
-	if left_border:
-		vertical_mesh = left_border.mesh as BoxMesh
-	if vertical_mesh:
-		vertical_mesh.size = Vector3(border_thickness, border_height, size.y)
+func _update_border_frame_size(size: Vector2) -> void:
+	if border_frame:
+		var border_plane := border_frame.mesh as PlaneMesh
+		if border_plane:
+			border_plane.size = size
+		border_frame.position = Vector3(0.0, border_height * 0.5 + 0.01, 0.0)
 
-	var right_vertical_mesh: BoxMesh = null
-	if right_border:
-		right_vertical_mesh = right_border.mesh as BoxMesh
-	if right_vertical_mesh:
-		right_vertical_mesh.size = Vector3(border_thickness, border_height, size.y)
+	if border_viewport == null:
+		return
 
-	var half_width := size.x * 0.5
-	var half_height := size.y * 0.5
-	if top_border:
-		top_border.position = Vector3(0.0, border_height * 0.5, -half_height)
-	if bottom_border:
-		bottom_border.position = Vector3(0.0, border_height * 0.5, half_height)
-	if left_border:
-		left_border.position = Vector3(-half_width, border_height * 0.5, 0.0)
-	if right_border:
-		right_border.position = Vector3(half_width, border_height * 0.5, 0.0)
+	var viewport_size := Vector2i(
+		maxi(1, int(ceil(size.x * border_viewport_pixels_per_unit))),
+		maxi(1, int(ceil(size.y * border_viewport_pixels_per_unit)))
+	)
+	if border_viewport.size != viewport_size:
+		border_viewport.size = viewport_size
+
+	if border_panel:
+		border_panel.position = Vector2.ZERO
+		border_panel.size = Vector2(float(viewport_size.x), float(viewport_size.y))
 
 
 func _update_detection_size(size: Vector2) -> void:
