@@ -164,7 +164,10 @@ func _merge_battle_scenes(first_scene: BattleScene3D, second_scene: BattleScene3
 	var insert_left := merged.global_position.x < keeper.global_position.x
 
 	print("【BattleManager】合并 3D 战斗: 保留 #%d，迁移 #%d" % [keeper.creation_index, merged.creation_index])
-	var migrated_units := merged.extract_cards_for_merge()
+	var migrated_units := await merged.extract_cards_for_merge()
+	if not is_instance_valid(keeper) or not is_instance_valid(merged):
+		_active_merge_keys.erase(merge_key)
+		return
 
 	for unit_data in migrated_units:
 		var card := unit_data["card"] as Card3D

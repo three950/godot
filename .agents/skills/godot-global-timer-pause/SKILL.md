@@ -1,6 +1,6 @@
 ---
 name: godot-global-timer-pause
-description: "Use when adding, changing, reviewing, or debugging any Godot timing behavior in this repository, including Timer nodes, SceneTreeTimer usage, cooldowns, attack intervals, spawn delays, progress bars, Tweens used as gameplay timing, async waits, countdown loops, or elapsed-time accumulation. Enforces listening to res://script_folder/events.gd signal timers_pause_changed(is_paused: bool) so all gameplay timers support the global pause state."
+description: "Use when adding, changing, reviewing, or debugging any Godot timing behavior in this repository, including Timer nodes, SceneTreeTimer usage, cooldowns, attack intervals, spawn delays, progress bars,async waits, countdown loops, or elapsed-time accumulation. Enforces listening to res://script_folder/events.gd signal timers_pause_changed(is_paused: bool) so all gameplay timers support the global pause state."
 ---
 
 # Godot Global Timer Pause
