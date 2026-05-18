@@ -3,8 +3,8 @@ extends Node
 # 实现类似堆叠大陆(Stacklands)的实时战斗系统
 
 # 战斗场景预制体
-const BATTLE_SCENE = preload("res://ui/battle_scene.tscn")
-# 子弹预制体
+const BATTLE_SCENE = preload("res://presentation/battle_scene.tscn")
+# 子弹预制体""
 const BULLET_SCENE = preload("uid://cv0haxbbpsw84")
 
 # 标记是否正在处理战斗开始（防止重复触发）

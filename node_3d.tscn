@@ -119,6 +119,9 @@ metadata/_custom_type_script = "uid://bf2o85td7sner"
 [node name="Node3D" type="Node3D" unique_id=880038554]
 script = ExtResource("2_cam")
 
+[node name="UI_Layer" parent="." unique_id=750863690 instance=ExtResource("3_ui")]
+bgm = ExtResource("3_bgm")
+
 [node name="CraftManager" type="Node" parent="." unique_id=1591583642]
 script = ExtResource("18_craft")
 craft_pools = Array[ExtResource("19_cardinfo")]([ExtResource("12_cap"), ExtResource("11_fishing_rod"), ExtResource("6_jsnrv")])
@@ -238,6 +241,3 @@ card_info = ExtResource("13_fish")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.628418, 0, -8.000308)
 cardname = "化石树的树枝"
 card_info = ExtResource("15_ealrb")
-
-[node name="UI_Layer" parent="." unique_id=750863690 instance=ExtResource("3_ui")]
-bgm = ExtResource("3_bgm")
