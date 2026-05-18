@@ -1,0 +1,77 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://presentation/battle_scene_3d.gd" id="1_battle_scene_3d"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_battle_fill"]
+resource_name = "BattleScene3DFill"
+transparency = 1
+shading_mode = 2
+albedo_color = Color(0.33660772, 0.3366076, 0.33660755, 0.3647059)
+disable_receive_shadows = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_battle_border"]
+resource_name = "BattleScene3DBorder"
+transparency = 1
+shading_mode = 2
+albedo_color = Color(0.8846368, 0.20283303, 0.116062425, 0.8352941)
+disable_receive_shadows = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_battle_fill"]
+size = Vector2(9, 7)
+
+[sub_resource type="BoxMesh" id="BoxMesh_battle_border_horizontal"]
+size = Vector3(9, 0.06, 0.12)
+
+[sub_resource type="BoxMesh" id="BoxMesh_battle_border_vertical"]
+size = Vector3(0.12, 0.06, 7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_battle_area"]
+size = Vector3(9, 0.8, 7)
+
+[node name="BattleScene3D" type="Node3D" groups=["BattleScenes3D"]]
+script = ExtResource("1_battle_scene_3d")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="Fill" type="MeshInstance3D" parent="Visual"]
+material_override = SubResource("StandardMaterial3D_battle_fill")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_battle_fill")
+
+[node name="TopBorder" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.035, -3.5)
+material_override = SubResource("StandardMaterial3D_battle_border")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_battle_border_horizontal")
+
+[node name="BottomBorder" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.035, 3.5)
+material_override = SubResource("StandardMaterial3D_battle_border")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_battle_border_horizontal")
+
+[node name="LeftBorder" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 0.035, 0)
+material_override = SubResource("StandardMaterial3D_battle_border")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_battle_border_vertical")
+
+[node name="RightBorder" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0.035, 0)
+material_override = SubResource("StandardMaterial3D_battle_border")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_battle_border_vertical")
+
+[node name="BattleArea" type="Area3D" parent="."]
+collision_layer = 32
+collision_mask = 34
+input_ray_pickable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BattleArea"]
+shape = SubResource("BoxShape3D_battle_area")
+
+[node name="CharacterSlots" type="Node3D" parent="."]
+
+[node name="EnemySlots" type="Node3D" parent="."]
+
+[node name="Effects" type="Node3D" parent="."]

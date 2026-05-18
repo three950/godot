@@ -19,6 +19,8 @@
 [ext_resource type="Script" uid="uid://bhwdhxluayto5" path="res://script_folder/card_craft_manager.gd" id="18_craft"]
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="19_cardinfo"]
 [ext_resource type="Texture2D" uid="uid://duvau7fgx21p" path="res://presentation/background/空洞地表.png" id="20_layer_default_tex"]
+[ext_resource type="Script" uid="uid://bxyb8ihft7c6l" path="res://script_folder/battle_manager.gd" id="21_battle_manager"]
+[ext_resource type="Resource" uid="uid://do4ivypcif1tw" path="res://assets/人物与敌人/Enemy/enemys/毒针线虫.tres" id="21_lggff"]
 
 [sub_resource type="Environment" id="Environment_card_shadow"]
 ambient_light_source = 2
@@ -116,6 +118,10 @@ metadata/_custom_type_script = "uid://bf2o85td7sner"
 script = ExtResource("6_battle")
 metadata/_custom_type_script = "uid://bf2o85td7sner"
 
+[sub_resource type="Resource" id="Resource_s0gvp"]
+script = ExtResource("6_battle")
+metadata/_custom_type_script = "uid://bf2o85td7sner"
+
 [node name="Node3D" type="Node3D" unique_id=880038554]
 script = ExtResource("2_cam")
 
@@ -126,6 +132,9 @@ bgm = ExtResource("3_bgm")
 script = ExtResource("18_craft")
 craft_pools = Array[ExtResource("19_cardinfo")]([ExtResource("12_cap"), ExtResource("11_fishing_rod"), ExtResource("6_jsnrv")])
 metadata/_custom_type_script = "uid://bhwdhxluayto5"
+
+[node name="BattleManager" type="Node" parent="." unique_id=1707850464]
+script = ExtResource("21_battle_manager")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=440816023]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 12.213525, 0)
@@ -241,3 +250,8 @@ card_info = ExtResource("13_fish")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.628418, 0, -8.000308)
 cardname = "化石树的树枝"
 card_info = ExtResource("15_ealrb")
+
+[node name="Card3d" parent="." unique_id=1785825953 instance=ExtResource("5_i5arm")]
+cardname = "毒针线虫"
+card_info = ExtResource("21_lggff")
+battle = SubResource("Resource_s0gvp")
