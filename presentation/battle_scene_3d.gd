@@ -207,6 +207,84 @@ func _get_slot_global_position(slot_x: float, row_z: float) -> Vector3:
 	return to_global(Vector3(slot_x, 0.0, row_z))
 
 
+func _request_non_battle_card_cleanup() -> void:
+	if _non_battle_cleanup_pending or not is_inside_tree() or _is_finishing:
+		return
+
+	_non_battle_cleanup_pending = true
+	call_deferred("_cleanup_non_battle_cards_in_area")
+
+
+func _cleanup_non_battle_cards_in_area() -> void:
+	_non_battle_cleanup_pending = false
+	if _is_finishing or not is_inside_tree():
+		return
+
+	var tree := get_tree()
+	if tree == null:
+		return
+
+	for node in tree.get_nodes_in_group("Cards3D"):
+		var card := node as Card3D
+		if card == null or not is_instance_valid(card):
+			continue
+		if _is_battle_card(card):
+			continue
+		if _is_card_overlapping_battle_area(card):
+			_force_card_outside_battle_area(card)
+
+
+func _is_card_overlapping_battle_area(card: Card3D) -> bool:
+	if card == null or battle_area_shape == null:
+		return false
+
+	var box_shape := battle_area_shape.shape as BoxShape3D
+	if box_shape == null:
+		return false
+
+	var local_position := battle_area_shape.to_local(card.global_position)
+	var area_extents := box_shape.size * 0.5
+	var card_half_size := card.face_size * 0.5
+	return absf(local_position.x) <= area_extents.x + card_half_size.x \
+			and absf(local_position.z) <= area_extents.z + card_half_size.y
+
+
+func _force_card_outside_battle_area(card: Card3D) -> void:
+	if card == null or not is_instance_valid(card) or battle_area_shape == null:
+		return
+
+	var move_card := card.get_stack_head()
+	if move_card == null or not is_instance_valid(move_card):
+		return
+
+	var box_shape := battle_area_shape.shape as BoxShape3D
+	if box_shape == null:
+		return
+
+	var local_position := battle_area_shape.to_local(card.global_position)
+	var area_extents := box_shape.size * 0.5
+	var card_half_size := card.face_size * 0.5
+	var outside_x := area_extents.x + card_half_size.x + non_battle_card_push_margin
+	var outside_z := area_extents.z + card_half_size.y + non_battle_card_push_margin
+	var x_overlap := outside_x - absf(local_position.x)
+	var z_overlap := outside_z - absf(local_position.z)
+
+	# 从最近的边推出去，避免非战斗卡长期卡在战斗检测区内。
+	if x_overlap < z_overlap:
+		local_position.x = _signed_distance(local_position.x, outside_x)
+	else:
+		local_position.z = _signed_distance(local_position.z, outside_z)
+
+	var target_position := battle_area_shape.to_global(local_position)
+	target_position.y = card.global_position.y
+	move_card.global_position += target_position - card.global_position
+	move_card.update_stack_chain_position()
+
+
+func _signed_distance(value: float, distance: float) -> float:
+	return -distance if value < 0.0 else distance
+
+
 func _track_tween(tween: Tween) -> void:
 	if tween == null:
 		return

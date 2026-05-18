@@ -1,0 +1,4 @@
+interface:
+  display_name: "Godot Global Timer Pause"
+  short_description: "Require project timers to follow Events.timers_pause_changed."
+  default_prompt: "Apply the repository global timer pause pattern to any Godot timing logic."
