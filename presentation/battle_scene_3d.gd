@@ -85,6 +85,8 @@ func add_card(card: Card3D, insert_left := false, next_attack_time := -1.0, rela
 		else:
 			enemies.append(card)
 
+	print("【BattleScene3D】加入战斗单位: %s (%d 角色 vs %d 敌人)" % [card.cardname, characters.size(), enemies.size()])
+
 	if relayout:
 		relayout_cards()
 	else:
