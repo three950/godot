@@ -324,8 +324,8 @@ func _play_projectile(from_position: Vector3, to_position: Vector3) -> void:
 	bullet.name = "BattleBullet"
 
 	var mesh := SphereMesh.new()
-	mesh.radius = 0.08
-	mesh.height = 0.16
+	mesh.radius = 0.16
+	mesh.height = 0.32
 	bullet.mesh = mesh
 
 	var material := StandardMaterial3D.new()

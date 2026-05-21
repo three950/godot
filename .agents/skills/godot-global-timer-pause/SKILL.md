@@ -1,9 +1,9 @@
 ---
-name: godot-global-timer-pause
-description: "Use when adding, changing, reviewing, or debugging any Godot timing behavior in this repository, including Timer nodes, SceneTreeTimer usage, cooldowns, attack intervals, spawn delays, progress bars,async waits, countdown loops, or elapsed-time accumulation. Enforces listening to res://script_folder/events.gd signal timers_pause_changed(is_paused: bool) so all gameplay timers support the global pause state."
+name: stackabyss-godot-gameplay-skill
+description: "Project-specific Godot gameplay skill for StackAbyss. Use when adding, changing, reviewing, or debugging any timing behavior, including Timer nodes, SceneTreeTimer usage, cooldowns, attack intervals, spawn delays, progress bars, async waits, countdown loops, or elapsed-time accumulation. Enforces listening to res://script_folder/events.gd signal timers_pause_changed(is_paused: bool) so all gameplay timers support the global pause state. For card interactions, always consider stacked cards and handle children_card."
 ---
 
-# Godot Global Timer Pause
+# StackAbyss Godot Gameplay Skill
 
 Any gameplay timing logic must follow the project global pause state from `Events`.
 
@@ -15,6 +15,7 @@ Any gameplay timing logic must follow the project global pause state from `Event
 4. Disconnect only when necessary; prefer connecting from scene-owned nodes that die with the scene.
 5. Do not use `get_tree().create_timer(...)` for gameplay timing that must pause. Use a `Timer` node or a custom remaining-time loop that explicitly stops advancing while `Events.timers_paused` is true.
 6. UI-only animation that should continue during pause may opt out, but add a short comment explaining why it is not gameplay timing.
+7. For any logic involving card interaction with cards, enemies, slots, effects, or other gameplay objects, treat cards as potentially stacked and include `children_card` handling so stacked children are not skipped.
 
 ## Timer Node Pattern
 
