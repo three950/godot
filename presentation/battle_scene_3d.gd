@@ -23,6 +23,10 @@ const HIT_FEEDBACK_LIFETIME := 0.5
 @export var border_height: float = 0.06
 @export var border_viewport_pixels_per_unit: float = 100.0
 @export var non_battle_card_push_margin: float = 0.35
+@export_group("Hit Flash")
+@export var hit_flash_scale: float = 1.05
+@export var hit_flash_lifetime: float = 0.05
+@export var hit_flash_surface_offset: float = 0.08
 
 @onready var battle_area: Area3D = $BattleArea as Area3D
 @onready var battle_area_shape: CollisionShape3D = $BattleArea/CollisionShape3D as CollisionShape3D
@@ -348,6 +352,8 @@ func _perform_attack(attacker, target) -> void:
 	if not _is_alive(attacker_card) or not _is_alive(target_card):
 		return
 
+	_show_hit_flash(target_card)
+
 	var target_resource := _get_battle_resource(target_card)
 	if target_resource == null:
 		return
@@ -405,6 +411,51 @@ func _show_hit_feedback(target_position: Vector3, damage: int) -> void:
 	await tree.create_timer(HIT_FEEDBACK_LIFETIME).timeout
 	if is_instance_valid(hit_feedback):
 		hit_feedback.queue_free()
+
+
+func _show_hit_flash(target_card: Card3D) -> void:
+	if target_card == null or effects_root == null:
+		return
+
+	var tree := get_tree()
+	if tree == null:
+		return
+
+	var flash_mesh := MeshInstance3D.new()
+	flash_mesh.name = "HitWhiteMask"
+	flash_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	flash_mesh.mesh = _create_hit_flash_mesh(target_card.face_size)
+	flash_mesh.material_override = _create_hit_flash_material()
+
+	# 遮罩挂在 Effects 下，使用命中瞬间的卡牌全局姿态；之后卡牌抖动不会带着遮罩一起抖。
+	effects_root.add_child(flash_mesh)
+	flash_mesh.global_transform = target_card.global_transform
+	var card_normal := target_card.global_transform.basis.y.normalized()
+	flash_mesh.global_position = target_card.global_position + card_normal * hit_flash_surface_offset
+
+	# 这是纯视觉闪白，不参与攻击冷却；不等待它结束，避免拖慢后续扣血和受击反馈。
+	tree.create_timer(hit_flash_lifetime).timeout.connect(
+		func() -> void:
+			if is_instance_valid(flash_mesh):
+				flash_mesh.queue_free()
+	)
+
+
+func _create_hit_flash_mesh(card_face_size: Vector2) -> PlaneMesh:
+	var mesh := PlaneMesh.new()
+	mesh.size = card_face_size * hit_flash_scale
+	return mesh
+
+
+func _create_hit_flash_material() -> StandardMaterial3D:
+	var material := StandardMaterial3D.new()
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.render_priority = -80
+	material.albedo_color = Color.WHITE
+	material.disable_receive_shadows = true
+	material.no_depth_test = true
+	return material
 
 
 func _play_hit_effect(target) -> void:
