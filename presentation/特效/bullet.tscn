@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://cv0haxbbpsw84"]
 
-[node name="bullet" type="Polygon2D"]
-position = Vector2(4.7683704e-07, 0)
-scale = Vector2(16, 16)
+[node name="bullet" type="Polygon2D" unique_id=2016736637]
+scale = Vector2(53.000004, 53.000004)
 polygon = PackedVector2Array(0.5, 0, 0.483, 0.129, 0.433, 0.25, 0.25, 0.433, 0, 0.5, -0.129, 0.483, -0.354, 0.354, -0.433, 0.25, -0.5, 0, -0.433, -0.25, -0.354, -0.354, -0.25, -0.433, 0, -0.5, 0.25, -0.433, 0.433, -0.25)

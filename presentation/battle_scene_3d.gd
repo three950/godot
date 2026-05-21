@@ -7,6 +7,9 @@ signal battle_finished(battle_scene: BattleScene3D)
 
 const BASE_ATTACK_INTERVAL := 2.0
 const MIN_ATTACK_INTERVAL := 0.3
+const PROJECTILE_SCENE := preload("res://presentation/特效/bullet_3d.tscn")
+const PROJECTILE_HEIGHT_OFFSET := Vector3(0.0, 0.25, 0.0)
+const PROJECTILE_TRAVEL_TIME := 0.25
 
 @export var creation_index: int = 0
 @export var card_spacing: float = 3.0
@@ -357,26 +360,20 @@ func _perform_attack(attacker, target) -> void:
 
 
 func _play_projectile(from_position: Vector3, to_position: Vector3) -> void:
-	var bullet := MeshInstance3D.new()
+	# 子弹外观放在独立场景里，脚本只负责生成、移动和回收，方便之后在编辑器里调整特效。
+	var bullet := PROJECTILE_SCENE.instantiate() as Node3D
+	if bullet == null:
+		return
 	bullet.name = "BattleBullet"
 
-	var mesh := SphereMesh.new()
-	mesh.radius = 0.16
-	mesh.height = 0.32
-	bullet.mesh = mesh
-
-	var material := StandardMaterial3D.new()
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.albedo_color = Color(1.0, 0.86, 0.25, 1.0)
-	bullet.material_override = material
-
 	effects_root.add_child(bullet)
-	bullet.global_position = from_position + Vector3(0.0, 0.25, 0.0)
+	bullet.global_position = from_position + PROJECTILE_HEIGHT_OFFSET
 
 	var tween := create_tween()
-	tween.tween_property(bullet, "global_position", to_position + Vector3(0.0, 0.25, 0.0), 0.25)
+	tween.tween_property(bullet, "global_position", to_position + PROJECTILE_HEIGHT_OFFSET, PROJECTILE_TRAVEL_TIME)
 	await tween.finished
 
+	# Tween 结束前战斗场景可能被合并/释放，回收前必须确认子弹实例仍然有效。
 	if is_instance_valid(bullet):
 		bullet.queue_free()
 

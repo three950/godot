@@ -70,6 +70,7 @@ texture_mode = 1
 joint_mode = 2
 
 [node name="OuterBorder2" type="Line2D" parent="CardBorder" unique_id=1182773948]
+position = Vector2(0, 2)
 points = PackedVector2Array(0, 53, 264, 53)
 width = 4.0
 texture = ExtResource("8_line")
