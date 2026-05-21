@@ -18,6 +18,7 @@ func get_card_resource() -> CardInfo:
 func _update_battle_card() -> void:
 	# 调用父类通用更新方法（设置 name, cardname, label, texture）
 	_update_card_display()
+	_request_subviewport_redraw()
 
 func _ready() -> void:
 	super._ready()
@@ -42,6 +43,20 @@ func update_stats() -> void:
 	if attribute_labels == null:
 		return
 	attribute_labels.update_labels(resource.HP, resource.ATK, resource.DEF)
+	_request_subviewport_redraw()
+
+
+func _request_subviewport_redraw() -> void:
+	if not is_inside_tree():
+		return
+
+	var viewport := get_viewport() as SubViewport
+	if viewport == null:
+		return
+
+	# 这张 2D 战斗卡如果被塞进 Card3D 的 SubViewport，数据变动时只要求刷新一帧。
+	# 普通 2D 界面里的卡牌拿到的是主 Viewport，不会进入这里，避免影响主界面刷新策略。
+	viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 
 func take_damage(damage: int) -> void:
 	var resource = get_battle_resource()

@@ -65,6 +65,7 @@ func _ready() -> void:
 	_bind_viewport_texture_to_front_material()
 	_rebuild_card_view()
 	_apply_card_info_to_view()
+	_request_card_viewport_redraw()
 
 	if front_face:
 		_front_face_original_position = front_face.position
@@ -126,6 +127,7 @@ func set_card_info(value: CardInfo) -> void:
 	if is_inside_tree():
 		_rebuild_card_view()
 		_apply_card_info_to_view()
+		_request_card_viewport_redraw()
 
 
 func _rebuild_card_view() -> void:
@@ -144,16 +146,19 @@ func _rebuild_card_view() -> void:
 	card_2d_texture = null
 
 	if card_info == null:
+		_request_card_viewport_redraw()
 		return
 
 	var card_scene := card_info.get("card_scene") as PackedScene
 	if card_scene == null:
 		push_warning("Card3D: card_info %s has no card_scene." % card_info.name)
+		_request_card_viewport_redraw()
 		return
 
 	var instance := card_scene.instantiate()
 	if instance == null:
 		push_warning("Card3D: failed to instantiate card_scene for %s." % card_info.name)
+		_request_card_viewport_redraw()
 		return
 
 	instance.name = "Card2D"
@@ -163,6 +168,7 @@ func _rebuild_card_view() -> void:
 	card_2d = instance as Control
 	_prepare_card_2d_control()
 	_cache_card_view_nodes()
+	_request_card_viewport_redraw()
 
 
 func _assign_card_info_to_2d_view(view: Node) -> void:
@@ -199,12 +205,14 @@ func _prepare_card_2d_control() -> void:
 
 func _apply_card_info_to_view() -> void:
 	if card_info == null:
+		_request_card_viewport_redraw()
 		return
 
 	cardname = card_info.name
 	can_stack = card_info.能被堆叠
 
 	if card_2d == null:
+		_request_card_viewport_redraw()
 		return
 
 	card_2d.name = card_info.name if card_info.name != "" else "Card2D"
@@ -212,6 +220,16 @@ func _apply_card_info_to_view() -> void:
 		card_2d_label.text = card_info.name
 	if card_2d_texture:
 		card_2d_texture.texture = card_info.portrait
+	_request_card_viewport_redraw()
+
+
+func _request_card_viewport_redraw() -> void:
+	if card_viewport == null:
+		return
+
+	# Card3D 只负责“卡面刚创建或静态内容刚写入”时刷新一帧。
+	# 人物/敌人战斗数值变化后的额外刷新，由对应 2D 卡脚本在数据更新时请求。
+	card_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 
 
 func _input(event: InputEvent) -> void:

@@ -51,6 +51,7 @@ func _update_enemy_display() -> void:
 	card_texture.texture = enemy.portrait	
 	enemy.HP = enemy.MAX_HP
 	update_stats()
+	_request_subviewport_redraw()
 
 # 更新属性标签显示（HP、ATK、DEF）
 func update_stats() -> void:
@@ -58,6 +59,20 @@ func update_stats() -> void:
 	if attribute_labels == null:return
 	
 	attribute_labels.update_labels(enemy.HP, enemy.ATK, enemy.DEF)
+	_request_subviewport_redraw()
+
+
+func _request_subviewport_redraw() -> void:
+	if not is_inside_tree():
+		return
+
+	var viewport := get_viewport() as SubViewport
+	if viewport == null:
+		return
+
+	# 敌人卡的 HP/ATK/DEF 变化时只让承载它的 SubViewport 刷新一帧，比 UPDATE_ALWAYS 更省。
+	# 如果敌人卡直接显示在普通 2D 界面里，这里拿不到 SubViewport，因此不会改主窗口的刷新模式。
+	viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 
 # 受到伤害
 func take_damage(damage: int) -> void:
