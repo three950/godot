@@ -12,10 +12,8 @@ const MIN_ATTACK_INTERVAL := 0.3
 @export var card_spacing: float = 3.0
 @export var character_row_z: float = 1.8
 @export var enemy_row_z: float = -1.8
-@export var card_move_duration: float = 0.2
 @export var min_visual_size: Vector2 = Vector2(9.0, 7.0)
 @export var visual_padding: Vector2 = Vector2(0.7, 0.9)
-@export var detection_padding: Vector2 = Vector2(1.0, 1.0)
 @export var border_height: float = 0.06
 @export var border_viewport_pixels_per_unit: float = 100.0
 @export var non_battle_card_push_margin: float = 0.35
@@ -133,7 +131,6 @@ func extract_cards_for_merge() -> Array:
 		_append_merge_card(result, card)
 
 	_clear_all_timers()
-	await wait_for_animations()
 	characters.clear()
 	enemies.clear()
 	return result
@@ -159,14 +156,6 @@ func relayout_cards() -> void:
 func update_scene_bounds() -> void:
 	_area_controller.update_scene_bounds(characters, enemies)
 	_request_non_battle_card_cleanup()
-
-
-func wait_for_animations() -> void:
-	await _area_controller.wait_for_animations()
-
-
-func stop_running_tweens() -> void:
-	_area_controller.stop_running_tweens()
 
 
 func shutdown_after_merge() -> void:
@@ -390,7 +379,6 @@ func _finish_battle() -> void:
 	_is_finishing = true
 	is_battle_active = false
 	_clear_all_timers()
-	await wait_for_animations()
 
 	var release_parent := _get_release_parent()
 	for card in get_all_cards():

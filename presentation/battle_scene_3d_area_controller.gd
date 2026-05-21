@@ -7,7 +7,6 @@ var _fill_mesh: MeshInstance3D = null
 var _border_viewport: SubViewport = null
 var _border_panel: Panel = null
 var _border_frame: MeshInstance3D = null
-var _running_tweens: Array[Tween] = []
 
 
 func configure(
@@ -69,25 +68,8 @@ func relayout_cards(characters: Array[Card3D], enemies: Array[Card3D]) -> void:
 
 func update_scene_bounds(characters: Array[Card3D], enemies: Array[Card3D]) -> void:
 	var visual_size := _calculate_visual_size(characters, enemies)
-	var detection_padding := _vector2_setting("detection_padding", Vector2(1.0, 1.0))
 	_update_visual_size(visual_size)
-	_update_detection_size(visual_size + detection_padding * 2.0)
-
-
-func wait_for_animations() -> void:
-	while not _running_tweens.is_empty():
-		var tween := _running_tweens[0]
-		if tween != null and tween.is_valid() and tween.is_running():
-			await tween.finished
-		else:
-			_running_tweens.erase(tween)
-
-
-func stop_running_tweens() -> void:
-	for tween in _running_tweens.duplicate():
-		if tween != null and tween.is_valid():
-			tween.kill()
-	_running_tweens.clear()
+	_update_detection_size(visual_size)
 
 
 func _layout_side(cards: Array[Card3D], row_z: float) -> void:
@@ -103,10 +85,7 @@ func _layout_side(cards: Array[Card3D], row_z: float) -> void:
 			continue
 
 		var target_position := _get_slot_global_position(start_x + card_spacing * index, row_z)
-		var tween := _owner.create_tween()
-		_track_tween(tween)
-		tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-		tween.tween_property(card, "global_position", target_position, _float_setting("card_move_duration", 0.2))
+		card.global_position = target_position
 
 
 func _get_slot_global_position(slot_x: float, row_z: float) -> Vector3:
@@ -114,13 +93,6 @@ func _get_slot_global_position(slot_x: float, row_z: float) -> Vector3:
 		return Vector3(slot_x, 0.0, row_z)
 	# 卡牌原点就是牌面中心，因此槽位目标点也使用中心坐标。
 	return _owner.to_global(Vector3(slot_x, 0.0, row_z))
-
-
-func _track_tween(tween: Tween) -> void:
-	if tween == null:
-		return
-	_running_tweens.append(tween)
-	tween.finished.connect(func(): _running_tweens.erase(tween), CONNECT_ONE_SHOT)
 
 
 func _calculate_visual_size(characters: Array[Card3D], enemies: Array[Card3D]) -> Vector2:
