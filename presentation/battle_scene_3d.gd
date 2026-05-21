@@ -102,6 +102,7 @@ func add_card(card: Card3D, insert_left := false, next_attack_time := -1.0, rela
 
 
 func start_battle() -> void:
+	_cleanup_invalid_units()
 	if is_battle_active or not _has_both_sides() or _is_finishing:
 		return
 
@@ -112,19 +113,28 @@ func start_battle() -> void:
 
 
 func get_all_cards() -> Array[Card3D]:
+	_cleanup_invalid_units()
 	var cards: Array[Card3D] = []
-	cards.append_array(characters)
-	cards.append_array(enemies)
+	for card in characters:
+		var valid_character := _get_valid_card(card)
+		if valid_character != null:
+			cards.append(valid_character)
+	for card in enemies:
+		var valid_enemy := _get_valid_card(card)
+		if valid_enemy != null:
+			cards.append(valid_enemy)
 	return cards
 
 
 func get_unit_count() -> int:
+	_cleanup_invalid_units()
 	return characters.size() + enemies.size()
 
 
 func extract_cards_for_merge() -> Array:
 	_is_finishing = true
 	is_battle_active = false
+	_cleanup_invalid_units()
 
 	var result := []
 	for card in characters.duplicate():
@@ -138,24 +148,27 @@ func extract_cards_for_merge() -> Array:
 	return result
 
 
-func _append_merge_card(result: Array, card: Card3D) -> void:
-	if card == null or not is_instance_valid(card):
+func _append_merge_card(result: Array, card) -> void:
+	var card_3d := _get_valid_card(card)
+	if card_3d == null:
 		return
-	if not _card_guard.is_battle_card(card):
+	if not _card_guard.is_battle_card(card_3d):
 		return
 
 	result.append({
-		"card": card,
-		"next_attack_time": _get_preserved_attack_time(card),
+		"card": card_3d,
+		"next_attack_time": _get_preserved_attack_time(card_3d),
 	})
 
 
 func relayout_cards() -> void:
+	_cleanup_invalid_units()
 	_area_controller.relayout_cards(characters, enemies)
 	_request_non_battle_card_cleanup()
 
 
 func update_scene_bounds() -> void:
+	_cleanup_invalid_units()
 	_area_controller.update_scene_bounds(characters, enemies)
 	_request_non_battle_card_cleanup()
 
@@ -227,6 +240,7 @@ func _set_timers_paused(is_paused: bool) -> void:
 
 
 func _update_attack_timers_pause_state() -> void:
+	_cleanup_invalid_units()
 	var now := _now()
 	for unit in unit_timers.keys():
 		var timer := unit_timers[unit] as Timer
@@ -237,11 +251,12 @@ func _update_attack_timers_pause_state() -> void:
 		timer.paused = _timers_paused
 
 
-func _create_timer_for_unit(unit: Card3D, preserved_next_attack_time := -1.0) -> void:
-	if unit == null or not is_instance_valid(unit) or unit_timers.has(unit):
+func _create_timer_for_unit(unit, preserved_next_attack_time := -1.0) -> void:
+	var unit_card := _get_valid_card(unit)
+	if unit_card == null or unit_timers.has(unit_card):
 		return
 
-	var resource := _get_battle_resource(unit)
+	var resource := _get_battle_resource(unit_card)
 	if resource == null or resource.HP <= 0:
 		return
 
@@ -254,18 +269,24 @@ func _create_timer_for_unit(unit: Card3D, preserved_next_attack_time := -1.0) ->
 	timer.one_shot = true
 	timer.wait_time = wait_time
 	timer.paused = _timers_paused
-	timer.timeout.connect(_on_unit_attack.bind(unit))
+	# Timer 只绑定实例 id，不绑定卡牌对象本身；超时后重新查找，避免 await/queue_free 后拿到悬空 Node。
+	timer.timeout.connect(_on_unit_attack.bind(unit_card.get_instance_id()))
 	add_child(timer)
-	unit_timers[unit] = timer
-	next_attack_times[unit] = now + wait_time
+	unit_timers[unit_card] = timer
+	next_attack_times[unit_card] = now + wait_time
 	timer.start()
 
 
-func _on_unit_attack(attacker: Card3D) -> void:
-	_remove_unit_timer(attacker)
+func _on_unit_attack(attacker_id: int) -> void:
+	var attacker = _get_unit_by_instance_id(attacker_id)
+	if attacker != null:
+		_remove_unit_timer(attacker)
+	else:
+		_cleanup_invalid_units()
+
 	if not is_battle_active or _is_finishing:
 		return
-	if attacker == null or not is_instance_valid(attacker) or not _is_alive(attacker):
+	if not _is_alive(attacker):
 		_remove_dead_unit(attacker)
 		_check_battle_end()
 		return
@@ -278,45 +299,61 @@ func _on_unit_attack(attacker: Card3D) -> void:
 	await _perform_attack(attacker, target)
 	_check_battle_end()
 
-	if is_battle_active and is_instance_valid(attacker) and _is_alive(attacker):
+	attacker = _get_unit_by_instance_id(attacker_id)
+	if is_battle_active and _is_alive(attacker):
 		var resource := _get_battle_resource(attacker)
+		if resource == null:
+			return
 		var next_time := _now() + _calculate_attack_interval(resource.speed)
 		_create_timer_for_unit(attacker, next_time)
 
 
-func _get_attack_target(attacker: Card3D) -> Card3D:
-	var target_side: Array[Card3D] = enemies if attacker.card_info is CharacterCard else characters
+func _get_attack_target(attacker) -> Card3D:
+	var attacker_card := _get_valid_card(attacker)
+	if attacker_card == null:
+		return null
+
+	var target_side: Array[Card3D] = enemies if attacker_card.card_info is CharacterCard else characters
 	for card in target_side:
-		if card != null and is_instance_valid(card) and _is_alive(card):
-			return card
+		var target_card := _get_valid_card(card)
+		if target_card != null and _is_alive(target_card):
+			return target_card
 	return null
 
 
-func _perform_attack(attacker: Card3D, target: Card3D) -> void:
-	if not _is_alive(attacker) or not _is_alive(target):
+func _perform_attack(attacker, target) -> void:
+	var attacker_card := _get_valid_card(attacker)
+	var target_card := _get_valid_card(target)
+	if not _is_alive(attacker_card) or not _is_alive(target_card):
 		return
 
-	var attacker_resource := _get_battle_resource(attacker)
+	var attacker_resource := _get_battle_resource(attacker_card)
 	if attacker_resource == null:
 		return
 
 	var damage := attacker_resource.ATK
-	await _play_projectile(attacker.global_position, target.global_position)
+	var projectile_from := attacker_card.global_position
+	var projectile_to := target_card.global_position
+	await _play_projectile(projectile_from, projectile_to)
 
-	if not _is_alive(attacker) or not _is_alive(target):
+	# await 之后任意一张卡都可能已被合并、死亡或释放，必须重新校验再读属性。
+	attacker_card = _get_valid_card(attacker)
+	target_card = _get_valid_card(target)
+	if not _is_alive(attacker_card) or not _is_alive(target_card):
 		return
 
-	var target_resource := _get_battle_resource(target)
+	var target_resource := _get_battle_resource(target_card)
 	if target_resource == null:
 		return
 
 	target_resource.take_damage(damage)
-	await _play_hit_effect(target)
+	await _play_hit_effect(target_card)
 
-	if not is_instance_valid(target):
+	target_card = _get_valid_card(target)
+	if target_card == null:
 		return
 	if target_resource.HP <= 0:
-		_remove_dead_unit(target)
+		_remove_dead_unit(target_card)
 
 
 func _play_projectile(from_position: Vector3, to_position: Vector3) -> void:
@@ -344,25 +381,28 @@ func _play_projectile(from_position: Vector3, to_position: Vector3) -> void:
 		bullet.queue_free()
 
 
-func _play_hit_effect(target: Card3D) -> void:
-	if target == null or not is_instance_valid(target):
+func _play_hit_effect(target) -> void:
+	var target_card := _get_valid_card(target)
+	if target_card == null:
 		return
 
 	var tree := get_tree()
 	if tree == null:
 		return
 
-	var original_position := target.global_position
+	var original_position := target_card.global_position
 	for _i in range(3):
-		if target == null or not is_instance_valid(target):
+		target_card = _get_valid_card(target)
+		if target_card == null:
 			return
 		var offset := Vector3(randf_range(-0.08, 0.08), 0.05, randf_range(-0.08, 0.08))
-		target.global_position = original_position + offset
+		target_card.global_position = original_position + offset
 		await tree.create_timer(0.04).timeout
 
-	if target == null or not is_instance_valid(target):
+	target_card = _get_valid_card(target)
+	if target_card == null:
 		return
-	target.global_position = original_position
+	target_card.global_position = original_position
 	# 命中特效是纯视觉反馈，战斗暂停只作用于攻击 Timer。
 	await tree.create_timer(0.04).timeout
 
@@ -370,6 +410,7 @@ func _play_hit_effect(target: Card3D) -> void:
 func _check_battle_end() -> void:
 	if not is_battle_active or _is_finishing:
 		return
+	_cleanup_invalid_units()
 	if _count_alive(characters) == 0 or _count_alive(enemies) == 0:
 		_finish_battle()
 
@@ -411,13 +452,15 @@ func _get_release_parent() -> Node:
 
 
 func _remove_dead_unit(unit) -> void:
-	if unit == null:
+	var unit_card := _get_valid_card(unit)
+	if unit_card == null:
+		_cleanup_invalid_units()
 		return
-	_remove_unit_timer(unit)
-	characters.erase(unit)
-	enemies.erase(unit)
-	if is_instance_valid(unit):
-		unit.queue_free()
+	_remove_unit_timer(unit_card)
+	characters.erase(unit_card)
+	enemies.erase(unit_card)
+	if is_instance_valid(unit_card):
+		unit_card.queue_free()
 	relayout_cards()
 
 
@@ -442,23 +485,75 @@ func _clear_all_timers() -> void:
 	next_attack_times.clear()
 
 
-func _get_preserved_attack_time(unit: Card3D) -> float:
-	var timer := unit_timers.get(unit) as Timer
+func _get_preserved_attack_time(unit) -> float:
+	var unit_card := _get_valid_card(unit)
+	if unit_card == null:
+		return _now()
+
+	var timer := unit_timers.get(unit_card) as Timer
 	if timer != null and is_instance_valid(timer):
 		return _now() + maxf(timer.time_left, 0.0)
-	if next_attack_times.has(unit):
-		return next_attack_times[unit]
-	var resource := _get_battle_resource(unit)
+	if next_attack_times.has(unit_card):
+		return next_attack_times[unit_card]
+	var resource := _get_battle_resource(unit_card)
 	if resource == null:
 		return _now()
 	return _now() + _calculate_attack_interval(resource.speed)
+
+
+func _cleanup_invalid_units() -> void:
+	_remove_invalid_cards_from_side(characters)
+	_remove_invalid_cards_from_side(enemies)
+	_cleanup_invalid_timer_entries()
+
+
+func _remove_invalid_cards_from_side(cards: Array[Card3D]) -> void:
+	var index := cards.size() - 1
+	while index >= 0:
+		var card := _get_valid_card(cards[index])
+		if card == null or not _card_guard.is_battle_card(card):
+			cards.remove_at(index)
+		index -= 1
+
+
+func _cleanup_invalid_timer_entries() -> void:
+	for unit in unit_timers.keys():
+		var unit_card := _get_valid_card(unit)
+		var timer := unit_timers[unit] as Timer
+		if unit_card == null or not _is_registered_unit(unit_card):
+			if timer != null and is_instance_valid(timer):
+				timer.stop()
+				timer.queue_free()
+			unit_timers.erase(unit)
+			next_attack_times.erase(unit)
+			continue
+		if timer == null or not is_instance_valid(timer):
+			unit_timers.erase(unit)
+			next_attack_times.erase(unit)
+
+	for unit in next_attack_times.keys():
+		var unit_card := _get_valid_card(unit)
+		if unit_card == null or not _is_registered_unit(unit_card):
+			next_attack_times.erase(unit)
+
+
+func _is_registered_unit(unit) -> bool:
+	var unit_card := _get_valid_card(unit)
+	return unit_card != null and (characters.has(unit_card) or enemies.has(unit_card))
+
+
+func _get_unit_by_instance_id(unit_id: int) -> Card3D:
+	for card in get_all_cards():
+		if card.get_instance_id() == unit_id:
+			return card
+	return null
 
 
 func _calculate_attack_interval(speed: int) -> float:
 	return maxf(BASE_ATTACK_INTERVAL - (float(speed) / 50.0), MIN_ATTACK_INTERVAL)
 
 
-func _count_alive(cards: Array[Card3D]) -> int:
+func _count_alive(cards: Array) -> int:
 	var count := 0
 	for card in cards:
 		if _is_alive(card):
@@ -471,19 +566,23 @@ func _has_both_sides() -> bool:
 
 
 func _is_alive(card) -> bool:
-	if card == null or not is_instance_valid(card):
-		return false
 	var resource := _get_battle_resource(card)
 	return resource != null and resource.HP > 0
 
 
 func _get_battle_resource(card) -> BattleStates:
-	if card == null or not is_instance_valid(card):
-		return null
-	var card_3d := card as Card3D
+	var card_3d := _get_valid_card(card)
 	if card_3d == null:
 		return null
 	return card_3d.card_info as BattleStates
+
+
+func _get_valid_card(candidate) -> Card3D:
+	if candidate == null or not (candidate is Object):
+		return null
+	if not is_instance_valid(candidate):
+		return null
+	return candidate as Card3D
 
 
 func _now() -> float:

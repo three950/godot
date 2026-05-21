@@ -11,7 +11,8 @@ const CARD_PROGRESS_VIEWPORT_SIZE := Vector2i(264, 32)
 
 @export var craft_pools: Array[CardInfo] = []
 var _recipe_map: Dictionary = {}
-# 正在合成的任务: { key: { "cards": Array[Card3D], "card_info": ThingsCard, "top_card": Card3D, "progress_bar": CardProgressBar } }
+# 正在合成的任务只保存 WeakRef 和资源数据，避免计时期间卡牌或进度条释放后留下悬空 Node。
+# { key: { "card_refs": Array[WeakRef], "card_info": ThingsCard, "top_card_ref": WeakRef, "progress_bar_ref": WeakRef } }
 var _active_crafts: Dictionary = {}
 
 #检测解析所有合成配方，实时检测堆叠数组并识别是否可合成
@@ -83,27 +84,25 @@ func _start_crafting(top_card: Card3D, cards_to_free: Array[Card3D], card_info: 
 		push_error("[CraftManager] failed to create CardProgressBar for: %s" % top_card.name)
 		return
 	var craft_key := progress_bar.get_instance_id()
+	var card_refs: Array[WeakRef] = []
 
 	# 记录合成任务
 	var craft_data := {
-		"cards": cards_to_free,
+		"card_refs": card_refs,
 		"card_info": card_info,
-		"top_card": top_card,
-		"progress_bar": progress_bar
+		"top_card_ref": weakref(top_card),
+		"progress_bar_ref": weakref(progress_bar)
 	}
 	_active_crafts[craft_key] = craft_data
 	
 	# 为卡组中的每张卡片连接 array_changed 信号
 	for c in cards_to_free:
 		if is_instance_valid(c):
-			# 只捕获实例 id，避免进度条节点释放后 lambda 捕获悬空 Object。
-			var callback = func(): _cancel_crafting(craft_key)
-			c.array_changed.connect(callback, CONNECT_ONE_SHOT)
+			card_refs.append(weakref(c))
+			# 只 bind 稳定的合成 key，不捕获卡牌或进度条对象。
+			c.array_changed.connect(_cancel_crafting.bind(craft_key), CONNECT_ONE_SHOT)
 	
-	progress_bar.progress_completed.connect(
-		func(): _on_craft_completed(craft_key),
-		CONNECT_ONE_SHOT
-	)
+	progress_bar.progress_completed.connect(_on_craft_completed.bind(craft_key), CONNECT_ONE_SHOT)
 	progress_bar.start(card_info.合成时间)
 	print("开始合成: ", card_info.name, " 需要 ", card_info.合成时间, " 秒")
 
@@ -169,13 +168,17 @@ func _cancel_crafting(craft_key: int) -> void:
 	
 	# 先从字典移除，再停止进度条
 	_active_crafts.erase(craft_key)
-	var progress_bar := craft_data["progress_bar"] as CardProgressBar
-	if progress_bar != null and is_instance_valid(progress_bar):
+	var progress_bar := _get_progress_bar_from_craft(craft_data)
+	if progress_bar != null:
 		progress_bar.stop()
 		_free_progress_bar_3d(progress_bar)
 
-func _free_progress_bar_3d(progress_bar: CardProgressBar) -> void:
-	var progress_viewport := progress_bar.get_parent()
+func _free_progress_bar_3d(progress_bar) -> void:
+	var valid_progress_bar := _get_valid_progress_bar(progress_bar)
+	if valid_progress_bar == null:
+		return
+
+	var progress_viewport := valid_progress_bar.get_parent()
 	if progress_viewport == null:
 		return
 	var progress_container := progress_viewport.get_parent()
@@ -192,31 +195,38 @@ func _on_craft_completed(craft_key: int) -> void:
 	print("[CraftManager] craft completed: ", craft_data["card_info"].name)
 	
 	_active_crafts.erase(craft_key)
-	_finish_crafting(craft_data["cards"], craft_data["card_info"], craft_data["top_card"])
+	_finish_crafting(
+		craft_data.get("card_refs", []),
+		craft_data["card_info"],
+		craft_data.get("top_card_ref")
+	)
 
 ## 完成合成：销毁材料卡片，生成新卡片
-func _finish_crafting(cards_to_free: Array[Card3D], card_info: ThingsCard, top_card: Card3D) -> void:
-	print("[CraftManager] _finish_crafting: freeing %d cards, spawning %s" % [cards_to_free.size(), card_info.name])
+func _finish_crafting(card_refs: Array, card_info: ThingsCard, top_card) -> void:
+	print("[CraftManager] _finish_crafting: freeing %d cards, spawning %s" % [card_refs.size(), card_info.name])
 	var spawn_position := Vector3.ZERO
 	var spawn_parent: Node = self
-	if is_instance_valid(top_card):
-		spawn_position = top_card.global_position
-		spawn_parent = top_card.get_parent()
-		_detach_top_card_if_stacked(top_card)
-	
-	# 销毁所有相关卡片
-	for c in cards_to_free:
-		if is_instance_valid(c):
+	var top_card_3d := _get_valid_card(top_card)
+	if top_card_3d != null:
+		spawn_position = top_card_3d.global_position
+		spawn_parent = top_card_3d.get_parent()
+		_detach_top_card_if_stacked(top_card_3d)
+
+	# 销毁所有相关卡片；WeakRef 已失效的材料说明已经被其他系统处理过。
+	for card_ref in card_refs:
+		var c := _get_valid_card(card_ref)
+		if c != null:
 			print("[CraftManager] queue_free material card: %s" % c.cardname)
 			c.queue_free()
 	# 生成新卡片
 	_spawn_crafted_card(card_info, spawn_position, spawn_parent)
 
-func _detach_top_card_if_stacked(top_card: Card3D) -> void:
-	if not is_instance_valid(top_card) or top_card.card_state_machine == null:
+func _detach_top_card_if_stacked(top_card) -> void:
+	var top_card_3d := _get_valid_card(top_card)
+	if top_card_3d == null or top_card_3d.card_state_machine == null:
 		return
 	
-	var current_state := top_card.card_state_machine.current_state
+	var current_state := top_card_3d.card_state_machine.current_state
 	if current_state == null:
 		return
 	
@@ -226,7 +236,27 @@ func _detach_top_card_if_stacked(top_card: Card3D) -> void:
 		return
 	
 	# 合成期间头卡可能被堆到其他卡上；销毁前先断开，避免目标卡留下 children_card 空引用。
-	top_card.detach_from_follow_target()
+	top_card_3d.detach_from_follow_target()
+
+func _get_progress_bar_from_craft(craft_data: Dictionary) -> CardProgressBar:
+	return _get_valid_progress_bar(craft_data.get("progress_bar_ref"))
+
+func _get_valid_progress_bar(candidate) -> CardProgressBar:
+	var object := _get_valid_object(candidate)
+	return object as CardProgressBar
+
+func _get_valid_card(candidate) -> Card3D:
+	var object := _get_valid_object(candidate)
+	return object as Card3D
+
+func _get_valid_object(candidate) -> Object:
+	if candidate is WeakRef:
+		candidate = candidate.get_ref()
+	if candidate == null or not (candidate is Object):
+		return null
+	if not is_instance_valid(candidate):
+		return null
+	return candidate
 
 func _spawn_crafted_card(card_info: CardInfo, spawn_position: Vector3, spawn_parent: Node) -> void:
 	print("[CraftManager] _spawn_crafted_card: %s at %s" % [card_info.name, spawn_position])

@@ -33,20 +33,39 @@ func _on_node_added(node: Node) -> void:
 
 
 func _connect_card(card: Card3D) -> void:
-	if card == null or _connected_cards.has(card):
+	if card == null or not is_instance_valid(card):
 		return
 
-	_connected_cards[card] = true
+	var card_id := card.get_instance_id()
+	if _connected_cards.has(card_id):
+		return
+
+	_connected_cards[card_id] = true
 	if not card.card_label_entered_stack_area.is_connected(_on_card_contact):
-		card.card_label_entered_stack_area.connect(_on_card_contact.bind(card))
-	card.tree_exiting.connect(func(): _connected_cards.erase(card), CONNECT_ONE_SHOT)
+		card.card_label_entered_stack_area.connect(_on_card_contact.bind(card_id))
+	# tree_exiting 只绑定实例 id，不捕获即将释放的 Card3D。
+	card.tree_exiting.connect(_on_connected_card_tree_exiting.bind(card_id), CONNECT_ONE_SHOT)
 
 
-func _on_card_contact(entering_card: Card3D, target_card: Card3D) -> void:
-	call_deferred("_handle_card_contact", entering_card, target_card)
+func _on_connected_card_tree_exiting(card_id: int) -> void:
+	_connected_cards.erase(card_id)
 
 
-func _handle_card_contact(entering_card: Card3D, target_card: Card3D) -> void:
+func _on_card_contact(entering_card: Card3D, target_card_id: int) -> void:
+	var entering_card_id := _get_instance_id(entering_card)
+	if entering_card_id == 0:
+		return
+	call_deferred("_handle_card_contact_by_id", entering_card_id, target_card_id)
+
+
+func _handle_card_contact_by_id(entering_card_id: int, target_card_id: int) -> void:
+	_handle_card_contact(
+		_get_card_by_instance_id(entering_card_id),
+		_get_card_by_instance_id(target_card_id)
+	)
+
+
+func _handle_card_contact(entering_card, target_card) -> void:
 	if entering_card == null or target_card == null:
 		return
 	if not is_instance_valid(entering_card) or not is_instance_valid(target_card):
@@ -100,7 +119,8 @@ func _create_battle_scene(first_card: Card3D, second_card: Card3D) -> BattleScen
 	battle_scene.card_entered_battle_area.connect(_on_battle_card_entered)
 	battle_scene.battle_area_touched.connect(_on_battle_area_touched)
 	battle_scene.battle_finished.connect(_on_battle_finished)
-	battle_scene.tree_exiting.connect(func(): active_battle_scenes.erase(battle_scene), CONNECT_ONE_SHOT)
+	# 战斗场景释放时按实例 id 清理，避免 signal 回调闭包持有 BattleScene3D。
+	battle_scene.tree_exiting.connect(_on_battle_scene_tree_exiting.bind(battle_scene.get_instance_id()), CONNECT_ONE_SHOT)
 
 	battle_scene.add_card(first_card, false, -1.0, false)
 	battle_scene.add_card(second_card, false, -1.0, false)
@@ -112,10 +132,21 @@ func _create_battle_scene(first_card: Card3D, second_card: Card3D) -> BattleScen
 
 
 func _on_battle_card_entered(battle_scene: BattleScene3D, card: Card3D) -> void:
-	call_deferred("_handle_battle_card_entered", battle_scene, card)
+	var battle_scene_id := _get_instance_id(battle_scene)
+	var card_id := _get_instance_id(card)
+	if battle_scene_id == 0 or card_id == 0:
+		return
+	call_deferred("_handle_battle_card_entered_by_id", battle_scene_id, card_id)
 
 
-func _handle_battle_card_entered(battle_scene: BattleScene3D, card: Card3D) -> void:
+func _handle_battle_card_entered_by_id(battle_scene_id: int, card_id: int) -> void:
+	_handle_battle_card_entered(
+		_get_battle_scene_by_instance_id(battle_scene_id),
+		_get_card_by_instance_id(card_id)
+	)
+
+
+func _handle_battle_card_entered(battle_scene, card) -> void:
 	if battle_scene == null or card == null:
 		return
 	if not active_battle_scenes.has(battle_scene):
@@ -164,7 +195,7 @@ func _merge_battle_scenes(first_scene: BattleScene3D, second_scene: BattleScene3
 	var insert_left := merged.global_position.x < keeper.global_position.x
 
 	print("【BattleManager】合并 3D 战斗: 保留 #%d，迁移 #%d" % [keeper.creation_index, merged.creation_index])
-	var migrated_units := await merged.extract_cards_for_merge()
+	var migrated_units := merged.extract_cards_for_merge()
 	if not is_instance_valid(keeper) or not is_instance_valid(merged):
 		_active_merge_keys.erase(merge_key)
 		return
@@ -197,13 +228,24 @@ func _on_battle_finished(battle_scene: BattleScene3D) -> void:
 	active_battle_scenes.erase(battle_scene)
 
 
-func _get_card_battle_scene(card: Card3D) -> BattleScene3D:
-	if card == null or not card.has_meta(BATTLE_META_KEY):
+func _on_battle_scene_tree_exiting(battle_scene_id: int) -> void:
+	for battle_scene in active_battle_scenes.duplicate():
+		if battle_scene == null or not is_instance_valid(battle_scene):
+			active_battle_scenes.erase(battle_scene)
+			continue
+		if battle_scene.get_instance_id() == battle_scene_id:
+			active_battle_scenes.erase(battle_scene)
+			return
+
+
+func _get_card_battle_scene(card) -> BattleScene3D:
+	var card_3d := _get_valid_card(card)
+	if card_3d == null or not card_3d.has_meta(BATTLE_META_KEY):
 		return null
 
-	var battle_scene := card.get_meta(BATTLE_META_KEY) as BattleScene3D
+	var battle_scene := card_3d.get_meta(BATTLE_META_KEY) as BattleScene3D
 	if battle_scene == null or not is_instance_valid(battle_scene):
-		card.remove_meta(BATTLE_META_KEY)
+		card_3d.remove_meta(BATTLE_META_KEY)
 		return null
 
 	return battle_scene
@@ -217,10 +259,42 @@ func _get_merge_key(first_scene: BattleScene3D, second_scene: BattleScene3D) -> 
 	return "%s:%s" % [second_id, first_id]
 
 
-func _is_battle_card(card: Card3D) -> bool:
-	return card != null and (card.card_info is CharacterCard or card.card_info is EnemyCard)
+func _is_battle_card(card) -> bool:
+	var card_3d := _get_valid_card(card)
+	return card_3d != null and (card_3d.card_info is CharacterCard or card_3d.card_info is EnemyCard)
 
 
-func _are_opponents(first_card: Card3D, second_card: Card3D) -> bool:
-	return (first_card.card_info is CharacterCard and second_card.card_info is EnemyCard) \
-			or (first_card.card_info is EnemyCard and second_card.card_info is CharacterCard)
+func _are_opponents(first_card, second_card) -> bool:
+	var first_card_3d := _get_valid_card(first_card)
+	var second_card_3d := _get_valid_card(second_card)
+	if first_card_3d == null or second_card_3d == null:
+		return false
+	return (first_card_3d.card_info is CharacterCard and second_card_3d.card_info is EnemyCard) \
+			or (first_card_3d.card_info is EnemyCard and second_card_3d.card_info is CharacterCard)
+
+
+func _get_card_by_instance_id(card_id: int) -> Card3D:
+	return _get_valid_card(instance_from_id(card_id))
+
+
+func _get_battle_scene_by_instance_id(battle_scene_id: int) -> BattleScene3D:
+	var instance := instance_from_id(battle_scene_id)
+	if instance == null or not is_instance_valid(instance):
+		return null
+	return instance as BattleScene3D
+
+
+func _get_valid_card(candidate) -> Card3D:
+	if candidate == null or not (candidate is Object):
+		return null
+	if not is_instance_valid(candidate):
+		return null
+	return candidate as Card3D
+
+
+func _get_instance_id(candidate) -> int:
+	if candidate == null or not (candidate is Object):
+		return 0
+	if not is_instance_valid(candidate):
+		return 0
+	return candidate.get_instance_id()
