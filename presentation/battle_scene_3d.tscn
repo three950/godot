@@ -1,6 +1,6 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene format=3 uid="uid://dm28lkdhyoemx"]
 
-[ext_resource type="Script" path="res://presentation/battle_scene_3d.gd" id="1_battle_scene_3d"]
+[ext_resource type="Script" uid="uid://m663s4oq62tg" path="res://presentation/battle_scene_3d.gd" id="1_battle_scene_3d"]
 [ext_resource type="StyleBox" path="res://presentation/battle_scene_border_style.tres" id="2_battle_border_style"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_battle_fill"]
@@ -10,6 +10,9 @@ shading_mode = 2
 albedo_color = Color(0.33660772, 0.3366076, 0.33660755, 0.3647059)
 disable_receive_shadows = true
 
+[sub_resource type="PlaneMesh" id="PlaneMesh_battle_fill"]
+size = Vector2(8, 6)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_battle_border_viewport"]
 resource_local_to_scene = true
 resource_name = "BattleScene3DBorderViewport"
@@ -17,54 +20,50 @@ transparency = 1
 shading_mode = 2
 disable_receive_shadows = true
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_battle_fill"]
-size = Vector2(9, 7)
-
 [sub_resource type="PlaneMesh" id="PlaneMesh_battle_border"]
 size = Vector2(9, 7)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_battle_area"]
 size = Vector3(9, 0.8, 7)
 
-[node name="BattleScene3D" type="Node3D" groups=["BattleScenes3D"]]
+[node name="BattleScene3D" type="Node3D" unique_id=204192466 groups=["BattleScenes3D"]]
 script = ExtResource("1_battle_scene_3d")
 
-[node name="Visual" type="Node3D" parent="."]
+[node name="Visual" type="Node3D" parent="." unique_id=636335709]
 
-[node name="Fill" type="MeshInstance3D" parent="Visual"]
+[node name="Fill" type="MeshInstance3D" parent="Visual" unique_id=988901034]
 material_override = SubResource("StandardMaterial3D_battle_fill")
 cast_shadow = 0
 mesh = SubResource("PlaneMesh_battle_fill")
 
-[node name="BorderViewport" type="SubViewport" parent="Visual"]
+[node name="BorderViewport" type="SubViewport" parent="Visual" unique_id=344843235]
 disable_3d = true
 transparent_bg = true
 size = Vector2i(900, 700)
 render_target_update_mode = 4
 
-[node name="BorderPanel" type="Panel" parent="Visual/BorderViewport"]
-layout_mode = 0
+[node name="BorderPanel" type="Panel" parent="Visual/BorderViewport" unique_id=1445996113]
 offset_right = 900.0
 offset_bottom = 700.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("2_battle_border_style")
 
-[node name="BorderFrame" type="MeshInstance3D" parent="Visual"]
+[node name="BorderFrame" type="MeshInstance3D" parent="Visual" unique_id=163705951]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
 material_override = SubResource("StandardMaterial3D_battle_border_viewport")
 cast_shadow = 0
 mesh = SubResource("PlaneMesh_battle_border")
 
-[node name="BattleArea" type="Area3D" parent="."]
+[node name="BattleArea" type="Area3D" parent="." unique_id=545828589]
 collision_layer = 32
 collision_mask = 34
 input_ray_pickable = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BattleArea"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BattleArea" unique_id=677638604]
 shape = SubResource("BoxShape3D_battle_area")
 
-[node name="CharacterSlots" type="Node3D" parent="."]
+[node name="CharacterSlots" type="Node3D" parent="." unique_id=835637898]
 
-[node name="EnemySlots" type="Node3D" parent="."]
+[node name="EnemySlots" type="Node3D" parent="." unique_id=402868282]
 
-[node name="Effects" type="Node3D" parent="."]
+[node name="Effects" type="Node3D" parent="." unique_id=2013179718]
