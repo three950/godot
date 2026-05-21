@@ -8,8 +8,11 @@ signal battle_finished(battle_scene: BattleScene3D)
 const BASE_ATTACK_INTERVAL := 2.0
 const MIN_ATTACK_INTERVAL := 0.3
 const PROJECTILE_SCENE := preload("res://presentation/特效/bullet_3d.tscn")
+const HIT_EFFECT_SCENE := preload("res://presentation/特效/attack_3d.tscn")
 const PROJECTILE_HEIGHT_OFFSET := Vector3(0.0, 0.25, 0.0)
 const PROJECTILE_TRAVEL_TIME := 0.25
+const HIT_FEEDBACK_OFFSET := Vector3(1, 0.28, 1.3)
+const HIT_FEEDBACK_LIFETIME := 0.5
 
 @export var creation_index: int = 0
 @export var card_spacing: float = 3.0
@@ -349,7 +352,10 @@ func _perform_attack(attacker, target) -> void:
 	if target_resource == null:
 		return
 
+	var hp_before := target_resource.HP
 	target_resource.take_damage(damage)
+	var actual_damage := hp_before - target_resource.HP
+	_show_hit_feedback(target_card.global_position, actual_damage)
 	await _play_hit_effect(target_card)
 
 	target_card = _get_valid_card(target)
@@ -376,6 +382,29 @@ func _play_projectile(from_position: Vector3, to_position: Vector3) -> void:
 	# Tween 结束前战斗场景可能被合并/释放，回收前必须确认子弹实例仍然有效。
 	if is_instance_valid(bullet):
 		bullet.queue_free()
+
+
+func _show_hit_feedback(target_position: Vector3, damage: int) -> void:
+	if effects_root == null:
+		return
+
+	var tree := get_tree()
+	if tree == null:
+		return
+
+	var hit_feedback := HIT_EFFECT_SCENE.instantiate() as Attack3D
+	if hit_feedback == null:
+		return
+	hit_feedback.name = "HitFeedback"
+	# 受击反馈挂在 Effects 下并使用一次性全局坐标，避免目标卡牌抖动时特效跟着抖。
+	effects_root.add_child(hit_feedback)
+	hit_feedback.global_position = target_position + HIT_FEEDBACK_OFFSET
+	hit_feedback.damage = damage
+
+	# 这是纯视觉停留时间，不参与攻击冷却；保持和原受击抖动一样不接入全局战斗暂停。
+	await tree.create_timer(HIT_FEEDBACK_LIFETIME).timeout
+	if is_instance_valid(hit_feedback):
+		hit_feedback.queue_free()
 
 
 func _play_hit_effect(target) -> void:
