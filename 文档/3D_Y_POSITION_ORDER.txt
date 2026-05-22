@@ -1,0 +1,152 @@
+3D Y 轴高度整理（从高到低）所有节点全览，以父节点高度优先排序
+
+说明：
+这里只整理 3D 节点和 3D 运行时对象的“位置 y”。
+不把 2D 的 Vector2.y、Control/Node2D 位置、Mesh/Shape 的 size.y 当作高度列入。
+Area3D 和 CollisionShape3D 主要是检测/碰撞层，绝大多数高度都跟随父节点或卡面，不再单独展开；只有影响视觉或玩法高度的对象才列出来。
+静态场景里，父节点优先排列；同一个父节点下面的子节点再按 y 从高到低排列。
+
+
+一、静态 3D 场景与节点
+
+父节点：node_3d 根 Node3D
+父节点自身 y = 0。
+
+子节点从高到低：
+Camera3D：y = 15。运行时滚轮会以 0.5 为步长上下调整目标高度，实际相机 y 平滑追到目标值；相机平移只改 x/z，不改 y。
+
+DirectionalLight3D：y = 12.213525。
+
+3D 卡牌实例：娜娜奇、莉可、雷古、钓鱼竿、石块、鱼、树枝、毒针线虫，都是 card_3d.tscn 实例。显式设置的卡牌 y 都是 0；毒针线虫没有显式 transform，默认 y = 0。
+
+Ground：StaticBody3D，y = 0。
+
+OceanMesh：y = -0.3。
+
+
+父节点：Ground
+父节点自身 y = 0，位于 node_3d 根节点下。
+
+子节点从高到低：
+GroundMesh：local y = -0.052，所以当前全局 y = -0.052。
+
+GroundLayer01：local y = -3.052。
+
+GroundLayer02：local y = -6.052。
+
+GroundLayer03：local y = -9.052。
+
+GroundLayer04：local y = -12.052。
+
+GroundLayer05：local y = -15.052。
+
+
+父节点：card_3d.tscn 的 Card3d
+父节点自身默认 y = 0。所有 3D 卡牌实例都以这个节点为根。
+
+子节点从高到低：
+FrontFace：local y = 0.04。hover 时再加 0.05，pickup 时再加 0.1，hover + pickup 同时存在时总共加 0.15；所以它可能处在 0.04、0.09、0.14、0.19。
+
+BackFace：local y = 0.04。和 FrontFace 一样会被 hover/pickup 抬高，可能处在 0.04、0.09、0.14、0.19。
+
+检测区域：CardLabel、CardStackDetectorArea、CardPushDetectorArea 都跟随卡牌，local y = 0.04；它们只是点击、堆叠和推挤检测层，不单独展开。
+
+
+父节点：presentation/battle_scene_3d.tscn 的 BattleScene3D
+父节点自身默认 y = 0。运行时创建战斗场景时，会先取两张参战卡的中心点，再强制 center.y = 0，所以战斗场景全局 y 固定为 0。
+
+子节点从高到低：
+BorderFrame：场景内 local y = 0.04。运行时也会按 border_height * 0.5 + 0.01 重算；默认 border_height = 0.06，所以仍是 0.04。
+
+Visual/Fill：默认 local y = 0。
+
+CharacterSlots：默认 local y = 0。
+
+EnemySlots：默认 local y = 0。
+
+Effects：默认 local y = 0。
+
+战斗检测区域：BattleArea 默认 local y = 0，只用于战斗范围检测，不单独展开。
+
+
+父节点：presentation/特效/bullet_3d.tscn 的 Bullet3D
+父节点自身默认 y = 0。实际战斗中不会用这个默认高度，而是生成后设置到“攻击者卡牌 y + 0.25”。
+
+子节点从高到低：
+ViewportMesh：默认 local y = 0。
+
+
+父节点：presentation/特效/attack_3d.tscn 的 Attack3D
+父节点自身默认 y = 0。实际战斗中不会用这个默认高度，而是生成后设置到“目标卡牌 y + 0.28”。
+
+子节点从高到低：
+DamageLabel：默认 local y = 0。
+
+ViewportMesh：默认 local y = 0。
+
+
+二、运行时动态生成和移动规则
+
+父节点：Card3D 卡牌堆叠链
+父节点是被堆叠的目标卡牌。
+
+子节点和偏移从高到低：
+被堆上去的子卡：基于父卡 global_position，y 增加 stack_offset_y = 0.01。第二张卡 y = 父卡 y + 0.01，第三张卡再加 0.01，继续向上累加。z 同时每层加 0.48。
+
+拖拽中的卡：开始拖拽时记录当前 y，之后只改 x/z，不改 y。
+
+落地且没有堆叠的卡：回到自己的 base_plane_y。初始场景里的卡牌 base_plane_y 通常是 0。
+
+普通重叠推开逻辑：只改 x/z，不改 y；推开后会同步更新堆叠链子卡位置，子卡仍按每层 y + 0.01。
+
+
+父节点：正在合成的 Card3D
+父节点是显示合成进度条的卡牌。
+
+子节点从高到低：
+CardProgressBar3D：local y = 0，z = -1.95。所以它的全局 y 等于父卡当前 y，没有额外抬高。
+
+ProgressMesh3D：挂在 CardProgressBar3D 下，默认 local y = 0。
+
+
+父节点：BattleScene3D 战斗场景
+父节点自身运行时全局 y = 0。
+
+子节点和动态对象从高到低：
+BattleBullet：基于攻击者卡牌位置生成，y = attacker_card.y + 0.25；飞向目标时目标点也是 target_card.y + 0.25。正常战斗排布里卡牌 y = 0，所以子弹通常 y = 0.25。
+
+HitFeedback / Attack3D：基于目标卡牌位置生成，y = target_card.y + 0.28。正常战斗排布里目标卡 y = 0，所以受击数字通常 y = 0.28。
+
+HitWhiteMask：基于目标卡牌位置，沿卡牌法线加 hit_flash_surface_offset = 0.08。卡牌平放且法线朝 y 时，通常 y = target_card.y + 0.08；如果卡牌旋转，实际 y 偏移会取决于法线的 y 分量。
+
+战斗中角色/敌人卡牌：基于 BattleScene3D 的槽位 local y = 0。因为 BattleScene3D 全局 y = 0，所以卡牌通常 y = 0。
+
+受击抖动中的目标卡牌：短暂基于原位置加 y = 0.05，然后恢复原 y。正常情况下是 0 到 0.05 再回 0。
+
+非战斗卡推出战斗区：只改变 x/z，target_position.y 会强制设回 card.global_position.y，所以不改变 y。
+
+
+三、按实际高度汇总
+
+最高的固定对象：
+Camera3D，y = 15。
+DirectionalLight3D，y = 12.213525。
+
+主要玩法平面：
+BattleScene3D，y = 0。
+3D 卡牌根节点，通常 y = 0。
+Ground，y = 0。
+
+卡牌表面：
+卡牌 FrontFace / BackFace，local y = 0.04。
+hover/pickup 只抬高 FrontFace 和 BackFace，最高可到 local y = 0.19。
+
+战斗特效：
+受击数字通常 y = 0.28。
+子弹通常 y = 0.25。
+受击白闪通常 y = 0.08。
+受击抖动目标卡短暂 y = 0.05。
+
+地下/背景层：
+OceanMesh，y = -0.3。
+GroundLayer01 到 GroundLayer05，依次为 -3.052、-6.052、-9.052、-12.052、-15.052。

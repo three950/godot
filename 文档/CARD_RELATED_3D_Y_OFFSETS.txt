@@ -1,0 +1,96 @@
+卡牌相关 3D y 偏移整理（只列 y 不等于 0，从高到低）
+
+范围说明：
+本文件只关注和 Card3D、卡牌堆叠、卡牌合成、卡牌战斗表现直接相关的 3D 节点或运行时对象。排除动画和鼠标交互的视觉效果。
+不列 2D 的 Vector2.y、Control/Node2D 位置。
+不把 Mesh/Shape 的 size.y 当作位置高度。
+不列 y = 0 的对象，例如 Card3d 根节点、战斗槽位、合成进度条容器、bullet_3d/attack_3d 场景自身默认根节点。
+
+
+偏移 +0.28
+
+对象：HitFeedback / Attack3D 受击数字。
+类型：动态。
+基于：目标卡牌 target_card.global_position。
+规则：target_card.y + 0.28。
+
+
+偏移 +0.25
+
+对象：BattleBullet 战斗子弹。
+类型：动态。
+基于：攻击者卡牌和目标卡牌的 global_position。
+规则：起点是 attacker_card.y + 0.25，终点是 target_card.y + 0.25。
+
+
+偏移 +0.08
+
+对象：合成完成后新卡牌的揭示投掷动画起点。
+类型：动态。
+基于：新生成 Card3D 的落点 spawn_position。
+规则：start_position = spawn_position + Vector3(-1.15, 0.08, -0.9)。
+
+对象：HitWhiteMask 受击白色闪光遮罩。
+类型：动态。
+基于：目标卡牌 target_card.global_position 和卡牌当前法线。
+规则：target_card.global_position + card_normal * 0.08。
+
+
+偏移 +0.05
+
+对象：战斗中目标卡牌受击抖动。
+类型：动态。
+基于：目标卡牌 original_position。
+规则：original_position.y + 0.05，短暂抖动后恢复 original_position.y。
+
+
+偏移 +0.04
+
+对象：Card3D/FrontFace。
+类型：静态子节点。
+基于：Card3d 根节点。
+规则：local y = 0.04。
+
+对象：Card3D/BackFace。
+类型：静态子节点。
+基于：Card3d 根节点。
+规则：local y = 0.04。
+
+对象：Card3D/CardLabel。
+类型：静态子节点。
+基于：Card3d 根节点。
+规则：local y = 0.04。
+
+对象：BattleScene3D/Visual/BorderFrame。
+类型：静态加运行时重算。
+基于：BattleScene3D/Visual。
+规则：场景中 local y = 0.04；运行时按 border_height * 0.5 + 0.01 重算，默认 border_height = 0.06，所以结果仍是 0.04。
+
+
+偏移 +0.01
+
+对象：堆叠在另一张 Card3D 上的子卡。
+类型：动态。
+基于：父卡 global_position。
+规则：child_card.y = parent_card.y + stack_offset_y，默认 stack_offset_y = 0.01。
+
+
+动态但 y 偏移不固定或不是固定正偏移的卡牌相关对象
+
+对象：合成揭示投掷动画的弹跳阶段。
+类型：动态。
+基于：landing_position.y。
+规则：landing_position.y + bounce_height，bounce_height 来自飞行下落高度乘 bounce_height_scale 0.082，并按 bounce_height_decay 0.44 逐次衰减。
+说明：这是运行时曲线值，不是单一固定偏移；最高弹跳高度取决于本次飞行峰值和落点差。
+
+对象：拖拽中的 Card3D 根节点。
+类型：动态但不产生 y 偏移。
+基于：开始拖拽时的 global_position.y。
+规则：拖拽只改 x/z，y 保持开始拖拽时的值。
+说明：如果开始拖拽的是堆叠子卡，它会保持当时的堆叠 y；如果是普通卡，通常保持 y = 0。
+
+对象：战斗中非战斗卡被推出战斗区域。
+类型：动态但不产生 y 偏移。
+基于：被推动卡牌自己的 global_position.y。
+规则：推出逻辑只改 x/z，并把 target_position.y 设回 card.global_position.y。
+说明：不会改变卡牌高度。

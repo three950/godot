@@ -1,0 +1,13 @@
+3D render_priority 从大到小整理
+
+127：合成进度条（CardProgressBar 的 SubViewport 贴到 3D billboard 平面上）
+120：受击伤害数字（Attack3D 的 DamageLabel / Label3D）
+0：海洋动态 shader（OceanMesh 的 OceanWavesMaterial）
+-1：攻击 2D 特效贴图（Attack3D 的 2D SubViewport 贴到 ViewportMesh 平面上）
+-80：受击白色闪烁遮罩（战斗中动态生成的 HitWhiteMask，盖在卡牌表面）
+-127：地面 viewport 贴图（Ground/GroundMesh，把 Ground/SubViewport 内容贴到地面平面）
+-127：地下背景图层 01（GroundLayer01）
+-127：地下背景图层 02（GroundLayer02）
+-127：地下背景图层 03（GroundLayer03）
+-127：地下背景图层 04（GroundLayer04）
+-127：地下背景图层 05（GroundLayer05）
