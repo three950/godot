@@ -40,7 +40,7 @@ enum cardType {normal, selling, architecture}
 @onready var front_face: Node3D = $FrontFace as Node3D
 @onready var back_face: Node3D = $BackFace as Node3D
 @onready var card_viewport: SubViewport = $FrontFace/SubViewport as SubViewport
-
+@onready var bottom_left_hover_timer: Timer = %BottomLeftHoverTimer
 var overlapping_cards: Array[Card3D] = []
 var follow_target: Card3D = null
 var stack_state: int = 0
@@ -48,6 +48,7 @@ var children_card: Card3D = null
 var drag_offset: Vector3 = Vector3.ZERO
 var is_hovered: bool = false
 var is_picked_up: bool = false
+var _is_bottom_left_hovered: bool = false
 
 var _drag_camera: Camera3D = null
 var _drag_plane_y: float = 0.0
@@ -85,6 +86,13 @@ func _ready() -> void:
 	if stack_detector:
 		stack_detector.area_entered.connect(_on_stack_detector_area_entered)
 		stack_detector.area_exited.connect(_on_stack_detector_area_exited)
+
+	# 左下角悬停检测只负责本地鼠标停留，不接入全局暂停。
+	if bottom_left_hover_timer:
+		bottom_left_hover_timer.one_shot = true
+		bottom_left_hover_timer.wait_time = 0.6
+		if not bottom_left_hover_timer.timeout.is_connected(_on_bottom_left_hover_timer_timeout):
+			bottom_left_hover_timer.timeout.connect(_on_bottom_left_hover_timer_timeout)
 
 	if not stacking_on_you.is_connected(bestacked_on_me):
 		stacking_on_you.connect(bestacked_on_me)
@@ -393,9 +401,40 @@ func _on_mouse_entered() -> void:
 func _on_mouse_exited() -> void:
 	if card_state_machine:
 		card_state_machine.on_mouse_exited()
+	_set_bottom_left_hovered(false)
 	if follow_target != null:
 		return
 	_remove_hover_offset()
+
+
+func _on_bottom_left_hover_area_mouse_entered() -> void:
+	_set_bottom_left_hovered(true)
+
+
+func _on_bottom_left_hover_area_mouse_exited() -> void:
+	_set_bottom_left_hovered(false)
+
+
+func _set_bottom_left_hovered(is_hovered_now: bool) -> void:
+	if _is_bottom_left_hovered == is_hovered_now:
+		return
+
+	_is_bottom_left_hovered = is_hovered_now
+	if bottom_left_hover_timer == null:
+		return
+
+	if _is_bottom_left_hovered:
+		# 鼠标进入左下区域后重新计时，只有停满 1 秒才触发打印。
+		bottom_left_hover_timer.start()
+	else:
+		# 离开区域就取消本次悬停检测，避免短暂停留也触发。
+		bottom_left_hover_timer.stop()
+
+
+func _on_bottom_left_hover_timer_timeout() -> void:
+	if not _is_bottom_left_hovered:
+		return
+	print("鼠标悬停触发")
 
 
 func _on_stack_detector_area_entered(area: Area3D) -> void:
@@ -479,6 +518,15 @@ func _update_ray_hover(mouse_position: Vector2) -> void:
 	var camera := get_viewport().get_camera_3d()
 	var hit := _get_top_card_hit(mouse_position, camera)
 	var is_hit: bool = not hit.is_empty() and hit.get("card") == self
+	var is_bottom_left_hit := false
+
+	if is_hit:
+		# PlaneMesh 卡面以 X/Z 表示宽高；这里取左下四分之一区域。
+		var local_position: Vector3 = hit["local_position"]
+		var half_size := face_size * 0.5
+		is_bottom_left_hit = local_position.x >= -half_size.x and local_position.x <= 0.0 \
+				and local_position.z >= 0.0 and local_position.z <= half_size.y
+	_set_bottom_left_hovered(is_bottom_left_hit)
 
 	if is_hit and not _ray_hovered:
 		_ray_hovered = true
@@ -534,6 +582,7 @@ func _intersect_face_ray(mouse_position: Vector2, camera: Camera3D) -> Dictionar
 	var global_hit := to_global(local_hit)
 	return {
 		"position": global_hit,
+		"local_position": local_hit,
 		"normal": global_transform.basis.y.normalized(),
 		"distance": ray_origin.distance_to(global_hit),
 	}

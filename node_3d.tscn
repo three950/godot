@@ -21,6 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://duvau7fgx21p" path="res://presentation/background/空洞地表.png" id="20_layer_default_tex"]
 [ext_resource type="Script" uid="uid://bxyb8ihft7c6l" path="res://script_folder/battle_manager.gd" id="21_battle_manager"]
 [ext_resource type="Resource" uid="uid://do4ivypcif1tw" path="res://assets/人物与敌人/Enemy/enemys/毒针线虫.tres" id="21_lggff"]
+[ext_resource type="PackedScene" uid="uid://6mswy8o4g4l5" path="res://character_3d.tscn" id="22_s0gvp"]
 
 [sub_resource type="Environment" id="Environment_card_shadow"]
 ambient_light_source = 2
@@ -125,6 +126,10 @@ script = ExtResource("6_battle")
 metadata/_custom_type_script = "uid://bf2o85td7sner"
 
 [sub_resource type="Resource" id="Resource_s0gvp"]
+script = ExtResource("6_battle")
+metadata/_custom_type_script = "uid://bf2o85td7sner"
+
+[sub_resource type="Resource" id="Resource_vxd74"]
 script = ExtResource("6_battle")
 metadata/_custom_type_script = "uid://bf2o85td7sner"
 
@@ -261,3 +266,8 @@ card_info = ExtResource("15_ealrb")
 cardname = "毒针线虫"
 card_info = ExtResource("21_lggff")
 battle = SubResource("Resource_s0gvp")
+
+[node name="Card3d" parent="." unique_id=460396809 instance=ExtResource("22_s0gvp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 0)
+card_info = ExtResource("8_riko")
+battle = SubResource("Resource_vxd74")

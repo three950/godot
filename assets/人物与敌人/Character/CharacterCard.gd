@@ -7,7 +7,6 @@ extends BattleStates
 
 func set_POW(value: int) -> void:
 	POW = value
-	set_ATK(POW)
 
 @export var 武器: Array[ThingsCard] = [null]
 @export var 防具: Array[ThingsCard] = [null]
