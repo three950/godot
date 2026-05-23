@@ -25,7 +25,7 @@ func _ready() -> void:
 	_update_remains_display()
 
 func _update_remains_display() -> void:
-	# 调用父类通用更新（设置 name, cardname, label, texture, value）
+	# 调用父类通用更新（设置 name, label, texture, value）
 	_update_things_display()
 	# 更新遗物特有的等级标签
 	if remains and grade_label:

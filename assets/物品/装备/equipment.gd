@@ -13,7 +13,7 @@ func _ready() -> void:
 	_update_equipment_display()
 
 func _update_equipment_display() -> void:
-	# 调用父类通用更新（设置 name, cardname, label, texture, value）
+	# 调用父类通用更新（设置 name, label, texture, value）
 	_update_things_display()
 	# 更新装备特有的效果标签
 	if equipment and effect_label:

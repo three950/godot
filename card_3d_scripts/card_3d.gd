@@ -116,7 +116,7 @@ func _cache_card_view_nodes() -> void:
 
 	card_2d_label = card_2d.get_node_or_null("CardColor/Panel/Label") as Label
 	if card_2d_label == null:
-		card_2d_label = card_2d.get_node_or_null("cardColor/Panel/Label") as Label
+		card_2d_label = card_2d.get_node_or_null("CardColor/Panel/Label") as Label
 	if card_2d_label == null:
 		card_2d_label = card_2d.find_child("Label", true, false) as Label
 	card_2d_texture = card_2d.find_child("TextureRect", true, false) as TextureRect

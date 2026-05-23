@@ -37,9 +37,8 @@ func _spawn_card() -> void:
 	var cards_group = get_tree().get_first_node_in_group("Cards")
 	if cards_group:
 		cards_group.add_child(card_instance)
-	card_instance.global_position = global_position
-	if card_instance.shooter:
-		card_instance.shooter.play_card_shooter(spawn_position)
+	# 旧 2D Shooter 发牌动画已移除；3D 化后这里直接把生成卡放到目标偏移位置。
+	card_instance.global_position = spawn_position
 	print("卡牌已生成于位置: %s, 卡牌名称: %s" % [spawn_position, spawn_card_info.name if spawn_card_info else "默认"])
 
 

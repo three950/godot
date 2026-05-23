@@ -19,7 +19,7 @@ func get_value() -> int:
 
 # 通用的物品卡片更新方法
 func _update_things_display() -> void:
-	# 调用父类通用更新（设置 name, cardname, label, texture）
+	# 调用父类通用更新（设置 name, label, texture）
 	_update_card_display()
 	# 更新价值标签
 	var resource = get_things_resource()

@@ -3,7 +3,6 @@
 [ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="2_b646a"]
 [ext_resource type="Script" uid="uid://cr4xcgnxahlhf" path="res://assets/人物与敌人/Enemy/enemy.gd" id="2_bbcg6"]
 [ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://presentation/fonts/font.tres" id="2_qolkw"]
-[ext_resource type="Script" uid="uid://cvwtip1ly5e7f" path="res://script_folder/animations_shooter.gd" id="3_b646a"]
 [ext_resource type="Script" uid="uid://cq4u5v6w7x80a" path="res://assets/人物与敌人/attribute_labels.gd" id="3_krhvb"]
 [ext_resource type="PackedScene" uid="uid://cmnkn73ocu7av" path="res://presentation/特效/attack.tscn" id="5_qolkw"]
 [ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://presentation/fonts/Xolonium-Regular.ttf" id="6_62c3k"]
@@ -38,20 +37,20 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_bbcg6")
 
-[node name="cardColor" type="Control" parent="."]
+[node name="CardColor" type="Control" parent="."]
 layout_mode = 0
 offset_right = 264.0
 offset_bottom = 342.0
 mouse_filter = 2
 
-[node name="CardPanel" type="Panel" parent="cardColor"]
+[node name="CardPanel" type="Panel" parent="CardColor"]
 layout_mode = 0
 offset_right = 264.0
 offset_bottom = 342.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_krhvb")
 
-[node name="Panel" type="Panel" parent="cardColor"]
+[node name="Panel" type="Panel" parent="CardColor"]
 layout_mode = 0
 offset_left = 6.0
 offset_top = 6.0
@@ -60,7 +59,7 @@ offset_bottom = 48.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_hpx2h")
 
-[node name="Label" type="Label" parent="cardColor/Panel"]
+[node name="Label" type="Label" parent="CardColor/Panel"]
 layout_mode = 0
 offset_right = 84.0
 offset_bottom = 14.0
@@ -110,9 +109,6 @@ collision_mask = 0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BattleStartArea"]
 position = Vector2(129.5, 168)
 shape = SubResource("RectangleShape2D_krhvb")
-
-[node name="shooter" type="Node" parent="."]
-script = ExtResource("3_b646a")
 
 [node name="AttributeLabels" type="HBoxContainer" parent="."]
 layout_mode = 0

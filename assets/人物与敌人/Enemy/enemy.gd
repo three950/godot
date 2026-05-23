@@ -10,7 +10,7 @@ var _needs_initial_update := false
 
 # 节点引用
 @onready var attribute_labels: AttributeLabels = $AttributeLabels
-@onready var card_label: Label = $cardColor/Panel/Label
+@onready var card_label: Label = $CardColor/Panel/Label
 @onready var card_texture: TextureRect = $TextureRect
 
 func _ready() -> void:

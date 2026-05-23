@@ -33,7 +33,6 @@ size = Vector2(264, 341)
 offset_top = -171.0
 offset_bottom = 174.0
 script = ExtResource("2_dm7l3")
-character = null
 battle = SubResource("Resource_7cwdw")
 
 [node name="white" type="Panel" parent="." index="4" unique_id=1681073263]
@@ -80,7 +79,7 @@ clip_text = true
 script = ExtResource("3_dm7l3")
 bag_sound = ExtResource("4_ig4cw")
 
-[node name="BattleStartArea" type="Area2D" parent="." index="10" unique_id=1801794464]
+[node name="BattleStartArea" type="Area2D" parent="." index="6" unique_id=1801794464]
 visible = false
 position = Vector2(3, 3)
 collision_layer = 4

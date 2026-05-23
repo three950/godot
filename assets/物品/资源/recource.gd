@@ -15,7 +15,7 @@ func _ready() -> void:
 	if not Engine.is_editor_hint():
 		Events.food_have_update.emit(recource.nutrition)
 func _update_resource_display() -> void:
-	# 调用父类通用更新（设置 name, cardname, label, texture, value）
+	# 调用父类通用更新（设置 name, label, texture, value）
 	_update_things_display()
 	food_label.text = str(recource.nutrition)
 

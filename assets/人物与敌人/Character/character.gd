@@ -17,9 +17,19 @@ func _ready() -> void:
 	battle = battle.duplicate()
 
 func _exit_tree() -> void:
-	# 角色被删除时发送食物需求减少信号（排除拖拽时的 reparent 情况）
-	if is_queued_for_deletion():
+	# 角色被删除时发送食物需求减少信号。
+	# 3D 化后 Character 常作为 Card3D/SubViewport 的子节点存在，战斗死亡释放的是外层 Card3D。
+	# 因此不能只判断自己是否 queue_free，也要判断父级是否正在删除；普通拖拽 reparent 不会命中这个条件。
+	if _is_deleting_with_owner():
 		Events.food_need_update.emit(-2)
+
+func _is_deleting_with_owner() -> bool:
+	var node: Node = self
+	while node != null:
+		if node.is_queued_for_deletion():
+			return true
+		node = node.get_parent()
+	return false
 
 func get_battle_resource() -> BattleStates:
 	return character

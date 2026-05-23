@@ -2,6 +2,8 @@ extends Card
 class_name BattleCard
 # 战斗卡片的基类，包含 enemy 和 character 的共同功能
 
+@export var battle: BattleState
+
 var _needs_initial_update := false
 
 @onready var attribute_labels: AttributeLabels = $AttributeLabels
@@ -16,7 +18,7 @@ func get_card_resource() -> CardInfo:
 
 # 子类需要重写这个方法，执行具体的更新逻辑（设置 HP 等战斗属性）
 func _update_battle_card() -> void:
-	# 调用父类通用更新方法（设置 name, cardname, label, texture）
+	# 调用父类通用更新方法（设置 name, label, texture）
 	_update_card_display()
 	_request_subviewport_redraw()
 

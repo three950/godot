@@ -4,7 +4,6 @@
 [ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://presentation/fonts/Xolonium-Regular.ttf" id="2_61llo"]
 [ext_resource type="StyleBox" uid="uid://bv510uix8lck3" path="res://assets/cardpanel.tres" id="2_p0bds"]
 [ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="3_p0bds"]
-[ext_resource type="Script" uid="uid://cvwtip1ly5e7f" path="res://script_folder/animations_shooter.gd" id="4_shooter"]
 [ext_resource type="StyleBox" path="res://assets/card_border.tres" id="5_border"]
 
 [sub_resource type="GDScript" id="GDScript_jsic4"]
@@ -22,20 +21,20 @@ offset_bottom = 174.0
 script = SubResource("GDScript_jsic4")
 metadata/_edit_lock_ = true
 
-[node name="cardColor" type="Control" parent="."]
+[node name="CardColor" type="Control" parent="."]
 layout_mode = 0
 offset_right = 264.0
 offset_bottom = 342.0
 mouse_filter = 2
 
-[node name="CardPanel" type="Panel" parent="cardColor"]
+[node name="CardPanel" type="Panel" parent="CardColor"]
 layout_mode = 0
 offset_right = 264.0
 offset_bottom = 342.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("1_61llo")
 
-[node name="Panel" type="Panel" parent="cardColor"]
+[node name="Panel" type="Panel" parent="CardColor"]
 layout_mode = 0
 offset_left = 6.0
 offset_top = 6.0
@@ -44,7 +43,7 @@ offset_bottom = 48.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("2_p0bds")
 
-[node name="Label" type="Label" parent="cardColor/Panel"]
+[node name="Label" type="Label" parent="CardColor/Panel"]
 layout_mode = 0
 offset_right = 84.0
 offset_bottom = 14.0
@@ -85,8 +84,3 @@ offset_bottom = 261.0
 mouse_filter = 2
 texture = ExtResource("3_p0bds")
 expand_mode = 1
-
-[node name="Shooter" type="Node" parent="." node_paths=PackedStringArray("card")]
-script = ExtResource("4_shooter")
-card = NodePath("..")
-metadata/_custom_type_script = "uid://cvwtip1ly5e7f"

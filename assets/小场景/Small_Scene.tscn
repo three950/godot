@@ -9,7 +9,7 @@ scene = null
 spawn_offset = Vector2(0, 360)
 cardpool = null
 
-[node name="cardColor" parent="." index="0"]
+[node name="CardColor" parent="." index="0"]
 anchors_preset = 0
 
 [node name="CardBorder" parent="." index="1"]

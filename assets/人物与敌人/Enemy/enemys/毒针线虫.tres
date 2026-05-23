@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="EnemyCard" load_steps=4 format=3 uid="uid://do4ivypcif1tw"]
+[gd_resource type="Resource" script_class="EnemyCard" format=3 uid="uid://do4ivypcif1tw"]
 
 [ext_resource type="Texture2D" uid="uid://ccg6ro7r3trco" path="res://assets/人物与敌人/Enemy/enemys/毒针线虫.jpg" id="1_ft5gs"]
 [ext_resource type="Script" uid="uid://c5d3up0hwneb" path="res://assets/人物与敌人/Enemy/EnemyCard.gd" id="1_fvscb"]
-[ext_resource type="PackedScene" uid="uid://b1n4d84218ejx" path="res://assets/人物与敌人/Enemy/enemy.tscn" id="1_obcq5"]
+[ext_resource type="PackedScene" uid="uid://d33c5tbwan3si" path="res://assets/人物与敌人/Enemy/enemy.tscn" id="1_obcq5"]
 
 [resource]
 script = ExtResource("1_fvscb")
