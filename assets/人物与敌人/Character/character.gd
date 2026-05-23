@@ -7,6 +7,10 @@ signal battlestart(enemy_node: Enemy, character_node: Character)
 var _battle_started := false
 @export var character: CharacterCard : set = set_character_stats# 引用 characters 目录下的资源
 
+# 角色卡右上角的装备图标入口：武器和防具各占一个固定格子。
+@onready var weapon_icon: TextureRect = get_node_or_null("CardColor/equips/weapon") as TextureRect
+@onready var armour_icon: TextureRect = get_node_or_null("CardColor/equips/armour") as TextureRect
+
 func _ready() -> void:
 	super._ready()
 	# 角色生成时发送食物需求更新信号
@@ -44,8 +48,45 @@ func _update_battle_card() -> void:
 	character.HP = character.MAX_HP
 	update_stats()
 
+func update_stats() -> void:
+	# 先复用战斗卡基类的生命值刷新，再补充角色专属的装备 UI。
+	super.update_stats()
+	refresh_equipment_ui()
+
+func refresh_equipment_ui() -> void:
+	# 背包槽位变动时会直接调用这里，确保 2D UI 和 3D 卡牌 SubViewport 同步刷新一帧。
+	_update_equipment_icon()
+	_request_subviewport_redraw()
+
+func _update_equipment_icon() -> void:
+	var weapon = character.武器[0] if character.武器.size() > 0 else null
+	var armour = character.防具[0] if character.防具.size() > 0 else null
+
+	if weapon != null and weapon.portrait != null:
+		weapon_icon.texture = weapon.portrait
+
+	if armour != null and armour.portrait != null:
+		armour_icon.texture = armour.portrait
+
+func _get_equipped_things_cards() -> Array[ThingsCard]:
+	var result: Array[ThingsCard] = []
+	if character == null:
+		return result
+
+	# 角色当前的装备来源只有两个有效位置：武器[0] 和 防具[0]。
+	# 仍然返回数组，是为了复用初始化特性和装备数值的通用循环。
+	var weapon_card := character.武器[0]
+	if weapon_card != null:
+		result.append(weapon_card)
+
+	var armour_card := character.防具[0]
+	if armour_card != null:
+		result.append(armour_card)
+
+	return result
+
 func _update_features() -> void:
-	for card in character.武器:
+	for card in _get_equipped_things_cards():
 		if card is ThingsCard:
 			if card.添加特性 != "" and not character.特性.has(card.添加特性):
 				character.特性.append(card.添加特性)

@@ -53,7 +53,7 @@ func place_card(card: Card, apply_effects: bool = true) -> void:
 	# 3. 按需应用物品特性 / 装备效果
 	if apply_effects:
 		var card_info := card.get_card_resource()
-		if card_info is ThingsCard:
+		if card_info is ThingsCard and owner_character and owner_character.character:
 			if card_info.添加特性 != "":
 				owner_character.character.特性.append(card_info.添加特性)
 				print("【BagSlot】添加特性：", owner_character.character.特性)
@@ -74,6 +74,9 @@ func place_card(card: Card, apply_effects: bool = true) -> void:
 	# 4. 设置位置（居中对齐，使用局部坐标）
 	card.position = (size - card.size * card.scale) / 2.0
 	
+	# 5. 装备槽内容变动后，同步 CharacterCard 的武器/防具数组，并刷新角色卡 UI/Viewport。
+	_notify_bag_equipment_changed()
+	
 	print("【BagSlot】卡片 %s 放入槽位，缩放: %.2f" % [card.name, scale_ratio])
 
 ## 移除槽位中的卡片并返回
@@ -83,6 +86,7 @@ func remove_card() -> Card:
 		remove_child(card)
 		# 移除卡片添加的特性 / 装备效果
 		_remove_card_effects(card)
+		_notify_bag_equipment_changed()
 	return card
 
 ## 仅移除当前槽位中卡片的效果，不移除节点（用于拖拽开始时预先扣除属性）
@@ -93,6 +97,9 @@ func unequip_only() -> void:
 
 ## 内部工具函数：根据卡片信息移除对应效果
 func _remove_card_effects(card: Card) -> void:
+	if owner_character == null or owner_character.character == null:
+		return
+
 	var card_info := card.get_card_resource()
 	if card_info is ThingsCard:
 		if card_info.添加特性 != "":
@@ -105,6 +112,15 @@ func _remove_card_effects(card: Card) -> void:
 				owner_character.character.ATK -= equip_card.equip_effect
 			1:
 				owner_character.character.DEF -= equip_card.equip_effect
+
+func _notify_bag_equipment_changed() -> void:
+	# BagSlot 被包在多层容器里，所以向父级一路查找 BagArea，而不是写死节点路径。
+	var node: Node = self
+	while node != null:
+		if node is BagArea:
+			(node as BagArea).sync_character_equipment_from_slots()
+			return
+		node = node.get_parent()
 
 func show_owned_card(card_data:ThingsCard) -> void:
 	if not card_data:

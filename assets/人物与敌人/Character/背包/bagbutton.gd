@@ -12,8 +12,8 @@ func _ready() -> void:
 	else:
 		push_warning("【防具按钮】未找到 Character 节点")
 		return
-	# 加载防具场景但不实例化
-	bag_scene = load("res://assets/人物与敌人/Character/防具/bag.tscn")
+	# 加载背包场景但不实例化；人物背包现在只保留一个武器槽和一个防具槽。
+	bag_scene = load("res://assets/人物与敌人/Character/背包/bag.tscn")
 	if not bag_scene:
 		push_warning("【防具按钮】无法加载防具场景")
 	pressed.connect(toggle_bag)
@@ -34,12 +34,13 @@ func open_bag() -> void:
 	if not bag or not is_instance_valid(bag):
 		if bag_scene:
 			bag = bag_scene.instantiate()
-			# 设置与原场景相同的属性
+			# 设置背包弹出位置；尺寸由 bag.tscn 自己控制，避免旧多槽尺寸继续撑大 UI。
+			var bag_size: Vector2 = bag.size
 			bag.layout_mode = 0
 			bag.offset_left = 94.0*3
 			bag.offset_top = -7.0*3
-			bag.offset_right = 282.0*3
-			bag.offset_bottom = 123.0*3
+			bag.offset_right = bag.offset_left + bag_size.x
+			bag.offset_bottom = bag.offset_top + bag_size.y
 			bag.mouse_filter = 2
 			bag.add_to_group("Cards")
 			
