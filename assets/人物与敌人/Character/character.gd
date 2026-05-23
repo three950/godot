@@ -3,7 +3,6 @@ extends "res://assets/人物与敌人/battle_card.gd"
 
 # 信号：战斗开始
 signal battlestart(enemy_node: Enemy, character_node: Character)
-@onready var battle_start_area: Area2D = $BattleStartArea
 # 标记战斗是否已经开始（防止重复触发）
 var _battle_started := false
 @export var character: CharacterCard : set = set_character_stats# 引用 characters 目录下的资源
@@ -46,7 +45,7 @@ func _update_battle_card() -> void:
 	update_stats()
 
 func _update_features() -> void:
-	for card in character.左右手:
+	for card in character.武器:
 		if card is ThingsCard:
 			if card.添加特性 != "" and not character.特性.has(card.添加特性):
 				character.特性.append(card.添加特性)
@@ -64,14 +63,10 @@ func _update_features() -> void:
 func 进入战斗状态() -> void:
 	# 标记战斗已开始
 	_battle_started = true
-	battle_start_area.monitoring = false
-	battle_start_area.monitorable = false
 	z_index=1
 	print("【character】已进入战斗状态")
 
 func 退出战斗状态() -> void:
 	# 重置战斗标记
 	_battle_started = false
-	battle_start_area.monitoring = true
-	battle_start_area.monitorable = true
 	print("【character】已退出战斗")

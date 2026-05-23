@@ -9,6 +9,6 @@ func set_POW(value: int) -> void:
 	POW = value
 	set_ATK(POW)
 
-@export var 左右手: Array[ThingsCard] = [null, null]
-@export var 背包: Array[ThingsCard] = [null, null, null, null, null, null]
+@export var 武器: Array[ThingsCard] = [null]
+@export var 防具: Array[ThingsCard] = [null]
 @export var 特性 : Array[String]

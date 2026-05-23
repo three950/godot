@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://b1oqblyvspkqi" path="res://assets/人物与敌人/biology.tscn" id="1_gn5pa"]
 [ext_resource type="Texture2D" uid="uid://ccg6ro7r3trco" path="res://assets/人物与敌人/Enemy/enemys/毒针线虫.jpg" id="2_bbcg6"]
+[ext_resource type="Script" uid="uid://cr4xcgnxahlhf" path="res://assets/人物与敌人/Enemy/enemy.gd" id="3_8hy1n"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b646a"]
 bg_color = Color(0.89, 0.52836335, 0.48059997, 1)
@@ -10,6 +11,7 @@ bg_color = Color(0.89, 0.52836335, 0.48059997, 1)
 bg_color = Color(0.892628, 0.40677065, 0.34169585, 1)
 
 [node name="BiologyCard" unique_id=763618913 instance=ExtResource("1_gn5pa")]
+script = ExtResource("3_8hy1n")
 
 [node name="CardPanel" parent="CardColor" parent_id_path=PackedInt32Array(93157455) index="0" unique_id=1495404947]
 theme_override_styles/panel = SubResource("StyleBoxFlat_b646a")

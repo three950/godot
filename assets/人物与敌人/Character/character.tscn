@@ -13,9 +13,3 @@ offset_top = -171.0
 offset_bottom = 174.0
 script = ExtResource("2_dm7l3")
 battle = SubResource("Resource_7cwdw")
-
-[node name="TextureRect" parent="." index="2" unique_id=1571016305]
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0

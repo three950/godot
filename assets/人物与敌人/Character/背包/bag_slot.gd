@@ -116,7 +116,7 @@ func show_owned_card(card_data:ThingsCard) -> void:
 	var card = card_data.card_scene.instantiate()
 	if card.has_method("set_stats"):
 		card.set_stats(card_data)
-	# 使用统一的 place_card 方法，但初次加载背包时只做摆放，不重复应用特性 / 装备效果
+	# 使用统一的 place_card 方法，但初次加载防具时只做摆放，不重复应用特性 / 装备效果
 	place_card(card, false)
 	print("生成卡片")
 

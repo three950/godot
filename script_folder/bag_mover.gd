@@ -1,7 +1,7 @@
 class_name BagMover
 extends Node
 
-var bag_area: Array[BagArea] = []  # 动态管理的背包列表
+var bag_area: Array[BagArea] = []  # 动态管理的防具列表
 
 var dragging_card: Card = null  # 当前正在拖拽的卡片
 var drag_start_position: Vector2 = Vector2.ZERO  # 拖拽开始时的位置
@@ -82,10 +82,10 @@ func _clear_all_highlights() -> void:
 		current_highlight_slot.set_highlight(false)
 	current_highlight_slot = null
 
-func _get_bag_area_for_position(global: Vector2) -> int:#获得是场景中的哪一个背包（索引）
+func _get_bag_area_for_position(global: Vector2) -> int:#获得是场景中的哪一个防具（索引）
 	var dropoed_bag_index:=-1
 	for index in bag_area.size():
-		# 使用背包节点的包围盒检查是否包含该点
+		# 使用防具节点的包围盒检查是否包含该点
 		var rect = Rect2(bag_area[index].global_position, bag_area[index].size)
 		if rect.has_point(global):
 			dropoed_bag_index=index
@@ -100,12 +100,12 @@ func _add_card_to_slot(global: Vector2, card: Card) -> void:
 			slot.place_card(card)
 	
 func _get_slot_for_position(bag: BagArea, global: Vector2) -> BagSlot:#获得是哪一个槽位
-	"""获取背包中包含指定位置的槽位"""
-	# 检查左右手槽位
+	"""获取防具中包含指定位置的槽位"""
+	# 检查武器槽位
 	for slot in bag.hand_slots:
 		if slot.contains_global_point(global):
 			return slot
-	# 检查背包槽位
+	# 检查防具槽位
 	for slot in bag.backpack_slots:
 		if slot.contains_global_point(global):
 			return slot
@@ -154,15 +154,15 @@ func _on_card_dropped(card: Card) -> void:
 	var target_bag_index = _get_bag_area_for_position(card_center)
 	var target_slot = null
 	
-	# 如果卡片中心在某个背包内，找到最近的槽位
+	# 如果卡片中心在某个防具内，找到最近的槽位
 	if target_bag_index >= 0:
 		var bag = bag_area[target_bag_index]
 		target_slot = _get_nearest_slot(bag, card_center)
-		print("【BagMover】卡片放置在背包索引：", target_bag_index)
+		print("【BagMover】卡片放置在防具索引：", target_bag_index)
 	
 	# 如果没有有效的目标槽位，不做处理（让卡片自己的逻辑处理）
 	if not target_slot:
-		print("【BagMover】卡片未放置在背包槽位中")
+		print("【BagMover】卡片未放置在防具槽位中")
 		# 如果一开始是从某个槽位拖出来的，此时已经在 _on_card_drag_started 里卸下过装备效果，
 		# 这里不再做属性变更，只是结束拖拽
 		dragging_card = null

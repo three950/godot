@@ -4,7 +4,7 @@ signal card_fixed()
 signal card_put_in_bag(card:Card)
 signal stack_changed(card: Card3D)
 
-# 背包注册/注销信号
+# 防具注册/注销信号
 signal bag_registered(bag: BagArea)
 signal bag_unregistered(bag: BagArea)
 

@@ -17,4 +17,5 @@ craft_materials = Array[ExtResource("1_r6xg6")]([ExtResource("2_c3nyw"), ExtReso
 "合成时间" = 5.0
 name = "探窟稿"
 portrait = ExtResource("5_klggm")
+type = 4
 metadata/_custom_type_script = "uid://b6vcycxqwdmqc"

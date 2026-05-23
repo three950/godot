@@ -7,7 +7,10 @@
 script = ExtResource("2_rkhsv")
 equipment = null
 
-[node name="EffectLabel" type="Label" parent="." index="2" unique_id=1215477815]
+[node name="TextureRect" parent="." index="2" unique_id=1571016305]
+unique_name_in_owner = false
+
+[node name="EffectLabel" type="Label" parent="." index="5" unique_id=1215477815]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 96.0
@@ -17,6 +20,3 @@ offset_bottom = 293.5
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "ATK+5"
-
-[node name="TextureRect" parent="." index="5" unique_id=1571016305]
-unique_name_in_owner = false
