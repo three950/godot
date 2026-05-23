@@ -1,51 +1,37 @@
 [gd_scene format=3 uid="uid://b1oqblyvspkqi"]
 
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="1_3c02q"]
-[ext_resource type="Script" uid="uid://cq4u5v6w7x80a" path="res://assets/人物与敌人/attribute_labels.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://43lijddecmer" path="res://presentation/ui/心.png" id="2_3c2ks"]
 [ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://presentation/fonts/Xolonium-Regular.ttf" id="2_font"]
 
 [node name="BiologyCard" unique_id=763618913 instance=ExtResource("1_3c02q")]
 
-[node name="AttributeLabels" type="HBoxContainer" parent="." index="7" unique_id=1427162710]
-unique_name_in_owner = true
+[node name="Heart" type="TextureRect" parent="." index="3" unique_id=1794393133]
 layout_mode = 0
-offset_left = 7.0
-offset_top = 265.0
-offset_right = 255.0
-offset_bottom = 337.0
-mouse_filter = 2
-alignment = 1
-script = ExtResource("1_script")
+offset_left = 187.0
+offset_top = 270.0
+offset_right = 245.0
+offset_bottom = 331.0
+texture = ExtResource("2_3c2ks")
+expand_mode = 1
 
-[node name="HPLabel" type="Label" parent="AttributeLabels" index="0" unique_id=161215820]
+[node name="HPLabel" type="Label" parent="Heart" index="0" unique_id=161215820]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -23.0
+offset_top = -13.254547
+offset_right = 17.0
+offset_bottom = 20.745453
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.8, 0.2, 0.2, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 27
 text = "10"
 vertical_alignment = 1
-
-[node name="RightStats" type="VBoxContainer" parent="AttributeLabels" index="1" unique_id=1956390952]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 0
-
-[node name="ATKLabel" type="Label" parent="AttributeLabels/RightStats" index="0" unique_id=235588389]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.6, 0.1, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 27
-text = "1"
-horizontal_alignment = 2
-
-[node name="DEFLabel" type="Label" parent="AttributeLabels/RightStats" index="1" unique_id=1420225139]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.5, 0.8, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 27
-text = "0"
-horizontal_alignment = 2

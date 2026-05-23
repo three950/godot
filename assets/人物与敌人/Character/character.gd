@@ -19,12 +19,12 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	# 角色被删除时发送食物需求减少信号。
 	# 3D 化后 Character 常作为 Card3D/SubViewport 的子节点存在，战斗死亡释放的是外层 Card3D。
-	# 因此不能只判断自己是否 queue_free，也要判断父级是否正在删除；普通拖拽 reparent 不会命中这个条件。
-	if _is_deleting_with_owner():
+	# 这里只关心父级链路被释放的情况；普通拖拽 reparent 不会命中这个条件。
+	if _is_parent_deleting():
 		Events.food_need_update.emit(-2)
 
-func _is_deleting_with_owner() -> bool:
-	var node: Node = self
+func _is_parent_deleting() -> bool:
+	var node: Node = get_parent()
 	while node != null:
 		if node.is_queued_for_deletion():
 			return true
@@ -59,15 +59,7 @@ func _update_features() -> void:
 				match card.equip_type:
 					0:character.ATK += card.equip_effect
 					1:character.DEF += card.equip_effect
-					
-func _on_battle_start_area_area_entered(area: Area2D) -> void:
-	# 检测到碰撞时，发出战斗开始信号
-	var enemy = area.get_parent()
-	if _battle_started or enemy._battle_started:return
-	print("【character】检测到与角色碰撞，发出全局战斗开始请求")
-	enemy._battle_started = true
-	进入战斗状态()
-	Events.battle_start_requested.emit(self, enemy)
+
 
 func 进入战斗状态() -> void:
 	# 标记战斗已开始

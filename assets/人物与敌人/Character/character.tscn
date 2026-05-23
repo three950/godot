@@ -2,32 +2,11 @@
 
 [ext_resource type="PackedScene" uid="uid://b1oqblyvspkqi" path="res://assets/人物与敌人/biology.tscn" id="1_p58c1"]
 [ext_resource type="Script" uid="uid://blvsy21y0f4uy" path="res://assets/人物与敌人/Character/character.gd" id="2_dm7l3"]
-[ext_resource type="Script" uid="uid://cijuakdd8g5rt" path="res://assets/人物与敌人/Character/背包/bagbutton.gd" id="3_dm7l3"]
 [ext_resource type="Script" uid="uid://bf2o85td7sner" path="res://base_data/battle_stats.gd" id="3_pntmc"]
-[ext_resource type="PackedScene" uid="uid://cmnkn73ocu7av" path="res://presentation/特效/attack.tscn" id="4_7cwdw"]
-[ext_resource type="AudioStream" uid="uid://c1ey1n8wfd5ml" path="res://声音资产/useful/背包打开/box of cereal handled 3.wav" id="4_ig4cw"]
 
 [sub_resource type="Resource" id="Resource_7cwdw"]
 script = ExtResource("3_pntmc")
 metadata/_custom_type_script = "uid://bf2o85td7sner"
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7cwdw"]
-bg_color = Color(1, 1, 1, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p58c1"]
-bg_color = Color(1, 1, 1, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 21
-corner_radius_top_right = 21
-corner_radius_bottom_right = 21
-corner_radius_bottom_left = 21
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ig4cw"]
-size = Vector2(264, 341)
 
 [node name="character" unique_id=1325524042 instance=ExtResource("1_p58c1")]
 offset_top = -171.0
@@ -35,58 +14,8 @@ offset_bottom = 174.0
 script = ExtResource("2_dm7l3")
 battle = SubResource("Resource_7cwdw")
 
-[node name="white" type="Panel" parent="." index="4" unique_id=1681073263]
-visible = false
-custom_minimum_size = Vector2(88, 115)
-layout_mode = 0
-offset_right = 264.0
-offset_bottom = 346.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_7cwdw")
-
-[node name="Polygon2D" parent="white" index="0" unique_id=1449743058 instance=ExtResource("4_7cwdw")]
-position = Vector2(43.000004, 268)
-scale = Vector2(0.7308323, 0.7333644)
-
-[node name="attackLabel" type="Label" parent="white" index="1" unique_id=942352485]
-layout_mode = 0
-offset_left = 28.0
-offset_top = 242.0
-offset_right = 52.0
-offset_bottom = 300.625
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 12
-theme_override_font_sizes/font_size = 35
-text = "6"
-horizontal_alignment = 1
-
-[node name="bagbutton" type="Button" parent="." index="5" unique_id=77096557]
-layout_mode = 0
-offset_left = 244.0
-offset_top = 142.0
-offset_right = 280.0
-offset_bottom = 217.0
-focus_mode = 0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 21
-theme_override_styles/normal = SubResource("StyleBoxFlat_p58c1")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_p58c1")
-theme_override_styles/hover = SubResource("StyleBoxFlat_p58c1")
-text = "🎒"
-autowrap_mode = 3
-autowrap_trim_flags = 64
-clip_text = true
-script = ExtResource("3_dm7l3")
-bag_sound = ExtResource("4_ig4cw")
-
-[node name="BattleStartArea" type="Area2D" parent="." index="6" unique_id=1801794464]
-visible = false
-position = Vector2(3, 3)
-collision_layer = 4
-collision_mask = 8
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BattleStartArea" index="0" unique_id=401418083]
-position = Vector2(129, 167.5)
-shape = SubResource("RectangleShape2D_ig4cw")
-
-[connection signal="area_entered" from="BattleStartArea" to="." method="_on_battle_start_area_area_entered"]
+[node name="TextureRect" parent="." index="2" unique_id=1571016305]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0

@@ -2,11 +2,48 @@
 
 [ext_resource type="Texture2D" uid="uid://ccg6ro7r3trco" path="res://assets/人物与敌人/Enemy/enemys/毒针线虫.jpg" id="1_ft5gs"]
 [ext_resource type="Script" uid="uid://c5d3up0hwneb" path="res://assets/人物与敌人/Enemy/EnemyCard.gd" id="1_fvscb"]
-[ext_resource type="PackedScene" uid="uid://d33c5tbwan3si" path="res://assets/人物与敌人/Enemy/enemy.tscn" id="1_obcq5"]
+[ext_resource type="Script" uid="uid://cr4xcgnxahlhf" path="res://assets/人物与敌人/Enemy/enemy.gd" id="1_x7hgw"]
+[ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://presentation/fonts/font.tres" id="2_jordd"]
+[ext_resource type="StyleBox" uid="uid://bvwjiyah8s1yh" path="res://assets/card_border.tres" id="3_iyna7"]
+[ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="4_103eq"]
+[ext_resource type="Script" uid="uid://cq4u5v6w7x80a" path="res://assets/人物与敌人/attribute_labels.gd" id="5_8cpla"]
+[ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://presentation/fonts/Xolonium-Regular.ttf" id="6_veqde"]
+[ext_resource type="PackedScene" uid="uid://cmnkn73ocu7av" path="res://presentation/特效/attack.tscn" id="7_nwg3c"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_krhvb"]
+bg_color = Color(0.8831649, 0.3872493, 0.34170684, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hpx2h"]
+bg_color = Color(0.74368256, 0.27023113, 0.23480722, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_krhvb"]
+size = Vector2(263, 342)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wv3eb"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="PackedScene" id="PackedScene_depnt"]
+_bundled = {
+"conn_count": 0,
+"conns": PackedInt32Array(),
+"editable_instances": [],
+"id_paths": [PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array()],
+"names": PackedStringArray("Enemy", "Control", "layout_mode", "anchors_preset", "anchor_right", "anchor_bottom", "offset_left", "offset_top", "offset_right", "offset_bottom", "grow_horizontal", "grow_vertical", "script", "cardColor", "Control", "layout_mode", "offset_right", "offset_bottom", "mouse_filter", "CardPanel", "Panel", "layout_mode", "offset_right", "offset_bottom", "mouse_filter", "theme_override_styles/panel", "Panel", "Panel", "layout_mode", "offset_left", "offset_top", "offset_right", "offset_bottom", "mouse_filter", "theme_override_styles/panel", "Label", "Label", "layout_mode", "offset_right", "offset_bottom", "theme_override_colors/font_color", "theme_override_fonts/font", "theme_override_font_sizes/font_size", "text", "CardBorder", "Control", "layout_mode", "offset_right", "offset_bottom", "mouse_filter", "z_index", "OuterBorder", "Panel", "layout_mode", "offset_right", "offset_bottom", "mouse_filter", "theme_override_styles/panel", "TitleBottomBorder", "ColorRect", "layout_mode", "offset_left", "offset_top", "offset_right", "offset_bottom", "mouse_filter", "color", "TextureRect", "TextureRect", "layout_mode", "offset_left", "offset_top", "offset_right", "offset_bottom", "mouse_filter", "texture", "expand_mode", "BattleStartArea", "Area2D", "position", "collision_layer", "collision_mask", "CollisionShape2D", "CollisionShape2D", "position", "shape", "AttributeLabels", "HBoxContainer", "layout_mode", "offset_left", "offset_top", "offset_right", "offset_bottom", "mouse_filter", "alignment", "script", "HPLabel", "Label", "unique_name_in_owner", "layout_mode", "size_flags_horizontal", "theme_override_colors/font_color", "theme_override_fonts/font", "theme_override_font_sizes/font_size", "text", "vertical_alignment", "RightStats", "VBoxContainer", "layout_mode", "mouse_filter", "theme_override_constants/separation", "ATKLabel", "Label", "unique_name_in_owner", "layout_mode", "theme_override_colors/font_color", "theme_override_fonts/font", "theme_override_font_sizes/font_size", "text", "horizontal_alignment", "DEFLabel", "Label", "unique_name_in_owner", "layout_mode", "theme_override_colors/font_color", "theme_override_fonts/font", "theme_override_font_sizes/font_size", "text", "horizontal_alignment", "white", "Panel", "visible", "custom_minimum_size", "layout_mode", "offset_right", "offset_bottom", "theme_override_styles/panel", "Polygon2D", "position", "scale", "attackLabel", "Label", "layout_mode", "offset_left", "offset_top", "offset_right", "offset_bottom", "theme_override_colors/font_color", "theme_override_colors/font_outline_color", "theme_override_constants/outline_size", "theme_override_font_sizes/font_size", "text", "horizontal_alignment"),
+"node_count": 19,
+"node_ids": PackedInt32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+"node_paths": [NodePath("."), NodePath("./cardColor"), NodePath("./cardColor"), NodePath("./cardColor/Panel"), NodePath("."), NodePath("./CardBorder"), NodePath("./CardBorder"), NodePath("."), NodePath("."), NodePath("./BattleStartArea"), NodePath("."), NodePath("./AttributeLabels"), NodePath("./AttributeLabels"), NodePath("./AttributeLabels/RightStats"), NodePath("./AttributeLabels/RightStats"), NodePath("."), NodePath("./white"), NodePath("./white")],
+"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 11, 2, 0, 3, 1, 4, 2, 5, 3, 6, 4, 7, 5, 8, 6, 9, 7, 10, 8, 11, 9, 12, 10, 0, 1073741824, 0, 14, 13, -1, 4, 15, 11, 16, 12, 17, 13, 18, 14, 0, 1073741825, 0, 20, 19, -1, 5, 21, 15, 22, 16, 23, 17, 24, 18, 25, 19, 0, 1073741826, 0, 27, 26, -1, 7, 28, 20, 29, 21, 30, 22, 31, 23, 32, 24, 33, 25, 34, 26, 0, 1073741827, 0, 36, 35, -1, 7, 37, 27, 38, 28, 39, 29, 40, 30, 41, 31, 42, 32, 43, 33, 0, 1073741828, 0, 45, 44, -1, 5, 46, 34, 47, 35, 48, 36, 49, 37, 50, 38, 0, 1073741829, 0, 52, 51, -1, 5, 53, 39, 54, 40, 55, 41, 56, 42, 57, 43, 0, 1073741830, 0, 59, 58, -1, 7, 60, 44, 61, 45, 62, 46, 63, 47, 64, 48, 65, 49, 66, 50, 0, 1073741831, 0, 68, 67, -1, 8, 69, 51, 70, 52, 71, 53, 72, 54, 73, 55, 74, 56, 75, 57, 76, 58, 0, 1073741832, 0, 78, 77, -1, 3, 79, 59, 80, 60, 81, 61, 0, 1073741833, 0, 83, 82, -1, 2, 84, 62, 85, 63, 0, 1073741834, 0, 87, 86, -1, 8, 88, 64, 89, 65, 90, 66, 91, 67, 92, 68, 93, 69, 94, 70, 95, 71, 0, 1073741835, 0, 97, 96, -1, 8, 98, 72, 99, 73, 100, 74, 101, 75, 102, 76, 103, 77, 104, 78, 105, 79, 0, 1073741836, 0, 107, 106, -1, 3, 108, 80, 109, 81, 110, 82, 0, 1073741837, 0, 112, 111, -1, 7, 113, 83, 114, 84, 115, 85, 116, 86, 117, 87, 118, 88, 119, 89, 0, 1073741838, 0, 121, 120, -1, 7, 122, 90, 123, 91, 124, 92, 125, 93, 126, 94, 127, 95, 128, 96, 0, 1073741839, 0, 130, 129, -1, 6, 131, 97, 132, 98, 133, 99, 134, 100, 135, 101, 136, 102, 0, 1073741840, 0, 2147483647, 137, 103, 2, 138, 104, 139, 105, 0, 1073741841, 0, 141, 140, -1, 11, 142, 106, 143, 107, 144, 108, 145, 109, 146, 110, 147, 111, 148, 112, 149, 113, 150, 114, 151, 115, 152, 116, 0),
+"variants": [3, 15, 1.0, 1.0, -132.0, -171.0, -1788.0, -906.0, 2, 2, ExtResource("1_x7hgw"), 0, 264.0, 342.0, 2, 0, 264.0, 342.0, 2, SubResource("StyleBoxFlat_krhvb"), 0, 6.0, 6.0, 258.0, 48.0, 2, SubResource("StyleBoxFlat_hpx2h"), 0, 84.0, 14.0, Color(0, 0, 0, 1), ExtResource("2_jordd"), 30, "莉可", 0, 264.0, 342.0, 2, 1, 0, 264.0, 342.0, 2, ExtResource("3_iyna7"), 0, 6.0, 45.0, 258.0, 48.0, 2, Color(0, 0, 0, 1), 0, 15.0, 54.0, 250.749, 261.0, 2, ExtResource("4_103eq"), 1, Vector2(3, 3), 12, 0, Vector2(129.5, 168), SubResource("RectangleShape2D_krhvb"), 0, 7.0, 266.0, 255.0, 338.0, 2, 1, ExtResource("5_8cpla"), true, 2, 3, Color(0.8, 0.2, 0.2, 1), ExtResource("6_veqde"), 27, "10", 1, 2, 2, 0, true, 2, Color(0.9, 0.6, 0.1, 1), ExtResource("6_veqde"), 27, "1", 2, true, 2, Color(0.2, 0.5, 0.8, 1), ExtResource("6_veqde"), 27, "0", 2, false, Vector2(88, 115), 0, 264.0, 346.0, SubResource("StyleBoxFlat_wv3eb"), ExtResource("7_nwg3c"), Vector2(43.000004, 268), Vector2(0.7308323, 0.7333644), 0, 28.0, 242.0, 52.0, 300.625, Color(1, 1, 1, 1), Color(0, 0, 0, 1), 12, 35, "6", 1],
+"version": 3
+}
 
 [resource]
 script = ExtResource("1_fvscb")
-card_scene = ExtResource("1_obcq5")
+card_scene = SubResource("PackedScene_depnt")
 MAX_HP = 30
 ATK = 6
 speed = 8

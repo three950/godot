@@ -8,8 +8,10 @@ extends Control
 # 标记是否需要在 _ready 时初始化
 var _needs_initial_update := false
 
-# 节点引用
-@onready var attribute_labels: AttributeLabels = $AttributeLabels
+# 节点引用：数值直接更新到标签节点，不再经过 AttributeLabels 脚本中转。
+@onready var hp_label: Label = get_node_or_null("%HPLabel") as Label
+@onready var atk_label: Label = get_node_or_null("%ATKLabel") as Label
+@onready var def_label: Label = get_node_or_null("%DEFLabel") as Label
 @onready var card_label: Label = $CardColor/Panel/Label
 @onready var card_texture: TextureRect = $TextureRect
 
@@ -56,9 +58,11 @@ func _update_enemy_display() -> void:
 # 更新属性标签显示（HP、ATK、DEF）
 func update_stats() -> void:
 	if enemy == null:return
-	if attribute_labels == null:return
+	if hp_label == null or atk_label == null or def_label == null:return
 	
-	attribute_labels.update_labels(enemy.HP, enemy.ATK, enemy.DEF)
+	hp_label.text = str(enemy.HP)
+	atk_label.text = str(enemy.ATK)
+	def_label.text = str(enemy.DEF)
 	_request_subviewport_redraw()
 
 

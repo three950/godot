@@ -1,9 +1,9 @@
 [gd_resource type="StyleBoxTexture" format=3 uid="uid://dwvyky4wlqori"]
 
-[ext_resource type="Texture2D" uid="uid://dt0wc6jvvvhaq" path="res://presentation/ui/战斗区域.png" id="1_vpgme"]
+[ext_resource type="Texture2D" uid="uid://dt0wc6jvvvhaq" path="res://presentation/ui/战斗区域.png" id="1_sakpr"]
 
 [resource]
-texture = ExtResource("1_vpgme")
+texture = ExtResource("1_sakpr")
 texture_margin_left = 16.0
 texture_margin_top = 16.0
 texture_margin_right = 16.0

@@ -1,179 +1,24 @@
 [gd_scene format=3 uid="uid://d33c5tbwan3si"]
 
-[ext_resource type="Texture2D" uid="uid://4l1ub2w8fptr" path="res://icon.svg" id="2_b646a"]
-[ext_resource type="Script" uid="uid://cr4xcgnxahlhf" path="res://assets/人物与敌人/Enemy/enemy.gd" id="2_bbcg6"]
-[ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://presentation/fonts/font.tres" id="2_qolkw"]
-[ext_resource type="Script" uid="uid://cq4u5v6w7x80a" path="res://assets/人物与敌人/attribute_labels.gd" id="3_krhvb"]
-[ext_resource type="PackedScene" uid="uid://cmnkn73ocu7av" path="res://presentation/特效/attack.tscn" id="5_qolkw"]
-[ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://presentation/fonts/Xolonium-Regular.ttf" id="6_62c3k"]
-[ext_resource type="StyleBox" path="res://assets/card_border.tres" id="7_border"]
+[ext_resource type="PackedScene" uid="uid://b1oqblyvspkqi" path="res://assets/人物与敌人/biology.tscn" id="1_gn5pa"]
+[ext_resource type="Texture2D" uid="uid://ccg6ro7r3trco" path="res://assets/人物与敌人/Enemy/enemys/毒针线虫.jpg" id="2_bbcg6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b646a"]
+bg_color = Color(0.89, 0.52836335, 0.48059997, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_krhvb"]
-bg_color = Color(0.8831649, 0.3872493, 0.34170684, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+bg_color = Color(0.892628, 0.40677065, 0.34169585, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hpx2h"]
-bg_color = Color(0.74368256, 0.27023113, 0.23480722, 1)
+[node name="BiologyCard" unique_id=763618913 instance=ExtResource("1_gn5pa")]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_krhvb"]
-size = Vector2(263, 342)
+[node name="CardPanel" parent="CardColor" parent_id_path=PackedInt32Array(93157455) index="0" unique_id=1495404947]
+theme_override_styles/panel = SubResource("StyleBoxFlat_b646a")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wv3eb"]
-bg_color = Color(1, 1, 1, 1)
-
-[node name="Enemy" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -132.0
-offset_top = -171.0
-offset_right = -1788.0
-offset_bottom = -906.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("2_bbcg6")
-
-[node name="CardColor" type="Control" parent="."]
-layout_mode = 0
-offset_right = 264.0
-offset_bottom = 342.0
-mouse_filter = 2
-
-[node name="CardPanel" type="Panel" parent="CardColor"]
-layout_mode = 0
-offset_right = 264.0
-offset_bottom = 342.0
-mouse_filter = 2
+[node name="Panel" parent="CardColor" parent_id_path=PackedInt32Array(93157455) index="1" unique_id=1642299539]
 theme_override_styles/panel = SubResource("StyleBoxFlat_krhvb")
 
-[node name="Panel" type="Panel" parent="CardColor"]
-layout_mode = 0
-offset_left = 6.0
-offset_top = 6.0
-offset_right = 258.0
-offset_bottom = 48.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_hpx2h")
-
-[node name="Label" type="Label" parent="CardColor/Panel"]
-layout_mode = 0
-offset_right = 84.0
-offset_bottom = 14.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("2_qolkw")
-theme_override_font_sizes/font_size = 30
-text = "莉可"
-
-[node name="CardBorder" type="Control" parent="."]
-layout_mode = 0
-offset_right = 264.0
-offset_bottom = 342.0
-mouse_filter = 2
-z_index = 1
-
-[node name="OuterBorder" type="Panel" parent="CardBorder"]
-layout_mode = 0
-offset_right = 264.0
-offset_bottom = 342.0
-mouse_filter = 2
-theme_override_styles/panel = ExtResource("7_border")
-
-[node name="TitleBottomBorder" type="ColorRect" parent="CardBorder"]
-layout_mode = 0
-offset_left = 6.0
-offset_top = 45.0
-offset_right = 258.0
-offset_bottom = 48.0
-mouse_filter = 2
-color = Color(0, 0, 0, 1)
-
-[node name="TextureRect" type="TextureRect" parent="."]
-layout_mode = 0
-offset_left = 15.0
-offset_top = 54.0
-offset_right = 250.749
-offset_bottom = 261.0
-mouse_filter = 2
-texture = ExtResource("2_b646a")
-expand_mode = 1
-
-[node name="BattleStartArea" type="Area2D" parent="."]
-position = Vector2(3, 3)
-collision_layer = 12
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BattleStartArea"]
-position = Vector2(129.5, 168)
-shape = SubResource("RectangleShape2D_krhvb")
-
-[node name="AttributeLabels" type="HBoxContainer" parent="."]
-layout_mode = 0
-offset_left = 7.0
-offset_top = 266.0
-offset_right = 255.0
-offset_bottom = 338.0
-mouse_filter = 2
-alignment = 1
-script = ExtResource("3_krhvb")
-
-[node name="HPLabel" type="Label" parent="AttributeLabels"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.8, 0.2, 0.2, 1)
-theme_override_fonts/font = ExtResource("6_62c3k")
-theme_override_font_sizes/font_size = 27
-text = "10"
-vertical_alignment = 1
-
-[node name="RightStats" type="VBoxContainer" parent="AttributeLabels"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 0
-
-[node name="ATKLabel" type="Label" parent="AttributeLabels/RightStats"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.6, 0.1, 1)
-theme_override_fonts/font = ExtResource("6_62c3k")
-theme_override_font_sizes/font_size = 27
-text = "1"
-horizontal_alignment = 2
-
-[node name="DEFLabel" type="Label" parent="AttributeLabels/RightStats"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.5, 0.8, 1)
-theme_override_fonts/font = ExtResource("6_62c3k")
-theme_override_font_sizes/font_size = 27
-text = "0"
-horizontal_alignment = 2
-
-[node name="white" type="Panel" parent="."]
-visible = false
-custom_minimum_size = Vector2(88, 115)
-layout_mode = 0
-offset_right = 264.0
-offset_bottom = 346.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_wv3eb")
-
-[node name="Polygon2D" parent="white" instance=ExtResource("5_qolkw")]
-position = Vector2(43.000004, 268)
-scale = Vector2(0.7308323, 0.7333644)
-
-[node name="attackLabel" type="Label" parent="white"]
-layout_mode = 0
-offset_left = 28.0
-offset_top = 242.0
-offset_right = 52.0
-offset_bottom = 300.625
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 12
-theme_override_font_sizes/font_size = 35
-text = "6"
-horizontal_alignment = 1
+[node name="TextureRect" parent="." index="2" unique_id=1571016305]
+offset_left = -21.0
+offset_top = 59.0
+offset_right = 282.48648
+texture = ExtResource("2_bbcg6")

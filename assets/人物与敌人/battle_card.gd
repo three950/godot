@@ -6,7 +6,8 @@ class_name BattleCard
 
 var _needs_initial_update := false
 
-@onready var attribute_labels: AttributeLabels = $AttributeLabels
+# biology.tscn 现在只保留心形图标里的 HPLabel。
+@onready var hp_label: Label = get_node_or_null("%HPLabel") as Label
 
 # 子类需要重写这个方法，返回 BattleStates 类型的资源
 func get_battle_resource() -> BattleStates:
@@ -42,9 +43,12 @@ func update_stats() -> void:
 	var resource = get_battle_resource()
 	if resource == null:
 		return
-	if attribute_labels == null:
+
+	if hp_label == null:
 		return
-	attribute_labels.update_labels(resource.HP, resource.ATK, resource.DEF)
+
+	# 当前 UI 只显示生命值；ATK/DEF 没有对应节点时不在这里处理。
+	hp_label.text = str(resource.HP)
 	_request_subviewport_redraw()
 
 

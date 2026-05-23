@@ -1,12 +1,12 @@
-[gd_scene format=3 uid="uid://cxgk8a5mjy27v"]
+[gd_scene format=3 uid="uid://dy2rhsbeonnni"]
 
-[ext_resource type="StyleBox" uid="uid://b0256y5bp2byj" path="res://assets/card.tres" id="5_agldc"]
-[ext_resource type="StyleBox" uid="uid://bv510uix8lck3" path="res://assets/cardpanel.tres" id="6_3tu4f"]
-[ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://presentation/fonts/font.tres" id="7_xo5ip"]
-[ext_resource type="Texture2D" uid="uid://be64xwxsumg26" path="res://presentation/ui/线条.png" id="8_line"]
-[ext_resource type="Texture2D" uid="uid://kkohhrkwmk7y" path="res://美术资产/character/娜娜奇完整版.png" id="16_3tu4f"]
+[ext_resource type="StyleBox" uid="uid://b0256y5bp2byj" path="res://assets/card.tres" id="1_wy3nu"]
+[ext_resource type="StyleBox" uid="uid://bv510uix8lck3" path="res://assets/cardpanel.tres" id="2_ayqif"]
+[ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://presentation/fonts/font.tres" id="3_by1o0"]
+[ext_resource type="Texture2D" uid="uid://be64xwxsumg26" path="res://presentation/ui/线条.png" id="4_57s3f"]
+[ext_resource type="Texture2D" uid="uid://kkohhrkwmk7y" path="res://美术资产/character/娜娜奇完整版.png" id="5_dwnhi"]
 
-[node name="Card2" type="Control" unique_id=33495198]
+[node name="Card" type="Control" unique_id=33495198]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 264.0
@@ -25,7 +25,7 @@ offset_top = 4.0
 offset_right = 260.0
 offset_bottom = 338.0
 mouse_filter = 2
-theme_override_styles/panel = ExtResource("5_agldc")
+theme_override_styles/panel = ExtResource("1_wy3nu")
 
 [node name="Panel" type="Panel" parent="CardColor" unique_id=1642299539]
 layout_mode = 0
@@ -34,7 +34,7 @@ offset_top = 6.0
 offset_right = 258.0
 offset_bottom = 56.0
 mouse_filter = 2
-theme_override_styles/panel = ExtResource("6_3tu4f")
+theme_override_styles/panel = ExtResource("2_ayqif")
 
 [node name="Label" type="Label" parent="CardColor/Panel" unique_id=748114393]
 unique_name_in_owner = true
@@ -48,7 +48,7 @@ offset_right = 93.0
 offset_bottom = 20.9375
 grow_vertical = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("7_xo5ip")
+theme_override_fonts/font = ExtResource("3_by1o0")
 theme_override_font_sizes/font_size = 30
 text = "莉可"
 
@@ -63,7 +63,7 @@ mouse_filter = 2
 points = PackedVector2Array(8, 4, 256, 4, 257.5307, 4.3045, 258.8284, 5.1716, 259.6955, 6.4693, 260, 8, 260, 334, 259.6955, 335.5307, 258.8284, 336.8284, 257.5307, 337.6955, 256, 338, 8, 338, 6.4693, 337.6955, 5.1716, 336.8284, 4.3045, 335.5307, 4, 334, 4, 8, 4.3045, 6.4693, 5.1716, 5.1716, 6.4693, 4.3045)
 closed = true
 width = 8.0
-texture = ExtResource("8_line")
+texture = ExtResource("4_57s3f")
 texture_mode = 1
 joint_mode = 2
 
@@ -71,17 +71,17 @@ joint_mode = 2
 position = Vector2(0, 2)
 points = PackedVector2Array(0, 53, 264, 53)
 width = 4.0
-texture = ExtResource("8_line")
+texture = ExtResource("4_57s3f")
 texture_mode = 1
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1571016305]
 unique_name_in_owner = true
 texture_filter = 1
 layout_mode = 0
-offset_left = -22.0
-offset_top = 51.0
-offset_right = 290.56757
-offset_bottom = 326.35712
+offset_left = 7.0
+offset_top = 56.0
+offset_right = 256.0
+offset_bottom = 275.35712
 mouse_filter = 2
-texture = ExtResource("16_3tu4f")
+texture = ExtResource("5_dwnhi")
 expand_mode = 1
