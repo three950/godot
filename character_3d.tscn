@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://6mswy8o4g4l5"]
 
-[ext_resource type="Script" uid="uid://bb4d4tgrwyjye" path="res://card_3d_scripts/card_3d.gd" id="1_2ewqt"]
 [ext_resource type="Script" uid="uid://dyxa1qfcee2ef" path="res://card_3d_scripts/card_3d_overlap_pusher.gd" id="2_wijti"]
+[ext_resource type="Script" uid="uid://bf2o85td7sner" path="res://base_data/battle_stats.gd" id="3_68jk5"]
 [ext_resource type="Script" uid="uid://b3q4uvlvni0pu" path="res://card_3d_scripts/card_3d_state_machine.gd" id="3_3400w"]
 [ext_resource type="Script" uid="uid://b17vu4sh081o0" path="res://card_3d_scripts/states/card_3d_fixed.gd" id="4_68jk5"]
 [ext_resource type="Script" uid="uid://chphef0oyvfoy" path="res://card_3d_scripts/states/card_3d_pickingup.gd" id="5_7gu60"]
@@ -9,18 +9,22 @@
 [ext_resource type="Script" uid="uid://bdu5oslu7jijs" path="res://card_3d_scripts/states/card_3d_falling.gd" id="7_70tqk"]
 [ext_resource type="Script" uid="uid://ckoavtjfv7hmc" path="res://card_3d_scripts/states/card_3d_instack.gd" id="8_hfncb"]
 [ext_resource type="Script" uid="uid://dk7r8p6btsrfb" path="res://card_3d_scripts/states/card_3d_instack_dragging.gd" id="9_kompf"]
+[ext_resource type="PackedScene" uid="uid://bntgel7ybr1bb" path="res://card_3d.tscn" id="10_7gu60"]
+[ext_resource type="Script" uid="uid://lrsjtdiq5il8" path="res://card_3d_scripts/character_3d.gd" id="10_character3d"]
+[ext_resource type="Resource" uid="uid://c3qj5yaqkc0me" path="res://assets/物品/装备/weapon/石块.tres" id="11_isuy3"]
+[ext_resource type="Resource" uid="uid://bnpnjoke06uht" path="res://assets/物品/装备/weapon/化石树的树枝.tres" id="13_70tqk"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_2ewqt"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_hfncb"]
 viewport_path = NodePath("FrontFace/SubViewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wijti"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kompf"]
 resource_local_to_scene = true
 resource_name = "Card3DFrontMaterial"
 transparency = 2
 alpha_scissor_threshold = 0.01
 alpha_antialiasing_mode = 0
 shading_mode = 2
-albedo_texture = SubResource("ViewportTexture_2ewqt")
+albedo_texture = SubResource("ViewportTexture_hfncb")
 disable_receive_shadows = true
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_front_face"]
@@ -49,13 +53,17 @@ size = Vector3(2.64, 0.08, 2.94)
 [sub_resource type="BoxShape3D" id="BoxShape3D_push_detector"]
 size = Vector3(2.64, 0.08, 3.45)
 
+[sub_resource type="Resource" id="Resource_egbq3"]
+script = ExtResource("3_68jk5")
+metadata/_custom_type_script = "uid://bf2o85td7sner"
+
 [node name="Card3d" type="Node3D" unique_id=1098745464 groups=["Cards3D"]]
-script = ExtResource("1_2ewqt")
+script = ExtResource("10_character3d")
 cardname = "莉可"
 
 [node name="FrontFace" type="MeshInstance3D" parent="." unique_id=1833840304]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
-material_override = SubResource("StandardMaterial3D_wijti")
+material_override = SubResource("StandardMaterial3D_kompf")
 cast_shadow = 2
 mesh = SubResource("PlaneMesh_front_face")
 
@@ -139,6 +147,17 @@ state = 4
 [node name="Card3DInstackDragging" type="Node" parent="Card3DStateMachine" unique_id=1397542537]
 script = ExtResource("9_kompf")
 state = 5
+
+[node name="石块" parent="." unique_id=24067575 instance=ExtResource("10_7gu60")]
+transform = Transform3D(0.6724733, 0.023483282, 0.19294615, -0.02442965, 0.6995736, 0, -0.19282863, -0.0067337235, 0.67288315, -1.3783197, 0.5, 1.8962269)
+cardname = "石块"
+card_info = ExtResource("11_isuy3")
+battle = SubResource("Resource_egbq3")
+
+[node name="树枝" parent="." unique_id=1996746775 instance=ExtResource("10_7gu60")]
+transform = Transform3D(0.6724733, -0.023483282, -0.19294615, 0.02442965, 0.6995736, 0, 0.19282863, -0.0067337235, 0.67288315, -0.07162762, 0.36341977, 1.8775973)
+cardname = "化石树的树枝"
+card_info = ExtResource("13_70tqk")
 
 [connection signal="input_event" from="CardLabel" to="." method="_on_card_input_event"]
 [connection signal="mouse_entered" from="CardLabel" to="." method="_on_mouse_entered"]
