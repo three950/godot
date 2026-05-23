@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dm28lkdhyoemx"]
 
-[ext_resource type="Script" uid="uid://m663s4oq62tg" path="res://presentation/battle_scene_3d.gd" id="1_battle_scene_3d"]
-[ext_resource type="StyleBox" path="res://presentation/battle_scene_border_style.tres" id="2_battle_border_style"]
+[ext_resource type="Script" uid="uid://m663s4oq62tg" path="res://presentation/battle_scene/battle_scene_3d.gd" id="1_battle_scene_3d"]
+[ext_resource type="StyleBox" uid="uid://dwvyky4wlqori" path="res://presentation/battle_scene/battle_scene_border_style.tres" id="2_battle_border_style"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_battle_fill"]
 resource_name = "BattleScene3DFill"
@@ -28,7 +28,6 @@ size = Vector3(9, 0.8, 7)
 
 [node name="BattleScene3D" type="Node3D" unique_id=204192466 groups=["BattleScenes3D"]]
 script = ExtResource("1_battle_scene_3d")
-card_spacing = 3.0
 min_visual_size = Vector2(4, 8)
 visual_padding = Vector2(0.2, 0.3)
 

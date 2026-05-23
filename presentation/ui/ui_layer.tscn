@@ -2,7 +2,7 @@
 
 [ext_resource type="StyleBox" uid="uid://b6vu8exnid8yt" path="res://presentation/background/ui_style.tres" id="1_00rn6"]
 [ext_resource type="Texture2D" uid="uid://yhr14dughpmr" path="res://assets/物品/资源/meat.png" id="2_gjtyb"]
-[ext_resource type="Script" uid="uid://dwsmjx8844mo2" path="res://presentation/ui_stats_manager.gd" id="4_stats"]
+[ext_resource type="Script" uid="uid://dwsmjx8844mo2" path="res://script_folder/ui_stats_manager.gd" id="4_stats"]
 [ext_resource type="Texture2D" uid="uid://bwcl8eoslb20c" path="res://美术资产/treasures/gold_coin.png" id="5_8aggs"]
 [ext_resource type="Resource" uid="uid://flhywkkf61mb" path="res://base_data/game_stats.tres" id="5_game_stats"]
 

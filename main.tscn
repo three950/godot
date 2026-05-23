@@ -19,7 +19,7 @@
 [ext_resource type="Script" uid="uid://bhwdhxluayto5" path="res://script_folder/card_craft_manager.gd" id="21_getpj"]
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="22_ryguw"]
 [ext_resource type="PackedScene" uid="uid://cs4aojjehfrjt" path="res://assets/小场景/Small_Scene.tscn" id="23_0odxb"]
-[ext_resource type="PackedScene" uid="uid://bm4r8w10jcbid" path="res://presentation/ui_layer.tscn" id="23_d13ii"]
+[ext_resource type="PackedScene" uid="uid://bm4r8w10jcbid" path="res://presentation/ui/ui_layer.tscn" id="23_d13ii"]
 [ext_resource type="Resource" uid="uid://c0t1pg4ohysod" path="res://assets/小场景/scene_card_pool/河流.tres" id="24_lswn8"]
 [ext_resource type="Resource" uid="uid://bvxngiedcur8" path="res://assets/小场景/scene_card_pool/小洞穴.tres" id="25_a6jrf"]
 [ext_resource type="Script" uid="uid://bxyb8ihft7c6l" path="res://script_folder/battle_manager.gd" id="28_xuqvo"]

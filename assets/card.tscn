@@ -3,7 +3,7 @@
 [ext_resource type="StyleBox" uid="uid://b0256y5bp2byj" path="res://assets/card.tres" id="5_agldc"]
 [ext_resource type="StyleBox" uid="uid://bv510uix8lck3" path="res://assets/cardpanel.tres" id="6_3tu4f"]
 [ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://presentation/fonts/font.tres" id="7_xo5ip"]
-[ext_resource type="Texture2D" uid="uid://be64xwxsumg26" path="res://presentation/线条.png" id="8_line"]
+[ext_resource type="Texture2D" uid="uid://be64xwxsumg26" path="res://presentation/ui/线条.png" id="8_line"]
 [ext_resource type="Texture2D" uid="uid://kkohhrkwmk7y" path="res://美术资产/character/娜娜奇完整版.png" id="16_3tu4f"]
 
 [node name="Card" type="Control" unique_id=33495198]

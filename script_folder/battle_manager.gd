@@ -1,6 +1,6 @@
 extends Node
 
-const BATTLE_SCENE_3D: PackedScene = preload("res://presentation/battle_scene_3d.tscn")
+const BATTLE_SCENE_3D: PackedScene = preload("uid://dm28lkdhyoemx")
 const BATTLE_META_KEY := "battle_scene_3d"
 
 var active_battle_scenes: Array[BattleScene3D] = []
