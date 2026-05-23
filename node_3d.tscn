@@ -247,7 +247,7 @@ cardname = "钓鱼竿"
 card_info = ExtResource("11_fishing_rod")
 
 [node name="石块" parent="." unique_id=611933154 instance=ExtResource("5_i5arm")]
-transform = Transform3D(0.49969542, 0.017449748, 0, -0.017449748, 0.49969542, 0, 0, 0, 0.5, 10.644317, 0.5, 1.8962269)
+transform = Transform3D(0.99939084, 0.034899496, 0, -0.034899496, 0.99939084, 0, 0, 0, 1, 8.812561, 0, -7.4912834)
 cardname = "石块"
 card_info = ExtResource("11_i0g27")
 battle = SubResource("Resource_battle_nanachi")
@@ -258,7 +258,7 @@ cardname = "鱼"
 card_info = ExtResource("13_fish")
 
 [node name="树枝" parent="." unique_id=1256753826 instance=ExtResource("5_i5arm")]
-transform = Transform3D(0.49969542, -0.017449748, 0, 0.017449748, 0.49969542, 0, 0, 0, 0.5, 12.008867, 0.5, 1.8775973)
+transform = Transform3D(0.99939084, -0.034899496, 0, 0.034899496, 0.99939084, 0, 0, 0, 1, 11.846097, 0, -5.37652)
 cardname = "化石树的树枝"
 card_info = ExtResource("15_ealrb")
 

@@ -93,11 +93,22 @@ ViewportMesh：默认 local y = 0。
 子节点和偏移从高到低：
 被堆上去的子卡：基于父卡 global_position，y 增加 stack_offset_y = 0.01。第二张卡 y = 父卡 y + 0.01，第三张卡再加 0.01，继续向上累加。z 同时每层加 0.48。
 
-拖拽中的卡：开始拖拽时记录当前 y，之后只改 x/z，不改 y。
+拖拽中的卡：进入 pickup 状态时先把 Card3D 根节点 global y 设为 0，并把角度归正；之后拖拽只改 x/z，不改 y。
 
 落地且没有堆叠的卡：回到自己的 base_plane_y。初始场景里的卡牌 base_plane_y 通常是 0。
 
 普通重叠推开逻辑：只改 x/z，不改 y；推开后会同步更新堆叠链子卡位置，子卡仍按每层 y + 0.01。
+
+
+父节点：Character3D 人物卡的 EquipmentHoverPreview
+父节点是运行时创建的装备悬停预览根节点，默认 local y = 0，挂在人物 Card3D 下。只有人物卡 children_card == null 时，左下悬停才会生成该节点。
+
+子节点和动态对象从高到低：
+HoverWeapon：复制 character_3d.tscn 中“石块”参考节点 transform，当前 local y = 0.5。进入 pickup 状态时由通用卡牌状态把 y 归 0、角度归正；drag_started 回调再把它 reparent 到人物卡同级父节点并恢复 scale 为 Vector3.ONE。
+
+EquipmentHoverPreviewArea：根据两张参考卡卡面包围盒运行时创建，当前 local y 约 0.43170989。它只负责检测鼠标离开并删除悬停预览。
+
+HoverArmour：复制 character_3d.tscn 中“树枝”参考节点 transform，当前 local y = 0.36341977。进入 pickup 状态时处理规则同 HoverWeapon。
 
 
 父节点：正在合成的 Card3D

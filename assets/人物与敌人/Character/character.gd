@@ -1,6 +1,9 @@
 class_name  Character
 extends "res://assets/人物与敌人/battle_card.gd"
 
+const DEFAULT_WEAPON_ICON: Texture2D = preload("res://presentation/ui/WEAPON.png")
+const DEFAULT_ARMOUR_ICON: Texture2D = preload("res://presentation/ui/ARMOR.png")
+
 # 信号：战斗开始
 signal battlestart(enemy_node: Enemy, character_node: Character)
 # 标记战斗是否已经开始（防止重复触发）
@@ -62,11 +65,13 @@ func _update_equipment_icon() -> void:
 	var weapon = character.武器[0] if character.武器.size() > 0 else null
 	var armour = character.防具[0] if character.防具.size() > 0 else null
 
-	if weapon != null and weapon.portrait != null:
-		weapon_icon.texture = weapon.portrait
+	if weapon_icon != null:
+		# 装备拿走后，显式恢复场景默认武器图标，避免保留上一件装备的头像。
+		weapon_icon.texture = weapon.portrait if weapon != null and weapon.portrait != null else DEFAULT_WEAPON_ICON
 
-	if armour != null and armour.portrait != null:
-		armour_icon.texture = armour.portrait
+	if armour_icon != null:
+		# 装备拿走后，显式恢复场景默认防具图标，避免保留上一件装备的头像。
+		armour_icon.texture = armour.portrait if armour != null and armour.portrait != null else DEFAULT_ARMOUR_ICON
 
 func _get_equipped_things_cards() -> Array[ThingsCard]:
 	var result: Array[ThingsCard] = []
