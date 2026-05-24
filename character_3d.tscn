@@ -13,7 +13,6 @@
 [ext_resource type="Script" uid="uid://lrsjtdiq5il8" path="res://card_3d_scripts/character_3d.gd" id="10_character3d"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_3400w"]
-resource_local_to_scene = true
 viewport_path = NodePath("FrontFace/SubViewport")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_68jk5"]
@@ -27,7 +26,6 @@ albedo_texture = SubResource("ViewportTexture_3400w")
 disable_receive_shadows = true
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_front_face"]
-resource_local_to_scene = true
 size = Vector2(2.64, 3.45)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_back"]
@@ -39,27 +37,21 @@ albedo_color = Color(0, 0, 0, 1)
 disable_receive_shadows = true
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_back_face"]
-resource_local_to_scene = true
 size = Vector2(2.64, 3.45)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_card_label"]
-resource_local_to_scene = true
 size = Vector3(2.64, 0.08, 0.45)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_bottom_left_hover"]
-resource_local_to_scene = true
 size = Vector3(1.32, 0.12, 1.725)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_stack_detector"]
-resource_local_to_scene = true
 size = Vector3(2.64, 0.08, 2.94)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_push_detector"]
-resource_local_to_scene = true
 size = Vector3(2.64, 0.08, 3.45)
 
 [sub_resource type="Resource" id="Resource_egbq3"]
-resource_local_to_scene = true
 script = ExtResource("3_68jk5")
 metadata/_custom_type_script = "uid://bf2o85td7sner"
 

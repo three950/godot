@@ -63,7 +63,6 @@ var card_2d_texture: TextureRect = null
 
 func _ready() -> void:
 	_base_plane_y = global_position.y
-	_make_instance_resources_unique()
 	_make_runtime_card_data_unique()
 	_bind_viewport_texture_to_front_material()
 	_rebuild_card_view()
@@ -93,24 +92,6 @@ func _ready() -> void:
 		stacking_on_you.connect(bestacked_on_me)
 	if not stop_stacking_on_you.is_connected(stop_stacking_on_me):
 		stop_stacking_on_you.connect(stop_stacking_on_me)
-
-
-func _make_instance_resources_unique() -> void:
-	# 每张 3D 卡的 mesh/material/shape 都可能被运行时代码调整。
-	# 初始化时复制一份，避免同一个 PackedScene 的其他实例被同步改动。
-	for node in find_children("*", "MeshInstance3D", true, false):
-		var mesh_instance := node as MeshInstance3D
-		if mesh_instance == null:
-			continue
-		if mesh_instance.mesh != null:
-			mesh_instance.mesh = mesh_instance.mesh.duplicate()
-		if mesh_instance.material_override != null:
-			mesh_instance.material_override = mesh_instance.material_override.duplicate()
-
-	for node in find_children("*", "CollisionShape3D", true, false):
-		var collision_shape := node as CollisionShape3D
-		if collision_shape != null and collision_shape.shape != null:
-			collision_shape.shape = collision_shape.shape.duplicate()
 
 
 func _make_runtime_card_data_unique() -> void:

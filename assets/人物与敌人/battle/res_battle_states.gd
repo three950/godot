@@ -61,11 +61,3 @@ func create_runtime_instance() -> CardInfo:
 		return self
 	instance.HP = instance.MAX_HP
 	return instance
-
-
-func create_instance() -> Resource:#避免一样的敌人状态同时更新
-	var instance := create_runtime_instance() as BattleStates
-	if instance == null:
-		return self
-	instance.DEF = 0
-	return instance

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d4ml0xnr3ldxt"
-path="res://.godot/imported/盾牌.png-703e8f4da89afb19ccfb0b753906ba46.ctex"
+path="res://.godot/imported/盾牌.png-4ba11ed4c9cd39117db0376410e0a9f1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/物品/装备/armour防具/盾牌.png"
-dest_files=["res://.godot/imported/盾牌.png-703e8f4da89afb19ccfb0b753906ba46.ctex"]
+source_file="res://assets/物品/装备/armor防具/盾牌.png"
+dest_files=["res://.godot/imported/盾牌.png-4ba11ed4c9cd39117db0376410e0a9f1.ctex"]
 
 [params]
 
