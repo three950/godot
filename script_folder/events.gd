@@ -4,14 +4,6 @@ signal card_fixed()
 signal card_put_in_bag(card:Card)
 signal stack_changed(card: Card3D)
 
-# 防具注册/注销信号
-signal bag_registered(bag: BagArea)
-signal bag_unregistered(bag: BagArea)
-
-# 卡片拖拽信号（用于 BagMover 监听）
-signal card_drag_started(card: Card)
-signal card_dropped(card: Card)
-
 #场景切换导致的物品资源池更新
 signal max_layer_changed(max_layer:int)
 

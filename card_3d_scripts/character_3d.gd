@@ -3,7 +3,7 @@ class_name Character3D
 extends Card3D
 
 const CARD_3D_SCENE: PackedScene = preload("res://card_3d.tscn")
-const CARD_THROW_PHYSICS_SCRIPT: GDScript = preload("res://script_folder/card_throw_physics_test.gd")
+const CARD_THROW_PHYSICS_SCRIPT: GDScript = preload("res://script_folder/card_reveal_spawner.gd")
 const EQUIPMENT_HOVER_PREVIEW_NAME := "EquipmentHoverPreview"
 const EQUIPMENT_HOVER_AREA_NAME := "EquipmentHoverPreviewArea"
 const EQUIPMENT_HOVER_AREA_PADDING := Vector2(0.2, 0.2)
@@ -285,13 +285,12 @@ func release_equipment_preview_card(preview_card: Card3D, slot_name: String) -> 
 	var did_clear := false
 	match slot_name:
 		"weapon":
-			did_clear = _clear_equipment_slot(character_card, "weapon", equipment_card)
+			did_clear = character_card.unequip_from_slot(CharacterCard.EQUIPMENT_SLOT_WEAPON, equipment_card)
 		"armour":
-			did_clear = _clear_equipment_slot(character_card, "armour", equipment_card)
+			did_clear = character_card.unequip_from_slot(CharacterCard.EQUIPMENT_SLOT_ARMOUR, equipment_card)
 
 	if did_clear:
-		_remove_equipment_effects(character_card, equipment_card)
-	_refresh_character_equipment_view()
+		_refresh_character_equipment_view()
 
 
 func _try_equip_stacked_equipment(stacked_card: Card3D) -> bool:
@@ -309,14 +308,11 @@ func _try_equip_stacked_equipment(stacked_card: Card3D) -> bool:
 	_release_children_from_consumed_equipment(stacked_card)
 	_detach_consumed_equipment_from_character(stacked_card)
 
-	var previous_equipment := _get_equipped_card_for_type(character_card, equipment_card)
-	if previous_equipment != null:
-		# 旧装备离槽前先扣回属性，再以普通 3D 卡形式抛回主场景。
-		_remove_equipment_effects(character_card, previous_equipment)
+	var previous_equipment := character_card.equip_card_by_type(equipment_card)
+	if previous_equipment != null and previous_equipment != equipment_card:
+		# 旧装备离槽后以普通 3D 卡形式抛回主场景；数值和特性变化已由 CharacterCard 统一处理。
 		_spawn_replaced_equipment_card(previous_equipment, spawn_position)
 
-	_set_equipment_card_for_type(character_card, equipment_card)
-	_apply_equipment_effects(character_card, equipment_card)
 	_refresh_character_equipment_view()
 
 	# 新装备已经进入 CharacterCard 的单件武器/防具字段，原来的堆叠卡节点不再留在桌面。
@@ -354,38 +350,6 @@ func _detach_consumed_equipment_from_character(stacked_card: Card3D) -> void:
 	_force_card_fixed(stacked_card)
 
 
-func _get_equipped_card_for_type(character_card: CharacterCard, equipment_card: EquipmentCard) -> ThingsCard:
-	match equipment_card.equip_type:
-		EquipmentCard.EquipType.攻击:
-			return character_card.武器
-		EquipmentCard.EquipType.防御:
-			return character_card.防具
-		_:
-			return character_card.武器
-
-
-func _set_equipment_card_for_type(character_card: CharacterCard, equipment_card: EquipmentCard) -> void:
-	match equipment_card.equip_type:
-		EquipmentCard.EquipType.攻击:
-			character_card.武器 = equipment_card
-		EquipmentCard.EquipType.防御:
-			character_card.防具 = equipment_card
-
-
-func _apply_equipment_effects(character_card: CharacterCard, equipment_card: ThingsCard) -> void:
-	if equipment_card.添加特性 != "" and not character_card.特性.has(equipment_card.添加特性):
-		character_card.特性.append(equipment_card.添加特性)
-
-	if equipment_card is EquipmentCard:
-		var equip_card := equipment_card as EquipmentCard
-		if equip_card.need_power < character_card.POW:
-			match equip_card.equip_type:
-				EquipmentCard.EquipType.攻击:
-					character_card.ATK += equip_card.equip_effect
-				EquipmentCard.EquipType.防御:
-					character_card.DEF += equip_card.equip_effect
-
-
 func _spawn_replaced_equipment_card(equipment_card: ThingsCard, spawn_position: Vector3) -> void:
 	var spawn_parent := get_parent()
 	if spawn_parent == null and is_inside_tree():
@@ -404,38 +368,6 @@ func _force_card_fixed(card: Card3D) -> void:
 	if card.card_state_machine == null:
 		return
 	card.card_state_machine.force_transition(Card3DState.State.fixed)
-
-
-func _clear_equipment_slot(character_card: CharacterCard, slot_name: String, equipment_card: ThingsCard) -> bool:
-	if character_card == null:
-		return false
-
-	match slot_name:
-		"weapon":
-			if character_card.武器 != equipment_card:
-				return false
-			character_card.武器 = null
-			return true
-		"armour":
-			if character_card.防具 != equipment_card:
-				return false
-			character_card.防具 = null
-			return true
-	return false
-
-
-func _remove_equipment_effects(character_card: CharacterCard, equipment_card: ThingsCard) -> void:
-	if equipment_card.添加特性 != "":
-		character_card.特性.erase(equipment_card.添加特性)
-
-	if equipment_card is EquipmentCard:
-		var equip_card := equipment_card as EquipmentCard
-		if equip_card.need_power < character_card.POW:
-			match equip_card.equip_type:
-				EquipmentCard.EquipType.攻击:
-					character_card.ATK -= equip_card.equip_effect
-				EquipmentCard.EquipType.防御:
-					character_card.DEF -= equip_card.equip_effect
 
 
 func _refresh_character_equipment_view() -> void:

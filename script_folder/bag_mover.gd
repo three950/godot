@@ -5,8 +5,8 @@ var bag_area: Array[BagArea] = []  # 动态管理的防具列表
 
 var dragging_card: Card = null  # 当前正在拖拽的卡片
 var drag_start_position: Vector2 = Vector2.ZERO  # 拖拽开始时的位置
-var drag_start_slot: BagSlot = null  # 拖拽开始时所在的槽位（如果有）
-var current_highlight_slot: BagSlot = null  # 当前高亮的槽位
+var drag_start_slot: Panel = null  # 拖拽开始时所在的槽位（如果有）
+var current_highlight_slot: Panel = null  # 当前高亮的槽位
 
 func _ready() -> void:
 	Events.bag_registered.connect(_on_bag_registered)
@@ -40,7 +40,9 @@ func _on_card_drag_started(card: Card) -> void:
 	
 	# 2. 如果是从某个槽位开始拖拽，只移除该槽位中卡片的属性效果（不移除节点）
 	if drag_start_slot:
-		drag_start_slot.unequip_only()
+		var start_bag := _get_bag_for_slot(drag_start_slot)
+		if start_bag != null:
+			start_bag.unequip_slot_only(drag_start_slot)
 
 func _process(_delta: float) -> void:
 	# 只在拖拽卡片时进行检测
@@ -50,7 +52,7 @@ func _process(_delta: float) -> void:
 	# 计算卡片中心位置
 	var card_center = dragging_card.global_position + dragging_card.size * dragging_card.scale / 2.0
 	var target_bag_index = _get_bag_area_for_position(card_center)
-	var target_slot: BagSlot = null
+	var target_slot: Panel = null
 	
 	# 找到目标槽位
 	if target_bag_index >= 0:
@@ -60,7 +62,7 @@ func _process(_delta: float) -> void:
 	# 更新高亮状态
 	_update_highlight(target_slot)
 
-func _update_highlight(new_slot: BagSlot) -> void:
+func _update_highlight(new_slot: Panel) -> void:
 	"""更新槽位高亮状态"""
 	# 如果目标槽位没变，不需要更新
 	if new_slot == current_highlight_slot:
@@ -68,18 +70,18 @@ func _update_highlight(new_slot: BagSlot) -> void:
 	
 	# 取消旧槽位的高亮
 	if current_highlight_slot and is_instance_valid(current_highlight_slot):
-		current_highlight_slot.set_highlight(false)
+		_set_slot_highlight(current_highlight_slot, false)
 	
 	# 设置新槽位的高亮
 	if new_slot:
-		new_slot.set_highlight(true)
+		_set_slot_highlight(new_slot, true)
 	
 	current_highlight_slot = new_slot
 
 func _clear_all_highlights() -> void:
 	"""清除所有高亮"""
 	if current_highlight_slot and is_instance_valid(current_highlight_slot):
-		current_highlight_slot.set_highlight(false)
+		_set_slot_highlight(current_highlight_slot, false)
 	current_highlight_slot = null
 
 func _get_bag_area_for_position(global: Vector2) -> int:#获得是场景中的哪一个防具（索引）
@@ -97,32 +99,32 @@ func _add_card_to_slot(global: Vector2, card: Card) -> void:
 		var bag = bag_area[bag_index]
 		var slot = _get_slot_for_position(bag, global)
 		if slot:
-			slot.place_card(card)
+			bag.place_card_in_slot(slot, card)
 	
-func _get_slot_for_position(bag: BagArea, global: Vector2) -> BagSlot:#获得是哪一个槽位
+func _get_slot_for_position(bag: BagArea, global: Vector2) -> Panel:#获得是哪一个槽位
 	"""获取防具中包含指定位置的槽位"""
 	# 检查武器槽位
 	for slot in bag.hand_slots:
-		if slot.contains_global_point(global):
+		if bag.slot_contains_global_point(slot, global):
 			return slot
 	# 检查防具槽位
 	for slot in bag.backpack_slots:
-		if slot.contains_global_point(global):
+		if bag.slot_contains_global_point(slot, global):
 			return slot
 	return null
 
-func _get_nearest_slot(bag: BagArea, global: Vector2) -> BagSlot:
+func _get_nearest_slot(bag: BagArea, global: Vector2) -> Panel:
 	"""获取距离指定位置最近的槽位（用于处理鼠标在缝隙中的情况）"""
-	var nearest_slot: BagSlot = null
+	var nearest_slot: Panel = null
 	var min_distance: float = INF
 	
 	# 检查所有槽位，找到中心点距离最近的
-	var all_slots: Array[BagSlot] = []
+	var all_slots: Array[Panel] = []
 	all_slots.append_array(bag.hand_slots)
 	all_slots.append_array(bag.backpack_slots)
 	
 	for slot in all_slots:
-		var slot_center = slot.get_center_global_position()
+		var slot_center = bag.get_slot_center_global_position(slot)
 		var distance = global.distance_to(slot_center)
 		if distance < min_distance:
 			min_distance = distance
@@ -134,10 +136,11 @@ func _reset_card_to_starting_position(starting_position: Vector2, card: Node) ->
 	"""将卡片重置到起始位置"""
 	card.global_position = starting_position
 
-func _move_card_to_slot(card: Card, slot: BagSlot) -> void:
+func _move_card_to_slot(card: Card, slot: Panel) -> void:
 	"""将卡片移动到指定槽位"""
-	if slot and card:
-		slot.place_card(card)
+	var bag := _get_bag_for_slot(slot)
+	if bag != null and card != null:
+		bag.place_card_in_slot(slot, card)
 
 
 func _on_card_dropped(card: Card) -> void:
@@ -170,20 +173,38 @@ func _on_card_dropped(card: Card) -> void:
 		return
 	
 	# 检查目标槽位是否已有卡片
-	var existing_card = target_slot.get_card()
+	var target_bag := bag_area[target_bag_index] as BagArea
+	var existing_card = target_bag.get_card_in_slot(target_slot)
 	
 	if existing_card:
 		# 如果有卡片，交换位置
-		# 1. 从目标槽位卸下原有卡片（触发减属性）
-		var swapped_card: Card = target_slot.remove_card()
-		# 2. 如果一开始是从某个槽位拖拽出来的，就把这张被换出来的卡放回起始槽位（重新加上它的属性）
+		# 1. 从目标槽位取下原有卡片，BagArea 会同步 CharacterCard 的装备变化。
+		var swapped_card: Card = target_bag.remove_card_from_slot(target_slot)
+		# 2. 如果一开始是从某个槽位拖拽出来的，就把这张被换出来的卡放回起始槽位。
 		if drag_start_slot and swapped_card:
-			drag_start_slot.place_card(swapped_card)
-		# 3. 最后把正在拖拽的卡放入目标槽位（在 place_card 里重新加上它的属性）
-		target_slot.place_card(card)
+			var start_bag := _get_bag_for_slot(drag_start_slot)
+			if start_bag != null:
+				start_bag.place_card_in_slot(drag_start_slot, swapped_card)
+		# 3. 最后把正在拖拽的卡放入目标槽位。
+		target_bag.place_card_in_slot(target_slot, card)
 	else:
 		# 目标槽位为空，直接放入
-		target_slot.place_card(card)
+		target_bag.place_card_in_slot(target_slot, card)
 	
 	dragging_card = null
 	drag_start_slot = null
+
+
+func _set_slot_highlight(slot: Panel, enabled: bool) -> void:
+	var bag := _get_bag_for_slot(slot)
+	if bag != null:
+		bag.set_slot_highlight(slot, enabled)
+
+
+func _get_bag_for_slot(slot: Panel) -> BagArea:
+	if slot == null:
+		return null
+	for bag in bag_area:
+		if bag.hand_slots.has(slot) or bag.backpack_slots.has(slot):
+			return bag
+	return null

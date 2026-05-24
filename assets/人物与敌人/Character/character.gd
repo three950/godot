@@ -76,29 +76,7 @@ func _update_equipment_icon() -> void:
 func _update_features() -> void:
 	if character == null:
 		return
-
-	_apply_equipped_card_features(character.武器)
-	_apply_equipped_card_features(character.防具)
-
-
-func _apply_equipped_card_features(card: ThingsCard) -> void:
-	if card == null:
-		return
-
-	if card.添加特性 != "" and not character.特性.has(card.添加特性):
-		character.特性.append(card.添加特性)
-		print("【Character】初始化添加特性：", card.添加特性, " 当前特性：", character.特性)
-
-	if card is EquipmentCard:
-		var equipment_card := card as EquipmentCard
-		print("【Character】初始化添加装备效果：", equipment_card.equip_type, " 当前装备效果：", equipment_card.equip_effect)
-		if equipment_card.need_power < character.POW:
-			print("【Character】力量足够，添加装备效果：", equipment_card.equip_type, " 当前装备效果：", equipment_card.equip_effect)
-			match equipment_card.equip_type:
-				EquipmentCard.EquipType.攻击:
-					character.ATK += equipment_card.equip_effect
-				EquipmentCard.EquipType.防御:
-					character.DEF += equipment_card.equip_effect
+	character.apply_initial_equipment_changes_once()
 
 
 func 进入战斗状态() -> void:

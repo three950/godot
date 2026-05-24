@@ -64,7 +64,7 @@ var _card: Node3D
 func _ready() -> void:
 	_card = get_node_or_null(card_path) as Node3D
 	if _card == null:
-		push_error("CardThrowPhysicsTest: card_path does not point to a Node3D.")
+		push_error("CardRevealSpawner: card_path does not point to a Node3D.")
 		return
 
 	_front_basis = _basis_from_degrees(front_face_up_rotation_degrees)
@@ -77,24 +77,24 @@ func _ready() -> void:
 
 static func spawn_revealed_card(card_info: CardInfo, spawn_position: Vector3, spawn_parent: Node) -> Card3D:
 	if spawn_parent == null:
-		push_error("CardThrowPhysicsTest: spawn_parent is null.")
+		push_error("CardRevealSpawner: spawn_parent is null.")
 		return null
 
 	var card_3d_scene := load(CARD_3D_SCENE_UID) as PackedScene
 	if card_3d_scene == null:
-		push_error("CardThrowPhysicsTest: failed to load %s." % CARD_3D_SCENE_UID)
+		push_error("CardRevealSpawner: failed to load %s." % CARD_3D_SCENE_UID)
 		return null
 
 	var instance := card_3d_scene.instantiate() as Card3D
 	if instance == null:
-		push_error("CardThrowPhysicsTest: card scene did not instantiate as Card3D.")
+		push_error("CardRevealSpawner: card scene did not instantiate as Card3D.")
 		return null
 
 	instance.card_info = card_info
 	spawn_parent.add_child(instance)
 	instance.global_position = spawn_position
 
-	var reveal: Node = load("res://script_folder/card_throw_physics_test.gd").new()
+	var reveal: Node = load("res://script_folder/card_reveal_spawner.gd").new()
 	reveal.name = "CraftRevealThrow"
 	reveal.auto_play_on_ready = false
 	reveal.card_path = ^".."
@@ -251,7 +251,7 @@ func _ensure_card_ready() -> bool:
 	if _card == null:
 		_card = get_node_or_null(card_path) as Node3D
 	if _card == null:
-		push_error("CardThrowPhysicsTest: card_path does not point to a Node3D.")
+		push_error("CardRevealSpawner: card_path does not point to a Node3D.")
 		return false
 
 	_front_basis = _basis_from_degrees(front_face_up_rotation_degrees)
