@@ -13,6 +13,13 @@ const PROJECTILE_HEIGHT_OFFSET := Vector3(0.0, 0.25, 0.0)
 const PROJECTILE_TRAVEL_TIME := 0.25
 const HIT_FEEDBACK_OFFSET := Vector3(1, 0.28, 1.3)
 const HIT_FEEDBACK_LIFETIME := 0.5
+const HIT_SHAKE_STEP_TIME := 0.04
+const MELEE_LUNGE_TIME := 0.12
+const MELEE_RETURN_TIME := 0.14
+const MELEE_IMPACT_HOLD_TIME := 0.04
+const MELEE_COLLISION_OVERLAP := 0.9
+const MELEE_MIN_LUNGE_DISTANCE := 0.45
+const MELEE_MAX_LUNGE_DISTANCE := 1.35
 
 @export var creation_index: int = 0
 @export var card_spacing: float = 3.0
@@ -47,6 +54,11 @@ var _card_guard := BattleScene3DCardGuard.new()
 var _is_finishing := false
 var _non_battle_cleanup_pending := false
 var _timers_paused := false
+var _attack_queue: Array[int] = []
+var _is_attack_queue_running := false
+var _attack_animation_tweens: Array[Tween] = []
+var _attack_animation_wait_timers: Array[Timer] = []
+var _melee_motion_origins: Dictionary = {}
 
 
 func _ready() -> void:
@@ -144,6 +156,8 @@ func get_unit_count() -> int:
 func extract_cards_for_merge() -> Array:
 	_is_finishing = true
 	is_battle_active = false
+	# 合并战斗时先停掉还没播完的攻击动画；近战前冲中的卡牌会被复位后再迁移。
+	_clear_attack_sequence_state()
 	_cleanup_invalid_units()
 
 	var result := []
@@ -185,6 +199,7 @@ func update_scene_bounds() -> void:
 
 func shutdown_after_merge() -> void:
 	_clear_all_timers()
+	_clear_attack_sequence_state()
 	queue_free()
 
 
@@ -247,6 +262,7 @@ func _set_timers_paused(is_paused: bool) -> void:
 
 	_timers_paused = is_paused
 	_update_attack_timers_pause_state()
+	_update_attack_animation_pause_state()
 
 
 func _update_attack_timers_pause_state() -> void:
@@ -258,6 +274,24 @@ func _update_attack_timers_pause_state() -> void:
 			continue
 
 		next_attack_times[unit] = now + maxf(timer.time_left, 0.0)
+		timer.paused = _timers_paused
+
+
+func _update_attack_animation_pause_state() -> void:
+	# 攻击动画现在会决定下一轮冷却何时开始，因此这些 Tween/Timer 也必须跟随全局计时暂停。
+	for tween in _attack_animation_tweens.duplicate():
+		if tween == null or not tween.is_valid():
+			_attack_animation_tweens.erase(tween)
+			continue
+		if _timers_paused:
+			tween.pause()
+		else:
+			tween.play()
+
+	for timer in _attack_animation_wait_timers.duplicate():
+		if timer == null or not is_instance_valid(timer):
+			_attack_animation_wait_timers.erase(timer)
+			continue
 		timer.paused = _timers_paused
 
 
@@ -301,6 +335,45 @@ func _on_unit_attack(attacker_id: int) -> void:
 		_check_battle_end()
 		return
 
+	_queue_unit_attack(attacker_id)
+
+
+func _queue_unit_attack(attacker_id: int) -> void:
+	# Timer 到点只登记一次攻击请求；真正的动画由队列串行播放，避免双方同时出手时特效重叠。
+	if not _attack_queue.has(attacker_id):
+		_attack_queue.append(attacker_id)
+	_start_attack_queue_if_needed()
+
+
+func _start_attack_queue_if_needed() -> void:
+	if _is_attack_queue_running:
+		return
+
+	_is_attack_queue_running = true
+	call_deferred("_drain_attack_queue")
+
+
+func _drain_attack_queue() -> void:
+	while _attack_queue.size() > 0:
+		if not is_battle_active or _is_finishing:
+			_attack_queue.clear()
+			break
+
+		var attacker_id := int(_attack_queue.pop_front())
+		await _perform_queued_attack(attacker_id)
+
+	_is_attack_queue_running = false
+
+
+func _perform_queued_attack(attacker_id: int) -> void:
+	var attacker = _get_unit_by_instance_id(attacker_id)
+	if not is_battle_active or _is_finishing:
+		return
+	if not _is_alive(attacker):
+		_remove_dead_unit(attacker)
+		_check_battle_end()
+		return
+
 	var target := _get_attack_target(attacker)
 	if target == null:
 		_check_battle_end()
@@ -309,6 +382,7 @@ func _on_unit_attack(attacker_id: int) -> void:
 	await _perform_attack(attacker, target)
 	_check_battle_end()
 
+	# 只有自己的完整攻击动画结束后，才重新计算并开启下一轮攻击 Timer。
 	attacker = _get_unit_by_instance_id(attacker_id)
 	if is_battle_active and _is_alive(attacker):
 		var resource := _get_battle_resource(attacker)
@@ -342,20 +416,31 @@ func _perform_attack(attacker, target) -> void:
 		return
 
 	var damage := attacker_resource.ATK
-	var projectile_from := attacker_card.global_position
-	var projectile_to := target_card.global_position
-	await _play_projectile(projectile_from, projectile_to)
+	var attack_from := attacker_card.global_position
+	var attack_to := target_card.global_position
+	var should_return_from_melee := false
+
+	# 每次真正播放攻击前都重新读取 attack_type；人物换武器后，下一次出手会立刻改用新动画。
+	match attacker_resource.attack_type:
+		BattleStates.attackType.remote:
+			await _play_projectile(attack_from, attack_to)
+		_:
+			should_return_from_melee = await _play_melee_lunge_to_impact(attacker_card, target_card)
 
 	# await 之后任意一张卡都可能已被合并、死亡或释放，必须重新校验再读属性。
 	attacker_card = _get_valid_card(attacker)
 	target_card = _get_valid_card(target)
 	if not _is_alive(attacker_card) or not _is_alive(target_card):
+		if should_return_from_melee:
+			await _play_melee_return(attacker)
 		return
 
 	_show_hit_flash(target_card)
 
 	var target_resource := _get_battle_resource(target_card)
 	if target_resource == null:
+		if should_return_from_melee:
+			await _play_melee_return(attacker)
 		return
 
 	var hp_before := target_resource.HP
@@ -363,6 +448,9 @@ func _perform_attack(attacker, target) -> void:
 	var actual_damage := hp_before - target_resource.HP
 	_show_hit_feedback(target_card.global_position, actual_damage)
 	await _play_hit_effect(target_card)
+
+	if should_return_from_melee:
+		await _play_melee_return(attacker)
 
 	target_card = _get_valid_card(target)
 	if target_card == null:
@@ -381,13 +469,130 @@ func _play_projectile(from_position: Vector3, to_position: Vector3) -> void:
 	effects_root.add_child(bullet)
 	bullet.global_position = from_position + PROJECTILE_HEIGHT_OFFSET
 
-	var tween := create_tween()
+	var tween := _create_attack_animation_tween()
 	tween.tween_property(bullet, "global_position", to_position + PROJECTILE_HEIGHT_OFFSET, PROJECTILE_TRAVEL_TIME)
 	await tween.finished
 
 	# Tween 结束前战斗场景可能被合并/释放，回收前必须确认子弹实例仍然有效。
 	if is_instance_valid(bullet):
 		bullet.queue_free()
+
+
+func _play_melee_lunge_to_impact(attacker, target) -> bool:
+	var attacker_card := _get_valid_card(attacker)
+	var target_card := _get_valid_card(target)
+	if attacker_card == null or target_card == null:
+		return false
+
+	var original_position := attacker_card.global_position
+	var impact_position := _get_melee_impact_position(attacker_card, target_card, original_position)
+	if original_position.distance_to(impact_position) <= 0.001:
+		return false
+
+	# 近战会直接移动卡牌本体；记录原点，战斗合并/结束打断动画时可以把卡牌放回去。
+	_melee_motion_origins[attacker_card.get_instance_id()] = {
+		"card": attacker_card,
+		"position": original_position,
+	}
+
+	var tween := _create_attack_animation_tween()
+	tween.set_trans(Tween.TRANS_QUAD)
+	tween.set_ease(Tween.EASE_OUT)
+	tween.tween_method(_set_card_chain_global_position.bind(attacker_card), original_position, impact_position, MELEE_LUNGE_TIME)
+	await tween.finished
+
+	if _get_valid_card(attacker) == null:
+		return false
+
+	# 短暂停在撞击点，让近战命中读得出来；这个等待会跟随全局计时暂停。
+	await _wait_attack_animation_time(MELEE_IMPACT_HOLD_TIME)
+	return _get_valid_card(attacker) != null
+
+
+func _play_melee_return(attacker) -> void:
+	var attacker_card := _get_valid_card(attacker)
+	if attacker_card == null:
+		return
+
+	var attacker_id := attacker_card.get_instance_id()
+	if not _melee_motion_origins.has(attacker_id):
+		return
+
+	var motion_data: Dictionary = _melee_motion_origins[attacker_id]
+	var original_position: Vector3 = motion_data["position"]
+	var current_position := attacker_card.global_position
+	if current_position.distance_to(original_position) > 0.001:
+		var tween := _create_attack_animation_tween()
+		tween.set_trans(Tween.TRANS_QUAD)
+		tween.set_ease(Tween.EASE_IN)
+		tween.tween_method(_set_card_chain_global_position.bind(attacker_card), current_position, original_position, MELEE_RETURN_TIME)
+		await tween.finished
+
+	attacker_card = _get_valid_card(attacker)
+	if attacker_card != null:
+		_set_card_chain_global_position(original_position, attacker_card)
+	_melee_motion_origins.erase(attacker_id)
+
+
+func _get_melee_impact_position(attacker_card: Card3D, target_card: Card3D, original_position: Vector3) -> Vector3:
+	var target_position := target_card.global_position
+	var flat_offset := target_position - original_position
+	flat_offset.y = 0.0
+	var distance := flat_offset.length()
+	if distance <= 0.001:
+		return original_position
+
+	var direction := flat_offset / distance
+	var combined_half_depth := (attacker_card.face_size.y + target_card.face_size.y) * 0.5
+	var contact_distance := maxf(combined_half_depth - MELEE_COLLISION_OVERLAP, 0.0)
+	var travel_distance := clampf(distance - contact_distance, MELEE_MIN_LUNGE_DISTANCE, MELEE_MAX_LUNGE_DISTANCE)
+	travel_distance = minf(travel_distance, distance * 0.85)
+
+	var impact_position := original_position + direction * travel_distance
+	impact_position.y = original_position.y
+	return impact_position
+
+
+func _set_card_chain_global_position(next_position: Vector3, card: Card3D) -> void:
+	var card_3d := _get_valid_card(card)
+	if card_3d == null:
+		return
+
+	card_3d.global_position = next_position
+	# 兼容堆叠链：如果这张战斗卡还有 children_card，动画过程中也带着子卡一起走。
+	if card_3d.children_card != null:
+		card_3d.update_children_position()
+
+
+func _create_attack_animation_tween() -> Tween:
+	var tween := create_tween()
+	_attack_animation_tweens.append(tween)
+	if _timers_paused:
+		tween.pause()
+	tween.finished.connect(_on_attack_animation_tween_finished.bind(tween), CONNECT_ONE_SHOT)
+	return tween
+
+
+func _on_attack_animation_tween_finished(tween: Tween) -> void:
+	_attack_animation_tweens.erase(tween)
+
+
+func _wait_attack_animation_time(duration: float) -> void:
+	if duration <= 0.0:
+		return
+
+	var timer := Timer.new()
+	timer.one_shot = true
+	timer.wait_time = duration
+	timer.paused = _timers_paused
+	add_child(timer)
+	_attack_animation_wait_timers.append(timer)
+	timer.start()
+	await timer.timeout
+
+	_attack_animation_wait_timers.erase(timer)
+	if is_instance_valid(timer):
+		timer.queue_free()
 
 
 func _show_hit_feedback(target_position: Vector3, damage: int) -> void:
@@ -474,14 +679,14 @@ func _play_hit_effect(target) -> void:
 			return
 		var offset := Vector3(randf_range(-0.08, 0.08), 0.05, randf_range(-0.08, 0.08))
 		target_card.global_position = original_position + offset
-		await tree.create_timer(0.04).timeout
+		await _wait_attack_animation_time(HIT_SHAKE_STEP_TIME)
 
 	target_card = _get_valid_card(target)
 	if target_card == null:
 		return
 	target_card.global_position = original_position
-	# 命中特效是纯视觉反馈，战斗暂停只作用于攻击 Timer。
-	await tree.create_timer(0.04).timeout
+	# 这段抖动会阻塞下一段攻击动画，所以它的等待也跟随全局计时暂停。
+	await _wait_attack_animation_time(HIT_SHAKE_STEP_TIME)
 
 
 func _check_battle_end() -> void:
@@ -499,6 +704,7 @@ func _finish_battle() -> void:
 	_is_finishing = true
 	is_battle_active = false
 	_clear_all_timers()
+	_clear_attack_sequence_state()
 
 	var release_parent := _get_release_parent()
 	for card in get_all_cards():
@@ -560,6 +766,35 @@ func _clear_all_timers() -> void:
 			timer.queue_free()
 	unit_timers.clear()
 	next_attack_times.clear()
+
+
+func _clear_attack_sequence_state() -> void:
+	_attack_queue.clear()
+	_is_attack_queue_running = false
+
+	for tween in _attack_animation_tweens.duplicate():
+		if tween != null and tween.is_valid():
+			tween.kill()
+	_attack_animation_tweens.clear()
+
+	for timer in _attack_animation_wait_timers.duplicate():
+		if timer != null and is_instance_valid(timer):
+			timer.stop()
+			timer.queue_free()
+	_attack_animation_wait_timers.clear()
+
+	_restore_active_melee_cards()
+
+
+func _restore_active_melee_cards() -> void:
+	for attacker_id in _melee_motion_origins.keys():
+		var motion_data: Dictionary = _melee_motion_origins[attacker_id]
+		var card := motion_data.get("card") as Card3D
+		if card == null or not is_instance_valid(card):
+			continue
+		var original_position: Vector3 = motion_data["position"]
+		_set_card_chain_global_position(original_position, card)
+	_melee_motion_origins.clear()
 
 
 func _get_preserved_attack_time(unit) -> float:
