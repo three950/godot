@@ -113,7 +113,7 @@ func _get_runtime_card_data(value: CardInfo) -> CardInfo:
 	if value.get_meta(RUNTIME_UNIQUE_RESOURCE_META, false):
 		return value
 
-	# CardInfo 子类自己决定是否需要从模板 .tres 复制出运行时数据。
+	# 全局只保留 CardInfo.create_runtime_instance()；子类的运行时初始化放回各自场景入口处理。
 	var instance := value.create_runtime_instance()
 	if instance == null or instance == value:
 		return value
@@ -129,7 +129,8 @@ func _get_runtime_battle_state(value: BattleState) -> BattleState:
 	if value.get_meta(RUNTIME_UNIQUE_RESOURCE_META, false):
 		return value
 
-	var instance := value.create_runtime_instance()
+	# BattleState 不继承 CardInfo，但同样需要和模板资源分离，避免多张卡共享战斗阶段。
+	var instance := value.duplicate() as BattleState
 	if instance == null or instance == value:
 		return value
 	instance.set_meta(RUNTIME_UNIQUE_RESOURCE_META, true)

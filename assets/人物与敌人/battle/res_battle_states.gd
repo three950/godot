@@ -54,16 +54,3 @@ func take_damage(damage : int) -> void:
 
 func heal(amount : int) -> void:
 	HP += amount
-
-
-func create_runtime_instance() -> CardInfo:
-	if get_meta(RUNTIME_UNIQUE_RESOURCE_META, false):
-		return self
-
-	# 人物/敌人 HP、装备属性等会在运行时变化，不能继续改原始 .tres 模板。
-	var instance := duplicate() as BattleStates
-	if instance == null:
-		return self
-	instance.set_meta(RUNTIME_UNIQUE_RESOURCE_META, true)
-	instance.HP = instance.MAX_HP
-	return instance

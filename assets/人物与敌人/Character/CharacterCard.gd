@@ -29,15 +29,6 @@ func set_armor(value: ThingsCard) -> void:
 	防具 = value
 	stats_changed.emit()
 
-
-func create_runtime_instance() -> CardInfo:
-	var instance := super.create_runtime_instance() as CharacterCard
-	if instance == null:
-		return self
-
-	return instance
-
-
 func initialize_initial_equipment_state() -> void:
 	if get_meta(INITIAL_EQUIPMENT_INITIALIZED_META, false):
 		return
@@ -63,19 +54,16 @@ func initialize_initial_equipment_state() -> void:
 func replace_weapon(next_card: WeaponCard) -> ThingsCard:
 	# WeaponCard 本身就代表武器；换装时只处理“旧装备离开、新装备进入”。
 	var previous_card := 武器
-	var runtime_next_card: WeaponCard = null
-	if next_card != null:
-		# 通过 CardInfo 私有化入口保留“这张卡”的实例身份；同名装备不会被当成同一件。
-		runtime_next_card = next_card.create_runtime_instance() as WeaponCard
-	if previous_card == runtime_next_card:
+	# 桌面上的装备卡已经由 Card3D 私有化；这里必须保留传入对象本身，避免装备槽和被消费的卡引用不一致。
+	if previous_card == next_card:
 		stats_changed.emit()
 		return previous_card
 
 	if previous_card != null:
 		_remove_equipment_card_changes(previous_card)
-	武器 = runtime_next_card
-	if runtime_next_card != null:
-		_apply_equipment_card_changes(runtime_next_card)
+	武器 = next_card
+	if next_card != null:
+		_apply_equipment_card_changes(next_card)
 
 	stats_changed.emit()
 	return previous_card
@@ -84,19 +72,16 @@ func replace_weapon(next_card: WeaponCard) -> ThingsCard:
 func replace_armor(next_card: ArmorCard) -> ThingsCard:
 	# ArmorCard 本身就代表防具；防具数值仍由 EquipmentCard.attack/DEF 决定。
 	var previous_card := 防具
-	var runtime_next_card: ArmorCard = null
-	if next_card != null:
-		# 防具同样保留实例身份，避免同名 .tres 替换时误判成同一件。
-		runtime_next_card = next_card.create_runtime_instance() as ArmorCard
-	if previous_card == runtime_next_card:
+	# 防具同样直接使用传入的运行时卡，卸装预览会依赖这个对象身份判断。
+	if previous_card == next_card:
 		stats_changed.emit()
 		return previous_card
 
 	if previous_card != null:
 		_remove_equipment_card_changes(previous_card)
-	防具 = runtime_next_card
-	if runtime_next_card != null:
-		_apply_equipment_card_changes(runtime_next_card)
+	防具 = next_card
+	if next_card != null:
+		_apply_equipment_card_changes(next_card)
 
 	stats_changed.emit()
 	return previous_card
