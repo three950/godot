@@ -104,11 +104,11 @@ ViewportMesh：默认 local y = 0。
 父节点是运行时创建的装备悬停预览根节点，默认 local y = 0，挂在人物 Card3D 下。只有人物卡 children_card == null 时，左下悬停才会生成该节点。
 
 子节点和动态对象从高到低：
-HoverWeapon：复制 character_3d.tscn 中“石块”参考节点 transform，当前 local y = 0.5。进入 pickup 状态时由通用卡牌状态把 y 归 0、角度归正；drag_started 回调再把它 reparent 到人物卡同级父节点并恢复 scale 为 Vector3.ONE。
+HoverWeapon：复制 character_3d.tscn 中 WeaponPreview 参考节点 transform，当前 local y = 0.5。进入 pickup 状态时由通用卡牌状态把 y 归 0、角度归正；drag_started 回调再把它 reparent 到人物卡同级父节点并恢复 scale 为 Vector3.ONE。
 
 EquipmentHoverPreviewArea：根据两张参考卡卡面包围盒运行时创建，当前 local y 约 0.43170989。它只负责检测鼠标离开并删除悬停预览。
 
-Hoverarmor：复制 character_3d.tscn 中“树枝”参考节点 transform，当前 local y = 0.36341977。进入 pickup 状态时处理规则同 HoverWeapon。
+Hoverarmor：复制 character_3d.tscn 中 ArmorPreview 参考节点 transform，当前 local y = 0.36341977。进入 pickup 状态时处理规则同 HoverWeapon。
 
 
 父节点：正在合成的 Card3D

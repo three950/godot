@@ -10,8 +10,9 @@ const EQUIPMENT_HOVER_AREA_PADDING := Vector2(0.2, 0.2)
 const EQUIPMENT_HOVER_AREA_HEIGHT := 0.8
 
 @onready var bottom_left_hover_timer: Timer = get_node_or_null("BottomLeftHoverArea/BottomLeftHoverTimer") as Timer
-@onready var equipment_weapon_template: Card3D = get_node_or_null("石块") as Card3D
-@onready var equipment_armor_template: Card3D = get_node_or_null("树枝") as Card3D
+# 这两个节点是人物卡内置的装备展示参考位；节点名保持通用，避免和具体物品数据绑定。
+@onready var equipment_weapon_preview_template: Card3D = get_node_or_null("WeaponPreview") as Card3D
+@onready var equipment_armor_preview_template: Card3D = get_node_or_null("ArmorPreview") as Card3D
 
 var _is_bottom_left_hovered: bool = false
 var _equipment_hover_preview: Node3D = null
@@ -24,8 +25,8 @@ func _ready() -> void:
 	if Engine.is_editor_hint():
 		return
 
-	_prepare_equipment_preview_template(equipment_weapon_template)
-	_prepare_equipment_preview_template(equipment_armor_template)
+	_prepare_equipment_preview_template(equipment_weapon_preview_template)
+	_prepare_equipment_preview_template(equipment_armor_preview_template)
 
 	# character_3d 专属的左下角悬停检测，不影响通用 Card3D。
 	if bottom_left_hover_timer:
@@ -134,9 +135,9 @@ func _show_equipment_hover_preview() -> void:
 
 	# 左边使用武器参考位，右边使用防具参考位；没有对应装备时保留空位但不生成卡。
 	if weapon_card != null:
-		_add_equipment_preview_card(preview_root, weapon_card, equipment_weapon_template, "HoverWeapon")
+		_add_equipment_preview_card(preview_root, weapon_card, equipment_weapon_preview_template, "HoverWeapon")
 	if armor_card != null:
-		_add_equipment_preview_card(preview_root, armor_card, equipment_armor_template, "Hoverarmor")
+		_add_equipment_preview_card(preview_root, armor_card, equipment_armor_preview_template, "Hoverarmor")
 
 	_add_equipment_hover_area(preview_root)
 
@@ -203,10 +204,10 @@ func _add_equipment_hover_area(parent: Node3D) -> void:
 
 func _calculate_equipment_hover_bounds() -> Dictionary:
 	var templates: Array[Card3D] = []
-	if equipment_weapon_template != null:
-		templates.append(equipment_weapon_template)
-	if equipment_armor_template != null:
-		templates.append(equipment_armor_template)
+	if equipment_weapon_preview_template != null:
+		templates.append(equipment_weapon_preview_template)
+	if equipment_armor_preview_template != null:
+		templates.append(equipment_armor_preview_template)
 	if templates.is_empty():
 		return {}
 

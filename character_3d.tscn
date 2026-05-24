@@ -146,12 +146,12 @@ state = 4
 script = ExtResource("9_kompf")
 state = 5
 
-[node name="石块" parent="." unique_id=24067575 instance=ExtResource("10_7gu60")]
+[node name="WeaponPreview" parent="." unique_id=24067575 instance=ExtResource("10_7gu60")]
 transform = Transform3D(0.6724733, 0.023483282, 0.19294615, -0.02442965, 0.6995736, 0, -0.19282863, -0.0067337235, 0.67288315, -1.3783197, 0.5, 1.8962269)
 cardname = "石块"
 battle = SubResource("Resource_egbq3")
 
-[node name="树枝" parent="." unique_id=1996746775 instance=ExtResource("10_7gu60")]
+[node name="ArmorPreview" parent="." unique_id=1996746775 instance=ExtResource("10_7gu60")]
 transform = Transform3D(0.6724733, -0.023483282, -0.19294615, 0.02442965, 0.6995736, 0, 0.19282863, -0.0067337235, 0.67288315, -0.07162762, 0.36341977, 1.8775973)
 cardname = "化石树的树枝"
 

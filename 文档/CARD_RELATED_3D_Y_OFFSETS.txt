@@ -88,7 +88,7 @@
 对象：人物卡左下悬停生成的装备 Card3D 预览。
 类型：动态。
 基于：character_3d.tscn 内的两个参考卡节点。
-规则：武器预览复制“石块”参考节点 transform，当前 local y = 0.5；防具预览复制“树枝”参考节点 transform，当前 local y = 0.36341977。生成时挂在人物卡的 EquipmentHoverPreview 下；进入 pickup 状态时由通用卡牌状态把 y 归 0、角度归正。drag_started 回调会 reparent 到人物卡同级父节点、恢复 scale 为 Vector3.ONE，并从人物装备数据中卸下。若人物卡已有 children_card，被堆叠期间不生成该预览。
+规则：武器预览复制 WeaponPreview 参考节点 transform，当前 local y = 0.5；防具预览复制 ArmorPreview 参考节点 transform，当前 local y = 0.36341977。生成时挂在人物卡的 EquipmentHoverPreview 下；进入 pickup 状态时由通用卡牌状态把 y 归 0、角度归正。drag_started 回调会 reparent 到人物卡同级父节点、恢复 scale 为 Vector3.ONE，并从人物装备数据中卸下。若人物卡已有 children_card，被堆叠期间不生成该预览。
 
 对象：人物卡左下悬停装备预览的 EquipmentHoverPreviewArea。
 类型：动态检测区域。
