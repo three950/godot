@@ -21,6 +21,29 @@ func is_battle_card(card: Card3D) -> bool:
 	return card != null and (card.card_info is CharacterCard or card.card_info is EnemyCard)
 
 
+func accept_battle_unit(
+		card: Card3D,
+		battle_scene: Node,
+		characters: Array[Card3D],
+		enemies: Array[Card3D]
+) -> Card3D:
+	var unit := _get_valid_card(card)
+	if unit == null:
+		return null
+	if battle_scene == null or not is_instance_valid(battle_scene):
+		return null
+	if not is_battle_card(unit):
+		return null
+	if characters.has(unit) or enemies.has(unit):
+		return null
+
+	# 进入战斗的卡牌由 guard 统一接管：停止拖拽、关闭堆叠/射线交互，并挂到战斗场景下。
+	lock_card_for_battle(unit, battle_scene)
+	if unit.get_parent() != battle_scene:
+		unit.reparent(battle_scene, true)
+	return unit
+
+
 func lock_card_for_battle(card: Card3D, battle_scene: Node) -> void:
 	if card == null or not is_instance_valid(card):
 		return
@@ -167,6 +190,14 @@ func is_card_overlapping_battle_area(card: Card3D) -> bool:
 
 func _signed_distance(value: float, distance: float) -> float:
 	return -distance if value < 0.0 else distance
+
+
+func _get_valid_card(candidate) -> Card3D:
+	if candidate == null or not (candidate is Object):
+		return null
+	if not is_instance_valid(candidate):
+		return null
+	return candidate as Card3D
 
 
 func _cancel_active_card_motion(card: Card3D) -> void:
