@@ -1,0 +1,401 @@
+BattleScene3D 分工与信号传递说明
+================================
+
+本文档说明 3D 战斗场景相关脚本的职责边界，以及战斗创建、单位加入、合并、攻击、死亡、结束时的信号流向。
+
+
+一、核心脚本分工
+----------------
+
+1. BattleManager
+
+BattleManager 是 3D 多战斗场景的外部调度器。
+
+主要职责：
+- 监听所有 Card3D 的堆叠/接触信号。
+- 判断两张卡是否能触发战斗。
+- 创建 BattleScene3D。
+- 维护 active_battle_scenes。
+- 接收 BattleScene3D 发出的场景级信号。
+- 调度两个 BattleScene3D 的合并。
+- 战斗场景释放时从 active_battle_scenes 中移除。
+
+不负责：
+- 不直接计算攻击。
+- 不直接维护 BattleScene3D 内部的 characters / enemies。
+- 不直接播放战斗特效。
+
+
+2. BattleScene3D
+
+BattleScene3D 是单个 3D 战斗区域的唯一场景协调者。
+
+主要职责：
+- 创建并配置 BattleScene3DAreaController、BattleScene3DCardGuard、BattleScene3DCombatController。
+- 维护 characters / enemies 两个场景队列。
+- 接收新单位加入，并把新单位交给 combat controller。
+- 调用布局和区域大小更新。
+- 监听 BattleArea 的 area_entered。
+- 识别卡牌进入战斗区域，并向 BattleManager 发出 card_entered_battle_area。
+- 识别两个 BattleScene3D 的 BattleArea 接触，并向 BattleManager 发出 battle_area_touched。
+- 合并前停止本场景 combat controller 的攻击队列和动画。
+- 合并时导出本场景单位和剩余攻击时间。
+- 接收 combat controller 的 unit_died 信号，处理死亡单位移除、后续掉落入口、重新布局。
+- 接收 combat controller 的 battle_ended 信号，释放存活单位、清空队列、发出 battle_finished、queue_free。
+
+不负责：
+- 不计算攻击间隔。
+- 不选择攻击目标。
+- 不执行扣血。
+- 不播放攻击动画、受击动画、伤害数字、白闪。
+- 不直接维护攻击 Timer 或攻击队列。
+
+
+3. BattleScene3DCombatController
+
+BattleScene3DCombatController 只负责单个 BattleScene3D 内的战斗演算和攻击表现。
+
+主要职责：
+- 接收 BattleScene3D 传入的 characters / enemies 作为只读视图。
+- 按单位 speed 创建攻击 Timer。
+- 维护攻击队列，串行执行攻击。
+- 根据攻击方阵营选择目标。
+- 执行攻击流程：
+  - 读取攻击者 ATK / speed / attack_type。
+  - 远程攻击播放子弹。
+  - 播放命中白闪。
+  - 扣血。
+  - 显示伤害数字。
+  - 播放受击抖动。
+- 扣血后判断目标是否死亡。
+- 单位死亡时发出 unit_died(unit)。
+- 任一方无存活单位时发出 battle_ended。
+- 处理全局计时暂停：
+  - 攻击 Timer 暂停/恢复。
+  - 攻击动画 Tween 暂停/恢复。
+  - 攻击流程中的等待 Timer 暂停/恢复。
+- 合并或结束时停止攻击队列、Timer、Tween，并清理 Effects 下的战斗表现节点。
+- 合并时提供单位剩余攻击时间。
+
+不负责：
+- 不修改 characters / enemies 队列。
+- 不 queue_free 死亡卡牌。
+- 不释放存活卡牌。
+- 不处理战斗场景合并。
+- 不决定战斗场景最终销毁。
+
+
+4. BattleScene3DCardGuard
+
+BattleScene3DCardGuard 只负责卡牌进入战斗区域后的准入、锁定、释放和非战斗卡推出。
+
+主要职责：
+- 判断 Card3D 是否为战斗卡：
+  - CharacterCard
+  - EnemyCard
+- accept_battle_unit：
+  - 防止重复加入。
+  - 锁定卡牌交互。
+  - 停止拖拽。
+  - 禁用堆叠。
+  - 禁用射线交互。
+  - 设置 battle_scene_3d meta。
+  - 将卡牌 reparent 到 BattleScene3D。
+- release_survivor_card：
+  - 恢复卡牌交互状态。
+  - 移除 battle_scene_3d meta。
+  - 将存活卡牌释放回场景父节点。
+- push_non_battle_card_from_area：
+  - 将非战斗卡推出战斗区域。
+  - 若非战斗卡堆里夹着战斗卡，先拆出战斗卡。
+- cleanup_non_battle_cards_in_area：
+  - 扫描区域内非战斗卡并推出。
+
+不负责：
+- 不维护战斗队列。
+- 不计算战斗。
+- 不处理区域视觉大小。
+
+
+5. BattleScene3DAreaController
+
+BattleScene3DAreaController 只负责 BattleScene3D 的视觉布局、区域大小和碰撞范围。
+
+主要职责：
+- 让视觉资源实例唯一化。
+- 设置 BorderViewport。
+- 根据 characters / enemies 重新布局卡牌。
+- 根据单位数量和卡牌尺寸计算战斗区域视觉大小。
+- 更新 Fill、BorderFrame、BorderViewport、BattleArea CollisionShape3D。
+
+不负责：
+- 不接收卡牌进入事件。
+- 不处理卡牌准入。
+- 不处理攻击和死亡。
+
+
+二、主要信号列表
+----------------
+
+1. Card3D -> BattleManager
+
+信号：
+- card_label_entered_stack_area(entering_card: Card3D)
+
+连接位置：
+- BattleManager._connect_card()
+
+用途：
+- 当一张 Card3D 进入另一张 Card3D 的堆叠/接触区域时，BattleManager 延迟处理接触。
+- 如果两张卡是 CharacterCard 与 EnemyCard，则可能创建新的 BattleScene3D。
+- 如果其中一张已经属于某个 BattleScene3D，则可能把另一张加入已有战斗。
+- 如果两张分别属于不同 BattleScene3D，则请求合并两个战斗场景。
+
+
+2. BattleScene3D -> BattleManager
+
+信号：
+- card_entered_battle_area(battle_scene: BattleScene3D, card: Card3D)
+- battle_area_touched(battle_scene: BattleScene3D, other_scene: BattleScene3D)
+- battle_finished(battle_scene: BattleScene3D)
+
+连接位置：
+- BattleManager._create_battle_scene()
+
+用途：
+- card_entered_battle_area：
+  - BattleScene3D 发现战斗卡进入本战斗区域。
+  - BattleManager 判断该卡是加入本战斗，还是触发两个战斗场景合并。
+
+- battle_area_touched：
+  - BattleScene3D 发现另一个 BattleScene3D 的区域接触本区域。
+  - BattleManager 发起合并请求。
+
+- battle_finished：
+  - BattleScene3D 战斗结束并准备释放。
+  - BattleManager 从 active_battle_scenes 中移除该场景。
+
+
+3. BattleScene3DCombatController -> BattleScene3D
+
+信号：
+- unit_died(unit: Card3D)
+- battle_ended()
+
+连接位置：
+- BattleScene3D._connect_combat_controller_signals()
+
+用途：
+- unit_died：
+  - combat controller 扣血后发现单位 HP <= 0。
+  - BattleScene3D 负责从 characters / enemies 移除单位、处理死亡掉落入口、queue_free 卡牌、重新布局。
+
+- battle_ended：
+  - combat controller 发现任一方没有存活单位。
+  - BattleScene3D 负责释放存活单位、清空队列、发出 battle_finished、queue_free 自己。
+
+
+4. Events -> BattleScene3DCombatController
+
+信号：
+- timers_pause_changed(is_paused: bool)
+
+连接位置：
+- BattleScene3DCombatController._connect_global_timer_pause()
+
+用途：
+- 全局暂停/恢复战斗计时。
+- 影响：
+  - 单位攻击 Timer。
+  - 攻击动画 Tween。
+  - 攻击流程等待 Timer。
+
+
+5. BattleArea Area3D -> BattleScene3D
+
+信号：
+- area_entered(area: Area3D)
+
+连接位置：
+- BattleScene3D._ready()
+
+用途：
+- 当 Card3D 的 Area3D 进入 BattleArea：
+  - 如果是战斗卡，BattleScene3D 发出 card_entered_battle_area。
+  - 如果是非战斗卡，BattleScene3DCardGuard 将其推出区域，并把被拆出来的战斗卡重新发出 card_entered_battle_area。
+- 当另一个 BattleScene3D 的 BattleArea 进入：
+  - BattleScene3D 发出 battle_area_touched。
+
+
+三、典型流程
+------------
+
+1. 新战斗创建流程
+
+Card3D 接触另一张 Card3D
+-> Card3D.card_label_entered_stack_area
+-> BattleManager._on_card_contact
+-> BattleManager._handle_card_contact
+-> 判断双方为 CharacterCard 与 EnemyCard
+-> BattleManager._create_battle_scene
+-> 实例化 BattleScene3D
+-> 连接 BattleScene3D 的三个场景级信号
+-> BattleScene3D.add_card(first_card)
+-> BattleScene3D.add_card(second_card)
+-> BattleScene3D.relayout_cards
+-> BattleScene3D.start_battle
+-> BattleScene3DCombatController.start_battle
+-> 为双方单位创建攻击 Timer
+
+
+2. 新单位进入已有战斗流程
+
+Card3D 进入 BattleScene3D 的 BattleArea
+-> BattleArea.area_entered
+-> BattleScene3D._on_battle_area_area_entered
+-> BattleScene3D.card_entered_battle_area
+-> BattleManager._on_battle_card_entered
+-> BattleManager._handle_battle_card_entered
+-> BattleScene3D.add_card(card)
+-> BattleScene3DCardGuard.accept_battle_unit
+-> BattleScene3D 更新 characters / enemies
+-> BattleScene3DCombatController.add_unit
+-> BattleScene3D.relayout_cards 或 update_scene_bounds
+-> 如果双方都有单位且战斗未开始，则 BattleScene3D.start_battle
+
+
+3. 攻击流程
+
+单位攻击 Timer timeout
+-> BattleScene3DCombatController._on_unit_attack
+-> 登记 attacker_id 到攻击队列
+-> _drain_attack_queue 串行处理
+-> _perform_queued_attack
+-> _get_attack_target 选择目标
+-> _perform_attack
+-> 根据 attack_type 播放远程子弹或直接命中
+-> 命中时播放白闪
+-> BattleStates.take_damage
+-> 显示伤害数字
+-> 如果 HP <= 0：
+   -> BattleScene3DCombatController.unit_died(unit)
+   -> BattleScene3D._on_combat_unit_died
+   -> BattleScene3D._remove_dead_unit
+   -> 从 characters / enemies 移除
+   -> queue_free 死亡卡牌
+   -> relayout_cards
+-> 如果目标未死亡：
+   -> 播放受击抖动
+-> _check_battle_end
+-> 如果双方仍有单位：
+   -> 为攻击者创建下一轮攻击 Timer
+
+
+4. 战斗结束流程
+
+BattleScene3DCombatController._check_battle_end
+-> 发现 characters 或 enemies 无存活单位
+-> BattleScene3DCombatController.battle_ended
+-> BattleScene3D._on_combat_battle_ended
+-> BattleScene3D._finish_battle
+-> BattleScene3DCombatController.shutdown
+-> 存活卡牌通过 BattleScene3DCardGuard.release_survivor_card 释放回场景
+-> 死亡卡牌 queue_free
+-> characters / enemies 清空
+-> BattleScene3D.battle_finished
+-> BattleManager._on_battle_finished
+-> active_battle_scenes 移除该场景
+-> BattleScene3D.queue_free
+
+
+5. 两个战斗场景合并流程
+
+两个 BattleScene3D 的 BattleArea 接触
+-> BattleArea.area_entered
+-> BattleScene3D.battle_area_touched
+-> BattleManager._on_battle_area_touched
+-> BattleManager._request_merge
+-> BattleManager._merge_battle_scenes
+-> BattleManager 选择 keeper 与 merged
+-> merged.extract_cards_for_merge
+   -> BattleScene3DCombatController.stop_for_merge
+   -> 停止攻击队列和动画
+   -> 为每个单位导出 card 与 next_attack_time
+   -> BattleScene3DCombatController.shutdown
+   -> merged.characters / merged.enemies 清空
+-> keeper.add_card(card, insert_left, next_attack_time, false)
+-> keeper.relayout_cards
+-> keeper.start_battle
+-> active_battle_scenes 移除 merged
+-> merged.shutdown_after_merge
+-> merged.queue_free
+
+
+四、职责边界约定
+----------------
+
+1. characters / enemies 的唯一写入者是 BattleScene3D。
+
+BattleScene3DCombatController 可以读取这两个数组，但不能增删数组内容。
+单位死亡时，combat controller 只能发 unit_died 信号，把删除权交还给 BattleScene3D。
+
+
+2. 合并由 BattleManager 和 BattleScene3D 负责。
+
+BattleManager 决定是否合并、谁保留、谁迁移。
+BattleScene3D 在导出迁移单位前，负责要求 combat controller 停止旧攻击队列和动画。
+BattleScene3DCombatController 不主动发起合并。
+
+
+3. 卡牌交互状态只由 BattleScene3DCardGuard 接管。
+
+进入战斗时锁定卡牌。
+战斗结束时释放存活卡牌。
+非战斗卡进入区域时推出。
+其他脚本不要直接复制这部分逻辑。
+
+
+4. 区域视觉和碰撞大小只由 BattleScene3DAreaController 维护。
+
+BattleScene3D 只调用 relayout_cards / update_scene_bounds。
+不要在 combat controller 或 card guard 中修改区域视觉尺寸。
+
+
+5. 战斗计时只在 BattleScene3DCombatController 内部维护。
+
+攻击 Timer、攻击队列、动画 Tween、攻击等待 Timer 都归 combat controller。
+这些计时必须响应 Events.timers_pause_changed。
+
+
+6. 死亡掉落入口在 BattleScene3D._remove_dead_unit。
+
+combat controller 只判断死亡并发信号。
+如果未来要加死亡掉落、经验、奖励、尸体卡等，应优先从 BattleScene3D._remove_dead_unit 接入，而不是写进 combat controller。
+
+
+五、简化信号链路图
+------------------
+
+Card3D.card_label_entered_stack_area
+-> BattleManager
+-> BattleScene3D.add_card / BattleManager._create_battle_scene / BattleManager._request_merge
+
+BattleArea.area_entered
+-> BattleScene3D
+-> BattleScene3D.card_entered_battle_area
+-> BattleManager
+-> BattleScene3D.add_card 或 BattleManager._request_merge
+
+BattleScene3DCombatController.unit_died
+-> BattleScene3D._remove_dead_unit
+-> 更新 characters / enemies
+-> relayout_cards
+
+BattleScene3DCombatController.battle_ended
+-> BattleScene3D._finish_battle
+-> BattleScene3D.battle_finished
+-> BattleManager.active_battle_scenes 移除
+
+Events.timers_pause_changed
+-> BattleScene3DCombatController
+-> 暂停/恢复攻击 Timer、Tween、等待 Timer
