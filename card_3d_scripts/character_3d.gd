@@ -49,6 +49,14 @@ func stop_stacking_on_me() -> void:
 	_update_bottom_left_hover_area_for_stack()
 
 
+func try_accept_stack_interaction(stacked_card: Card3D) -> bool:
+	# 战斗中会禁用普通堆叠，但仍允许装备/道具这种“贴到人物卡上触发”的特殊交互。
+	if _try_equip_stacked_equipment(stacked_card):
+		_update_bottom_left_hover_area_for_stack()
+		return true
+	return false
+
+
 func _on_mouse_exited() -> void:
 	super._on_mouse_exited()
 	_set_bottom_left_hovered(false)
@@ -303,8 +311,8 @@ func _try_equip_stacked_equipment(stacked_card: Card3D) -> bool:
 	if not (equipment_card is WeaponCard) and not (equipment_card is ArmorCard):
 		return false
 
-	# EquipmentCard 堆到人物卡时不进入普通堆叠队列，而是把这张 3D 卡消费成装备槽数据。
-	# stack_on_card() 在发信号前已经把 follow_target 指向人物卡，所以这里要先手动断开。
+	# EquipmentCard 贴到人物卡时不进入普通堆叠队列，而是把这张 3D 卡消费成装备槽数据。
+	# 兼容两种入口：普通 stack_on_card() 已经设置 follow_target，战斗中的特殊交互则只提供接触目标。
 	var spawn_position := stacked_card.global_position
 	_release_children_from_consumed_equipment(stacked_card)
 	_detach_consumed_equipment_from_character(stacked_card)

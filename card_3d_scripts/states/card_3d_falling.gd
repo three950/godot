@@ -6,6 +6,15 @@ func enter() -> void:
 	card.dropped.emit(self)
 	card.end_drag()
 
+	if _try_apply_stack_interaction():
+		if _is_card_still_available():
+			card.snap_to_base_plane()
+			if card.children_card != null:
+				card.update_children_position()
+			transition_requested.emit(self, Card3DState.State.fixed)
+			_play_fall_sound()
+		return
+
 	var closest_card := find_closest_card()
 	if closest_card != null:
 		stack_on_card(closest_card)
@@ -24,8 +33,7 @@ func enter() -> void:
 			card.update_children_position()
 		transition_requested.emit(self, Card3DState.State.fixed)
 
-	if card.fall_sound:
-		SFXPlayer.play(card.fall_sound)
+	_play_fall_sound()
 
 
 func find_closest_card() -> Card3D:
@@ -52,6 +60,35 @@ func find_closest_card() -> Card3D:
 	return closest_card
 
 
+func _try_apply_stack_interaction() -> bool:
+	var candidates := _get_stack_interaction_candidates()
+
+	# 特殊交互先于普通堆叠执行；按距离尝试，直到某个目标卡真正消费或处理这次落下。
+	for target_card in candidates:
+		if target_card.try_accept_stack_interaction(card):
+			return true
+
+	return false
+
+
+func _get_stack_interaction_candidates() -> Array[Card3D]:
+	var candidates: Array[Card3D] = []
+	for target_card in card.overlapping_cards:
+		if target_card == null or not is_instance_valid(target_card):
+			continue
+		if target_card == card:
+			continue
+		if not target_card.has_method("try_accept_stack_interaction"):
+			continue
+		candidates.append(target_card)
+
+	candidates.sort_custom(func(a: Card3D, b: Card3D) -> bool:
+		return card.global_position.distance_squared_to(a.global_position) \
+				< card.global_position.distance_squared_to(b.global_position)
+	)
+	return candidates
+
+
 func stack_on_card(target_card: Card3D) -> void:
 	card.stack_state = Card3DState.STACK_STATE_STACKING
 	card.follow_target = target_card
@@ -63,3 +100,12 @@ func stack_on_card(target_card: Card3D) -> void:
 
 	card.global_position = target_card.get_child_stack_position()
 	card.update_children_position()
+
+
+func _is_card_still_available() -> bool:
+	return card != null and is_instance_valid(card) and not card.is_queued_for_deletion()
+
+
+func _play_fall_sound() -> void:
+	if card.fall_sound:
+		SFXPlayer.play(card.fall_sound)

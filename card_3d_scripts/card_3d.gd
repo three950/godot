@@ -31,6 +31,8 @@ const RUNTIME_UNIQUE_RESOURCE_META := "_card3d_runtime_unique_resource"
 
 @export_group("3D Input")
 @export var ray_interaction_enabled: bool = true
+# 点击开关只拦截左键按下；射线 hover 和命中检测仍可继续用于战斗中高亮/提示。
+@export var mouse_click_enabled: bool = true
 @export var face_size: Vector2 = Vector2(2.64, 3.45)
 
 @export_group("Audio")
@@ -398,6 +400,11 @@ func update_stack_chain_position() -> void:
 	head_card.update_children_position()
 
 
+func try_accept_stack_interaction(_stacked_card: Card3D) -> bool:
+	# 普通 Card3D 不消费“贴上来”的卡；子类可覆盖此入口，实现装备、道具等类似堆叠触发的特殊逻辑。
+	return false
+
+
 func get_stack_head() -> Card3D:
 	var current: Card3D = self
 	while current.follow_target != null:
@@ -416,6 +423,11 @@ func snap_to_base_plane() -> void:
 
 
 func _on_card_input_event(camera: Node, event: InputEvent, event_position: Vector3, normal: Vector3, shape_idx: int) -> void:
+	if _is_left_button_press(event) and not mouse_click_enabled:
+		# 战斗接管的卡牌仍允许鼠标悬停，但不允许左键重新触发 pickup/drag。
+		get_viewport().set_input_as_handled()
+		return
+
 	var input_camera := camera as Camera3D
 	if input_camera:
 		_drag_camera = input_camera
@@ -513,6 +525,11 @@ func _handle_ray_input(event: InputEvent) -> void:
 		var camera := get_viewport().get_camera_3d()
 		var hit := _get_top_card_hit(mouse_button.position, camera)
 		if hit.is_empty() or hit.get("card") != self:
+			return
+
+		if not mouse_click_enabled:
+			# 手写射线路径同样只吃掉点击，不关闭 mouse motion 触发的 hover。
+			get_viewport().set_input_as_handled()
 			return
 
 		card_state_machine.on_area_input(camera, mouse_button, hit["position"], hit["normal"], -1)

@@ -3,7 +3,7 @@ extends RefCounted
 
 const BATTLE_META_KEY := "battle_scene_3d"
 const PREV_CAN_STACK_META_KEY := "battle_3d_prev_can_stack"
-const PREV_RAY_META_KEY := "battle_3d_prev_ray_interaction"
+const PREV_MOUSE_CLICK_META_KEY := "battle_3d_prev_mouse_click"
 const PREV_STACK_MONITORING_META_KEY := "battle_3d_prev_stack_monitoring"
 const PREV_STACK_MONITORABLE_META_KEY := "battle_3d_prev_stack_monitorable"
 
@@ -37,7 +37,7 @@ func accept_battle_unit(
 	if characters.has(unit) or enemies.has(unit):
 		return null
 
-	# 进入战斗的卡牌由 guard 统一接管：停止拖拽、关闭堆叠/射线交互，并挂到战斗场景下。
+	# 进入战斗的卡牌由 guard 统一接管：停止拖拽、关闭堆叠/鼠标点击，并挂到战斗场景下。
 	lock_card_for_battle(unit, battle_scene)
 	if unit.get_parent() != battle_scene:
 		unit.reparent(battle_scene, true)
@@ -51,8 +51,8 @@ func lock_card_for_battle(card: Card3D, battle_scene: Node) -> void:
 	_cancel_active_card_motion(card)
 	if not card.has_meta(PREV_CAN_STACK_META_KEY):
 		card.set_meta(PREV_CAN_STACK_META_KEY, card.can_stack)
-	if not card.has_meta(PREV_RAY_META_KEY):
-		card.set_meta(PREV_RAY_META_KEY, card.ray_interaction_enabled)
+	if not card.has_meta(PREV_MOUSE_CLICK_META_KEY):
+		card.set_meta(PREV_MOUSE_CLICK_META_KEY, card.mouse_click_enabled)
 	if card.stack_detector:
 		if not card.has_meta(PREV_STACK_MONITORING_META_KEY):
 			card.set_meta(PREV_STACK_MONITORING_META_KEY, card.stack_detector.monitoring)
@@ -62,8 +62,9 @@ func lock_card_for_battle(card: Card3D, battle_scene: Node) -> void:
 	card.detach_from_follow_target()
 	card.reset_offset()
 	card.can_stack = false
-	card.ray_interaction_enabled = false
-	card.set_stack_detector_enabled(false)
+	# 战斗中仍保留射线 hover/命中检测；这里只禁用左键，避免再次拖拽战斗单位。
+	card.mouse_click_enabled = false
+	# 不关闭 stack_detector：普通堆叠由 can_stack=false 禁止，但装备/道具仍需要接触检测触发特殊交互。
 	_set_overlap_pusher_enabled(card, false)
 	card.set_meta(BATTLE_META_KEY, battle_scene)
 	if card.battle:
@@ -71,12 +72,19 @@ func lock_card_for_battle(card: Card3D, battle_scene: Node) -> void:
 
 
 func push_non_battle_card_from_area(card: Card3D) -> Array[Card3D]:
-	if card == null or is_battle_card(card):
+	if not should_push_non_battle_card_from_area(card):
 		return []
 
 	var detached_battle_cards := _detach_battle_cards_from_stack(card)
 	force_card_outside_battle_area(card)
 	return detached_battle_cards
+
+
+func should_push_non_battle_card_from_area(card: Card3D) -> bool:
+	if card == null or is_battle_card(card):
+		return false
+	# 非 biology 卡只在完全固定后推出；falling 期间保留机会触发装备/道具等接触式交互。
+	return _is_card_in_pushable_state(card)
 
 
 func restore_card_after_battle(card: Card3D) -> void:
@@ -86,9 +94,9 @@ func restore_card_after_battle(card: Card3D) -> void:
 	if card.has_meta(PREV_CAN_STACK_META_KEY):
 		card.can_stack = card.get_meta(PREV_CAN_STACK_META_KEY)
 		card.remove_meta(PREV_CAN_STACK_META_KEY)
-	if card.has_meta(PREV_RAY_META_KEY):
-		card.ray_interaction_enabled = card.get_meta(PREV_RAY_META_KEY)
-		card.remove_meta(PREV_RAY_META_KEY)
+	if card.has_meta(PREV_MOUSE_CLICK_META_KEY):
+		card.mouse_click_enabled = card.get_meta(PREV_MOUSE_CLICK_META_KEY)
+		card.remove_meta(PREV_MOUSE_CLICK_META_KEY)
 	if card.stack_detector:
 		if card.has_meta(PREV_STACK_MONITORING_META_KEY):
 			card.stack_detector.set_deferred("monitoring", card.get_meta(PREV_STACK_MONITORING_META_KEY))
@@ -214,6 +222,14 @@ func _cancel_active_card_motion(card: Card3D) -> void:
 			or state == Card3DState.State.instackdragging:
 		# 战斗接管卡牌时必须退出拖拽态，否则鼠标移动仍会改 global_position。
 		card.card_state_machine.force_transition(Card3DState.State.fixed)
+
+
+func _is_card_in_pushable_state(card: Card3D) -> bool:
+	if card == null or card.card_state_machine == null or card.card_state_machine.current_state == null:
+		return false
+
+	var state := card.card_state_machine.current_state.state
+	return state == Card3DState.State.fixed
 
 
 func _set_overlap_pusher_enabled(card: Card3D, enabled: bool) -> void:
