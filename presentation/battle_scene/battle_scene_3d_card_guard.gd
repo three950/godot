@@ -64,6 +64,7 @@ func lock_card_for_battle(card: Card3D, battle_scene: Node) -> void:
 	card.can_stack = false
 	card.ray_interaction_enabled = false
 	card.set_stack_detector_enabled(false)
+	_set_overlap_pusher_enabled(card, false)
 	card.set_meta(BATTLE_META_KEY, battle_scene)
 	if card.battle:
 		card.battle.current_state = BattleState.Phase.BATTLE
@@ -95,6 +96,7 @@ func restore_card_after_battle(card: Card3D) -> void:
 		if card.has_meta(PREV_STACK_MONITORABLE_META_KEY):
 			card.stack_detector.set_deferred("monitorable", card.get_meta(PREV_STACK_MONITORABLE_META_KEY))
 			card.remove_meta(PREV_STACK_MONITORABLE_META_KEY)
+	_set_overlap_pusher_enabled(card, true)
 
 	if card.has_meta(BATTLE_META_KEY):
 		card.remove_meta(BATTLE_META_KEY)
@@ -212,6 +214,21 @@ func _cancel_active_card_motion(card: Card3D) -> void:
 			or state == Card3DState.State.instackdragging:
 		# 战斗接管卡牌时必须退出拖拽态，否则鼠标移动仍会改 global_position。
 		card.card_state_machine.force_transition(Card3DState.State.fixed)
+
+
+func _set_overlap_pusher_enabled(card: Card3D, enabled: bool) -> void:
+	var push_detector := card.get_node_or_null("CardPushDetectorArea") as Area3D
+	if push_detector != null:
+		push_detector.set_deferred("monitoring", enabled)
+		push_detector.set_deferred("monitorable", enabled)
+
+	var pusher := card.get_node_or_null("Card3DOverlapPusher") as Card3DOverlapPusher
+	if pusher == null:
+		return
+
+	# 战斗中的卡牌站位由 BattleScene3D 控制，不能再被普通卡牌重叠推挤逻辑改 x/z。
+	pusher.overlapping_push_cards.clear()
+	pusher.set_physics_process(enabled)
 
 
 func _detach_battle_cards_from_stack(card: Card3D) -> Array[Card3D]:

@@ -124,6 +124,8 @@ ProgressMesh3D：挂在 CardProgressBar3D 下，默认 local y = 0。
 父节点自身运行时全局 y = 0。
 
 子节点和动态对象从高到低：
+近战攻击中的攻击卡牌：基于攻击者出手前位置，出手瞬间先设到 original_position.y + 0.3，再以该高度冲撞到目标中心上方；回位过程中持续读取当前战斗队列槽位，并随 global_position tween 慢慢降回当前槽位高度。正常战斗排布里卡牌 y = 0，所以近战冲撞高度通常是 0.3。
+
 BattleBullet：基于攻击者卡牌位置生成，y = attacker_card.y + 0.25；飞向目标时目标点也是 target_card.y + 0.25。正常战斗排布里卡牌 y = 0，所以子弹通常 y = 0.25。
 
 HitFeedback / Attack3D：基于目标卡牌位置生成，y = target_card.y + 0.28。正常战斗排布里目标卡 y = 0，所以受击数字通常 y = 0.28。
@@ -153,11 +155,11 @@ Ground，y = 0。
 hover/pickup 只抬高 FrontFace 和 BackFace，最高可到 local y = 0.19。
 
 战斗特效：
+近战攻击卡牌冲撞时通常 y = 0.3，回位时逐步降回原高度。
 受击数字通常 y = 0.28。
 子弹通常 y = 0.25。
 受击白闪通常 y = 0.08。
 受击抖动目标卡短暂 y = 0.05。
-
 地下/背景层：
 OceanMesh，y = -0.3。
 GroundLayer01 到 GroundLayer05，依次为 -3.052、-6.052、-9.052、-12.052、-15.052。

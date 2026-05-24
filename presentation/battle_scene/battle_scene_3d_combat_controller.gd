@@ -10,6 +10,9 @@ const PROJECTILE_SCENE := preload("res://presentation/特效/bullet_3d.tscn")
 const HIT_EFFECT_SCENE := preload("res://presentation/特效/attack_3d.tscn")
 const PROJECTILE_HEIGHT_OFFSET := Vector3(0.0, 0.25, 0.0)
 const PROJECTILE_TRAVEL_TIME := 0.25
+const MELEE_DASH_OUT_TIME := 0.08
+const MELEE_DASH_RETURN_TIME := 0.12
+const MELEE_DASH_HEIGHT := 0.3
 const HIT_FEEDBACK_OFFSET := Vector3(1.0, 0.28, 1.3)
 const HIT_FEEDBACK_LIFETIME := 0.5
 const HIT_SHAKE_STEP_TIME := 0.04
@@ -309,8 +312,7 @@ func _perform_attack(attacker, target) -> void:
 		BattleStates.attackType.remote:
 			await _play_projectile(attack_from, attack_to)
 		_:
-			# 近战攻击不移动卡牌本体；命中表现交给白闪、伤害数字和受击抖动。
-			pass
+			await _play_melee_dash(attacker_card, target_card)
 
 	# 子弹飞行期间目标若已离场，本次攻击直接放弃，不再做额外补偿。
 	target_card = _get_valid_card(target)
@@ -349,6 +351,88 @@ func _play_projectile(from_position: Vector3, to_position: Vector3) -> void:
 	await tween.finished
 
 	bullet.queue_free()
+
+
+func _play_melee_dash(attacker: Card3D, target: Card3D) -> void:
+	if attacker == null or target == null:
+		return
+
+	var original_transform := attacker.global_transform
+	var original_position := attacker.global_position
+	var raised_position := original_position
+	raised_position.y += MELEE_DASH_HEIGHT
+	var target_position := target.global_position
+	target_position.y = raised_position.y
+
+	_face_card_toward(attacker, target_position)
+	attacker.global_position = raised_position
+
+	# 近战卡牌本体抬高后快速直线冲到目标中心上方，避免被目标卡面遮挡。
+	var dash_tween := _create_attack_animation_tween()
+	var dash_property := dash_tween.tween_property(attacker, "global_position", target_position, MELEE_DASH_OUT_TIME)
+	dash_property.set_trans(Tween.TRANS_QUAD)
+	dash_property.set_ease(Tween.EASE_OUT)
+	await dash_tween.finished
+
+	if not _is_valid_melee_dash_card(attacker):
+		return
+
+	# 回位过程中持续读取当前队列槽位；若此时有新卡加入并触发重排，攻击卡会追向新槽位。
+	var return_start_position := attacker.global_position
+	var return_tween := _create_attack_animation_tween()
+	var return_property := return_tween.tween_method(
+		_update_melee_return_position.bind(attacker, original_position, return_start_position),
+		0.0,
+		1.0,
+		MELEE_DASH_RETURN_TIME
+	)
+	return_property.set_trans(Tween.TRANS_QUAD)
+	return_property.set_ease(Tween.EASE_IN_OUT)
+	await return_tween.finished
+
+	if _is_valid_melee_dash_card(attacker):
+		var return_position := _get_current_slot_position(attacker, original_position)
+		original_transform.origin = return_position
+		attacker.global_transform = original_transform
+
+
+func _face_card_toward(card: Card3D, target_position: Vector3) -> void:
+	var origin := card.global_position
+	var direction := target_position - origin
+	direction.y = 0.0
+	if direction.length_squared() <= 0.0001:
+		return
+
+	card.look_at(origin + direction.normalized(), Vector3.UP)
+
+
+func _is_valid_melee_dash_card(card: Card3D) -> bool:
+	return card != null and is_instance_valid(card) and is_active
+
+
+func _update_melee_return_position(
+		progress: float,
+		attacker: Card3D,
+		fallback_position: Vector3,
+		return_start_position: Vector3
+) -> void:
+	if not _is_valid_melee_dash_card(attacker):
+		return
+
+	var current_slot_position := _get_current_slot_position(attacker, fallback_position)
+	attacker.global_position = return_start_position.lerp(current_slot_position, progress)
+
+
+func _get_current_slot_position(card: Card3D, fallback_position: Vector3) -> Vector3:
+	var side_cards := _characters if card.card_info is CharacterCard else _enemies
+	var card_index := side_cards.find(card)
+	if card_index < 0:
+		return fallback_position
+
+	var card_spacing := _float_setting("card_spacing", 3.0)
+	var start_x := -card_spacing * float(side_cards.size() - 1) * 0.5
+	var row_z := _float_setting("character_row_z", 1.8) if card.card_info is CharacterCard else _float_setting("enemy_row_z", -1.8)
+	return _owner.to_global(Vector3(start_x + card_spacing * card_index, 0.0, row_z))
 
 
 func _create_attack_animation_tween() -> Tween:

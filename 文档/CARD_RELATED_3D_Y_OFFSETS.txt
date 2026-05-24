@@ -7,6 +7,14 @@
 不列 y = 0 的对象，例如 Card3d 根节点、战斗槽位、合成进度条容器、bullet_3d/attack_3d 场景自身默认根节点。
 
 
+偏移 +0.3
+
+对象：近战攻击中的攻击卡牌。
+类型：动态。
+基于：攻击者卡牌出手前 original_position。
+规则：出手瞬间先把攻击卡牌设到 original_position.y + 0.3，再以该高度冲撞到目标中心上方；回位过程中持续读取当前战斗队列槽位，并随 global_position tween 慢慢降回当前槽位高度。
+
+
 偏移 +0.28
 
 对象：HitFeedback / Attack3D 受击数字。
