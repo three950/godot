@@ -9,7 +9,7 @@
 script = ExtResource("2_par8p")
 card_scene = ExtResource("1_algh7")
 need_power = 6
-attack = 15
+DEF = 15
 value = 200
 "是遗物" = 2
 name = "鳞石伞"

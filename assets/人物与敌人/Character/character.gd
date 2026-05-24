@@ -19,7 +19,6 @@ func _ready() -> void:
 	# 角色生成时发送食物需求更新信号
 	if not Engine.is_editor_hint():
 		Events.food_need_update.emit(2)
-		_update_features()
 	battle = battle.duplicate()
 
 func _exit_tree() -> void:
@@ -72,12 +71,6 @@ func _update_equipment_icon() -> void:
 	if armor_icon != null:
 		# 装备拿走后，显式恢复场景默认防具图标，避免保留上一件装备的头像。
 		armor_icon.texture = armor.portrait if armor != null and armor.portrait != null else DEFAULT_armor_ICON
-
-func _update_features() -> void:
-	if character == null:
-		return
-	character.apply_initial_equipment_changes_once()
-
 
 func 进入战斗状态() -> void:
 	# 标记战斗已开始

@@ -6,6 +6,8 @@ signal stats_changed
 @export var MAX_HP := 1 : set = set_MAX_HP
 @export var ATK: int : set = set_ATK
 @export var speed: int : set = set_speed
+enum attackType {close, remote}
+@export var attack_type: attackType = attackType.close
 
 var HP: int : set = set_HP
 @export var DEF: int : set = set_DEF

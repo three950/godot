@@ -8,7 +8,7 @@
 [resource]
 script = ExtResource("2_3tohr")
 card_scene = ExtResource("1_uk4ij")
-attack = 10
+DEF = 10
 value = 5
 name = "石板"
 portrait = ExtResource("3_uk4ij")

@@ -126,9 +126,9 @@ func _show_equipment_hover_preview() -> void:
 
 	# 左边使用武器参考位，右边使用防具参考位；没有对应装备时保留空位但不生成卡。
 	if weapon_card != null:
-		_add_equipment_preview_card(preview_root, weapon_card, equipment_weapon_template, "HoverWeapon", "weapon")
+		_add_equipment_preview_card(preview_root, weapon_card, equipment_weapon_template, "HoverWeapon")
 	if armor_card != null:
-		_add_equipment_preview_card(preview_root, armor_card, equipment_armor_template, "Hoverarmor", "armor")
+		_add_equipment_preview_card(preview_root, armor_card, equipment_armor_template, "Hoverarmor")
 
 	_add_equipment_hover_area(preview_root)
 
@@ -144,7 +144,7 @@ func _hide_equipment_hover_preview() -> void:
 	_equipment_hover_preview = null
 
 
-func _add_equipment_preview_card(parent: Node3D, equipment_card: ThingsCard, template: Card3D, node_name: String, slot_name: String) -> void:
+func _add_equipment_preview_card(parent: Node3D, equipment_card: ThingsCard, template: Card3D, node_name: String) -> void:
 	if template == null:
 		push_warning("Character3D: missing equipment preview template %s." % node_name)
 		return
@@ -162,7 +162,7 @@ func _add_equipment_preview_card(parent: Node3D, equipment_card: ThingsCard, tem
 	parent.add_child(preview_card)
 
 	# 预览卡被拖起时，Character3D 只负责把它变成场景里的普通卡并卸下装备数据。
-	var drag_started_callable := _on_equipment_preview_card_drag_started.bind(preview_card, slot_name)
+	var drag_started_callable := _on_equipment_preview_card_drag_started.bind(preview_card)
 	if not preview_card.drag_started.is_connected(drag_started_callable):
 		preview_card.drag_started.connect(drag_started_callable)
 
@@ -257,7 +257,7 @@ func _on_equipment_hover_area_mouse_exited() -> void:
 	_hide_equipment_hover_preview()
 
 
-func _on_equipment_preview_card_drag_started(preview_card: Card3D, slot_name: String) -> void:
+func _on_equipment_preview_card_drag_started(preview_card: Card3D) -> void:
 	if preview_card == null or not is_instance_valid(preview_card):
 		return
 
@@ -268,14 +268,14 @@ func _on_equipment_preview_card_drag_started(preview_card: Card3D, slot_name: St
 		preview_card.global_transform = world_transform
 		preview_card.scale = Vector3.ONE
 
-	release_equipment_preview_card(preview_card, slot_name)
+	release_equipment_preview_card(preview_card)
 
-	var drag_started_callable := _on_equipment_preview_card_drag_started.bind(preview_card, slot_name)
+	var drag_started_callable := _on_equipment_preview_card_drag_started.bind(preview_card)
 	if preview_card.drag_started.is_connected(drag_started_callable):
 		preview_card.drag_started.disconnect(drag_started_callable)
 
 
-func release_equipment_preview_card(preview_card: Card3D, slot_name: String) -> void:
+func release_equipment_preview_card(preview_card: Card3D) -> void:
 	var character_card := card_info as CharacterCard
 	var equipment_card := preview_card.card_info as ThingsCard if preview_card != null else null
 	if character_card == null or equipment_card == null:
@@ -283,11 +283,10 @@ func release_equipment_preview_card(preview_card: Card3D, slot_name: String) -> 
 
 	# 从角色装备字段里移除，避免下一次左下悬停又从同一件装备重复生成卡牌。
 	var did_clear := false
-	match slot_name:
-		"weapon":
-			did_clear = character_card.unequip_from_slot(CharacterCard.EQUIPMENT_SLOT_WEAPON, equipment_card)
-		"armor":
-			did_clear = character_card.unequip_from_slot(CharacterCard.EQUIPMENT_SLOT_armor, equipment_card)
+	if equipment_card is WeaponCard:
+		did_clear = character_card.unequip_weapon(equipment_card)
+	elif equipment_card is ArmorCard:
+		did_clear = character_card.unequip_armor(equipment_card)
 
 	if did_clear:
 		_refresh_character_equipment_view()
@@ -301,6 +300,8 @@ func _try_equip_stacked_equipment(stacked_card: Card3D) -> bool:
 	var character_card := card_info as CharacterCard
 	if equipment_card == null or character_card == null:
 		return false
+	if not (equipment_card is WeaponCard) and not (equipment_card is ArmorCard):
+		return false
 
 	# EquipmentCard 堆到人物卡时不进入普通堆叠队列，而是把这张 3D 卡消费成装备槽数据。
 	# stack_on_card() 在发信号前已经把 follow_target 指向人物卡，所以这里要先手动断开。
@@ -308,7 +309,11 @@ func _try_equip_stacked_equipment(stacked_card: Card3D) -> bool:
 	_release_children_from_consumed_equipment(stacked_card)
 	_detach_consumed_equipment_from_character(stacked_card)
 
-	var previous_equipment := character_card.equip_card_by_type(equipment_card)
+	var previous_equipment: ThingsCard = null
+	if equipment_card is WeaponCard:
+		previous_equipment = character_card.replace_weapon(equipment_card as WeaponCard)
+	elif equipment_card is ArmorCard:
+		previous_equipment = character_card.replace_armor(equipment_card as ArmorCard)
 	if previous_equipment != null and previous_equipment != equipment_card:
 		# 旧装备离槽后以普通 3D 卡形式抛回主场景；数值和特性变化已由 CharacterCard 统一处理。
 		_spawn_replaced_equipment_card(previous_equipment, spawn_position)

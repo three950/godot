@@ -14,6 +14,7 @@ card_scene = ExtResource("1_vm5mx")
 MAX_HP = 10
 ATK = 2
 speed = 5
+attack_type = 1
 name = "莉可"
 portrait = ExtResource("2_tmu5p")
 metadata/_custom_type_script = "uid://c4lf65wbktjbc"

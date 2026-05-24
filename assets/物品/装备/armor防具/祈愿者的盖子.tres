@@ -8,7 +8,7 @@
 [resource]
 script = ExtResource("1_ggkgv")
 card_scene = ExtResource("1_btw0c")
-attack = 5
+DEF = 5
 value = 10
 "合成时间" = 3.0
 name = "祈愿者的盖子"
