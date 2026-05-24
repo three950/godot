@@ -13,7 +13,7 @@ signal reparent_requested(which_card: Card3D)
 
 enum cardType {normal, selling, architecture}
 
-const RUNTIME_UNIQUE_RESOURCE_META := "_card3d_runtime_unique_resource"
+const RUNTIME_UNIQUE_RESOURCE_META := CardInfo.RUNTIME_UNIQUE_RESOURCE_META
 
 @export var cardname: String
 @export var card_type: cardType = cardType.normal

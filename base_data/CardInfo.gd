@@ -1,6 +1,8 @@
 class_name CardInfo
 extends Resource
 
+const RUNTIME_UNIQUE_RESOURCE_META := "_card3d_runtime_unique_resource"
+
 @export var name: String = ""
 @export var portrait: Texture2D
 @export_multiline var text: String
@@ -10,5 +12,12 @@ enum CardType {人物, 敌人, 小场景, 道具, 武器, 资源, 深度, 事件
 
 
 func create_runtime_instance() -> CardInfo:
-	# 私有化函数，默认卡牌数据作为静态模板使用；需要运行时改状态的子类自行返回副本。
-	return self
+	if get_meta(RUNTIME_UNIQUE_RESOURCE_META, false):
+		return self
+
+	# 每张 3D 卡运行时都应持有独立数据，避免同一个 .tres 模板被多张卡共享状态。
+	var instance := duplicate() as CardInfo
+	if instance == null:
+		return self
+	instance.set_meta(RUNTIME_UNIQUE_RESOURCE_META, true)
+	return instance

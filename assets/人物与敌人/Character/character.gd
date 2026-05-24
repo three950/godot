@@ -40,8 +40,23 @@ func get_battle_resource() -> BattleStates:
 	return character
 
 func set_character_stats(value: CharacterCard) -> void:
-	character = value
+	character = _create_runtime_character_card(value)
+	if character != null:
+		# 2D 人物卡是角色数据进入场景后的初始化入口；这里统一结算初始装备，保证独立 2D 卡和 3D SubViewport 卡一致。
+		character.initialize_initial_equipment_state()
 	_connect_and_update(character)
+
+func _create_runtime_character_card(value: CharacterCard) -> CharacterCard:
+	if value == null:
+		return null
+	if Engine.is_editor_hint():
+		return value
+
+	# 独立 2D 人物卡不会经过 Card3D._get_runtime_card_data()，所以这里也要确保不直接改原始 .tres。
+	var runtime_character := value.create_runtime_instance() as CharacterCard
+	if runtime_character == null:
+		return value
+	return runtime_character
 
 func _update_battle_card() -> void:
 	if character == null:

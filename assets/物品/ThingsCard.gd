@@ -14,6 +14,20 @@ enum 稀有度{COMMON,NOTBAD,RARE,UNIQUE}
 @export var has_craft_recipe: bool = false
 @export var craft_materials: Array[CardInfo] = []
 @export var 合成时间: float = 0.0
+
+
+func create_runtime_instance() -> CardInfo:
+	if get_meta(RUNTIME_UNIQUE_RESOURCE_META, false):
+		return self
+
+	# 物品牌上的数据会进入装备槽、合成、堆叠等运行时流程；每张 3D 卡都需要自己的 Resource 实例。
+	var instance := duplicate() as ThingsCard
+	if instance == null:
+		return self
+	instance.set_meta(RUNTIME_UNIQUE_RESOURCE_META, true)
+	return instance
+
+
 func _validate_property(property: Dictionary) -> void:
 	if property.name == "craft_materials":
 		property.usage = PROPERTY_USAGE_DEFAULT if has_craft_recipe else PROPERTY_USAGE_NO_EDITOR

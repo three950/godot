@@ -1,6 +1,8 @@
 class_name CharacterCard
 extends BattleStates
 
+const INITIAL_EQUIPMENT_INITIALIZED_META := "_character_initial_equipment_initialized"
+
 @export var POW:int : set = set_POW
 @export var aware:int
 @export var card_scene:PackedScene = load("res://assets/人物与敌人/Character/character.tscn")
@@ -33,29 +35,47 @@ func create_runtime_instance() -> CardInfo:
 	if instance == null:
 		return self
 
-	# 特性数组会在装备穿脱时 append/erase，数组本身也要脱离原始 .tres。
-	instance.特性 = 特性.duplicate()
-	instance._base_attack_type = instance.attack_type
-	instance._base_attack_type_initialized = true
-
-	# 初始装备是运行时数据的一部分，只在私有化实例创建时结算，避免显示节点重复实例化时重复加成。
-	instance._apply_equipment_card_changes(instance.武器)
-	instance._apply_equipment_card_changes(instance.防具)
 	return instance
+
+
+func initialize_initial_equipment_state() -> void:
+	if get_meta(INITIAL_EQUIPMENT_INITIALIZED_META, false):
+		return
+
+	# 特性数组会在装备穿脱时 append/erase，数组本身也要脱离原始 .tres。
+	特性 = 特性.duplicate()
+	# 记录“未穿初始武器前”的攻击方式，后续卸下武器才能恢复角色自身配置。
+	_base_attack_type = attack_type
+	_base_attack_type_initialized = true
+
+	# 初始装备也走 CardInfo 私有化入口；否则角色自带装备和场景中新开的同名装备会共用同一个 .tres。
+	if 武器 != null:
+		武器 = 武器.create_runtime_instance() as ThingsCard
+	if 防具 != null:
+		防具 = 防具.create_runtime_instance() as ThingsCard
+
+	# 初始装备是运行时数据的一部分，只在 2D 卡面初始化时结算一次，避免卡面重建时重复加成。
+	_apply_equipment_card_changes(武器)
+	_apply_equipment_card_changes(防具)
+	set_meta(INITIAL_EQUIPMENT_INITIALIZED_META, true)
 
 
 func replace_weapon(next_card: WeaponCard) -> ThingsCard:
 	# WeaponCard 本身就代表武器；换装时只处理“旧装备离开、新装备进入”。
 	var previous_card := 武器
-	if previous_card == next_card:
+	var runtime_next_card: WeaponCard = null
+	if next_card != null:
+		# 通过 CardInfo 私有化入口保留“这张卡”的实例身份；同名装备不会被当成同一件。
+		runtime_next_card = next_card.create_runtime_instance() as WeaponCard
+	if previous_card == runtime_next_card:
 		stats_changed.emit()
 		return previous_card
 
 	if previous_card != null:
 		_remove_equipment_card_changes(previous_card)
-	武器 = next_card
-	if next_card != null:
-		_apply_equipment_card_changes(next_card)
+	武器 = runtime_next_card
+	if runtime_next_card != null:
+		_apply_equipment_card_changes(runtime_next_card)
 
 	stats_changed.emit()
 	return previous_card
@@ -64,15 +84,19 @@ func replace_weapon(next_card: WeaponCard) -> ThingsCard:
 func replace_armor(next_card: ArmorCard) -> ThingsCard:
 	# ArmorCard 本身就代表防具；防具数值仍由 EquipmentCard.attack/DEF 决定。
 	var previous_card := 防具
-	if previous_card == next_card:
+	var runtime_next_card: ArmorCard = null
+	if next_card != null:
+		# 防具同样保留实例身份，避免同名 .tres 替换时误判成同一件。
+		runtime_next_card = next_card.create_runtime_instance() as ArmorCard
+	if previous_card == runtime_next_card:
 		stats_changed.emit()
 		return previous_card
 
 	if previous_card != null:
 		_remove_equipment_card_changes(previous_card)
-	防具 = next_card
-	if next_card != null:
-		_apply_equipment_card_changes(next_card)
+	防具 = runtime_next_card
+	if runtime_next_card != null:
+		_apply_equipment_card_changes(runtime_next_card)
 
 	stats_changed.emit()
 	return previous_card
