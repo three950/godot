@@ -62,8 +62,8 @@ func refresh_equipment_ui() -> void:
 	_request_subviewport_redraw()
 
 func _update_equipment_icon() -> void:
-	var weapon = character.武器[0] if character.武器.size() > 0 else null
-	var armour = character.防具[0] if character.防具.size() > 0 else null
+	var weapon := character.武器
+	var armour := character.防具
 
 	if weapon_icon != null:
 		# 装备拿走后，显式恢复场景默认武器图标，避免保留上一件装备的头像。
@@ -73,37 +73,32 @@ func _update_equipment_icon() -> void:
 		# 装备拿走后，显式恢复场景默认防具图标，避免保留上一件装备的头像。
 		armour_icon.texture = armour.portrait if armour != null and armour.portrait != null else DEFAULT_ARMOUR_ICON
 
-func _get_equipped_things_cards() -> Array[ThingsCard]:
-	var result: Array[ThingsCard] = []
-	if character == null:
-		return result
-
-	# 角色当前的装备来源只有两个有效位置：武器[0] 和 防具[0]。
-	# 仍然返回数组，是为了复用初始化特性和装备数值的通用循环。
-	var weapon_card := character.武器[0]
-	if weapon_card != null:
-		result.append(weapon_card)
-
-	var armour_card := character.防具[0]
-	if armour_card != null:
-		result.append(armour_card)
-
-	return result
-
 func _update_features() -> void:
-	for card in _get_equipped_things_cards():
-		if card is ThingsCard:
-			if card.添加特性 != "" and not character.特性.has(card.添加特性):
-				character.特性.append(card.添加特性)
-				print("【Character】初始化添加特性：", card.添加特性, " 当前特性：", character.特性)
+	if character == null:
+		return
 
-		if card is EquipmentCard:
-			print("【Character】初始化添加装备效果：", card.equip_type, " 当前装备效果：", card.equip_effect)
-			if card.need_power < character.POW:
-				print("【Character】力量足够，添加装备效果：", card.equip_type, " 当前装备效果：", card.equip_effect)
-				match card.equip_type:
-					0:character.ATK += card.equip_effect
-					1:character.DEF += card.equip_effect
+	_apply_equipped_card_features(character.武器)
+	_apply_equipped_card_features(character.防具)
+
+
+func _apply_equipped_card_features(card: ThingsCard) -> void:
+	if card == null:
+		return
+
+	if card.添加特性 != "" and not character.特性.has(card.添加特性):
+		character.特性.append(card.添加特性)
+		print("【Character】初始化添加特性：", card.添加特性, " 当前特性：", character.特性)
+
+	if card is EquipmentCard:
+		var equipment_card := card as EquipmentCard
+		print("【Character】初始化添加装备效果：", equipment_card.equip_type, " 当前装备效果：", equipment_card.equip_effect)
+		if equipment_card.need_power < character.POW:
+			print("【Character】力量足够，添加装备效果：", equipment_card.equip_type, " 当前装备效果：", equipment_card.equip_effect)
+			match equipment_card.equip_type:
+				EquipmentCard.EquipType.攻击:
+					character.ATK += equipment_card.equip_effect
+				EquipmentCard.EquipType.防御:
+					character.DEF += equipment_card.equip_effect
 
 
 func 进入战斗状态() -> void:

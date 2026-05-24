@@ -3,7 +3,6 @@
 [ext_resource type="PackedScene" uid="uid://di7barbrn42cy" path="res://assets/人物与敌人/Character/character.tscn" id="1_ebsdk"]
 [ext_resource type="Script" uid="uid://c4lf65wbktjbc" path="res://assets/人物与敌人/Character/CharacterCard.gd" id="1_i00u1"]
 [ext_resource type="Texture2D" uid="uid://kkohhrkwmk7y" path="res://美术资产/character/娜娜奇完整版.png" id="2_hmi2y"]
-[ext_resource type="Script" uid="uid://pghaahofndwh" path="res://assets/物品/ThingsCard.gd" id="4_ebsdk"]
 [ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/cards/钓鱼竿.tres" id="5_hmi2y"]
 
 [resource]
@@ -12,7 +11,7 @@ script = ExtResource("1_i00u1")
 POW = 8
 aware = 100
 card_scene = ExtResource("1_ebsdk")
-"武器" = Array[ExtResource("4_ebsdk")]([ExtResource("5_hmi2y")])
+"武器" = ExtResource("5_hmi2y")
 MAX_HP = 30
 ATK = 6
 speed = 15

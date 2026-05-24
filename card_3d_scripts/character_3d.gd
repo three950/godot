@@ -3,6 +3,7 @@ class_name Character3D
 extends Card3D
 
 const CARD_3D_SCENE: PackedScene = preload("res://card_3d.tscn")
+const CARD_THROW_PHYSICS_SCRIPT: GDScript = preload("res://script_folder/card_throw_physics_test.gd")
 const EQUIPMENT_HOVER_PREVIEW_NAME := "EquipmentHoverPreview"
 const EQUIPMENT_HOVER_AREA_NAME := "EquipmentHoverPreviewArea"
 const EQUIPMENT_HOVER_AREA_PADDING := Vector2(0.2, 0.2)
@@ -35,6 +36,10 @@ func _ready() -> void:
 
 
 func bestacked_on_me(children: Card3D) -> void:
+	if _try_equip_stacked_equipment(children):
+		_update_bottom_left_hover_area_for_stack()
+		return
+
 	super.bestacked_on_me(children)
 	_update_bottom_left_hover_area_for_stack()
 
@@ -107,8 +112,8 @@ func _show_equipment_hover_preview() -> void:
 	if character_card == null:
 		return
 
-	var weapon_card := _get_equipped_card(character_card.武器)
-	var armour_card := _get_equipped_card(character_card.防具)
+	var weapon_card := character_card.武器
+	var armour_card := character_card.防具
 	if weapon_card == null and armour_card == null:
 		return
 
@@ -137,13 +142,6 @@ func _hide_equipment_hover_preview() -> void:
 
 	_equipment_hover_preview.queue_free()
 	_equipment_hover_preview = null
-
-
-func _get_equipped_card(cards: Array[ThingsCard]) -> ThingsCard:
-	# 当前装备槽只读取第 0 位；数组可能为空或被背包同步成 null。
-	if cards.is_empty():
-		return null
-	return cards[0]
 
 
 func _add_equipment_preview_card(parent: Node3D, equipment_card: ThingsCard, template: Card3D, node_name: String, slot_name: String) -> void:
@@ -283,32 +281,146 @@ func release_equipment_preview_card(preview_card: Card3D, slot_name: String) -> 
 	if character_card == null or equipment_card == null:
 		return
 
-	# 从资源数组里移除，避免下一次左下悬停又从同一件装备重复生成卡牌。
+	# 从角色装备字段里移除，避免下一次左下悬停又从同一件装备重复生成卡牌。
 	var did_clear := false
 	match slot_name:
 		"weapon":
-			did_clear = _clear_equipment_slot(character_card.武器, equipment_card)
+			did_clear = _clear_equipment_slot(character_card, "weapon", equipment_card)
 		"armour":
-			did_clear = _clear_equipment_slot(character_card.防具, equipment_card)
+			did_clear = _clear_equipment_slot(character_card, "armour", equipment_card)
 
 	if did_clear:
 		_remove_equipment_effects(character_card, equipment_card)
 	_refresh_character_equipment_view()
 
 
-func _clear_equipment_slot(cards: Array[ThingsCard], equipment_card: ThingsCard) -> bool:
-	if cards.is_empty():
-		cards.append(null)
+func _try_equip_stacked_equipment(stacked_card: Card3D) -> bool:
+	if stacked_card == null or not is_instance_valid(stacked_card):
 		return false
 
-	# 优先清理同一个资源实例；兜底清第 0 位，匹配当前“每类装备只用第 0 格”的数据约定。
-	for index in range(cards.size()):
-		if cards[index] == equipment_card:
-			cards[index] = null
+	var equipment_card := stacked_card.card_info as EquipmentCard
+	var character_card := card_info as CharacterCard
+	if equipment_card == null or character_card == null:
+		return false
+
+	# EquipmentCard 堆到人物卡时不进入普通堆叠队列，而是把这张 3D 卡消费成装备槽数据。
+	# stack_on_card() 在发信号前已经把 follow_target 指向人物卡，所以这里要先手动断开。
+	var spawn_position := stacked_card.global_position
+	_release_children_from_consumed_equipment(stacked_card)
+	_detach_consumed_equipment_from_character(stacked_card)
+
+	var previous_equipment := _get_equipped_card_for_type(character_card, equipment_card)
+	if previous_equipment != null:
+		# 旧装备离槽前先扣回属性，再以普通 3D 卡形式抛回主场景。
+		_remove_equipment_effects(character_card, previous_equipment)
+		_spawn_replaced_equipment_card(previous_equipment, spawn_position)
+
+	_set_equipment_card_for_type(character_card, equipment_card)
+	_apply_equipment_effects(character_card, equipment_card)
+	_refresh_character_equipment_view()
+
+	# 新装备已经进入 CharacterCard 的单件武器/防具字段，原来的堆叠卡节点不再留在桌面。
+	stacked_card.queue_free()
+
+	# 换装后直接展示装备预览，让玩家能立即看到两个槽位的当前结果。
+	_hide_equipment_hover_preview()
+	_show_equipment_hover_preview()
+	return true
+
+
+func _release_children_from_consumed_equipment(equipment_card_3d: Card3D) -> void:
+	if equipment_card_3d.children_card == null:
+		return
+
+	var child_head := equipment_card_3d.children_card
+	var release_parent := get_parent()
+	var child_transform := child_head.global_transform
+
+	# 被消费的装备卡上面可能还叠着其他卡；先拆出整条子堆，避免 queue_free 装备时带走它们。
+	child_head.detach_from_follow_target()
+	if release_parent != null and child_head.get_parent() != release_parent:
+		child_head.reparent(release_parent, true)
+	child_head.global_transform = child_transform
+	child_head.snap_to_base_plane()
+	child_head.update_stack_chain_position()
+	_force_card_fixed(child_head)
+
+
+func _detach_consumed_equipment_from_character(stacked_card: Card3D) -> void:
+	if stacked_card.follow_target == self:
+		stacked_card.follow_target = null
+	stacked_card.stack_state &= ~Card3DState.STACK_STATE_STACKING
+	stacked_card.end_drag()
+	_force_card_fixed(stacked_card)
+
+
+func _get_equipped_card_for_type(character_card: CharacterCard, equipment_card: EquipmentCard) -> ThingsCard:
+	match equipment_card.equip_type:
+		EquipmentCard.EquipType.攻击:
+			return character_card.武器
+		EquipmentCard.EquipType.防御:
+			return character_card.防具
+		_:
+			return character_card.武器
+
+
+func _set_equipment_card_for_type(character_card: CharacterCard, equipment_card: EquipmentCard) -> void:
+	match equipment_card.equip_type:
+		EquipmentCard.EquipType.攻击:
+			character_card.武器 = equipment_card
+		EquipmentCard.EquipType.防御:
+			character_card.防具 = equipment_card
+
+
+func _apply_equipment_effects(character_card: CharacterCard, equipment_card: ThingsCard) -> void:
+	if equipment_card.添加特性 != "" and not character_card.特性.has(equipment_card.添加特性):
+		character_card.特性.append(equipment_card.添加特性)
+
+	if equipment_card is EquipmentCard:
+		var equip_card := equipment_card as EquipmentCard
+		if equip_card.need_power < character_card.POW:
+			match equip_card.equip_type:
+				EquipmentCard.EquipType.攻击:
+					character_card.ATK += equip_card.equip_effect
+				EquipmentCard.EquipType.防御:
+					character_card.DEF += equip_card.equip_effect
+
+
+func _spawn_replaced_equipment_card(equipment_card: ThingsCard, spawn_position: Vector3) -> void:
+	var spawn_parent := get_parent()
+	if spawn_parent == null and is_inside_tree():
+		spawn_parent = get_tree().current_scene
+	if spawn_parent == null:
+		spawn_parent = self
+
+	var spawned_card := CARD_THROW_PHYSICS_SCRIPT.spawn_revealed_card(equipment_card, spawn_position, spawn_parent) as Card3D
+	if spawned_card == null:
+		push_warning("Character3D: failed to spawn replaced equipment card %s." % equipment_card.name)
+
+
+func _force_card_fixed(card: Card3D) -> void:
+	if card == null or not is_instance_valid(card):
+		return
+	if card.card_state_machine == null:
+		return
+	card.card_state_machine.force_transition(Card3DState.State.fixed)
+
+
+func _clear_equipment_slot(character_card: CharacterCard, slot_name: String, equipment_card: ThingsCard) -> bool:
+	if character_card == null:
+		return false
+
+	match slot_name:
+		"weapon":
+			if character_card.武器 != equipment_card:
+				return false
+			character_card.武器 = null
 			return true
-	if cards[0] != null:
-		cards[0] = null
-		return true
+		"armour":
+			if character_card.防具 != equipment_card:
+				return false
+			character_card.防具 = null
+			return true
 	return false
 
 

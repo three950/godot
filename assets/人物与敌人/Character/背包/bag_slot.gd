@@ -74,7 +74,7 @@ func place_card(card: Card, apply_effects: bool = true) -> void:
 	# 4. 设置位置（居中对齐，使用局部坐标）
 	card.position = (size - card.size * card.scale) / 2.0
 	
-	# 5. 装备槽内容变动后，同步 CharacterCard 的武器/防具数组，并刷新角色卡 UI/Viewport。
+	# 5. 装备槽内容变动后，同步 CharacterCard 的单件武器/防具，并刷新角色卡 UI/Viewport。
 	_notify_bag_equipment_changed()
 	
 	print("【BagSlot】卡片 %s 放入槽位，缩放: %.2f" % [card.name, scale_ratio])
