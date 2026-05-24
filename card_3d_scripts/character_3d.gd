@@ -11,7 +11,7 @@ const EQUIPMENT_HOVER_AREA_HEIGHT := 0.8
 
 @onready var bottom_left_hover_timer: Timer = get_node_or_null("BottomLeftHoverArea/BottomLeftHoverTimer") as Timer
 @onready var equipment_weapon_template: Card3D = get_node_or_null("石块") as Card3D
-@onready var equipment_armour_template: Card3D = get_node_or_null("树枝") as Card3D
+@onready var equipment_armor_template: Card3D = get_node_or_null("树枝") as Card3D
 
 var _is_bottom_left_hovered: bool = false
 var _equipment_hover_preview: Node3D = null
@@ -25,7 +25,7 @@ func _ready() -> void:
 		return
 
 	_prepare_equipment_preview_template(equipment_weapon_template)
-	_prepare_equipment_preview_template(equipment_armour_template)
+	_prepare_equipment_preview_template(equipment_armor_template)
 
 	# character_3d 专属的左下角悬停检测，不影响通用 Card3D。
 	if bottom_left_hover_timer:
@@ -113,8 +113,8 @@ func _show_equipment_hover_preview() -> void:
 		return
 
 	var weapon_card := character_card.武器
-	var armour_card := character_card.防具
-	if weapon_card == null and armour_card == null:
+	var armor_card := character_card.防具
+	if weapon_card == null and armor_card == null:
 		return
 
 	_hide_equipment_hover_preview()
@@ -127,8 +127,8 @@ func _show_equipment_hover_preview() -> void:
 	# 左边使用武器参考位，右边使用防具参考位；没有对应装备时保留空位但不生成卡。
 	if weapon_card != null:
 		_add_equipment_preview_card(preview_root, weapon_card, equipment_weapon_template, "HoverWeapon", "weapon")
-	if armour_card != null:
-		_add_equipment_preview_card(preview_root, armour_card, equipment_armour_template, "HoverArmour", "armour")
+	if armor_card != null:
+		_add_equipment_preview_card(preview_root, armor_card, equipment_armor_template, "Hoverarmor", "armor")
 
 	_add_equipment_hover_area(preview_root)
 
@@ -197,8 +197,8 @@ func _calculate_equipment_hover_bounds() -> Dictionary:
 	var templates: Array[Card3D] = []
 	if equipment_weapon_template != null:
 		templates.append(equipment_weapon_template)
-	if equipment_armour_template != null:
-		templates.append(equipment_armour_template)
+	if equipment_armor_template != null:
+		templates.append(equipment_armor_template)
 	if templates.is_empty():
 		return {}
 
@@ -286,8 +286,8 @@ func release_equipment_preview_card(preview_card: Card3D, slot_name: String) -> 
 	match slot_name:
 		"weapon":
 			did_clear = character_card.unequip_from_slot(CharacterCard.EQUIPMENT_SLOT_WEAPON, equipment_card)
-		"armour":
-			did_clear = character_card.unequip_from_slot(CharacterCard.EQUIPMENT_SLOT_ARMOUR, equipment_card)
+		"armor":
+			did_clear = character_card.unequip_from_slot(CharacterCard.EQUIPMENT_SLOT_armor, equipment_card)
 
 	if did_clear:
 		_refresh_character_equipment_view()

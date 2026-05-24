@@ -33,7 +33,7 @@ texture = ExtResource("4_pntmc")
 expand_mode = 5
 stretch_mode = 5
 
-[node name="armour" type="TextureRect" parent="CardColor/equips" index="1" unique_id=33112815]
+[node name="armor" type="TextureRect" parent="CardColor/equips" index="1" unique_id=33112815]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2

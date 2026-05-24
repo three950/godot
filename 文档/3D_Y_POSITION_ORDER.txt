@@ -108,7 +108,7 @@ HoverWeapon：复制 character_3d.tscn 中“石块”参考节点 transform，�
 
 EquipmentHoverPreviewArea：根据两张参考卡卡面包围盒运行时创建，当前 local y 约 0.43170989。它只负责检测鼠标离开并删除悬停预览。
 
-HoverArmour：复制 character_3d.tscn 中“树枝”参考节点 transform，当前 local y = 0.36341977。进入 pickup 状态时处理规则同 HoverWeapon。
+Hoverarmor：复制 character_3d.tscn 中“树枝”参考节点 transform，当前 local y = 0.36341977。进入 pickup 状态时处理规则同 HoverWeapon。
 
 
 父节点：正在合成的 Card3D

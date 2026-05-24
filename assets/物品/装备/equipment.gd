@@ -17,7 +17,7 @@ func _update_equipment_display() -> void:
 	_update_things_display()
 	# 更新装备特有的效果标签
 	if equipment and effect_label:
-		effect_label.text = EquipmentCard.EquipType.keys()[equipment.equip_type] + " + " + str(equipment.equip_effect)
+		effect_label.text = equipment.get_effect_label_text()
 
 func set_stats(value: EquipmentCard) -> void:
 	equipment = value

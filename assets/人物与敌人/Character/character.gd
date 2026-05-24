@@ -2,7 +2,7 @@ class_name  Character
 extends "res://assets/人物与敌人/battle_card.gd"
 
 const DEFAULT_WEAPON_ICON: Texture2D = preload("res://presentation/ui/WEAPON.png")
-const DEFAULT_ARMOUR_ICON: Texture2D = preload("res://presentation/ui/ARMOR.png")
+const DEFAULT_armor_ICON: Texture2D = preload("res://presentation/ui/ARMOR.png")
 
 # 信号：战斗开始
 signal battlestart(enemy_node: Enemy, character_node: Character)
@@ -12,7 +12,7 @@ var _battle_started := false
 
 # 角色卡右上角的装备图标入口：武器和防具各占一个固定格子。
 @onready var weapon_icon: TextureRect = get_node_or_null("CardColor/equips/weapon") as TextureRect
-@onready var armour_icon: TextureRect = get_node_or_null("CardColor/equips/armour") as TextureRect
+@onready var armor_icon: TextureRect = get_node_or_null("CardColor/equips/armor") as TextureRect
 
 func _ready() -> void:
 	super._ready()
@@ -63,15 +63,15 @@ func refresh_equipment_ui() -> void:
 
 func _update_equipment_icon() -> void:
 	var weapon := character.武器
-	var armour := character.防具
+	var armor := character.防具
 
 	if weapon_icon != null:
 		# 装备拿走后，显式恢复场景默认武器图标，避免保留上一件装备的头像。
 		weapon_icon.texture = weapon.portrait if weapon != null and weapon.portrait != null else DEFAULT_WEAPON_ICON
 
-	if armour_icon != null:
+	if armor_icon != null:
 		# 装备拿走后，显式恢复场景默认防具图标，避免保留上一件装备的头像。
-		armour_icon.texture = armour.portrait if armour != null and armour.portrait != null else DEFAULT_ARMOUR_ICON
+		armor_icon.texture = armor.portrait if armor != null and armor.portrait != null else DEFAULT_armor_ICON
 
 func _update_features() -> void:
 	if character == null:

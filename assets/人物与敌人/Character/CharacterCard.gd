@@ -2,7 +2,7 @@ class_name CharacterCard
 extends BattleStates
 
 const EQUIPMENT_SLOT_WEAPON := "weapon"
-const EQUIPMENT_SLOT_ARMOUR := "armour"
+const EQUIPMENT_SLOT_armor := "armor"
 
 @export var POW:int : set = set_POW
 @export var aware:int
@@ -12,7 +12,7 @@ func set_POW(value: int) -> void:
 	POW = value
 
 @export var 武器: ThingsCard : set = set_weapon
-@export var 防具: ThingsCard : set = set_armour
+@export var 防具: ThingsCard : set = set_armor
 @export var 特性 : Array[String]
 
 var _initial_equipment_effects_applied: bool = false
@@ -24,7 +24,7 @@ func set_weapon(value: ThingsCard) -> void:
 	stats_changed.emit()
 
 
-func set_armour(value: ThingsCard) -> void:
+func set_armor(value: ThingsCard) -> void:
 	# 防具同样是单槽位数据。
 	防具 = value
 	stats_changed.emit()
@@ -48,14 +48,14 @@ func apply_initial_equipment_changes_once() -> void:
 	stats_changed.emit()
 
 
-func sync_equipment_slots(weapon_card: ThingsCard, armour_card: ThingsCard) -> void:
+func sync_equipment_slots(weapon_card: ThingsCard, armor_card: ThingsCard) -> void:
 	# 背包 UI 以槽位里的真实卡片为准；这里统一处理字段、属性、特性和刷新通知。
 	var did_change_equipment := false
 	if 武器 != weapon_card:
 		_replace_equipment_slot(EQUIPMENT_SLOT_WEAPON, weapon_card)
 		did_change_equipment = true
-	if 防具 != armour_card:
-		_replace_equipment_slot(EQUIPMENT_SLOT_ARMOUR, armour_card)
+	if 防具 != armor_card:
+		_replace_equipment_slot(EQUIPMENT_SLOT_armor, armor_card)
 		did_change_equipment = true
 	if did_change_equipment:
 		stats_changed.emit()
@@ -97,7 +97,7 @@ func unequip_card(card: ThingsCard) -> bool:
 	if 武器 == card:
 		return unequip_from_slot(EQUIPMENT_SLOT_WEAPON, card)
 	if 防具 == card:
-		return unequip_from_slot(EQUIPMENT_SLOT_ARMOUR, card)
+		return unequip_from_slot(EQUIPMENT_SLOT_armor, card)
 	return false
 
 
@@ -124,7 +124,7 @@ func _get_equipment_slot(slot_name: String) -> ThingsCard:
 	match slot_name:
 		EQUIPMENT_SLOT_WEAPON:
 			return 武器
-		EQUIPMENT_SLOT_ARMOUR:
+		EQUIPMENT_SLOT_armor:
 			return 防具
 		_:
 			return null
@@ -134,16 +134,15 @@ func _set_equipment_slot(slot_name: String, card: ThingsCard) -> void:
 	match slot_name:
 		EQUIPMENT_SLOT_WEAPON:
 			武器 = card
-		EQUIPMENT_SLOT_ARMOUR:
+		EQUIPMENT_SLOT_armor:
 			防具 = card
 
 
 func _slot_name_for_equipment_card(equipment_card: EquipmentCard) -> String:
-	match equipment_card.equip_type:
-		EquipmentCard.EquipType.防御:
-			return EQUIPMENT_SLOT_ARMOUR
-		_:
-			return EQUIPMENT_SLOT_WEAPON
+	# EquipmentCard 只负责说明自己是哪类装备；人物资源仍只关心固定槽位名。
+	if equipment_card.get_slot_name() == EQUIPMENT_SLOT_armor:
+		return EQUIPMENT_SLOT_armor
+	return EQUIPMENT_SLOT_WEAPON
 
 
 func _apply_equipment_card_changes(card: ThingsCard) -> void:
@@ -156,13 +155,12 @@ func _apply_equipment_card_changes(card: ThingsCard) -> void:
 
 	if card is EquipmentCard:
 		var equipment_card := card as EquipmentCard
-		print("【CharacterCard】添加装备效果：", equipment_card.equip_type, " 当前装备效果：", equipment_card.equip_effect)
-		if equipment_card.need_power < POW:
-			match equipment_card.equip_type:
-				EquipmentCard.EquipType.攻击:
-					ATK += equipment_card.equip_effect
-				EquipmentCard.EquipType.防御:
-					DEF += equipment_card.equip_effect
+		print("【CharacterCard】添加装备效果：", equipment_card.get_slot_name(), " 当前装备效果：", equipment_card.get_effect_value())
+		if equipment_card.can_be_used_by_power(POW):
+			if equipment_card.is_weapon():
+				ATK += equipment_card.get_effect_value()
+			elif equipment_card.is_armor():
+				DEF += equipment_card.get_effect_value()
 
 
 func _remove_equipment_card_changes(card: ThingsCard) -> void:
@@ -175,9 +173,8 @@ func _remove_equipment_card_changes(card: ThingsCard) -> void:
 
 	if card is EquipmentCard:
 		var equipment_card := card as EquipmentCard
-		if equipment_card.need_power < POW:
-			match equipment_card.equip_type:
-				EquipmentCard.EquipType.攻击:
-					ATK -= equipment_card.equip_effect
-				EquipmentCard.EquipType.防御:
-					DEF -= equipment_card.equip_effect
+		if equipment_card.can_be_used_by_power(POW):
+			if equipment_card.is_weapon():
+				ATK -= equipment_card.get_effect_value()
+			elif equipment_card.is_armor():
+				DEF -= equipment_card.get_effect_value()
