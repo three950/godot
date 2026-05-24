@@ -1,15 +1,15 @@
-[gd_resource type="Resource" script_class="EquipmentCard" load_steps=5 format=3 uid="uid://d0uhppo6t6vsr"]
+[gd_resource type="Resource" script_class="WeaponCard" load_steps=5 format=3 uid="uid://d0uhppo6t6vsr"]
 
 [ext_resource type="PackedScene" uid="uid://cba2igvxd481l" path="res://assets/物品/装备/Equitment.tscn" id="1_6nt3p"]
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="1_vime7"]
-[ext_resource type="Script" uid="uid://b6vcycxqwdmqc" path="res://assets/物品/装备/EquipmentCard.gd" id="2_kg677"]
+[ext_resource type="Script" uid="uid://bd46jijfwfplq" path="res://assets/物品/装备/weapon/WeaponCard.gd" id="2_kg677"]
 [ext_resource type="Texture2D" uid="uid://dr7c7qoliirtc" path="res://美术资产/equipment/bow_08.png" id="3_6nt3p"]
 
 [resource]
 script = ExtResource("2_kg677")
 card_scene = ExtResource("1_6nt3p")
-equip_effect = 1
+attack = 1
 has_craft_recipe = true
 name = "骨弓"
 portrait = ExtResource("3_6nt3p")
-metadata/_custom_type_script = "uid://b6vcycxqwdmqc"
+metadata/_custom_type_script = "uid://bd46jijfwfplq"

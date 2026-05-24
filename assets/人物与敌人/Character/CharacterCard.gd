@@ -39,6 +39,17 @@ func claim_initial_equipment_effects() -> bool:
 	return true
 
 
+func create_runtime_instance() -> CardInfo:
+	var instance := super.create_runtime_instance() as CharacterCard
+	if instance == null:
+		return self
+
+	# 特性数组会在装备穿脱时 append/erase，数组本身也要脱离原始 .tres。
+	instance.特性 = 特性.duplicate()
+	instance._initial_equipment_effects_applied = false
+	return instance
+
+
 func apply_initial_equipment_changes_once() -> void:
 	if not claim_initial_equipment_effects():
 		return

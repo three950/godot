@@ -1,18 +1,17 @@
-[gd_resource type="Resource" script_class="EquipmentCard" load_steps=5 format=3 uid="uid://dkb4wspbiurhb"]
+[gd_resource type="Resource" script_class="ArmorCard" format=3 uid="uid://dkb4wspbiurhb"]
 
 [ext_resource type="PackedScene" uid="uid://cba2igvxd481l" path="res://assets/物品/装备/Equitment.tscn" id="1_algh7"]
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="1_wnlct"]
-[ext_resource type="Script" uid="uid://b6vcycxqwdmqc" path="res://assets/物品/装备/EquipmentCard.gd" id="2_par8p"]
+[ext_resource type="Script" uid="uid://dx87bmm6is68s" path="res://assets/物品/装备/armour防具/ArmorCard.gd" id="2_par8p"]
 [ext_resource type="Texture2D" uid="uid://cn64p0nhyicy7" path="res://美术资产/shield/shield_39.png" id="3_algh7"]
 
 [resource]
 script = ExtResource("2_par8p")
 card_scene = ExtResource("1_algh7")
-equip_type = 1
 need_power = 6
-equip_effect = 15
+attack = 15
 value = 200
 "是遗物" = 2
 name = "鳞石伞"
 portrait = ExtResource("3_algh7")
-metadata/_custom_type_script = "uid://b6vcycxqwdmqc"
+metadata/_custom_type_script = "uid://dx87bmm6is68s"

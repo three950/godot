@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="EquipmentCard" load_steps=8 format=3 uid="uid://i0r8i7wvdp"]
+[gd_resource type="Resource" script_class="WeaponCard" format=3 uid="uid://i0r8i7wvdp"]
 
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="1_8rk6b"]
 [ext_resource type="PackedScene" uid="uid://cba2igvxd481l" path="res://assets/物品/装备/Equitment.tscn" id="1_kqvqq"]
-[ext_resource type="Script" uid="uid://b6vcycxqwdmqc" path="res://assets/物品/装备/EquipmentCard.gd" id="2_ahrun"]
+[ext_resource type="Script" uid="uid://bd46jijfwfplq" path="res://assets/物品/装备/weapon/WeaponCard.gd" id="2_ahrun"]
 [ext_resource type="Resource" uid="uid://bptle7yhbwdk8" path="res://assets/物品/装备/weapon/探窟稿.tres" id="3_hhtck"]
 [ext_resource type="Resource" uid="uid://cxqh2msdarg88" path="res://assets/物品/遗物/无尽火药.tres" id="3_rkila"]
 [ext_resource type="Resource" uid="uid://c3qj5yaqkc0me" path="res://assets/物品/装备/weapon/石块.tres" id="4_rkila"]
@@ -12,11 +12,10 @@
 script = ExtResource("2_ahrun")
 card_scene = ExtResource("1_kqvqq")
 need_power = 15
-equip_effect = 30
 value = 1000
 "是遗物" = 5
 has_craft_recipe = true
 craft_materials = Array[ExtResource("1_8rk6b")]([ExtResource("3_rkila"), ExtResource("3_hhtck"), ExtResource("4_rkila")])
 "合成时间" = 10.0
 portrait = ExtResource("6_hhtck")
-metadata/_custom_type_script = "uid://b6vcycxqwdmqc"
+metadata/_custom_type_script = "uid://bd46jijfwfplq"

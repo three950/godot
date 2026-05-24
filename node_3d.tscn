@@ -12,7 +12,7 @@
 [ext_resource type="Resource" uid="uid://dsjxxvme1bq2n" path="res://assets/人物与敌人/Character/characters/雷古.tres" id="9_reg"]
 [ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/cards/钓鱼竿.tres" id="11_fishing_rod"]
 [ext_resource type="Resource" uid="uid://c3qj5yaqkc0me" path="res://assets/物品/装备/weapon/石块.tres" id="11_i0g27"]
-[ext_resource type="Resource" uid="uid://dntioc7brul78" path="res://assets/物品/装备/armor防具/祈愿者的盖子.tres" id="12_cap"]
+[ext_resource type="Resource" uid="uid://dntioc7brul78" path="res://assets/物品/装备/armour防具/祈愿者的盖子.tres" id="12_cap"]
 [ext_resource type="Resource" uid="uid://b5lhfvaex1tbh" path="res://assets/物品/资源/鱼.tres" id="13_fish"]
 [ext_resource type="Shader" uid="uid://bkbshsyxb2i3a" path="res://presentation/background/ocean_waves.gdshader" id="14_ocean"]
 [ext_resource type="Resource" uid="uid://bnpnjoke06uht" path="res://assets/物品/装备/weapon/化石树的树枝.tres" id="15_ealrb"]

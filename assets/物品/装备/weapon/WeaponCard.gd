@@ -1,5 +1,5 @@
 class_name WeaponCard
-extends Resource
+extends EquipmentCard
 
 enum WeaponType {近战, 远程}
 

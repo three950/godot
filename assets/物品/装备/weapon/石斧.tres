@@ -1,9 +1,9 @@
-[gd_resource type="Resource" script_class="EquipmentCard" format=3 uid="uid://betu8fkvv3loe"]
+[gd_resource type="Resource" script_class="WeaponCard" format=3 uid="uid://betu8fkvv3loe"]
 
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="1_sn0tf"]
 [ext_resource type="PackedScene" uid="uid://cba2igvxd481l" path="res://assets/物品/装备/Equitment.tscn" id="1_yb085"]
-[ext_resource type="Script" uid="uid://b6vcycxqwdmqc" path="res://assets/物品/装备/EquipmentCard.gd" id="2_0r4qt"]
-[ext_resource type="Resource" uid="uid://b3lkj6nts6otw" path="res://assets/物品/装备/armor防具/石板.tres" id="3_ecisd"]
+[ext_resource type="Script" uid="uid://bd46jijfwfplq" path="res://assets/物品/装备/weapon/WeaponCard.gd" id="2_0r4qt"]
+[ext_resource type="Resource" uid="uid://b3lkj6nts6otw" path="res://assets/物品/装备/armour防具/石板.tres" id="3_ecisd"]
 [ext_resource type="Resource" uid="uid://bnpnjoke06uht" path="res://assets/物品/装备/weapon/化石树的树枝.tres" id="4_rtboe"]
 [ext_resource type="Texture2D" uid="uid://dlief5suilyo2" path="res://美术资产/weapon/mace_32.png" id="5_ecisd"]
 
@@ -11,11 +11,11 @@
 script = ExtResource("2_0r4qt")
 card_scene = ExtResource("1_yb085")
 need_power = 10
-equip_effect = 20
+attack = 20
 value = 100
 has_craft_recipe = true
 craft_materials = Array[ExtResource("1_sn0tf")]([ExtResource("3_ecisd"), ExtResource("4_rtboe")])
 "合成时间" = 7.0
 name = "石斧"
 portrait = ExtResource("5_ecisd")
-metadata/_custom_type_script = "uid://b6vcycxqwdmqc"
+metadata/_custom_type_script = "uid://bd46jijfwfplq"

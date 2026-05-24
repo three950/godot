@@ -1,18 +1,17 @@
-[gd_resource type="Resource" script_class="EquipmentCard" format=3 uid="uid://dntioc7brul78"]
+[gd_resource type="Resource" script_class="ArmorCard" format=3 uid="uid://dntioc7brul78"]
 
 [ext_resource type="PackedScene" uid="uid://cba2igvxd481l" path="res://assets/物品/装备/Equitment.tscn" id="1_btw0c"]
-[ext_resource type="Script" uid="uid://b6vcycxqwdmqc" path="res://assets/物品/装备/EquipmentCard.gd" id="1_ggkgv"]
+[ext_resource type="Script" uid="uid://dx87bmm6is68s" path="res://assets/物品/装备/armour防具/ArmorCard.gd" id="1_ggkgv"]
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="2_20emr"]
 [ext_resource type="Texture2D" uid="uid://bilfv1pov8eih" path="res://美术资产/shield/shield_21.png" id="5_20emr"]
 
 [resource]
 script = ExtResource("1_ggkgv")
 card_scene = ExtResource("1_btw0c")
-equip_type = 1
-equip_effect = 5
+attack = 5
 value = 10
 "合成时间" = 3.0
 name = "祈愿者的盖子"
 portrait = ExtResource("5_20emr")
 type = 4
-metadata/_custom_type_script = "uid://b6vcycxqwdmqc"
+metadata/_custom_type_script = "uid://dx87bmm6is68s"

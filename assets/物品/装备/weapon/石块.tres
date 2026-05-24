@@ -1,16 +1,16 @@
-[gd_resource type="Resource" script_class="EquipmentCard" load_steps=5 format=3 uid="uid://c3qj5yaqkc0me"]
+[gd_resource type="Resource" script_class="WeaponCard" load_steps=5 format=3 uid="uid://c3qj5yaqkc0me"]
 
 [ext_resource type="PackedScene" uid="uid://cba2igvxd481l" path="res://assets/物品/装备/Equitment.tscn" id="1_nu4mp"]
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="1_sf4rd"]
-[ext_resource type="Script" uid="uid://b6vcycxqwdmqc" path="res://assets/物品/装备/EquipmentCard.gd" id="2_kc77c"]
+[ext_resource type="Script" uid="uid://bd46jijfwfplq" path="res://assets/物品/装备/weapon/WeaponCard.gd" id="2_kc77c"]
 [ext_resource type="Texture2D" uid="uid://np1vycu23yob" path="res://美术资产/MushroomAssetPack/Honeycomb.png" id="3_nu4mp"]
 
 [resource]
 script = ExtResource("2_kc77c")
 card_scene = ExtResource("1_nu4mp")
 need_power = 0
-equip_effect = 2
+attack = 2
 value = 0
 name = "石块"
 portrait = ExtResource("3_nu4mp")
-metadata/_custom_type_script = "uid://b6vcycxqwdmqc"
+metadata/_custom_type_script = "uid://bd46jijfwfplq"

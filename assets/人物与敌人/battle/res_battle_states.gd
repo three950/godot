@@ -54,8 +54,18 @@ func heal(amount : int) -> void:
 	HP += amount
 
 
+func create_runtime_instance() -> CardInfo:
+	# 人物/敌人 HP、装备属性等会在运行时变化，不能继续改原始 .tres 模板。
+	var instance := duplicate() as BattleStates
+	if instance == null:
+		return self
+	instance.HP = instance.MAX_HP
+	return instance
+
+
 func create_instance() -> Resource:#避免一样的敌人状态同时更新
-	var instance: BattleStates = self.duplicate()
-	instance.HP = MAX_HP
+	var instance := create_runtime_instance() as BattleStates
+	if instance == null:
+		return self
 	instance.DEF = 0
 	return instance

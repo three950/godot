@@ -13,6 +13,8 @@ signal reparent_requested(which_card: Card3D)
 
 enum cardType {normal, selling, architecture}
 
+const RUNTIME_UNIQUE_RESOURCE_META := "_card3d_runtime_unique_resource"
+
 @export var cardname: String
 @export var card_type: cardType = cardType.normal
 @export var can_stack: bool = true
@@ -61,6 +63,8 @@ var card_2d_texture: TextureRect = null
 
 func _ready() -> void:
 	_base_plane_y = global_position.y
+	_make_instance_resources_unique()
+	_make_runtime_card_data_unique()
 	_bind_viewport_texture_to_front_material()
 	_rebuild_card_view()
 	_apply_card_info_to_view()
@@ -89,6 +93,60 @@ func _ready() -> void:
 		stacking_on_you.connect(bestacked_on_me)
 	if not stop_stacking_on_you.is_connected(stop_stacking_on_me):
 		stop_stacking_on_you.connect(stop_stacking_on_me)
+
+
+func _make_instance_resources_unique() -> void:
+	# 每张 3D 卡的 mesh/material/shape 都可能被运行时代码调整。
+	# 初始化时复制一份，避免同一个 PackedScene 的其他实例被同步改动。
+	for node in find_children("*", "MeshInstance3D", true, false):
+		var mesh_instance := node as MeshInstance3D
+		if mesh_instance == null:
+			continue
+		if mesh_instance.mesh != null:
+			mesh_instance.mesh = mesh_instance.mesh.duplicate()
+		if mesh_instance.material_override != null:
+			mesh_instance.material_override = mesh_instance.material_override.duplicate()
+
+	for node in find_children("*", "CollisionShape3D", true, false):
+		var collision_shape := node as CollisionShape3D
+		if collision_shape != null and collision_shape.shape != null:
+			collision_shape.shape = collision_shape.shape.duplicate()
+
+
+func _make_runtime_card_data_unique() -> void:
+	card_info = _get_runtime_card_data(card_info)
+	battle = _get_runtime_battle_state(battle)
+
+
+func _get_runtime_card_data(value: CardInfo) -> CardInfo:
+	if value == null:
+		return null
+	if Engine.is_editor_hint():
+		return value
+	if value.get_meta(RUNTIME_UNIQUE_RESOURCE_META, false):
+		return value
+
+	# CardInfo 子类自己决定是否需要从模板 .tres 复制出运行时数据。
+	var instance := value.create_runtime_instance()
+	if instance == null or instance == value:
+		return value
+	instance.set_meta(RUNTIME_UNIQUE_RESOURCE_META, true)
+	return instance
+
+
+func _get_runtime_battle_state(value: BattleState) -> BattleState:
+	if value == null:
+		return null
+	if Engine.is_editor_hint():
+		return value
+	if value.get_meta(RUNTIME_UNIQUE_RESOURCE_META, false):
+		return value
+
+	var instance := value.create_runtime_instance()
+	if instance == null or instance == value:
+		return value
+	instance.set_meta(RUNTIME_UNIQUE_RESOURCE_META, true)
+	return instance
 
 
 func _bind_viewport_texture_to_front_material() -> void:
@@ -122,7 +180,7 @@ func _cache_card_view_nodes() -> void:
 
 
 func set_card_info(value: CardInfo) -> void:
-	card_info = value
+	card_info = _get_runtime_card_data(value)
 	if is_inside_tree():
 		_rebuild_card_view()
 		_apply_card_info_to_view()

@@ -11,11 +11,11 @@ extends ThingsCard
 
 func is_weapon() -> bool:
 	# 简单按子 Resource 是否存在区分槽位；近战/远程等细分只放在 WeaponCard 内。
-	return weapon != null
+	return self is WeaponCard or weapon != null
 
 
 func is_armor() -> bool:
-	return armor != null
+	return self is ArmorCard or armor != null
 
 
 func get_slot_name() -> String:
@@ -42,8 +42,8 @@ func can_be_used_by_power(power: int) -> bool:
 
 
 func get_effect_label_text() -> String:
-	if weapon != null:
+	if is_weapon():
 		return "攻击 + " + str(attack)
-	if armor != null:
+	if is_armor():
 		return "防御 + " + str(attack)
 	return ""
