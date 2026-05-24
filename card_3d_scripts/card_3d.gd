@@ -56,6 +56,7 @@ var _base_plane_y: float = 0.0
 var _front_face_original_position: Vector3 = Vector3.ZERO
 var _back_face_original_position: Vector3 = Vector3.ZERO
 var _ray_hovered: bool = false
+var _suppress_card_info_rebuild: bool = false
 var card_2d: Control = null
 var card_2d_label: Label = null
 var card_2d_texture: TextureRect = null
@@ -65,7 +66,7 @@ func _ready() -> void:
 	_base_plane_y = global_position.y
 	_make_runtime_card_data_unique()
 	_bind_viewport_texture_to_front_material()
-	_rebuild_card_view()
+	_build_card_view()
 	_apply_card_info_to_view()
 	_request_card_viewport_redraw()
 
@@ -95,7 +96,10 @@ func _ready() -> void:
 
 
 func _make_runtime_card_data_unique() -> void:
+	# _ready 会在私有化后统一重建一次卡面；这里赋值会经过 setter，先压住 setter 的即时重建。
+	_suppress_card_info_rebuild = true
 	card_info = _get_runtime_card_data(card_info)
+	_suppress_card_info_rebuild = false
 	battle = _get_runtime_battle_state(battle)
 
 
@@ -162,13 +166,15 @@ func _cache_card_view_nodes() -> void:
 
 func set_card_info(value: CardInfo) -> void:
 	card_info = _get_runtime_card_data(value)
+	if _suppress_card_info_rebuild:
+		return
 	if is_inside_tree():
-		_rebuild_card_view()
+		_build_card_view()
 		_apply_card_info_to_view()
 		_request_card_viewport_redraw()
 
 
-func _rebuild_card_view() -> void:
+func _build_card_view() -> void:
 	if card_viewport == null:
 		card_2d = null
 		card_2d_label = null
