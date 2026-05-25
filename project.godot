@@ -40,6 +40,7 @@ BattleCharacter=""
 [gui]
 
 theme/default_font_multichannel_signed_distance_field=true
+theme/custom_font="uid://cww0oip5xtj1i"
 
 [input]
 
