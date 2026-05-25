@@ -7,7 +7,7 @@
 script = ExtResource("2_5ffud")
 
 [node name="TextureRect" parent="." index="2" unique_id=1571016305]
-offset_left = -123.0
-offset_top = -113.5
-offset_bottom = 131.5
+offset_left = -492.0
+offset_top = -454.0
+offset_bottom = 526.0
 stretch_mode = 6

@@ -14,8 +14,6 @@ metadata/_custom_type_script = "uid://bf2o85td7sner"
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [node name="character" unique_id=1325524042 instance=ExtResource("1_p58c1")]
-offset_top = -171.0
-offset_bottom = 174.0
 script = ExtResource("2_dm7l3")
 battle = SubResource("Resource_7cwdw")
 
@@ -24,15 +22,15 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_pntmc")
 
 [node name="equips" type="HBoxContainer" parent="CardColor" parent_id_path=PackedInt32Array(93157455) index="2" unique_id=186408356]
 layout_mode = 0
-offset_left = 9.0
-offset_top = 288.0
-offset_right = 96.0
-offset_bottom = 334.0
+offset_left = 36.0
+offset_top = 1152.0
+offset_right = 384.0
+offset_bottom = 1336.0
 alignment = 1
 
 [node name="weapon" type="TextureRect" parent="CardColor/equips" index="0" unique_id=1616568414]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(40, 40)
+custom_minimum_size = Vector2(160, 160)
 layout_mode = 2
 mouse_filter = 2
 texture = ExtResource("4_pntmc")
@@ -41,7 +39,7 @@ stretch_mode = 5
 
 [node name="armor" type="TextureRect" parent="CardColor/equips" index="1" unique_id=33112815]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(40, 40)
+custom_minimum_size = Vector2(160, 160)
 layout_mode = 2
 mouse_filter = 2
 texture = ExtResource("5_pntmc")

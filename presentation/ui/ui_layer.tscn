@@ -62,7 +62,7 @@ grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/shadow_offset_x = 3
 theme_override_constants/shadow_offset_y = 3
-theme_override_font_sizes/font_size = 76
+theme_override_font_sizes/font_size = 100
 text = "暂停"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -101,7 +101,7 @@ alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 42
 text = "8/6"
 
 [node name="TextureRect" type="TextureRect" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer/foodstate" unique_id=46931834]
@@ -120,7 +120,7 @@ alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 42
 text = "5000"
 
 [node name="TextureRect" type="TextureRect" parent="UIContainer/TopRightUI/HBoxContainer/game_stats/HBoxContainer/moneystate" unique_id=1513411990]
@@ -136,7 +136,7 @@ custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 42
 text = "深渊1层"
 horizontal_alignment = 1
 
@@ -165,7 +165,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 42
 text = "9天"
 
 [node name="Spacer" type="Control" parent="UIContainer/TopRightUI/HBoxContainer/ProgressBar/HBoxContainer" unique_id=179952973]

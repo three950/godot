@@ -10,12 +10,12 @@ recource = null
 [node name="FoodLabel" type="Label" parent="." index="1" unique_id=1080838522]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 230.0
-offset_top = 8.0
-offset_right = 244.0
-offset_bottom = 41.5
+offset_left = 920.0
+offset_top = 32.0
+offset_right = 976.0
+offset_bottom = 166.0
 theme_override_colors/font_color = Color(0.3990132, 0, 0.09163085, 1)
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 160
 text = "2"
 
 [node name="TextureRect" parent="." index="3" unique_id=1571016305]

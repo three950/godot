@@ -20,7 +20,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_b646a")
 theme_override_styles/panel = SubResource("StyleBoxFlat_krhvb")
 
 [node name="TextureRect" parent="." index="2" unique_id=1571016305]
-offset_left = -21.0
-offset_top = 59.0
-offset_right = 282.48648
+offset_left = -84.0
+offset_top = 236.0
+offset_right = 1129.9459
 texture = ExtResource("2_bbcg6")

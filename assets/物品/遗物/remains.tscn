@@ -13,12 +13,12 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -27.0
-offset_top = 8.0
-offset_right = -9.0
-offset_bottom = 49.875
+offset_left = -108.0
+offset_top = 32.0
+offset_right = -36.0
+offset_bottom = 199.5
 grow_horizontal = 0
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 160
 text = "5"
 
 [node name="SubViewport#valueText" parent="." index="3"]

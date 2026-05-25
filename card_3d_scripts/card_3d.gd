@@ -315,6 +315,20 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 		return
 
+
+func _unhandled_input(event: InputEvent) -> void:
+	if Engine.is_editor_hint():
+		return
+
+	if card_state_machine == null or card_state_machine.current_state == null:
+		return
+
+	var current := card_state_machine.current_state.state
+	if current == Card3DState.State.pickingup \
+			or current == Card3DState.State.dragging:
+		return
+
+	# 未被 UI 层消费的输入才进入卡牌射线逻辑，避免 3D 卡牌抢在 CanvasLayer 控件前响应。
 	if ray_interaction_enabled:
 		_handle_ray_input(event)
 
