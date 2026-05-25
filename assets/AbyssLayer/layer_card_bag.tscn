@@ -40,7 +40,7 @@ offset_bottom = -10.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("2_i1sea")
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 40
 text = "卡包"
 metadata/_edit_use_anchors_ = true
 

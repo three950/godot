@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="1_3c02q"]
 [ext_resource type="Texture2D" uid="uid://43lijddecmer" path="res://presentation/ui/心.png" id="2_3c2ks"]
-[ext_resource type="FontFile" uid="uid://duarjxhxhnp35" path="res://presentation/fonts/Xolonium-Regular.ttf" id="2_font"]
+[ext_resource type="FontFile" uid="uid://cww0oip5xtj1i" path="res://presentation/fonts/cjkFonts 全濑体.ttf" id="3_3c2ks"]
 
 [node name="BiologyCard" unique_id=763618913 instance=ExtResource("1_3c02q")]
 
@@ -23,16 +23,16 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -23.0
-offset_top = -13.254547
-offset_right = 17.0
-offset_bottom = 20.745453
+offset_left = -20.0
+offset_top = -13.0
+offset_right = 20.0
+offset_bottom = 21.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 27
+theme_override_fonts/font = ExtResource("3_3c2ks")
+theme_override_font_sizes/font_size = 30
 text = "10"
 horizontal_alignment = 1
 vertical_alignment = 1

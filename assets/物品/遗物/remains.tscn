@@ -18,7 +18,7 @@ offset_top = 8.0
 offset_right = -9.0
 offset_bottom = 49.875
 grow_horizontal = 0
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 40
 text = "5"
 
 [node name="SubViewport#valueText" parent="." index="3"]

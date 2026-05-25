@@ -49,7 +49,7 @@ offset_right = 84.0
 offset_bottom = 14.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("2_61llo")
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 40
 text = "莉可"
 
 [node name="CardBorder" type="Control" parent="."]

@@ -23,6 +23,7 @@ alpha_scissor_threshold = 0.01
 alpha_antialiasing_mode = 0
 shading_mode = 2
 albedo_texture = SubResource("ViewportTexture_3400w")
+texture_filter = 0
 disable_receive_shadows = true
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_front_face"]

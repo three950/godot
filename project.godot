@@ -42,6 +42,12 @@ BattleCharacter=""
 theme/default_font_multichannel_signed_distance_field=true
 theme/custom_font="uid://cww0oip5xtj1i"
 
+[importer_defaults]
+
+animation_library={
+&"animation/fps": 60.0
+}
+
 [input]
 
 LMB={
@@ -62,7 +68,7 @@ common/physics_ticks_per_second=30
 
 [rendering]
 
-textures/canvas_textures/default_texture_filter=2
+textures/canvas_textures/default_texture_filter=1
 textures/canvas_textures/default_texture_repeat=1
 anti_aliasing/quality/msaa_3d=2
-anti_aliasing/quality/screen_space_aa=1
+anti_aliasing/quality/screen_space_aa=0

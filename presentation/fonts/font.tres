@@ -1,4 +1,5 @@
 [gd_resource type="SystemFont" format=3 uid="uid://cvshvgr6fi16l"]
 
 [resource]
+font_weight = 800
 subpixel_positioning = 0
