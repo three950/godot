@@ -8,4 +8,5 @@ time = 2
 coins = 100
 layer = 3
 max_layer = 3
+card_3d_viewport_scale = 1.0
 metadata/_custom_type_script = "uid://dhbllj5o00dyc"

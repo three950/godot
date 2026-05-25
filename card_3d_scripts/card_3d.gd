@@ -14,6 +14,8 @@ signal reparent_requested(which_card: Card3D)
 enum cardType {normal, selling, architecture}
 
 const RUNTIME_UNIQUE_RESOURCE_META := CardInfo.RUNTIME_UNIQUE_RESOURCE_META
+const GAME_STATS: GameStats = preload("res://base_data/game_stats.tres")
+const CARD_VIEW_DESIGN_SIZE := Vector2i(1056, 1368)
 
 @export var cardname: String
 @export var card_type: cardType = cardType.normal
@@ -66,6 +68,7 @@ var card_2d_texture: TextureRect = null
 
 func _ready() -> void:
 	_base_plane_y = global_position.y
+	_apply_card_viewport_scale()
 	_make_runtime_card_data_unique()
 	_bind_viewport_texture_to_front_material()
 	_build_card_view()
@@ -150,6 +153,21 @@ func _bind_viewport_texture_to_front_material() -> void:
 	var instance_material := material.duplicate() as StandardMaterial3D
 	instance_material.albedo_texture = card_viewport.get_texture()
 	front_mesh.material_override = instance_material
+
+
+func _apply_card_viewport_scale() -> void:
+	if card_viewport == null:
+		return
+
+	var viewport_scale := clampf(GAME_STATS.card_3d_viewport_scale, 0.25, 1.0)
+	var next_size := Vector2i(
+		maxi(1, roundi(float(CARD_VIEW_DESIGN_SIZE.x) * viewport_scale)),
+		maxi(1, roundi(float(CARD_VIEW_DESIGN_SIZE.y) * viewport_scale))
+	)
+
+	# 只降低 3D 卡面的渲染纹理尺寸；卡牌的 3D 面片、碰撞和交互范围保持原来的世界尺寸。
+	if card_viewport.size != next_size:
+		card_viewport.size = next_size
 
 
 func _cache_card_view_nodes() -> void:
@@ -246,7 +264,10 @@ func _prepare_card_2d_control() -> void:
 	card_2d.set_anchors_preset(Control.PRESET_TOP_LEFT, false)
 	card_2d.position = Vector2.ZERO
 	if card_viewport:
-		card_2d.size = Vector2(card_viewport.size.x, card_viewport.size.y)
+		var design_size := Vector2(float(CARD_VIEW_DESIGN_SIZE.x), float(CARD_VIEW_DESIGN_SIZE.y))
+		var viewport_size := Vector2(float(card_viewport.size.x), float(card_viewport.size.y))
+		card_2d.size = design_size
+		card_2d.scale = Vector2(viewport_size.x / design_size.x, viewport_size.y / design_size.y)
 	card_2d.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 

@@ -11,6 +11,11 @@ extends Resource
 
 @export_range(0,7) var layer:int:set = set_layer#当前所在的层数
 @export var max_layer:int:set = set_max_layer#最深探索到第几层
+
+# 3D 卡面 SubViewport 的渲染倍率。
+# 1.0 是完整清晰度；0.5 会把每张 3D 卡的卡面渲染面积降到 1/4，适合低性能设备。
+@export_range(0.25, 1.0, 0.05) var card_3d_viewport_scale: float = 1.0:set=set_card_3d_viewport_scale
+
 func set_time(value:int) -> void:
 	time = value
 	emit_changed()
@@ -40,4 +45,6 @@ func set_max_layer(value:int)-> void:
 	emit_changed()
 
 
-	
+func set_card_3d_viewport_scale(value: float) -> void:
+	# 这是静态性能配置，不触发 GameStats.changed，避免 UI/进度等游戏状态监听者被误刷新。
+	card_3d_viewport_scale = clampf(value, 0.25, 1.0)
