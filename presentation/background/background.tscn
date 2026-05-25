@@ -1,19 +1,5 @@
 [gd_scene format=3 uid="uid://d8vp1m0epvxf"]
 
-[ext_resource type="Texture2D" uid="uid://2wwc4nx8wke2" path="res://presentation/background/有人烟的地表.png" id="1_6qfqf"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_white_border"]
-draw_center = false
-border_width_left = 32
-border_width_top = 32
-border_width_right = 32
-border_width_bottom = 32
-border_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 64
-corner_radius_top_right = 64
-corner_radius_bottom_right = 64
-corner_radius_bottom_left = 64
-
 [sub_resource type="Shader" id="Shader_rounded_image_clip"]
 code = "shader_type canvas_item;
 
@@ -37,16 +23,32 @@ shader = SubResource("Shader_rounded_image_clip")
 shader_parameter/rect_size = Vector2(3840, 2160)
 shader_parameter/corner_radius = 64.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_txq84"]
+bg_color = Color(0.8117647, 0.7607843, 0.627451, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_white_border"]
+draw_center = false
+border_width_left = 32
+border_width_top = 32
+border_width_right = 32
+border_width_bottom = 32
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 64
+corner_radius_top_right = 64
+corner_radius_bottom_right = 64
+corner_radius_bottom_left = 64
+
 [node name="backgroundUi" type="Node2D" unique_id=417959032]
 
-[node name="cardsArea" type="TextureRect" parent="." unique_id=1791356641 groups=["Cards"]]
+[node name="cardsArea" type="Panel" parent="." unique_id=1647997978 groups=["Cards"]]
 material = SubResource("ShaderMaterial_rounded_image_clip")
 offset_right = 3840.0
 offset_bottom = 2160.0
 mouse_filter = 2
-texture = ExtResource("1_6qfqf")
+theme_override_styles/panel = SubResource("StyleBoxFlat_txq84")
 
-[node name="whiteBorder" type="Panel" parent="cardsArea"]
+[node name="whiteBorder" type="Panel" parent="cardsArea" unique_id=1437074900]
+layout_mode = 0
 offset_right = 3840.0
 offset_bottom = 2160.0
 mouse_filter = 2

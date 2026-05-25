@@ -10,11 +10,17 @@
 script = ExtResource("3_pntmc")
 metadata/_custom_type_script = "uid://bf2o85td7sner"
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pntmc"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
 [node name="character" unique_id=1325524042 instance=ExtResource("1_p58c1")]
 offset_top = -171.0
 offset_bottom = 174.0
 script = ExtResource("2_dm7l3")
 battle = SubResource("Resource_7cwdw")
+
+[node name="Panel" parent="CardColor" parent_id_path=PackedInt32Array(93157455) index="1" unique_id=1642299539]
+theme_override_styles/panel = SubResource("StyleBoxFlat_pntmc")
 
 [node name="equips" type="HBoxContainer" parent="CardColor" parent_id_path=PackedInt32Array(93157455) index="2" unique_id=186408356]
 layout_mode = 0

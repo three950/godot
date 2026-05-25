@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://be64xwxsumg26" path="res://presentation/ui/线条.png" id="8_line"]
 [ext_resource type="Texture2D" uid="uid://kkohhrkwmk7y" path="res://美术资产/character/娜娜奇完整版.png" id="16_3tu4f"]
 
-[node name="Card2" type="Control" unique_id=33495198]
+[node name="Card" type="Control" unique_id=33495198]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 264.0
