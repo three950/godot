@@ -3,6 +3,7 @@ extends Node
 const BATTLE_SCENE_3D: PackedScene = preload("uid://dm28lkdhyoemx")
 const BATTLE_COMBAT_PROFILE_SCRIPT := preload("res://presentation/battle_scene/combat/battle_combat_profile.gd")
 const BATTLE_META_KEY := "battle_scene_3d"
+const INVALID_COMBAT_FACTION := -1
 
 var active_battle_scenes: Array[BattleScene3D] = []
 
@@ -276,16 +277,17 @@ func _are_opponents(first_card, second_card) -> bool:
 	# 新版触发规则只认主动堆叠方向：角色卡进入非角色卡的堆叠区才开战。
 	# 敌人或中立生物反向碰到角色，都不会靠普通碰撞创建战斗。
 	return first_faction == BATTLE_COMBAT_PROFILE_SCRIPT.Faction.CHARACTER \
+			and second_faction != INVALID_COMBAT_FACTION \
 			and second_faction != BATTLE_COMBAT_PROFILE_SCRIPT.Faction.CHARACTER
 
 
 func _get_combat_faction(card: Card3D) -> int:
 	var resource := card.card_info as BiologyCard
 	if resource == null:
-		return BATTLE_COMBAT_PROFILE_SCRIPT.Faction.ENEMY
+		return INVALID_COMBAT_FACTION
 	var profile := resource.get_combat_profile()
 	if profile == null:
-		return BATTLE_COMBAT_PROFILE_SCRIPT.Faction.ENEMY
+		return INVALID_COMBAT_FACTION
 	return profile.faction
 
 

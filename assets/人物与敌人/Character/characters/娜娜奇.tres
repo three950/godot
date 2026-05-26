@@ -2,8 +2,16 @@
 
 [ext_resource type="PackedScene" uid="uid://di7barbrn42cy" path="res://assets/人物与敌人/Character/character.tscn" id="1_ebsdk"]
 [ext_resource type="Script" uid="uid://c4lf65wbktjbc" path="res://assets/人物与敌人/Character/CharacterCard.gd" id="1_i00u1"]
+[ext_resource type="Script" uid="uid://b0a4myyq0536v" path="res://presentation/battle_scene/combat/battle_combat_profile.gd" id="2_4xq8b"]
 [ext_resource type="Texture2D" uid="uid://kkohhrkwmk7y" path="res://美术资产/character/娜娜奇完整版.png" id="2_hmi2y"]
+[ext_resource type="Resource" path="res://presentation/battle_scene/combat/default_attack_skill.tres" id="3_olpj3"]
 [ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/cards/钓鱼竿.tres" id="5_hmi2y"]
+
+[sub_resource type="Resource" id="Resource_ai52o"]
+script = ExtResource("2_4xq8b")
+faction = 0
+skills = Array[Resource]([ExtResource("3_olpj3")])
+metadata/_custom_type_script = "uid://b0a4myyq0536v"
 
 [resource]
 resource_name = "娜娜奇"
@@ -15,6 +23,7 @@ card_scene = ExtResource("1_ebsdk")
 MAX_HP = 30
 ATK = 6
 speed = 15
+combat_profile = SubResource("Resource_ai52o")
 DEF = 5
 name = "娜娜奇"
 portrait = ExtResource("2_hmi2y")

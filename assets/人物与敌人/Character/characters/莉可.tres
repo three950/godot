@@ -2,8 +2,16 @@
 
 [ext_resource type="Script" uid="uid://c4lf65wbktjbc" path="res://assets/人物与敌人/Character/CharacterCard.gd" id="1_33mer"]
 [ext_resource type="PackedScene" uid="uid://di7barbrn42cy" path="res://assets/人物与敌人/Character/character.tscn" id="1_vm5mx"]
+[ext_resource type="Script" uid="uid://b0a4myyq0536v" path="res://presentation/battle_scene/combat/battle_combat_profile.gd" id="2_n4fyl"]
 [ext_resource type="Texture2D" uid="uid://ds7qm8lgxbdhm" path="res://美术资产/character/莉可完整版.png" id="2_tmu5p"]
+[ext_resource type="Resource" path="res://presentation/battle_scene/combat/default_attack_skill.tres" id="3_x3g0x"]
 [ext_resource type="Resource" uid="uid://bptle7yhbwdk8" path="res://assets/物品/装备/weapon/探窟稿.tres" id="5_x3g0x"]
+
+[sub_resource type="Resource" id="Resource_n4fyl"]
+script = ExtResource("2_n4fyl")
+faction = 0
+skills = Array[Resource]([ExtResource("3_x3g0x")])
+metadata/_custom_type_script = "uid://b0a4myyq0536v"
 
 [resource]
 script = ExtResource("1_33mer")
@@ -15,6 +23,7 @@ MAX_HP = 10
 ATK = 2
 speed = 5
 attack_type = 1
+combat_profile = SubResource("Resource_n4fyl")
 DEF = 100
 name = "莉可"
 portrait = ExtResource("2_tmu5p")

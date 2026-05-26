@@ -18,6 +18,7 @@ const HIT_FEEDBACK_LIFETIME := 0.5
 const HIT_SHAKE_STEP_TIME := 0.04
 const BATTLE_COMBAT_PROFILE_SCRIPT := preload("res://presentation/battle_scene/combat/battle_combat_profile.gd")
 const BATTLE_UNIT_RUNTIME_SCRIPT := preload("res://presentation/battle_scene/combat/battle_unit_runtime.gd")
+const INVALID_COMBAT_FACTION := -1
 
 var is_active := false
 
@@ -789,7 +790,7 @@ func _get_all_cards() -> Array[Card3D]:
 func _get_combat_faction(unit) -> int:
 	var profile := get_unit_combat_profile(unit)
 	if profile == null:
-		return BATTLE_COMBAT_PROFILE_SCRIPT.Faction.ENEMY
+		return INVALID_COMBAT_FACTION
 	return profile.faction
 
 

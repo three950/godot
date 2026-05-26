@@ -30,14 +30,16 @@ func can_act(context = null) -> bool:
 		return false
 	if battle_context.is_neutral_unit(unit):
 		return false
-	return battle_context.is_unit_alive(unit)
+	if not battle_context.is_unit_alive(unit):
+		return false
+	return _select_skill(unit, battle_context) != null
 
 
 func get_next_cooldown(context = null) -> float:
 	var battle_context = context if context != null else _controller
 	var unit := get_unit()
-	var skill: BattleSkill = _select_skill(unit, battle_context)
-	if unit == null or skill == null:
+	var skill := _select_skill(unit, battle_context)
+	if unit == null or skill == null or not skill.has_method("get_cooldown"):
 		return 1.0
 	return maxf(skill.get_cooldown(unit, battle_context), 0.05)
 
@@ -48,11 +50,13 @@ func perform_turn(context = null) -> void:
 	if not can_act(battle_context):
 		return
 
-	var skill: BattleSkill = _select_skill(unit, battle_context)
-	if skill == null or not skill.can_use(unit, battle_context):
+	var skill := _select_skill(unit, battle_context)
+	if skill == null or not skill.has_method("can_use") or not skill.can_use(unit, battle_context):
+		return
+	if not skill.has_method("choose_target"):
 		return
 
-	var target: Card3D = skill.choose_target(unit, battle_context)
+	var target := skill.choose_target(unit, battle_context) as Card3D
 	if target == null:
 		return
 
@@ -60,19 +64,23 @@ func perform_turn(context = null) -> void:
 	await battle_context.request_attack(unit, skill, target)
 
 
-func _select_skill(unit: Card3D, context) -> BattleSkill:
+func _select_skill(unit: Card3D, context) -> Resource:
 	if unit == null or context == null:
 		return null
 
 	var profile: BattleCombatProfile = context.get_unit_combat_profile(unit)
-	if profile == null:
+	if profile == null or profile.skills.is_empty():
 		return null
 
-	var default_skill: BattleSkill = profile.get_default_skill()
-	if default_skill != null:
-		return default_skill
+	# skills[0] 是当前默认技能；空数组或空槽都不自动补。
+	var skill := profile.skills[0]
+	if skill == null or not _is_valid_skill(skill):
+		return null
+	return skill
 
-	for skill: BattleSkill in profile.skills:
-		if skill != null:
-			return skill
-	return null
+
+func _is_valid_skill(skill: Resource) -> bool:
+	return skill.has_method("get_cooldown") \
+			and skill.has_method("can_use") \
+			and skill.has_method("choose_target") \
+			and skill.has_method("execute")

@@ -3,6 +3,19 @@
 [ext_resource type="Texture2D" uid="uid://ccg6ro7r3trco" path="res://assets/人物与敌人/Enemy/enemys/毒针线虫.jpg" id="1_ft5gs"]
 [ext_resource type="Script" uid="uid://c5d3up0hwneb" path="res://assets/人物与敌人/Enemy/EnemyCard.gd" id="1_fvscb"]
 [ext_resource type="PackedScene" uid="uid://d33c5tbwan3si" path="res://assets/人物与敌人/Enemy/enemy.tscn" id="2_tscn"]
+[ext_resource type="Script" uid="uid://b0a4myyq0536v" path="res://presentation/battle_scene/combat/battle_combat_profile.gd" id="2_vcbj4"]
+[ext_resource type="Script" uid="uid://c1kkco6br1klq" path="res://presentation/battle_scene/combat/battle_skill.gd" id="3_mjss6"]
+[ext_resource type="Script" uid="uid://ci86xgf34pa81" path="res://presentation/battle_scene/combat/default_attack_skill.gd" id="4_251ie"]
+
+[sub_resource type="Resource" id="Resource_x7hgw"]
+script = ExtResource("4_251ie")
+metadata/_custom_type_script = "uid://ci86xgf34pa81"
+
+[sub_resource type="Resource" id="Resource_jordd"]
+script = ExtResource("2_vcbj4")
+stance = 2
+skills = Array[ExtResource("3_mjss6")]([SubResource("Resource_x7hgw")])
+metadata/_custom_type_script = "uid://b0a4myyq0536v"
 
 [resource]
 script = ExtResource("1_fvscb")
@@ -10,10 +23,8 @@ card_scene = ExtResource("2_tscn")
 MAX_HP = 30
 ATK = 6
 speed = 8
-weapon_type = 0
+combat_profile = SubResource("Resource_jordd")
 DEF = 3
 name = "毒针线虫"
 portrait = ExtResource("1_ft5gs")
-text = null
-"能被堆叠" = null
 type = 1

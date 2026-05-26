@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="DefaultAttackSkill" format=3 uid="uid://7ypdp1qfs3r6"]
+
+[ext_resource type="Script" uid="uid://ci86xgf34pa81" path="res://presentation/battle_scene/combat/default_attack_skill.gd" id="1_default_attack"]
+
+[resource]
+script = ExtResource("1_default_attack")
