@@ -59,6 +59,7 @@ func lock_card_for_battle(card: Card3D, battle_scene: Node) -> void:
 		if not card.has_meta(PREV_STACK_MONITORABLE_META_KEY):
 			card.set_meta(PREV_STACK_MONITORABLE_META_KEY, card.stack_detector.monitorable)
 
+	_release_children_before_battle(card, battle_scene)
 	card.detach_from_follow_target()
 	card.reset_offset()
 	card.can_stack = false
@@ -245,6 +246,69 @@ func _set_overlap_pusher_enabled(card: Card3D, enabled: bool) -> void:
 	# 战斗中的卡牌站位由 BattleScene3D 控制，不能再被普通卡牌重叠推挤逻辑改 x/z。
 	pusher.overlapping_push_cards.clear()
 	pusher.set_physics_process(enabled)
+
+
+func _release_children_before_battle(card: Card3D, battle_scene: Node) -> void:
+	if card == null or not is_instance_valid(card):
+		return
+	if card.children_card == null or not is_instance_valid(card.children_card):
+		return
+
+	var child_head := card.children_card
+	var release_parent := _get_battle_release_parent(card, battle_scene)
+	var child_transform := child_head.global_transform
+
+	# biology 卡进战斗时只带自己进场；原本叠在它上面的道具/装备/材料要先拆出去，避免跟随战斗站位移动。
+	child_head.detach_from_follow_target()
+	if release_parent != null and is_instance_valid(release_parent) and child_head.get_parent() != release_parent:
+		child_head.reparent(release_parent, true)
+	child_head.global_transform = child_transform
+	child_head.snap_to_base_plane()
+	child_head.update_stack_chain_position()
+	_force_card_fixed(child_head)
+
+
+func _get_battle_release_parent(card: Card3D, battle_scene: Node) -> Node:
+	var cards_parent := _get_cards3d_scene_parent(card, battle_scene)
+	if cards_parent != null:
+		return cards_parent
+
+	return card.get_parent()
+
+
+func _get_cards3d_scene_parent(card: Card3D, battle_scene: Node) -> Node:
+	if card == null or not is_instance_valid(card) or not card.is_inside_tree():
+		return null
+
+	var tree := card.get_tree()
+	if tree == null:
+		return null
+
+	for node in tree.get_nodes_in_group("Cards3D"):
+		var grouped_card := node as Card3D
+		if grouped_card == null or not is_instance_valid(grouped_card) or grouped_card == card:
+			continue
+
+		var parent := grouped_card.get_parent()
+		if parent == null or not is_instance_valid(parent):
+			continue
+		if battle_scene != null and is_instance_valid(battle_scene) and parent == battle_scene:
+			continue
+		if parent.is_in_group("BattleScenes3D"):
+			continue
+
+		# 子堆拆出去后应回到普通 Cards3D 卡牌所在的场景层级，避免留在战斗场景或其父容器下。
+		return parent
+
+	return null
+
+
+func _force_card_fixed(card: Card3D) -> void:
+	if card == null or not is_instance_valid(card):
+		return
+	if card.card_state_machine == null:
+		return
+	card.card_state_machine.force_transition(Card3DState.State.fixed)
 
 
 func _detach_battle_cards_from_stack(card: Card3D) -> Array[Card3D]:

@@ -1,6 +1,8 @@
 class_name Card3DStateMachine
 extends Node
 
+signal card_fixed(card: Card3D)
+
 @export var initial_state: Card3DState
 
 var current_state: Card3DState
@@ -77,6 +79,9 @@ func _transition_to(to: Card3DState.State) -> void:
 	if _card:
 		card_label = _card.cardname if _card.cardname != "" else _card.name
 	print("%s %s" % [card_label, _state_name(new_state)])
+	# 只在卡牌真正落定时通知外部系统，避免 dragging/falling 阶段过早处理。
+	if new_state.state == Card3DState.State.fixed:
+		card_fixed.emit(_card)
 
 
 func _state_name(state_node: Card3DState) -> String:

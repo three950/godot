@@ -1,6 +1,6 @@
 ---
-name: StackAbyss - Exclusive Game Development Guidelines
-description: "Refer to this document for the following tasks: 0.When writing code, you need to have architectural awareness and clearly define the responsibility of each file. Don't write too much useless fallback logic, and don't write auto-completion logic for legacy resources just because the architecture has changed. You should write precise and elegant code, not patchwork code that compromises for the sake of the old framework. 1. When adding timer-related behaviors, ensure listening to the timers_pause_changed(is_paused: bool) signal in res://script_folder/events.gd, to make all in-game timers compatible with the global pause state. This covers Timer nodes, SceneTreeTimer usage, skill cooldowns, attack intervals, spawn delays, progress bars, asynchronous waits, countdown loops and elapsed time accumulation. 2. When adding or adjusting Y-axis offsets, visual layering and render priority values of 3D nodes, update the corresponding documents listed in details. 3. When handling card-related work, take stacked card conditions into account and properly process child card objects."
+name: stackabyss-godot-gameplay-skill
+description: "StackAbyss Godot gameplay rules. Use when editing gameplay code, card interactions, stacked cards, card reparenting, timers, battle behavior, 3D y offsets, visual layering, or render priority. Requires global timer pause support through Events.timers_pause_changed, stacked-card children_card handling, card reparent targets from the Cards3D scene group parent, and documentation updates for y-offset/render-priority changes."
 ---
 
 # StackAbyss Godot Gameplay Skill
@@ -17,6 +17,7 @@ Any gameplay timing logic must follow the project global pause state from `Event
 6. UI-only animation that should continue during pause may opt out, but add a short comment explaining why it is not gameplay timing.
 7. For any logic involving card interaction with cards, enemies, slots, effects, or other gameplay objects, treat cards as potentially stacked and include `children_card` handling so stacked children are not skipped.
 8. For any new node generation or existing node modification involving 3D y position, y offset, transform-origin y, card-related y behavior, visual layering, or `render_priority`, confirm the intended change with the user before finalizing. After the user confirms, update the relevant documentation under `文档/`: `3D_Y_POSITION_ORDER.txt`, `CARD_RELATED_3D_Y_OFFSETS.txt`, and/or `3D_RENDER_PRIORITY_ORDER.txt`. This applies to both static scene/resource edits and dynamic runtime logic in scripts.
+9. For any card node `reparent(...)`, use the parent node of cards in the `Cards3D` scene group as the target parent. Do not reparent card nodes to a battle scene, a battle scene's parent container, or an arbitrary nearby node when a normal `Cards3D` parent is available.
 
 ## Timer Node Pattern
 

@@ -3,14 +3,12 @@
 [ext_resource type="AudioStream" uid="uid://b6c68bakgojm8" path="res://声音资产/Audio/ogg/Tracks/Forgotten Biomes.ogg" id="2_lswn8"]
 [ext_resource type="PackedScene" uid="uid://d8vp1m0epvxf" path="res://presentation/background/background.tscn" id="3_h2yge"]
 [ext_resource type="PackedScene" uid="uid://di7barbrn42cy" path="res://assets/人物与敌人/Character/character.tscn" id="6_kek77"]
-[ext_resource type="Script" uid="uid://bf2o85td7sner" path="res://base_data/battle_stats.gd" id="6_xuqvo"]
 [ext_resource type="Resource" uid="uid://tk1nuwcbk0u2" path="res://assets/人物与敌人/Character/characters/娜娜奇.tres" id="7_4c57u"]
 [ext_resource type="Resource" uid="uid://dfpw7xhnxtvgh" path="res://assets/人物与敌人/Character/characters/莉可.tres" id="8_efxa6"]
 [ext_resource type="Resource" uid="uid://dsjxxvme1bq2n" path="res://assets/人物与敌人/Character/characters/雷古.tres" id="9_dg77c"]
 [ext_resource type="PackedScene" uid="uid://d33c5tbwan3si" path="res://assets/人物与敌人/Enemy/enemy.tscn" id="9_enemy_card"]
 [ext_resource type="Resource" uid="uid://do4ivypcif1tw" path="res://assets/人物与敌人/Enemy/enemys/毒针线虫.tres" id="10_4c57u"]
 [ext_resource type="PackedScene" uid="uid://dnxa570k3cf" path="res://assets/物品/道具/item.tscn" id="11_dg77c"]
-[ext_resource type="Script" path="res://script_folder/bag_mover.gd" id="11_efxa6"]
 [ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/cards/钓鱼竿.tres" id="12_dg77c"]
 [ext_resource type="PackedScene" uid="uid://dtdlifuitpvq3" path="res://assets/物品/资源/recource.tscn" id="13_ycdy4"]
 [ext_resource type="Resource" uid="uid://b5lhfvaex1tbh" path="res://assets/物品/资源/鱼.tres" id="14_w48qg"]
@@ -87,18 +85,6 @@ func zoom_camera(delta_zoom: float) -> void:
 	target_zoom = Vector2(new_zoom_value, new_zoom_value)
 "
 
-[sub_resource type="Resource" id="Resource_a6jrf"]
-script = ExtResource("6_xuqvo")
-metadata/_custom_type_script = "uid://bf2o85td7sner"
-
-[sub_resource type="Resource" id="Resource_xuqvo"]
-script = ExtResource("6_xuqvo")
-metadata/_custom_type_script = "uid://bf2o85td7sner"
-
-[sub_resource type="Resource" id="Resource_qsp4k"]
-script = ExtResource("6_xuqvo")
-metadata/_custom_type_script = "uid://bf2o85td7sner"
-
 [node name="Main" type="Node2D" unique_id=407151852]
 
 [node name="UI_Layer" parent="." unique_id=1732354782 instance=ExtResource("23_d13ii")]
@@ -108,7 +94,6 @@ bgm = ExtResource("2_lswn8")
 metadata/_edit_lock_ = true
 
 [node name="BagMover" type="Node" parent="." unique_id=2049260703]
-script = ExtResource("11_efxa6")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1020984618]
 position = Vector2(576, 328)
@@ -133,7 +118,6 @@ offset_top = 1297.0
 offset_right = 579.0
 offset_bottom = 1642.0
 character = ExtResource("7_4c57u")
-battle = SubResource("Resource_a6jrf")
 
 [node name="莉可" parent="." unique_id=449300852 instance=ExtResource("6_kek77")]
 offset_left = 2251.0
@@ -141,7 +125,6 @@ offset_top = 603.0
 offset_right = 2515.0
 offset_bottom = 948.0
 character = ExtResource("8_efxa6")
-battle = SubResource("Resource_xuqvo")
 
 [node name="雷古" parent="." unique_id=1878035723 instance=ExtResource("6_kek77")]
 offset_left = 314.0
@@ -149,13 +132,13 @@ offset_top = 651.0
 offset_right = 578.0
 offset_bottom = 996.0
 character = ExtResource("9_dg77c")
-battle = SubResource("Resource_qsp4k")
 
 [node name="EnemyCard" parent="." unique_id=1729004092 instance=ExtResource("9_enemy_card")]
 offset_left = 1257.0
 offset_top = 1260.0
 offset_right = 1257.0
 offset_bottom = 1260.0
+_battle_started = false
 enemy = ExtResource("10_4c57u")
 
 [node name="Item" parent="." unique_id=158931772 instance=ExtResource("11_dg77c")]

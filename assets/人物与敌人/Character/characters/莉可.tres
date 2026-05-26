@@ -4,13 +4,14 @@
 [ext_resource type="PackedScene" uid="uid://di7barbrn42cy" path="res://assets/人物与敌人/Character/character.tscn" id="1_vm5mx"]
 [ext_resource type="Script" uid="uid://b0a4myyq0536v" path="res://presentation/battle_scene/combat/battle_combat_profile.gd" id="2_n4fyl"]
 [ext_resource type="Texture2D" uid="uid://ds7qm8lgxbdhm" path="res://美术资产/character/莉可完整版.png" id="2_tmu5p"]
-[ext_resource type="Resource" path="res://presentation/battle_scene/combat/default_attack_skill.tres" id="3_x3g0x"]
+[ext_resource type="Script" uid="uid://c1kkco6br1klq" path="res://presentation/battle_scene/combat/battle_skill.gd" id="3_n4fyl"]
+[ext_resource type="Resource" uid="uid://7ypdp1qfs3r6" path="res://presentation/battle_scene/combat/default_attack_skill.tres" id="3_x3g0x"]
 [ext_resource type="Resource" uid="uid://bptle7yhbwdk8" path="res://assets/物品/装备/weapon/探窟稿.tres" id="5_x3g0x"]
 
 [sub_resource type="Resource" id="Resource_n4fyl"]
 script = ExtResource("2_n4fyl")
 faction = 0
-skills = Array[Resource]([ExtResource("3_x3g0x")])
+skills = Array[ExtResource("3_n4fyl")]([ExtResource("3_x3g0x")])
 metadata/_custom_type_script = "uid://b0a4myyq0536v"
 
 [resource]

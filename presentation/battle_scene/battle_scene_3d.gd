@@ -201,7 +201,7 @@ func _on_battle_area_area_entered(area: Area3D) -> void:
 	var card := area.get_parent() as Card3D
 	if card != null:
 		if not _card_guard.is_battle_card(card):
-			_emit_cards_entered_battle_area(_card_guard.push_non_battle_card_from_area(card))
+			_handle_non_battle_card_entered(card)
 			return
 		card_entered_battle_area.emit(self, card)
 		return
@@ -209,6 +209,39 @@ func _on_battle_area_area_entered(area: Area3D) -> void:
 	var other_scene := area.get_parent() as BattleScene3D
 	if other_scene != null and other_scene != self:
 		battle_area_touched.emit(self, other_scene)
+
+
+func _handle_non_battle_card_entered(card: Card3D) -> void:
+	# BattleArea 只监听整张卡的 CardPushDetectorArea；这里再用统一的面积判断兜底过滤。
+	if not _card_guard.is_card_overlapping_battle_area(card):
+		return
+
+	if _card_guard.should_push_non_battle_card_from_area(card):
+		_emit_cards_entered_battle_area(_card_guard.push_non_battle_card_from_area(card))
+		return
+
+	_watch_non_battle_card_until_fixed(card)
+
+
+func _watch_non_battle_card_until_fixed(card: Card3D) -> void:
+	if card == null or not is_instance_valid(card):
+		return
+	if card.card_state_machine == null:
+		return
+	if card.card_state_machine.card_fixed.is_connected(_on_pending_non_battle_card_fixed):
+		return
+
+	# dragging/falling 期间先让装备、道具等接触式交互正常结算；真正 fixed 后再尝试推出战斗区域。
+	card.card_state_machine.card_fixed.connect(_on_pending_non_battle_card_fixed, CONNECT_ONE_SHOT)
+
+
+func _on_pending_non_battle_card_fixed(card: Card3D) -> void:
+	if card == null or not is_instance_valid(card):
+		return
+	if _is_finishing or _card_guard.is_battle_card(card):
+		return
+	if _card_guard.is_card_overlapping_battle_area(card):
+		_emit_cards_entered_battle_area(_card_guard.push_non_battle_card_from_area(card))
 
 
 func _request_non_battle_card_cleanup() -> void:
@@ -260,13 +293,7 @@ func _finish_battle() -> void:
 	_combat_controller.shutdown()
 
 	var release_parent := _get_release_parent()
-	for card in get_all_cards():
-		if card == null or not is_instance_valid(card):
-			continue
-		if _is_alive(card):
-			_card_guard.release_survivor_card(card, release_parent)
-		else:
-			card.queue_free()
+	_release_child_cards(release_parent)
 
 	characters.clear()
 	enemies.clear()
@@ -285,6 +312,28 @@ func _get_release_parent() -> Node:
 	if tree.current_scene != null and tree.current_scene != self:
 		return tree.current_scene
 	return tree.root
+
+
+func _release_child_cards(release_parent: Node) -> void:
+	if release_parent == null or not is_instance_valid(release_parent):
+		return
+
+	for child in get_children().duplicate():
+		var card := child as Card3D
+		if card == null or not is_instance_valid(card):
+			continue
+
+		if _card_guard.is_battle_card(card):
+			if _is_alive(card):
+				_card_guard.release_survivor_card(card, release_parent)
+			else:
+				card.queue_free()
+			continue
+
+		# 非战斗卡可能是战斗过程中临时挂进来的装备/道具卡；战斗场景结束时只负责把子卡释放出去。
+		var preserved_transform := card.global_transform
+		card.reparent(release_parent, false)
+		card.global_transform = preserved_transform
 
 
 func _remove_dead_unit(unit) -> void:

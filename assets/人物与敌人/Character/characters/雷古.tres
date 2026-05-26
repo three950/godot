@@ -4,12 +4,13 @@
 [ext_resource type="PackedScene" uid="uid://di7barbrn42cy" path="res://assets/人物与敌人/Character/character.tscn" id="1_y4pxm"]
 [ext_resource type="Script" uid="uid://b0a4myyq0536v" path="res://presentation/battle_scene/combat/battle_combat_profile.gd" id="2_02ffa"]
 [ext_resource type="Texture2D" uid="uid://pbfbfiblfi8" path="res://美术资产/character/雷古完整版.png" id="2_2u3qq"]
-[ext_resource type="Resource" path="res://presentation/battle_scene/combat/default_attack_skill.tres" id="3_wa1ll"]
+[ext_resource type="Script" uid="uid://c1kkco6br1klq" path="res://presentation/battle_scene/combat/battle_skill.gd" id="3_upiad"]
+[ext_resource type="Resource" uid="uid://7ypdp1qfs3r6" path="res://presentation/battle_scene/combat/default_attack_skill.tres" id="3_wa1ll"]
 
 [sub_resource type="Resource" id="Resource_upiad"]
 script = ExtResource("2_02ffa")
 faction = 0
-skills = Array[Resource]([ExtResource("3_wa1ll")])
+skills = Array[ExtResource("3_upiad")]([ExtResource("3_wa1ll")])
 metadata/_custom_type_script = "uid://b0a4myyq0536v"
 
 [resource]
