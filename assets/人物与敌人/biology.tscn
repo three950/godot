@@ -2,9 +2,11 @@
 
 [ext_resource type="PackedScene" uid="uid://cxgk8a5mjy27v" path="res://assets/card.tscn" id="1_3c02q"]
 [ext_resource type="Texture2D" uid="uid://43lijddecmer" path="res://presentation/ui/心.png" id="2_3c2ks"]
+[ext_resource type="Script" uid="uid://bunao1s3cc80r" path="res://assets/人物与敌人/biology.gd" id="2_43ghe"]
 [ext_resource type="FontFile" uid="uid://cww0oip5xtj1i" path="res://presentation/fonts/cjkFonts 全濑体.ttf" id="3_3c2ks"]
 
 [node name="BiologyCard" unique_id=763618913 instance=ExtResource("1_3c02q")]
+script = ExtResource("2_43ghe")
 
 [node name="Heart" type="TextureRect" parent="." index="3" unique_id=1794393133]
 texture_filter = 1

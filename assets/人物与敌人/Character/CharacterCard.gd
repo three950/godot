@@ -1,5 +1,5 @@
 class_name CharacterCard
-extends BattleStates
+extends BiologyCard
 
 const INITIAL_EQUIPMENT_INITIALIZED_META := "_character_initial_equipment_initialized"
 

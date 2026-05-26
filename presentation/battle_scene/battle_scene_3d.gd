@@ -333,11 +333,11 @@ func _is_alive(card) -> bool:
 	return resource != null and resource.HP > 0
 
 
-func _get_battle_resource(card) -> BattleStates:
+func _get_battle_resource(card) -> BiologyCard:
 	var card_3d := _get_valid_card(card)
 	if card_3d == null:
 		return null
-	return card_3d.card_info as BattleStates
+	return card_3d.card_info as BiologyCard
 
 
 func _get_valid_card(candidate) -> Card3D:

@@ -261,7 +261,7 @@ func _get_merge_key(first_scene: BattleScene3D, second_scene: BattleScene3D) -> 
 
 func _is_battle_card(card) -> bool:
 	var card_3d := _get_valid_card(card)
-	return card_3d != null and (card_3d.card_info is CharacterCard or card_3d.card_info is EnemyCard)
+	return card_3d != null and card_3d.card_info is BiologyCard
 
 
 func _are_opponents(first_card, second_card) -> bool:

@@ -1,5 +1,5 @@
 class_name  Character
-extends "res://assets/人物与敌人/battle_card.gd"
+extends "res://assets/人物与敌人/biology.gd"
 
 const DEFAULT_WEAPON_ICON: Texture2D = preload("res://presentation/ui/WEAPON.png")
 const DEFAULT_armor_ICON: Texture2D = preload("res://presentation/ui/ARMOR.png")
@@ -19,7 +19,6 @@ func _ready() -> void:
 	# 角色生成时发送食物需求更新信号
 	if not Engine.is_editor_hint():
 		Events.food_need_update.emit(2)
-	battle = battle.duplicate()
 
 func _exit_tree() -> void:
 	# 角色被删除时发送食物需求减少信号。
@@ -36,7 +35,7 @@ func _is_parent_deleting() -> bool:
 		node = node.get_parent()
 	return false
 
-func get_battle_resource() -> BattleStates:
+func get_battle_resource() -> BiologyCard:
 	return character
 
 func set_character_stats(value: CharacterCard) -> void:

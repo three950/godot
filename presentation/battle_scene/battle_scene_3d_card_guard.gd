@@ -18,7 +18,7 @@ func configure(battle_area_shape: CollisionShape3D, push_margin: float) -> void:
 
 
 func is_battle_card(card: Card3D) -> bool:
-	return card != null and (card.card_info is CharacterCard or card.card_info is EnemyCard)
+	return card != null and card.card_info is BiologyCard
 
 
 func accept_battle_unit(

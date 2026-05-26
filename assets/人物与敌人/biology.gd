@@ -1,27 +1,27 @@
+class_name Biology
 extends Card
-class_name BattleCard
-# 战斗卡片的基类，包含 enemy 和 character 的共同功能
 
-@export var battle: BattleState
+# 生物 UI 卡面的共同基类，只负责显示层逻辑。
+# 战斗阶段状态由外层 Card3D.battle 持有，避免 2D 卡面和 3D 卡牌各存一份重复状态。
 
 var _needs_initial_update := false
 
 # biology.tscn 现在只保留心形图标里的 HPLabel。
 @onready var hp_label: Label = get_node_or_null("%HPLabel") as Label
 
-# 子类需要重写这个方法，返回 BattleStates 类型的资源
-func get_battle_resource() -> BattleStates:
+# 子类需要重写这个方法，返回 CharacterCard / EnemyCard 等生物卡数据。
+func get_battle_resource() -> BiologyCard:
 	return null
 
-# 重写父类方法，返回战斗资源
+# Card 的通用显示逻辑会通过这个入口读取 name / portrait / text 等基础卡牌信息。
 func get_card_resource() -> CardInfo:
 	return get_battle_resource()
 
-# 子类需要重写这个方法，执行具体的更新逻辑（设置 HP 等战斗属性）
+# 子类可重写这个方法，在通用卡面刷新后补自己的 UI，例如角色装备图标。
 func _update_battle_card() -> void:
-	# 调用父类通用更新方法（设置 name, label, texture）
 	_update_card_display()
 	_request_subviewport_redraw()
+
 
 func _ready() -> void:
 	super._ready()
@@ -29,7 +29,8 @@ func _ready() -> void:
 		_needs_initial_update = false
 		_update_battle_card()
 
-func _connect_and_update(resource: BattleStates) -> void:
+
+func _connect_and_update(resource: BiologyCard) -> void:
 	if resource == null:
 		return
 	if not resource.stats_changed.is_connected(update_stats):
@@ -38,6 +39,7 @@ func _connect_and_update(resource: BattleStates) -> void:
 		_update_battle_card()
 	else:
 		_needs_initial_update = true
+
 
 func update_stats() -> void:
 	var resource = get_battle_resource()
@@ -63,6 +65,7 @@ func _request_subviewport_redraw() -> void:
 	# 这张 2D 战斗卡如果被塞进 Card3D 的 SubViewport，数据变动时只要求刷新一帧。
 	# 普通 2D 界面里的卡牌拿到的是主 Viewport，不会进入这里，避免影响主界面刷新策略。
 	viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+
 
 func take_damage(damage: int) -> void:
 	var resource = get_battle_resource()

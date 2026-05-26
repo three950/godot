@@ -275,7 +275,7 @@ Card3D 进入 BattleScene3D 的 BattleArea
 -> _perform_attack
 -> 根据 attack_type 播放远程子弹或直接命中
 -> 命中时播放白闪
--> BattleStates.take_damage
+-> BiologyCard.take_damage
 -> 显示伤害数字
 -> 如果 HP <= 0：
    -> BattleScene3DCombatController.unit_died(unit)

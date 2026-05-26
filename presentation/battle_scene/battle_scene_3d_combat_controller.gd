@@ -309,7 +309,7 @@ func _perform_attack(attacker, target) -> void:
 
 	# 每次攻击前重新读取 attack_type；人物换武器后，下一次出手会立刻改用新动画。
 	match attacker_resource.attack_type:
-		BattleStates.attackType.remote:
+		BiologyCard.attackType.remote:
 			await _play_projectile(attack_from, attack_to)
 		_:
 			await _play_melee_dash(attacker_card, target_card)
@@ -712,11 +712,11 @@ func _is_alive(card) -> bool:
 	return resource != null and resource.HP > 0
 
 
-func _get_battle_resource(card) -> BattleStates:
+func _get_battle_resource(card) -> BiologyCard:
 	var card_3d := _get_valid_card(card)
 	if card_3d == null:
 		return null
-	return card_3d.card_info as BattleStates
+	return card_3d.card_info as BiologyCard
 
 
 func _get_valid_card(candidate) -> Card3D:

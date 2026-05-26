@@ -2,20 +2,14 @@
 
 [ext_resource type="PackedScene" uid="uid://b1oqblyvspkqi" path="res://assets/人物与敌人/biology.tscn" id="1_p58c1"]
 [ext_resource type="Script" uid="uid://blvsy21y0f4uy" path="res://assets/人物与敌人/Character/character.gd" id="2_dm7l3"]
-[ext_resource type="Script" uid="uid://bf2o85td7sner" path="res://base_data/battle_stats.gd" id="3_pntmc"]
 [ext_resource type="Texture2D" uid="uid://8jl1wimi204v" path="res://presentation/ui/WEAPON.png" id="4_pntmc"]
 [ext_resource type="Texture2D" uid="uid://1ia8mkrdp2b2" path="res://presentation/ui/ARMOR.png" id="5_pntmc"]
-
-[sub_resource type="Resource" id="Resource_7cwdw"]
-script = ExtResource("3_pntmc")
-metadata/_custom_type_script = "uid://bf2o85td7sner"
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pntmc"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [node name="character" unique_id=1325524042 instance=ExtResource("1_p58c1")]
 script = ExtResource("2_dm7l3")
-battle = SubResource("Resource_7cwdw")
 
 [node name="Panel" parent="CardColor" parent_id_path=PackedInt32Array(93157455) index="1" unique_id=1642299539]
 theme_override_styles/panel = SubResource("StyleBoxFlat_pntmc")
