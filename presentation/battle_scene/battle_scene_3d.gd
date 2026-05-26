@@ -97,10 +97,10 @@ func add_card(card: Card3D, insert_left := false, next_attack_time := -1.0, rela
 		else:
 			enemies.append(unit)
 
-	# BattleScene3D 只维护角色侧/非角色侧队列；新增单位的行动运行时由 combat controller 接管。
+	# BattleScene3D 只维护角色侧/非角色的biology侧队列；新增单位的行动运行时由 combat controller 接管。
 	_combat_controller.add_unit(unit, next_attack_time)
 
-	print("【BattleScene3D】加入战斗单位: %s (%d 角色 vs %d 非角色)" % [unit.cardname, characters.size(), enemies.size()])
+	print("【BattleScene3D】加入战斗单位: %s (%d 角色 vs %d 非角色的biology)" % [unit.cardname, characters.size(), enemies.size()])
 
 	if relayout:
 		relayout_cards()
@@ -123,7 +123,7 @@ func start_battle() -> void:
 		return
 
 	is_battle_active = true
-	print("【BattleScene3D】战斗开始: %d 角色 vs %d 非角色" % [characters.size(), enemies.size()])
+	print("【BattleScene3D】战斗开始: %d 角色 vs %d 非角色的biology" % [characters.size(), enemies.size()])
 
 
 func get_all_cards() -> Array[Card3D]:

@@ -7,7 +7,7 @@
 本次结构调整的目标是把职责拆清楚：
 
 - `CombatController` 负责速度调度、攻击队列、统一演出和结算。
-- `BattleUnitRuntime` 负责单位轮到行动时选择技能、选择目标，并向 controller 请求执行。
+- `BattleUnitActionPlanner` 负责单位轮到行动时选择技能、选择目标，并向 controller 请求执行。
 - `BattleSkill` 是单位可持有的技能资源，不是“默认普攻接口”。
 - 普攻只是技能数组里的默认项，当前先用 `DefaultAttackSkill` 复刻现有普攻逻辑。
 - `BiologyCard` 不塞行为树逻辑，只挂战斗配置 `BattleCombatProfile`。
@@ -19,7 +19,7 @@ presentation/battle_scene/combat/
   battle_combat_profile.gd      # 每个生物的战斗配置 Resource
   battle_skill.gd               # 技能 Resource 基类
   default_attack_skill.gd       # 当前普攻技能，复刻现有攻击逻辑
-  battle_unit_runtime.gd        # 单个 Card3D 进入战斗后的运行时决策模块
+  battle_unit_action_planner.gd # 单个 Card3D 轮到行动时的技能与目标决策模块
 ```
 
 `BiologyCard.gd` 只增加配置入口：
@@ -27,8 +27,6 @@ presentation/battle_scene/combat/
 ```gdscript
 @export var combat_profile: BattleCombatProfile
 ```
-
-如果旧卡没有配置，运行时生成默认 profile，保证旧数据不崩。
 
 ## 三、BattleCombatProfile 定位
 
@@ -44,7 +42,6 @@ enum Stance { AGGRESSIVE, PASSIVE, DEFENSIVE, OTHER }
 @export var faction: Faction = Faction.ENEMY
 @export var stance: Stance = Stance.AGGRESSIVE
 @export var skills: Array[BattleSkill] = []
-@export var default_skill: BattleSkill
 @export var behavior_tree: Resource = null # 先预留，不接入
 ```
 
@@ -88,7 +85,7 @@ func execute(user: Card3D, target: Card3D, context) -> void:
 当前阶段只实现 `DefaultAttackSkill`：
 
 - `get_cooldown()` 复刻现有 `BASE_ATTACK_INTERVAL - speed / 50.0`，并保留最小间隔。
-- `choose_target()` 迁移现有 `_get_attack_target()` 逻辑，按角色/非角色阵营选择第一个存活目标。
+- `choose_target()` 迁移现有 `_get_attack_target()` 逻辑，按角色/非角色的biology阵营选择第一个存活目标。
 - `execute()` 不直接播放动画和扣血，而是调用 controller 的公共执行方法，例如 `request_attack(user, skill, target)` 或 `perform_basic_attack(attacker, target, damage, attack_type)`。
 - 每次攻击前仍重新读取 `attack_type`，保证角色换武器后下一次攻击立刻生效。
 - 装备对 character 的影响分三类：
@@ -97,7 +94,7 @@ func execute(user: Card3D, target: Card3D, context) -> void:
   - 特殊效果：buff、debuff、特殊攻击、格挡、召唤等，装备/卸下时更新可用技能或技能效果。
 - buff/debuff 后续建议单独做 Resource，并由全局计时系统管理，不局限于战斗。
 
-## 五、CombatController 与 BattleUnitRuntime 分工
+## 五、CombatController 与 BattleUnitActionPlanner 分工
 
 `BattleScene3DCombatController` 保留为战斗上下文和执行器，但不再把目标选择和技能选择写死在自己内部。
 
@@ -107,14 +104,14 @@ Controller 负责：
 - 根据单位速度和当前技能冷却计算谁该行动。
 - 维护攻击队列，串行执行攻击表现和结算。
 - 在入队前、出队执行前、动画结算前都检查攻击者和目标是否仍然存活有效。
-- 新增 `request_attack(user, skill, target)`，由 `BattleUnitRuntime` 请求 controller 串行执行。
+- 新增 `request_attack(user, skill, target)`，由 `BattleUnitActionPlanner` 请求 controller 串行执行。
 - 保留子弹、近战冲刺、白闪、伤害数字、受击抖动。
 - 保留 `unit_died(unit)` 和 `battle_ended()`。
 - 保留全局暂停处理，所有攻击冷却 Timer、等待 Timer、Tween 都必须响应 `Events.timers_pause_changed(is_paused)`。
 - 合并或结束时停止攻击队列、Timer、Tween，并清理 Effects 下的战斗表现节点。
-- 战斗结束判断改成“角色 / 非角色”任一方存活数为 0。
+- 战斗结束判断改成“角色 / 非角色的biology”任一方存活数为 0。
 
-`BattleUnitRuntime` 负责：
+`BattleUnitActionPlanner` 负责：
 
 - 绑定单个进入战斗的 `Card3D`。
 - 读取该单位的 `combat_profile`。
@@ -124,7 +121,7 @@ Controller 负责：
   - 选择可用技能。
   - 调用技能 `choose_target()`。
   - 找到目标后调用 controller 的 `request_attack(user, skill, target)`。
-- `BattleUnitRuntime` 不独立决定全局出手顺序，不让动画请求脱离 controller 队列，避免单位已死亡但旧动画仍排队播放。
+- `BattleUnitActionPlanner` 不独立决定全局出手顺序，不让动画请求脱离 controller 队列，避免单位已死亡但旧动画仍排队播放。
 
 ## 六、战斗开启与分边规则
 
@@ -137,8 +134,8 @@ Controller 负责：
 - `NEUTRAL` 与 character 只有在 character 主动堆叠到 neutral 时触发战斗，普通碰撞不触发。
 - 非 character 之间不触发战斗。
 - character 之间不触发战斗。
-- 进入战斗后，`Faction.CHARACTER` 放入角色侧，`Faction.ENEMY` 和 `Faction.NEUTRAL` 放入非角色侧。
-- neutral 不主动创建 `BattleUnitRuntime`，因此不会攻击，但可以被攻击、死亡、计入非角色侧存活数。
+- 进入战斗后，`Faction.CHARACTER` 放入角色侧，`Faction.ENEMY` 和 `Faction.NEUTRAL` 放入非角色的biology侧。
+- neutral 不主动创建 `BattleUnitActionPlanner`，因此不会攻击，但可以被攻击、死亡、计入非角色的biology侧存活数。
 
 卡牌相关逻辑需要继续考虑堆叠：
 
@@ -147,15 +144,15 @@ Controller 负责：
 
 ## 七、关键修改顺序
 
-1. 新增 `BattleCombatProfile`、`BattleSkill`、`DefaultAttackSkill`、`BattleUnitRuntime`。
+1. 新增 `BattleCombatProfile`、`BattleSkill`、`DefaultAttackSkill`、`BattleUnitActionPlanner`。
 2. `BiologyCard` 增加 `combat_profile`；为空时运行时生成默认 profile。
-3. `BattleScene3D` 的 `characters / enemies` 概念调整为“角色侧 / 非角色侧”，命名可后续统一，但结束判断必须按 faction。
-4. `BattleScene3DCombatController` 不再直接写死目标选择；它负责速度调度，并为可行动单位创建/调用 `BattleUnitRuntime`。
+3. `BattleScene3D` 的 `characters / enemies` 概念调整为“角色侧 / 非角色的biology侧”，命名可后续统一，但结束判断必须按 faction。
+4. `BattleScene3DCombatController` 不再直接写死目标选择；它负责速度调度，并为可行动单位创建/调用 `BattleUnitActionPlanner`。
 5. `_get_attack_target()` 迁移到 `DefaultAttackSkill.choose_target()`。
 6. `_perform_attack()` 拆成 controller 的公共执行方法，供技能调用；当前普攻仍复刻现有 `ATK / attack_type` 行为。
 7. 新增 `request_attack(user, skill, target)`，所有技能攻击都通过 controller 队列串行执行。
 8. `BattleManager._are_opponents()` 改为基于 `combat_profile.faction`。
-9. 战斗结束判断改为“角色侧 / 非角色侧某边清零”。
+9. 战斗结束判断改为“角色侧 / 非角色的biology侧某边清零”。
 
 ## 八、最终结构效果
 

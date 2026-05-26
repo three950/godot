@@ -274,7 +274,7 @@ func _are_opponents(first_card, second_card) -> bool:
 
 	var first_faction := _get_combat_faction(first_card_3d)
 	var second_faction := _get_combat_faction(second_card_3d)
-	# 新版触发规则只认主动堆叠方向：角色卡进入非角色卡的堆叠区才开战。
+	# 新版触发规则只认主动堆叠方向：角色卡进入非角色的biology卡的堆叠区才开战。
 	# 敌人或中立生物反向碰到角色，都不会靠普通碰撞创建战斗。
 	return first_faction == BATTLE_COMBAT_PROFILE_SCRIPT.Faction.CHARACTER \
 			and second_faction != INVALID_COMBAT_FACTION \

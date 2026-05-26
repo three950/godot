@@ -1,7 +1,7 @@
-class_name BattleUnitRuntime
+class_name BattleUnitActionPlanner
 extends RefCounted
 
-# BattleUnitRuntime 只负责“轮到这个单位时，它准备怎么行动”。
+# BattleUnitActionPlanner 只负责“轮到这个单位时，它准备怎么行动”。
 # 出手顺序、队列串行、动画和扣血仍由 BattleScene3DCombatController 统一处理。
 
 var unit_id: int = 0
@@ -39,7 +39,7 @@ func get_next_cooldown(context = null) -> float:
 	var battle_context = context if context != null else _controller
 	var unit := get_unit()
 	var skill := _select_skill(unit, battle_context)
-	if unit == null or skill == null or not skill.has_method("get_cooldown"):
+	if unit == null or skill == null:
 		return 1.0
 	return maxf(skill.get_cooldown(unit, battle_context), 0.05)
 
@@ -51,20 +51,18 @@ func perform_turn(context = null) -> void:
 		return
 
 	var skill := _select_skill(unit, battle_context)
-	if skill == null or not skill.has_method("can_use") or not skill.can_use(unit, battle_context):
-		return
-	if not skill.has_method("choose_target"):
+	if skill == null or not skill.can_use(unit, battle_context):
 		return
 
 	var target := skill.choose_target(unit, battle_context) as Card3D
 	if target == null:
 		return
 
-	# runtime 只发起请求；controller 在 request_attack/perform_basic_attack 内再次验证存活状态。
+	# 行动规划器只发起请求；controller 在 request_attack/perform_basic_attack 内再次验证存活状态。
 	await battle_context.request_attack(unit, skill, target)
 
 
-func _select_skill(unit: Card3D, context) -> Resource:
+func _select_skill(unit: Card3D, context) -> BattleSkill:
 	if unit == null or context == null:
 		return null
 
@@ -73,14 +71,8 @@ func _select_skill(unit: Card3D, context) -> Resource:
 		return null
 
 	# skills[0] 是当前默认技能；空数组或空槽都不自动补。
+	#TODO:skill的优先级还需要调整，写在只拿[0].后续装备追加技能、被动技能、条件技能不稳，数组顺序一变默认普攻就变了
 	var skill := profile.skills[0]
-	if skill == null or not _is_valid_skill(skill):
+	if skill == null:
 		return null
 	return skill
-
-
-func _is_valid_skill(skill: Resource) -> bool:
-	return skill.has_method("get_cooldown") \
-			and skill.has_method("can_use") \
-			and skill.has_method("choose_target") \
-			and skill.has_method("execute")

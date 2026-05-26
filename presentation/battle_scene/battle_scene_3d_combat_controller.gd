@@ -17,7 +17,7 @@ const HIT_FEEDBACK_OFFSET := Vector3(1.0, 0.28, 1.3)
 const HIT_FEEDBACK_LIFETIME := 0.5
 const HIT_SHAKE_STEP_TIME := 0.04
 const BATTLE_COMBAT_PROFILE_SCRIPT := preload("res://presentation/battle_scene/combat/battle_combat_profile.gd")
-const BATTLE_UNIT_RUNTIME_SCRIPT := preload("res://presentation/battle_scene/combat/battle_unit_runtime.gd")
+const BATTLE_UNIT_ACTION_PLANNER_SCRIPT := preload("res://presentation/battle_scene/combat/battle_unit_action_planner.gd")
 const INVALID_COMBAT_FACTION := -1
 
 var is_active := false
@@ -27,7 +27,7 @@ var _effects_root: Node3D = null
 var _characters: Array[Card3D] = []
 var _enemies: Array[Card3D] = []
 var _unit_timers: Dictionary = {}
-var _unit_runtimes: Dictionary = {}
+var _unit_action_planners: Dictionary = {}
 var _next_attack_times: Dictionary = {}
 var _attack_queue: Array[int] = []
 var _is_attack_queue_running := false
@@ -77,7 +77,7 @@ func add_unit(unit, preserved_next_attack_time := -1.0) -> void:
 	if preserved_next_attack_time >= 0.0:
 		_next_attack_times[unit_card] = preserved_next_attack_time
 
-	_ensure_unit_runtime(unit_card)
+	_ensure_unit_action_planner(unit_card)
 	if is_active:
 		_create_timer_for_unit(unit_card, float(_next_attack_times.get(unit_card, preserved_next_attack_time)))
 
@@ -89,7 +89,7 @@ func forget_unit(unit) -> void:
 		return
 
 	_remove_unit_timer(unit_card)
-	_remove_unit_runtime(unit_card)
+	_remove_unit_action_planner(unit_card)
 	_next_attack_times.erase(unit_card)
 	_attack_queue.erase(unit_card.get_instance_id())
 
@@ -239,11 +239,11 @@ func _create_timer_for_unit(unit, preserved_next_attack_time := -1.0) -> void:
 		# 中立单位可以被卷入战斗和被攻击，但不会主动排入出手计时。
 		return
 
-	var runtime = _ensure_unit_runtime(unit_card)
-	if runtime == null or not runtime.can_act(self):
+	var action_planner = _ensure_unit_action_planner(unit_card)
+	if action_planner == null or not action_planner.can_act(self):
 		return
 
-	var interval: float = float(runtime.get_next_cooldown(self))
+	var interval: float = float(action_planner.get_next_cooldown(self))
 	var now := _now()
 	var next_time := preserved_next_attack_time if preserved_next_attack_time >= 0.0 else now + interval
 	var wait_time := maxf(next_time - now, 0.05)
@@ -319,22 +319,22 @@ func _perform_queued_attack(attacker_id: int) -> void:
 		_check_battle_end()
 		return
 
-	var runtime = _get_unit_runtime(attacker)
-	if runtime == null or not runtime.can_act(self):
+	var action_planner = _get_unit_action_planner(attacker)
+	if action_planner == null or not action_planner.can_act(self):
 		_check_battle_end()
 		return
 
 	# 目标选择发生在队列真正执行时，而不是 Timer 到点时，避免目标已死却还在队列中等待播放动画。
-	await runtime.perform_turn(self)
+	await action_planner.perform_turn(self)
 	_check_battle_end()
 
 	# 一次完整攻击动画结束后，才重新计算并开启下一轮攻击 Timer。
 	if is_active and _is_alive(attacker) and not _is_neutral_unit(attacker):
-		var next_time: float = _now() + float(runtime.get_next_cooldown(self))
+		var next_time: float = _now() + float(action_planner.get_next_cooldown(self))
 		_create_timer_for_unit(attacker, next_time)
 
 
-func request_attack(user, skill: BattleSkill, target) -> void:
+func request_attack(user, skill: BattleSkill, target) -> void:#TODO: 名义上是“统一请求 controller 执行技能”，但实现只是立即 await skill.execute(...)。现在串行只依赖 _drain_attack_queue() 的调用路径；以后装备效果、反击、触发技能如果直接调用 request_attack()，会绕过攻击队列并和现有动画/结算重叠。
 	var attacker_card := _get_valid_card(user)
 	var target_card := _get_valid_card(target)
 	if skill == null or attacker_card == null or target_card == null:
@@ -650,7 +650,7 @@ func _report_dead_unit(unit: Card3D) -> void:
 
 	var unit_id := unit_card.get_instance_id()
 	_remove_unit_timer(unit_card)
-	_remove_unit_runtime(unit_card)
+	_remove_unit_action_planner(unit_card)
 	_attack_queue.erase(unit_id)
 	unit_died.emit(unit_card)
 
@@ -673,7 +673,7 @@ func _clear_all_timers() -> void:
 			timer.stop()
 			timer.queue_free()
 	_unit_timers.clear()
-	_unit_runtimes.clear()
+	_unit_action_planners.clear()
 	_next_attack_times.clear()
 
 
@@ -723,10 +723,10 @@ func _cleanup_invalid_timer_entries() -> void:
 		if unit_card == null or not _is_registered_unit(unit_card):
 			_next_attack_times.erase(unit)
 
-	for unit in _unit_runtimes.keys():
+	for unit in _unit_action_planners.keys():
 		var unit_card := _get_valid_card(unit)
 		if unit_card == null or not _is_registered_unit(unit_card) or _is_neutral_unit(unit_card):
-			_unit_runtimes.erase(unit)
+			_unit_action_planners.erase(unit)
 
 
 func _is_registered_unit(unit) -> bool:
@@ -734,36 +734,36 @@ func _is_registered_unit(unit) -> bool:
 	return unit_card != null and (_characters.has(unit_card) or _enemies.has(unit_card))
 
 
-func _ensure_unit_runtime(unit: Card3D) -> BattleUnitRuntime:
+func _ensure_unit_action_planner(unit: Card3D) -> BattleUnitActionPlanner:
 	var unit_card := _get_valid_card(unit)
 	if unit_card == null or _is_neutral_unit(unit_card):
 		return null
 
-	var runtime := _unit_runtimes.get(unit_card) as BattleUnitRuntime
-	if runtime != null:
-		return runtime
+	var action_planner := _unit_action_planners.get(unit_card) as BattleUnitActionPlanner
+	if action_planner != null:
+		return action_planner
 
-	runtime = BATTLE_UNIT_RUNTIME_SCRIPT.new() as BattleUnitRuntime
-	runtime.configure(unit_card, self)
-	_unit_runtimes[unit_card] = runtime
-	return runtime
+	action_planner = BATTLE_UNIT_ACTION_PLANNER_SCRIPT.new() as BattleUnitActionPlanner
+	action_planner.configure(unit_card, self)
+	_unit_action_planners[unit_card] = action_planner
+	return action_planner
 
 
-func _get_unit_runtime(unit: Card3D) -> BattleUnitRuntime:
+func _get_unit_action_planner(unit: Card3D) -> BattleUnitActionPlanner:
 	var unit_card := _get_valid_card(unit)
 	if unit_card == null:
 		return null
-	return _unit_runtimes.get(unit_card) as BattleUnitRuntime
+	return _unit_action_planners.get(unit_card) as BattleUnitActionPlanner
 
 
-func _remove_unit_runtime(unit: Card3D) -> void:
-	_unit_runtimes.erase(unit)
+func _remove_unit_action_planner(unit: Card3D) -> void:
+	_unit_action_planners.erase(unit)
 
 
 func _get_unit_cooldown(unit: Card3D) -> float:
-	var runtime := _get_unit_runtime(unit)
-	if runtime != null:
-		return float(runtime.get_next_cooldown(self))
+	var action_planner := _get_unit_action_planner(unit)
+	if action_planner != null:
+		return float(action_planner.get_next_cooldown(self))
 	return get_basic_attack_cooldown(unit)
 
 
