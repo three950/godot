@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://6mswy8o4g4l5"]
 
 [ext_resource type="Script" uid="uid://dyxa1qfcee2ef" path="res://card_3d_scripts/card_3d_overlap_pusher.gd" id="2_wijti"]
-[ext_resource type="Script" uid="uid://bf2o85td7sner" path="res://base_data/battle_stats.gd" id="3_68jk5"]
 [ext_resource type="Script" uid="uid://b3q4uvlvni0pu" path="res://card_3d_scripts/card_3d_state_machine.gd" id="3_3400w"]
 [ext_resource type="Script" uid="uid://b17vu4sh081o0" path="res://card_3d_scripts/states/card_3d_fixed.gd" id="4_68jk5"]
 [ext_resource type="Script" uid="uid://chphef0oyvfoy" path="res://card_3d_scripts/states/card_3d_pickingup.gd" id="5_7gu60"]
@@ -51,10 +50,6 @@ size = Vector3(2.64, 0.08, 2.94)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_push_detector"]
 size = Vector3(2.64, 0.08, 3.45)
-
-[sub_resource type="Resource" id="Resource_egbq3"]
-script = ExtResource("3_68jk5")
-metadata/_custom_type_script = "uid://bf2o85td7sner"
 
 [node name="character3d" type="Node3D" unique_id=1098745464 groups=["Cards3D"]]
 script = ExtResource("10_character3d")
@@ -150,7 +145,6 @@ state = 5
 [node name="WeaponPreview" parent="." unique_id=24067575 instance=ExtResource("10_7gu60")]
 transform = Transform3D(0.6724733, 0.023483282, 0.19294615, -0.02442965, 0.6995736, 0, -0.19282863, -0.0067337235, 0.67288315, -1.3783197, 0.5, 1.8962269)
 cardname = "石块"
-battle = SubResource("Resource_egbq3")
 
 [node name="ArmorPreview" parent="." unique_id=1996746775 instance=ExtResource("10_7gu60")]
 transform = Transform3D(0.6724733, -0.023483282, -0.19294615, 0.02442965, 0.6995736, 0, 0.19282863, -0.0067337235, 0.67288315, -0.07162762, 0.36341977, 1.8775973)

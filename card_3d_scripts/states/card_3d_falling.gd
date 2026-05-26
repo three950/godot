@@ -92,6 +92,8 @@ func _get_stack_interaction_candidates() -> Array[Card3D]:
 func stack_on_card(target_card: Card3D) -> void:
 	card.stack_state = Card3DState.STACK_STATE_STACKING
 	card.follow_target = target_card
+	# 自己成为某张卡的上层卡时，自己的堆叠归属也已经改变；先通知本卡监听者取消旧合成。
+	card.array_changed.emit()
 	target_card.stacking_on_you.emit(card)
 
 	var target_parent := target_card.get_parent()

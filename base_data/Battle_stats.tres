@@ -1,7 +1,0 @@
-[gd_resource type="Resource" script_class="BattleState" load_steps=2 format=3 uid="uid://cq6i5xpurm0al"]
-
-[ext_resource type="Script" uid="uid://bf2o85td7sner" path="res://base_data/battle_stats.gd" id="1_h55m2"]
-
-[resource]
-script = ExtResource("1_h55m2")
-metadata/_custom_type_script = "uid://bf2o85td7sner"

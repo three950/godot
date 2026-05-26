@@ -166,7 +166,6 @@ func _add_equipment_preview_card(parent: Node3D, equipment_card: ThingsCard, tem
 	preview_card.name = node_name
 	preview_card.card_info = equipment_card
 	preview_card.cardname = equipment_card.name
-	preview_card.battle = battle
 	preview_card.transform = template.transform
 	parent.add_child(preview_card)
 

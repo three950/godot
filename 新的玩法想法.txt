@@ -1,6 +1,6 @@
 把生成卡牌变成工厂函数，根据生成位置和生成的卡牌的类别自动判断实际落点，然后控制动画的时长
 
-现在是只有character和enemy会私有化create_runtime_instance。Card3D.battle 也会私有化，因为 BattleState.current_state 会被战斗区域改动。
+现在是只有character和enemy会私有化create_runtime_instance。战斗归属由 BattleScene3D/Card3D meta 管理，不再给每张 Card3D 配 BattleState。
 # 3D 卡面 SubViewport 的渲染倍率。（设置用）
 # 1.0 是完整清晰度；0.5 会把每张 3D 卡的卡面渲染面积降到 1/4，适合低性能设备。
 @export_range(0.25, 1.0, 0.05) var card_3d_viewport_scale

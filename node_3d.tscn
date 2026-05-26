@@ -5,7 +5,6 @@
 [ext_resource type="AudioStream" uid="uid://b6c68bakgojm8" path="res://声音资产/Audio/ogg/Tracks/Forgotten Biomes.ogg" id="3_bgm"]
 [ext_resource type="PackedScene" uid="uid://bm4r8w10jcbid" path="res://presentation/ui/ui_layer.tscn" id="3_ui"]
 [ext_resource type="PackedScene" uid="uid://bntgel7ybr1bb" path="res://card_3d.tscn" id="5_i5arm"]
-[ext_resource type="Script" uid="uid://bf2o85td7sner" path="res://base_data/battle_stats.gd" id="6_battle"]
 [ext_resource type="Resource" uid="uid://bptle7yhbwdk8" path="res://assets/物品/装备/weapon/探窟稿.tres" id="6_jsnrv"]
 [ext_resource type="Resource" uid="uid://tk1nuwcbk0u2" path="res://assets/人物与敌人/Character/characters/娜娜奇.tres" id="7_nanachi"]
 [ext_resource type="Resource" uid="uid://dfpw7xhnxtvgh" path="res://assets/人物与敌人/Character/characters/莉可.tres" id="8_riko"]
@@ -113,26 +112,6 @@ disable_receive_shadows = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
 size = Vector3(34.71, 1, 21.36)
 
-[sub_resource type="Resource" id="Resource_battle_nanachi"]
-script = ExtResource("6_battle")
-metadata/_custom_type_script = "uid://bf2o85td7sner"
-
-[sub_resource type="Resource" id="Resource_battle_riko"]
-script = ExtResource("6_battle")
-metadata/_custom_type_script = "uid://bf2o85td7sner"
-
-[sub_resource type="Resource" id="Resource_battle_reg"]
-script = ExtResource("6_battle")
-metadata/_custom_type_script = "uid://bf2o85td7sner"
-
-[sub_resource type="Resource" id="Resource_s0gvp"]
-script = ExtResource("6_battle")
-metadata/_custom_type_script = "uid://bf2o85td7sner"
-
-[sub_resource type="Resource" id="Resource_vxd74"]
-script = ExtResource("6_battle")
-metadata/_custom_type_script = "uid://bf2o85td7sner"
-
 [node name="Node3D" type="Node3D" unique_id=880038554]
 script = ExtResource("2_cam")
 
@@ -227,19 +206,16 @@ metadata/_edit_lock_ = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, -4)
 cardname = "娜娜奇"
 card_info = ExtResource("7_nanachi")
-battle = SubResource("Resource_battle_nanachi")
 
 [node name="莉可" parent="." unique_id=1058394043 instance=ExtResource("5_i5arm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, -4)
 cardname = "莉可"
 card_info = ExtResource("8_riko")
-battle = SubResource("Resource_battle_riko")
 
 [node name="雷古" parent="." unique_id=1888242703 instance=ExtResource("5_i5arm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
 cardname = "雷古"
 card_info = ExtResource("9_reg")
-battle = SubResource("Resource_battle_reg")
 
 [node name="钓鱼竿" parent="." unique_id=1544934035 instance=ExtResource("5_i5arm")]
 transform = Transform3D(0.52642757, -0.18557425, -0.22008216, 0.19706462, 0.566678, -0.0064548072, 0.20985602, -0.066620685, 0.55814177, 13.417328, -27.883778, -43.764957)
@@ -250,7 +226,6 @@ card_info = ExtResource("11_fishing_rod")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.812561, 0, -7.4912834)
 cardname = "石块"
 card_info = ExtResource("11_i0g27")
-battle = SubResource("Resource_battle_nanachi")
 
 [node name="鱼" parent="." unique_id=364068770 instance=ExtResource("5_i5arm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, 0.25)
@@ -265,9 +240,7 @@ card_info = ExtResource("15_ealrb")
 [node name="毒针线虫" parent="." unique_id=1785825953 instance=ExtResource("5_i5arm")]
 cardname = "毒针线虫"
 card_info = ExtResource("21_lggff")
-battle = SubResource("Resource_s0gvp")
 
 [node name="Card3d" parent="." unique_id=460396809 instance=ExtResource("22_s0gvp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 0)
 card_info = ExtResource("8_riko")
-battle = SubResource("Resource_vxd74")

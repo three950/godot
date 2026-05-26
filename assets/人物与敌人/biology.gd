@@ -2,7 +2,7 @@ class_name Biology
 extends Card
 
 # 生物 UI 卡面的共同基类，只负责显示层逻辑。
-# 战斗阶段状态由外层 Card3D.battle 持有，避免 2D 卡面和 3D 卡牌各存一份重复状态。
+# 战斗归属由外层 Card3D 的 battle_scene_3d meta 管理，卡面只监听数据变化并刷新显示。
 
 var _needs_initial_update := false
 

@@ -23,7 +23,6 @@ const CARD_VIEW_DESIGN_SIZE := Vector2i(1056, 1368)
 
 @export_group("Card Data")
 @export var card_info: CardInfo : set = set_card_info
-@export var battle: BattleState
 
 @export_group("3D Motion")
 @export var hover_lift_y: float = 0.05
@@ -105,7 +104,6 @@ func _make_runtime_card_data_unique() -> void:
 	_suppress_card_info_rebuild = true
 	card_info = _get_runtime_card_data(card_info)
 	_suppress_card_info_rebuild = false
-	battle = _get_runtime_battle_state(battle)
 
 
 func _get_runtime_card_data(value: CardInfo) -> CardInfo:
@@ -118,22 +116,6 @@ func _get_runtime_card_data(value: CardInfo) -> CardInfo:
 
 	# 全局只保留 CardInfo.create_runtime_instance()；子类的运行时初始化放回各自场景入口处理。
 	var instance := value.create_runtime_instance()
-	if instance == null or instance == value:
-		return value
-	instance.set_meta(RUNTIME_UNIQUE_RESOURCE_META, true)
-	return instance
-
-
-func _get_runtime_battle_state(value: BattleState) -> BattleState:
-	if value == null:
-		return null
-	if Engine.is_editor_hint():
-		return value
-	if value.get_meta(RUNTIME_UNIQUE_RESOURCE_META, false):
-		return value
-
-	# BattleState 不继承 CardInfo，但同样需要和模板资源分离，避免多张卡共享战斗阶段。
-	var instance := value.duplicate() as BattleState
 	if instance == null or instance == value:
 		return value
 	instance.set_meta(RUNTIME_UNIQUE_RESOURCE_META, true)
@@ -361,6 +343,8 @@ func detach_from_follow_target() -> void:
 	follow_target.stop_stacking_on_you.emit()
 	stack_state = 0
 	follow_target = null
+	# 从别的卡上脱离时，本卡自己的堆叠归属也改变；合成等监听者需要同步取消旧任务。
+	array_changed.emit()
 
 
 func update_drag_from_mouse(mouse_position: Vector2) -> void:

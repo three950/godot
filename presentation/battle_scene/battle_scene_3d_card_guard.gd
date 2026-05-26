@@ -68,8 +68,6 @@ func lock_card_for_battle(card: Card3D, battle_scene: Node) -> void:
 	# 不关闭 stack_detector：普通堆叠由 can_stack=false 禁止，但装备/道具仍需要接触检测触发特殊交互。
 	_set_overlap_pusher_enabled(card, false)
 	card.set_meta(BATTLE_META_KEY, battle_scene)
-	if card.battle:
-		card.battle.current_state = BattleState.Phase.BATTLE
 
 
 func push_non_battle_card_from_area(card: Card3D) -> Array[Card3D]:
@@ -109,8 +107,6 @@ func restore_card_after_battle(card: Card3D) -> void:
 
 	if card.has_meta(BATTLE_META_KEY):
 		card.remove_meta(BATTLE_META_KEY)
-	if card.battle:
-		card.battle.current_state = BattleState.Phase.COMMON
 
 
 func cleanup_non_battle_cards_in_area(tree_owner: Node) -> Array[Card3D]:
