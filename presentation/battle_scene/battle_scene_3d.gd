@@ -6,6 +6,7 @@ signal battle_area_touched(battle_scene: BattleScene3D, other_scene: BattleScene
 signal battle_finished(battle_scene: BattleScene3D)
 
 const COMBAT_CONTROLLER_SCRIPT := preload("res://presentation/battle_scene/battle_scene_3d_combat_controller.gd")
+const BATTLE_COMBAT_PROFILE_SCRIPT := preload("res://presentation/battle_scene/combat/battle_combat_profile.gd")
 
 @export var creation_index: int = 0
 @export var card_spacing: float = 3.0
@@ -85,21 +86,21 @@ func add_card(card: Card3D, insert_left := false, next_attack_time := -1.0, rela
 	if unit == null:
 		return false
 
-	if unit.card_info is CharacterCard:
+	if _is_character_unit(unit):
 		if insert_left:
 			characters.insert(0, unit)
 		else:
 			characters.append(unit)
-	elif unit.card_info is EnemyCard:
+	else:
 		if insert_left:
 			enemies.insert(0, unit)
 		else:
 			enemies.append(unit)
 
-	# BattleScene3D 只维护队列；新增单位的攻击冷却由 combat controller 接管。
+	# BattleScene3D 只维护角色侧/非角色侧队列；新增单位的行动运行时由 combat controller 接管。
 	_combat_controller.add_unit(unit, next_attack_time)
 
-	print("【BattleScene3D】加入战斗单位: %s (%d 角色 vs %d 敌人)" % [unit.cardname, characters.size(), enemies.size()])
+	print("【BattleScene3D】加入战斗单位: %s (%d 角色 vs %d 非角色)" % [unit.cardname, characters.size(), enemies.size()])
 
 	if relayout:
 		relayout_cards()
@@ -122,7 +123,7 @@ func start_battle() -> void:
 		return
 
 	is_battle_active = true
-	print("【BattleScene3D】战斗开始: %d 角色 vs %d 敌人" % [characters.size(), enemies.size()])
+	print("【BattleScene3D】战斗开始: %d 角色 vs %d 非角色" % [characters.size(), enemies.size()])
 
 
 func get_all_cards() -> Array[Card3D]:
@@ -338,6 +339,18 @@ func _get_battle_resource(card) -> BiologyCard:
 	if card_3d == null:
 		return null
 	return card_3d.card_info as BiologyCard
+
+
+func _get_combat_profile(card) -> BattleCombatProfile:
+	var resource := _get_battle_resource(card)
+	if resource == null:
+		return null
+	return resource.get_combat_profile()
+
+
+func _is_character_unit(card) -> bool:
+	var profile := _get_combat_profile(card)
+	return profile != null and profile.faction == BATTLE_COMBAT_PROFILE_SCRIPT.Faction.CHARACTER
 
 
 func _get_valid_card(candidate) -> Card3D:

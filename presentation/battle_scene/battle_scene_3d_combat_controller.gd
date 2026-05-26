@@ -16,6 +16,8 @@ const MELEE_DASH_HEIGHT := 0.3
 const HIT_FEEDBACK_OFFSET := Vector3(1.0, 0.28, 1.3)
 const HIT_FEEDBACK_LIFETIME := 0.5
 const HIT_SHAKE_STEP_TIME := 0.04
+const BATTLE_COMBAT_PROFILE_SCRIPT := preload("res://presentation/battle_scene/combat/battle_combat_profile.gd")
+const BATTLE_UNIT_RUNTIME_SCRIPT := preload("res://presentation/battle_scene/combat/battle_unit_runtime.gd")
 
 var is_active := false
 
@@ -24,6 +26,7 @@ var _effects_root: Node3D = null
 var _characters: Array[Card3D] = []
 var _enemies: Array[Card3D] = []
 var _unit_timers: Dictionary = {}
+var _unit_runtimes: Dictionary = {}
 var _next_attack_times: Dictionary = {}
 var _attack_queue: Array[int] = []
 var _is_attack_queue_running := false
@@ -73,6 +76,7 @@ func add_unit(unit, preserved_next_attack_time := -1.0) -> void:
 	if preserved_next_attack_time >= 0.0:
 		_next_attack_times[unit_card] = preserved_next_attack_time
 
+	_ensure_unit_runtime(unit_card)
 	if is_active:
 		_create_timer_for_unit(unit_card, float(_next_attack_times.get(unit_card, preserved_next_attack_time)))
 
@@ -84,6 +88,7 @@ func forget_unit(unit) -> void:
 		return
 
 	_remove_unit_timer(unit_card)
+	_remove_unit_runtime(unit_card)
 	_next_attack_times.erase(unit_card)
 	_attack_queue.erase(unit_card.get_instance_id())
 
@@ -121,7 +126,50 @@ func get_preserved_attack_time(unit) -> float:
 	var resource := _get_battle_resource(unit_card)
 	if resource == null:
 		return _now()
-	return _now() + _calculate_attack_interval(resource.speed)
+	return _now() + _get_unit_cooldown(unit_card)
+
+
+func get_unit_combat_profile(unit) -> BattleCombatProfile:
+	var resource := _get_battle_resource(unit)
+	if resource == null:
+		return null
+	return resource.get_combat_profile()
+
+
+func get_basic_attack_cooldown(unit) -> float:
+	var resource := _get_battle_resource(unit)
+	if resource == null:
+		return 1.0
+	return _calculate_attack_interval(resource.speed)
+
+
+func get_first_alive_opponent(unit) -> Card3D:
+	for card in get_opposing_units(unit):
+		var target_card := _get_valid_card(card)
+		if target_card != null and _is_alive(target_card):
+			return target_card
+	return null
+
+
+func get_opposing_units(unit) -> Array[Card3D]:
+	var unit_card := _get_valid_card(unit)
+	if unit_card == null:
+		return []
+	if _is_character_unit(unit_card):
+		return _enemies
+	return _characters
+
+
+func is_unit_alive(unit) -> bool:
+	return _is_alive(unit)
+
+
+func is_character_unit(unit) -> bool:
+	return _is_character_unit(unit)
+
+
+func is_neutral_unit(unit) -> bool:
+	return _is_neutral_unit(unit)
 
 
 func _connect_global_timer_pause() -> void:
@@ -186,8 +234,15 @@ func _create_timer_for_unit(unit, preserved_next_attack_time := -1.0) -> void:
 	var resource := _get_battle_resource(unit_card)
 	if resource == null or resource.HP <= 0:
 		return
+	if _is_neutral_unit(unit_card):
+		# 中立单位可以被卷入战斗和被攻击，但不会主动排入出手计时。
+		return
 
-	var interval := _calculate_attack_interval(resource.speed)
+	var runtime = _ensure_unit_runtime(unit_card)
+	if runtime == null or not runtime.can_act(self):
+		return
+
+	var interval: float = float(runtime.get_next_cooldown(self))
 	var now := _now()
 	var next_time := preserved_next_attack_time if preserved_next_attack_time >= 0.0 else now + interval
 	var wait_time := maxf(next_time - now, 0.05)
@@ -263,37 +318,34 @@ func _perform_queued_attack(attacker_id: int) -> void:
 		_check_battle_end()
 		return
 
-	var target := _get_attack_target(attacker)
-	if target == null:
+	var runtime = _get_unit_runtime(attacker)
+	if runtime == null or not runtime.can_act(self):
 		_check_battle_end()
 		return
 
-	await _perform_attack(attacker, target)
+	# 目标选择发生在队列真正执行时，而不是 Timer 到点时，避免目标已死却还在队列中等待播放动画。
+	await runtime.perform_turn(self)
 	_check_battle_end()
 
 	# 一次完整攻击动画结束后，才重新计算并开启下一轮攻击 Timer。
-	if is_active and _is_alive(attacker):
-		var resource := _get_battle_resource(attacker)
-		if resource == null:
-			return
-		var next_time := _now() + _calculate_attack_interval(resource.speed)
+	if is_active and _is_alive(attacker) and not _is_neutral_unit(attacker):
+		var next_time: float = _now() + float(runtime.get_next_cooldown(self))
 		_create_timer_for_unit(attacker, next_time)
 
 
-func _get_attack_target(attacker) -> Card3D:
-	var attacker_card := _get_valid_card(attacker)
-	if attacker_card == null:
-		return null
+func request_attack(user, skill: BattleSkill, target) -> void:
+	var attacker_card := _get_valid_card(user)
+	var target_card := _get_valid_card(target)
+	if skill == null or attacker_card == null or target_card == null:
+		return
+	if not is_active or not _is_alive(attacker_card) or not _is_alive(target_card):
+		return
 
-	var target_side: Array[Card3D] = _enemies if attacker_card.card_info is CharacterCard else _characters
-	for card in target_side:
-		var target_card := _get_valid_card(card)
-		if target_card != null and _is_alive(target_card):
-			return target_card
-	return null
+	# 所有技能请求都回到 controller 执行；controller 负责串行和最终存活校验。
+	await skill.execute(attacker_card, target_card, self)
 
 
-func _perform_attack(attacker, target) -> void:
+func perform_basic_attack(attacker, target) -> void:
 	var attacker_card := _get_valid_card(attacker)
 	var target_card := _get_valid_card(target)
 	if attacker_card == null or target_card == null:
@@ -314,9 +366,12 @@ func _perform_attack(attacker, target) -> void:
 		_:
 			await _play_melee_dash(attacker_card, target_card)
 
-	# 子弹飞行期间目标若已离场，本次攻击直接放弃，不再做额外补偿。
+	# 动画等待期间任一方可能已被外部流程移除；结算前必须重新取实例。
+	attacker_card = _get_valid_card(attacker)
 	target_card = _get_valid_card(target)
-	if target_card == null or not _is_alive(target_card):
+	if attacker_card == null or target_card == null:
+		return
+	if not _is_alive(attacker_card) or not _is_alive(target_card):
 		return
 
 	_show_hit_flash(target_card)
@@ -424,14 +479,14 @@ func _update_melee_return_position(
 
 
 func _get_current_slot_position(card: Card3D, fallback_position: Vector3) -> Vector3:
-	var side_cards := _characters if card.card_info is CharacterCard else _enemies
+	var side_cards := _characters if _is_character_unit(card) else _enemies
 	var card_index := side_cards.find(card)
 	if card_index < 0:
 		return fallback_position
 
 	var card_spacing := _float_setting("card_spacing", 3.0)
 	var start_x := -card_spacing * float(side_cards.size() - 1) * 0.5
-	var row_z := _float_setting("character_row_z", 1.8) if card.card_info is CharacterCard else _float_setting("enemy_row_z", -1.8)
+	var row_z := _float_setting("character_row_z", 1.8) if _is_character_unit(card) else _float_setting("enemy_row_z", -1.8)
 	return _owner.to_global(Vector3(start_x + card_spacing * card_index, 0.0, row_z))
 
 
@@ -594,6 +649,7 @@ func _report_dead_unit(unit: Card3D) -> void:
 
 	var unit_id := unit_card.get_instance_id()
 	_remove_unit_timer(unit_card)
+	_remove_unit_runtime(unit_card)
 	_attack_queue.erase(unit_id)
 	unit_died.emit(unit_card)
 
@@ -616,6 +672,7 @@ func _clear_all_timers() -> void:
 			timer.stop()
 			timer.queue_free()
 	_unit_timers.clear()
+	_unit_runtimes.clear()
 	_next_attack_times.clear()
 
 
@@ -665,10 +722,48 @@ func _cleanup_invalid_timer_entries() -> void:
 		if unit_card == null or not _is_registered_unit(unit_card):
 			_next_attack_times.erase(unit)
 
+	for unit in _unit_runtimes.keys():
+		var unit_card := _get_valid_card(unit)
+		if unit_card == null or not _is_registered_unit(unit_card) or _is_neutral_unit(unit_card):
+			_unit_runtimes.erase(unit)
+
 
 func _is_registered_unit(unit) -> bool:
 	var unit_card := _get_valid_card(unit)
 	return unit_card != null and (_characters.has(unit_card) or _enemies.has(unit_card))
+
+
+func _ensure_unit_runtime(unit: Card3D) -> BattleUnitRuntime:
+	var unit_card := _get_valid_card(unit)
+	if unit_card == null or _is_neutral_unit(unit_card):
+		return null
+
+	var runtime := _unit_runtimes.get(unit_card) as BattleUnitRuntime
+	if runtime != null:
+		return runtime
+
+	runtime = BATTLE_UNIT_RUNTIME_SCRIPT.new() as BattleUnitRuntime
+	runtime.configure(unit_card, self)
+	_unit_runtimes[unit_card] = runtime
+	return runtime
+
+
+func _get_unit_runtime(unit: Card3D) -> BattleUnitRuntime:
+	var unit_card := _get_valid_card(unit)
+	if unit_card == null:
+		return null
+	return _unit_runtimes.get(unit_card) as BattleUnitRuntime
+
+
+func _remove_unit_runtime(unit: Card3D) -> void:
+	_unit_runtimes.erase(unit)
+
+
+func _get_unit_cooldown(unit: Card3D) -> float:
+	var runtime := _get_unit_runtime(unit)
+	if runtime != null:
+		return float(runtime.get_next_cooldown(self))
+	return get_basic_attack_cooldown(unit)
 
 
 func _get_unit_by_instance_id(unit_id: int) -> Card3D:
@@ -689,6 +784,21 @@ func _get_all_cards() -> Array[Card3D]:
 		if valid_enemy != null:
 			cards.append(valid_enemy)
 	return cards
+
+
+func _get_combat_faction(unit) -> int:
+	var profile := get_unit_combat_profile(unit)
+	if profile == null:
+		return BATTLE_COMBAT_PROFILE_SCRIPT.Faction.ENEMY
+	return profile.faction
+
+
+func _is_character_unit(unit) -> bool:
+	return _get_combat_faction(unit) == BATTLE_COMBAT_PROFILE_SCRIPT.Faction.CHARACTER
+
+
+func _is_neutral_unit(unit) -> bool:
+	return _get_combat_faction(unit) == BATTLE_COMBAT_PROFILE_SCRIPT.Faction.NEUTRAL
 
 
 func _calculate_attack_interval(speed: int) -> float:
