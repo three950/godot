@@ -1,8 +1,6 @@
 [gd_scene format=3 uid="uid://cpvvd1084dyc8"]
 
-[ext_resource type="PackedScene" uid="uid://bivykmwh7lskv" path="res://assets/固定场景建筑/探窟者协会/探窟者协会.tscn" id="1_i5mka"]
 [ext_resource type="Resource" uid="uid://flhywkkf61mb" path="res://base_data/game_stats.tres" id="2_tyvbe"]
-[ext_resource type="AudioStream" uid="uid://cb0w4jfqxv6so" path="res://声音资产/useful/Gore Splat Stab Poke 03.wav" id="3_tdjdk"]
 [ext_resource type="PackedScene" uid="uid://dde8q2r1usqpa" path="res://presentation/shop_bag/GroundPackage.tscn" id="4_fovme"]
 [ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/cards/钓鱼竿.tres" id="5_773qs"]
 [ext_resource type="Resource" uid="uid://bmnohsw38p6a0" path="res://assets/AbyssLayer/layer1.tres" id="6_6c2nj"]
@@ -15,12 +13,6 @@ offset_bottom = 345.0
 mouse_filter = 2
 theme_override_constants/separation = 25
 alignment = 1
-
-[node name="探窟者协会" parent="." unique_id=510464682 instance=ExtResource("1_i5mka")]
-custom_minimum_size = Vector2(264, 345)
-layout_mode = 2
-game_stats = ExtResource("2_tyvbe")
-sold_sound = ExtResource("3_tdjdk")
 
 [node name="GroundPackage" parent="." unique_id=2042522313 instance=ExtResource("4_fovme")]
 layout_mode = 2
