@@ -61,8 +61,6 @@ var _back_face_original_position: Vector3 = Vector3.ZERO
 var _ray_hovered: bool = false
 var _suppress_card_info_rebuild: bool = false
 var card_2d: Control = null
-var card_2d_label: Label = null
-var card_2d_texture: TextureRect = null
 
 
 func _ready() -> void:
@@ -152,21 +150,6 @@ func _apply_card_viewport_scale() -> void:
 		card_viewport.size = next_size
 
 
-func _cache_card_view_nodes() -> void:
-	card_2d = card_viewport.get_node_or_null("Card2D") as Control if card_viewport else null
-	if card_2d == null:
-		card_2d_label = null
-		card_2d_texture = null
-		return
-
-	card_2d_label = card_2d.get_node_or_null("CardColor/Panel/Label") as Label
-	if card_2d_label == null:
-		card_2d_label = card_2d.get_node_or_null("CardColor/Panel/Label") as Label
-	if card_2d_label == null:
-		card_2d_label = card_2d.find_child("Label", true, false) as Label
-	card_2d_texture = card_2d.find_child("TextureRect", true, false) as TextureRect
-
-
 func set_card_info(value: CardInfo) -> void:
 	card_info = _get_runtime_card_data(value)
 	if _suppress_card_info_rebuild:
@@ -180,8 +163,6 @@ func set_card_info(value: CardInfo) -> void:
 func _build_card_view() -> void:
 	if card_viewport == null:
 		card_2d = null
-		card_2d_label = null
-		card_2d_texture = null
 		return
 
 	for child in card_viewport.get_children():
@@ -189,8 +170,6 @@ func _build_card_view() -> void:
 		child.queue_free()
 
 	card_2d = null
-	card_2d_label = null
-	card_2d_texture = null
 
 	if card_info == null:
 		_request_card_viewport_redraw()
@@ -214,7 +193,6 @@ func _build_card_view() -> void:
 
 	card_2d = instance as Control
 	_prepare_card_2d_control()
-	_cache_card_view_nodes()
 	_request_card_viewport_redraw()
 
 
@@ -260,16 +238,6 @@ func _apply_card_info_to_view() -> void:
 
 	cardname = card_info.name
 	can_stack = card_info.能被堆叠
-
-	if card_2d == null:
-		_request_card_viewport_redraw()
-		return
-
-	card_2d.name = card_info.name if card_info.name != "" else "Card2D"
-	if card_2d_label:
-		card_2d_label.text = card_info.name
-	if card_2d_texture:
-		card_2d_texture.texture = card_info.portrait
 	_request_card_viewport_redraw()
 
 
