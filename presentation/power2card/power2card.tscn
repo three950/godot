@@ -72,17 +72,6 @@ text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ExplorerIcon" type="TextureRect" parent="." unique_id=993932126]
-layout_mode = 0
-offset_left = 4.0
-offset_top = 42.0
-offset_right = 53.0
-offset_bottom = 101.0
-mouse_filter = 2
-texture = ExtResource("3_avatar")
-expand_mode = 1
-stretch_mode = 5
-
 [node name="CardButtonHBox" type="HBoxContainer" parent="." unique_id=1859974000]
 layout_mode = 0
 offset_left = 57.0
@@ -398,3 +387,15 @@ theme_override_styles/fill = ExtResource("7_pt8cd")
 max_value = 1.0
 step = 1.0
 show_percentage = false
+
+[node name="ExplorerIcon" type="TextureRect" parent="." unique_id=993932126]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 4.0
+offset_top = 42.0
+offset_right = 53.0
+offset_bottom = 101.0
+mouse_filter = 2
+texture = ExtResource("3_avatar")
+expand_mode = 1
+stretch_mode = 5
