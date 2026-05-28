@@ -18,7 +18,9 @@ Any gameplay timing logic must follow the project global pause state from `Event
 7. For any logic involving card interaction with cards, enemies, slots, effects, or other gameplay objects, treat cards as potentially stacked and include `children_card` handling so stacked children are not skipped.
 8. For any new node generation or existing node modification involving 3D y position, y offset, transform-origin y, card-related y behavior, visual layering, or `render_priority`, confirm the intended change with the user before finalizing. After the user confirms, update the relevant documentation under `文档/`: `3D_Y_POSITION_ORDER.txt`, `CARD_RELATED_3D_Y_OFFSETS.txt`, and/or `3D_RENDER_PRIORITY_ORDER.txt`. This applies to both static scene/resource edits and dynamic runtime logic in scripts.
 9. For any card node `reparent(...)`, use the parent node of cards in the `Cards3D` scene group as the target parent. Do not reparent card nodes to a battle scene, a battle scene's parent container, or an arbitrary nearby node when a normal `Cards3D` parent is available.
-10. Keep size, layout, styling, and tunable node parameters in `.tscn` / `.tres` scene or resource configuration whenever the node already exists in a scene. Do not set values such as `size`, `custom_minimum_size`, offsets, anchors, `mouse_filter`, progress min/max/step, style overrides, or other editor-visible parameters from scripts just to match a design. Runtime code should collect nodes and update gameplay state only, such as `visible`, `disabled`, `value`, text content, or values that genuinely change during play. If code must create nodes dynamically, expose reusable constants or exported configuration and add a short comment explaining why the setup cannot live in the scene.
+10. If a node already exists in a scene, always configure its tunable parameters in the `.tscn`/`.tres` file. **Do not** hardcode in scripts values that can be set via `.tscn`/`.tres`.
+
+If code must create nodes dynamically, expose reusable constants or exported configuration and add a comment.
 
 ## Timer Node Pattern
 
