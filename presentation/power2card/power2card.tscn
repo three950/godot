@@ -1,0 +1,187 @@
+[gd_scene format=3 uid="uid://cxi8cf5728q84"]
+
+[ext_resource type="Script" uid="uid://cy1e32r70p2ca" path="res://presentation/power2card/power2card.gd" id="1_power"]
+[ext_resource type="Script" uid="uid://bt76we6x5pmv1" path="res://presentation/power2card/fixed_unit_progress_bar.gd" id="2_progress"]
+[ext_resource type="Texture2D" uid="uid://cqw05vxjb6ijj" path="res://presentation/ui/小人图标压缩.png" id="3_avatar"]
+[ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://presentation/fonts/font.tres" id="4_font"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_background"]
+bg_color = Color(0.7372549, 0.7058824, 0.54901963, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
+bg_color = Color(0.07840798, 0.078405924, 0.059983395, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card_hover"]
+bg_color = Color(0.12, 0.12, 0.095, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card_pressed"]
+bg_color = Color(0.025, 0.025, 0.02, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_arrow"]
+
+[node name="Power2Card" type="Control"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(594, 132)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 594.0
+offset_bottom = 132.0
+script = ExtResource("1_power")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 594.0
+offset_bottom = 132.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_background")
+
+[node name="PowerLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 4.0
+offset_top = 0.0
+offset_right = 45.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 20
+text = "5"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ExplorerIcon" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 33.0
+offset_right = 49.0
+offset_bottom = 92.0
+mouse_filter = 2
+texture = ExtResource("3_avatar")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CardButton01" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 49.0
+offset_top = 2.0
+offset_right = 117.0
+offset_bottom = 92.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_card")
+theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_card_pressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_card_hover")
+
+[node name="CardButton02" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 120.0
+offset_top = 2.0
+offset_right = 188.0
+offset_bottom = 92.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_card")
+theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_card_pressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_card_hover")
+
+[node name="CardButton03" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 191.0
+offset_top = 2.0
+offset_right = 259.0
+offset_bottom = 92.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_card")
+theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_card_pressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_card_hover")
+
+[node name="CardButton04" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 262.0
+offset_top = 2.0
+offset_right = 330.0
+offset_bottom = 92.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_card")
+theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_card_pressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_card_hover")
+
+[node name="CardButton05" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 333.0
+offset_top = 2.0
+offset_right = 401.0
+offset_bottom = 92.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_card")
+theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_card_pressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_card_hover")
+
+[node name="CardButton06" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 404.0
+offset_top = 2.0
+offset_right = 472.0
+offset_bottom = 92.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_card")
+theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_card_pressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_card_hover")
+
+[node name="CardButton07" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 475.0
+offset_top = 2.0
+offset_right = 543.0
+offset_bottom = 92.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_card")
+theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_card_pressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_card_hover")
+
+[node name="NextButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 546.0
+offset_top = 2.0
+offset_right = 594.0
+offset_bottom = 92.0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_arrow")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_arrow")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_arrow")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_arrow")
+
+[node name="ChevronLeft" type="Line2D" parent="NextButton"]
+points = PackedVector2Array(11, 32, 26, 48, 11, 64)
+width = 2.5
+default_color = Color(0.92, 0.9, 0.82, 1)
+
+[node name="ChevronRight" type="Line2D" parent="NextButton"]
+points = PackedVector2Array(27, 32, 42, 48, 27, 64)
+width = 2.5
+default_color = Color(0.92, 0.9, 0.82, 1)
+
+[node name="FixedUnitProgressBar" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 0.0
+offset_top = 89.0
+offset_right = 552.0
+offset_bottom = 103.0
+script = ExtResource("2_progress")
+unit_count = 23
+unit_width = 24.0

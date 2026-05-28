@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="GameStats" load_steps=2 format=3 uid="uid://flhywkkf61mb"]
+[gd_resource type="Resource" script_class="GameStats" format=3 uid="uid://flhywkkf61mb"]
 
 [ext_resource type="Script" uid="uid://dhbllj5o00dyc" path="res://base_data/game_stats.gd" id="1_2b2sk"]
 
@@ -8,5 +8,4 @@ time = 2
 coins = 100
 layer = 3
 max_layer = 3
-card_3d_viewport_scale = 1.0
 metadata/_custom_type_script = "uid://dhbllj5o00dyc"
