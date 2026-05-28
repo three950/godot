@@ -1,9 +1,12 @@
-[gd_scene format=3 uid="uid://cxi8cf5728q84"]
+[gd_scene format=3 uid="uid://bbs4rs4l4qeyd"]
 
 [ext_resource type="Script" uid="uid://cy1e32r70p2ca" path="res://presentation/power2card/power2card.gd" id="1_power"]
+[ext_resource type="StyleBox" uid="uid://b6vu8exnid8yt" path="res://presentation/background/ui_style.tres" id="2_gxgc2"]
 [ext_resource type="Script" uid="uid://bt76we6x5pmv1" path="res://presentation/power2card/fixed_unit_progress_bar.gd" id="2_progress"]
 [ext_resource type="Texture2D" uid="uid://cqw05vxjb6ijj" path="res://presentation/ui/小人图标压缩.png" id="3_avatar"]
 [ext_resource type="SystemFont" uid="uid://cvshvgr6fi16l" path="res://presentation/fonts/font.tres" id="4_font"]
+[ext_resource type="StyleBox" uid="uid://ck5qdeyuytbtm" path="res://presentation/power2card/power2card_style.tres" id="6_8iel3"]
+[ext_resource type="StyleBox" uid="uid://d34m2l2q545vm" path="res://presentation/power2card/power2card_fill.tres" id="7_pt8cd"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_background"]
 bg_color = Color(0.7372549, 0.7058824, 0.54901963, 1)
@@ -18,17 +21,17 @@ anti_aliasing = false
 bg_color = Color(0.07840798, 0.078405924, 0.059983395, 1)
 anti_aliasing = false
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card_hover"]
-bg_color = Color(0.12, 0.12, 0.095, 1)
-anti_aliasing = false
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card_pressed"]
 bg_color = Color(0.025, 0.025, 0.02, 1)
 anti_aliasing = false
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card_hover"]
+bg_color = Color(0.12, 0.12, 0.095, 1)
+anti_aliasing = false
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_arrow"]
 
-[node name="Power2Card" type="Control"]
+[node name="Power2Card" type="Control" unique_id=174412515]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(594, 132)
 layout_mode = 3
@@ -37,20 +40,34 @@ offset_right = 594.0
 offset_bottom = 132.0
 script = ExtResource("1_power")
 
-[node name="Background" type="Panel" parent="."]
+[node name="Background" type="Panel" parent="." unique_id=754421309]
 layout_mode = 0
 offset_right = 594.0
 offset_bottom = 132.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_background")
 
-[node name="PowerLabel" type="Label" parent="."]
-unique_name_in_owner = true
+[node name="Panel" type="Panel" parent="." unique_id=515253563]
 layout_mode = 0
-offset_left = 4.0
-offset_top = 0.0
-offset_right = 45.0
+offset_top = 7.0
+offset_right = 49.0
 offset_bottom = 34.0
+theme_override_styles/panel = ExtResource("2_gxgc2")
+
+[node name="PowerLabel" type="Label" parent="Panel" unique_id=2104619045]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.5
+offset_top = -13.5
+offset_right = 20.5
+offset_bottom = 13.5
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_font")
 theme_override_font_sizes/font_size = 20
@@ -58,18 +75,18 @@ text = "5"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ExplorerIcon" type="TextureRect" parent="."]
+[node name="ExplorerIcon" type="TextureRect" parent="." unique_id=993932126]
 layout_mode = 0
-offset_left = 0.0
-offset_top = 33.0
-offset_right = 49.0
-offset_bottom = 92.0
+offset_left = 4.0
+offset_top = 34.0
+offset_right = 53.0
+offset_bottom = 93.0
 mouse_filter = 2
 texture = ExtResource("3_avatar")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="CardButton01" type="Button" parent="."]
+[node name="CardButton01" type="Button" parent="." unique_id=2009125887]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 49.0
@@ -77,11 +94,11 @@ offset_top = 2.0
 offset_right = 117.0
 offset_bottom = 92.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_card")
-theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_card_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_card_hover")
 
-[node name="CardButton02" type="Button" parent="."]
+[node name="CardButton02" type="Button" parent="." unique_id=1337269705]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 120.0
@@ -89,11 +106,11 @@ offset_top = 2.0
 offset_right = 188.0
 offset_bottom = 92.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_card")
-theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_card_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_card_hover")
 
-[node name="CardButton03" type="Button" parent="."]
+[node name="CardButton03" type="Button" parent="." unique_id=1649032754]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 191.0
@@ -101,11 +118,11 @@ offset_top = 2.0
 offset_right = 259.0
 offset_bottom = 92.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_card")
-theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_card_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_card_hover")
 
-[node name="CardButton04" type="Button" parent="."]
+[node name="CardButton04" type="Button" parent="." unique_id=1514101790]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 262.0
@@ -113,11 +130,11 @@ offset_top = 2.0
 offset_right = 330.0
 offset_bottom = 92.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_card")
-theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_card_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_card_hover")
 
-[node name="CardButton05" type="Button" parent="."]
+[node name="CardButton05" type="Button" parent="." unique_id=1649921862]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 333.0
@@ -125,11 +142,11 @@ offset_top = 2.0
 offset_right = 401.0
 offset_bottom = 92.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_card")
-theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_card_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_card_hover")
 
-[node name="CardButton06" type="Button" parent="."]
+[node name="CardButton06" type="Button" parent="." unique_id=80160159]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 404.0
@@ -137,11 +154,11 @@ offset_top = 2.0
 offset_right = 472.0
 offset_bottom = 92.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_card")
-theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_card_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_card_hover")
 
-[node name="CardButton07" type="Button" parent="."]
+[node name="CardButton07" type="Button" parent="." unique_id=1091788304]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 475.0
@@ -149,11 +166,11 @@ offset_top = 2.0
 offset_right = 543.0
 offset_bottom = 92.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_card")
-theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_card_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_card_hover")
 
-[node name="NextButton" type="Button" parent="."]
+[node name="NextButton" type="Button" parent="." unique_id=1290647065]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 546.0
@@ -161,27 +178,300 @@ offset_top = 2.0
 offset_right = 594.0
 offset_bottom = 92.0
 theme_override_styles/normal = SubResource("StyleBoxEmpty_arrow")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_arrow")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_arrow")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_arrow")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_arrow")
 
-[node name="ChevronLeft" type="Line2D" parent="NextButton"]
+[node name="ChevronLeft" type="Line2D" parent="NextButton" unique_id=1636655950]
 points = PackedVector2Array(11, 32, 26, 48, 11, 64)
 width = 2.5
 default_color = Color(0.92, 0.9, 0.82, 1)
 
-[node name="ChevronRight" type="Line2D" parent="NextButton"]
+[node name="ChevronRight" type="Line2D" parent="NextButton" unique_id=181835390]
 points = PackedVector2Array(27, 32, 42, 48, 27, 64)
 width = 2.5
 default_color = Color(0.92, 0.9, 0.82, 1)
 
-[node name="FixedUnitProgressBar" type="Control" parent="."]
+[node name="FixedUnitProgressBar" type="Control" parent="." unique_id=358936383]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 0.0
-offset_top = 89.0
-offset_right = 552.0
-offset_bottom = 103.0
+anchors_preset = 0
+offset_left = 2.0
+offset_top = 92.0
+offset_right = 547.0
+offset_bottom = 102.0
 script = ExtResource("2_progress")
-unit_count = 23
-unit_width = 24.0
+
+[node name="UnitProgressBar01" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=1448612322]
+layout_mode = 0
+offset_right = 23.6957
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar02" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=1713205639]
+layout_mode = 0
+offset_left = 23.6957
+offset_right = 47.3913
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar03" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=154220986]
+layout_mode = 0
+offset_left = 47.3913
+offset_right = 71.087
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar04" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=1475572199]
+layout_mode = 0
+offset_left = 71.087
+offset_right = 94.7826
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar05" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=1132888979]
+layout_mode = 0
+offset_left = 94.7826
+offset_right = 118.4783
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar06" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=1380709559]
+layout_mode = 0
+offset_left = 118.4783
+offset_right = 142.1739
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar07" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=141632991]
+layout_mode = 0
+offset_left = 142.1739
+offset_right = 165.8696
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar08" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=1072201100]
+layout_mode = 0
+offset_left = 165.8696
+offset_right = 189.5652
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar09" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=1584975616]
+layout_mode = 0
+offset_left = 189.5652
+offset_right = 213.2609
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar10" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=1165737429]
+layout_mode = 0
+offset_left = 213.2609
+offset_right = 236.9565
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar11" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=1704641709]
+layout_mode = 0
+offset_left = 236.9565
+offset_right = 260.6522
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar12" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=1495811047]
+layout_mode = 0
+offset_left = 260.6522
+offset_right = 284.3478
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar13" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=2005605661]
+layout_mode = 0
+offset_left = 284.3478
+offset_right = 308.0435
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar14" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=682389747]
+layout_mode = 0
+offset_left = 308.0435
+offset_right = 331.7391
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar15" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=731169928]
+layout_mode = 0
+offset_left = 331.7391
+offset_right = 355.4348
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar16" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=1908703705]
+layout_mode = 0
+offset_left = 355.4348
+offset_right = 379.1304
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar17" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=1301912489]
+layout_mode = 0
+offset_left = 379.1304
+offset_right = 402.8261
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar18" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=655481055]
+layout_mode = 0
+offset_left = 402.8261
+offset_right = 426.5217
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar19" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=300494474]
+layout_mode = 0
+offset_left = 426.5217
+offset_right = 450.2174
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar20" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=1215617434]
+layout_mode = 0
+offset_left = 450.2174
+offset_right = 473.913
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar21" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=286469472]
+layout_mode = 0
+offset_left = 473.913
+offset_right = 497.6087
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar22" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=1645056609]
+layout_mode = 0
+offset_left = 497.6087
+offset_right = 521.3043
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="UnitProgressBar23" type="ProgressBar" parent="FixedUnitProgressBar" unique_id=349298659]
+layout_mode = 0
+offset_left = 521.3043
+offset_right = 545.0
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/background = ExtResource("6_8iel3")
+theme_override_styles/fill = ExtResource("7_pt8cd")
+max_value = 1.0
+step = 1.0
+show_percentage = false

@@ -33,7 +33,12 @@ func set_power(value: int) -> void:
 
 ## 更新底部固定单位进度。参考图默认未填充，所以场景里初始值为 0。
 func set_progress_units(value: int) -> void:
-	progress_bar.filled_units = value
+	progress_bar.set_progress_units(value)
+
+
+## 设置底部总格数和当前格数。每一格就是进度条的一个 step。
+func set_progress_unit_range(total_units: int, current_units: int = 0) -> void:
+	progress_bar.set_units(total_units, current_units)
 
 
 ## 批量控制黑色卡牌按钮是否可点，方便之后和抽牌/能量逻辑连接。

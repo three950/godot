@@ -1,61 +1,70 @@
 extends Control
 class_name FixedUnitProgressBar
 
-## 固定单位长度进度条。
-## 这里只负责绘制底部黑色横线和等距刻度，方便后续把“单位长度”作为玩法参数接入。
-@export var unit_count: int = 23:
-	set(value):
-		unit_count = max(value, 1)
-		queue_redraw()
+## 分段拼接式固定单位进度条。
+## 子节点不在脚本里动态生成，而是直接写在 power2card.tscn 场景中。
+## 每个子节点都是一个 ProgressBar，代表一格；它的右边框就是贯穿全高的刻度。
 
-## 每个单位在 UI 中占用的像素长度，默认匹配参考图底部的短刻度间距。
-@export var unit_width: float = 24.0:
+## 当前启用的总格数。场景里已经放了 23 个子进度条，少于 23 时会隐藏后面的格子。
+@export var total_units: int = 23:
 	set(value):
-		unit_width = max(value, 1.0)
-		queue_redraw()
+		total_units = max(value, 1)
+		current_units = clampi(current_units, 0, total_units)
+		_apply_segment_state()
 
-## 已完成的单位数。当前参考图没有明显填充值，所以默认是 0，仅保留接口。
-@export var filled_units: int = 0:
+## 当前已经填满的格数。每个子进度条只使用空/满两种状态。
+@export var current_units: int = 0:
 	set(value):
-		filled_units = clampi(value, 0, unit_count)
-		queue_redraw()
+		current_units = clampi(value, 0, total_units)
+		_apply_segment_state()
 
-## 每隔几个小单位画一个长刻度，用来对齐上方卡牌按钮的分组感。
-@export var major_tick_interval: int = 3:
-	set(value):
-		major_tick_interval = max(value, 1)
-		queue_redraw()
-
-@export var track_color: Color = Color.BLACK
-@export var fill_color: Color = Color(0.92, 0.88, 0.7, 1.0)
-@export var line_width: float = 2.0
-@export var minor_tick_height: float = 5.0
-@export var major_tick_height: float = 8.0
+var _segments: Array[ProgressBar] = []
 
 
 func _ready() -> void:
-	# 进度条是纯展示层，不需要截获鼠标事件，避免挡住卡牌按钮点击。
+	# 这是展示型 UI，不截获鼠标，避免挡住上方卡牌按钮。
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_collect_scene_segments()
+	_apply_segment_state()
 
 
-func _draw() -> void:
-	var total_width := unit_count * unit_width
-	var baseline_y := major_tick_height
+## 父节点用这个接口衔接玩法进度：total_value 是总格数，current_value 是当前填满格数。
+func set_units(total_value: int, current_value: int) -> void:
+	total_units = total_value
+	current_units = current_value
 
-	# 如果后续需要显示进度，先画一段浅色填充，再覆盖黑色刻度线。
-	if filled_units > 0:
-		var fill_width := filled_units * unit_width
-		draw_line(Vector2(0, baseline_y), Vector2(fill_width, baseline_y), fill_color, line_width)
 
-	draw_line(Vector2(0, baseline_y), Vector2(total_width, baseline_y), track_color, line_width)
+## 只更新当前进度，不改变总格数。
+func set_progress_units(value: int) -> void:
+	current_units = value
 
-	for index in range(unit_count + 1):
-		var tick_x := index * unit_width
-		var is_major_tick := index % major_tick_interval == 0
-		var tick_height := major_tick_height if is_major_tick else minor_tick_height
-		draw_line(
-			Vector2(tick_x, baseline_y),
-			Vector2(tick_x, baseline_y + tick_height),
-			track_color,
-			line_width
-		)
+
+func _collect_scene_segments() -> void:
+	_segments.clear()
+
+	for child in get_children():
+		if child is ProgressBar:
+			var segment := child as ProgressBar
+			segment.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			segment.min_value = 0.0
+			segment.max_value = 1.0
+			segment.step = 1.0
+			segment.show_percentage = false
+			_segments.append(segment)
+
+	# 总格数不能超过场景里实际放置的子进度条数量。
+	total_units = mini(total_units, _segments.size())
+
+
+func _apply_segment_state() -> void:
+	if _segments.is_empty():
+		return
+
+	var visible_units := mini(total_units, _segments.size())
+	var filled_units := clampi(current_units, 0, visible_units)
+
+	for index in range(_segments.size()):
+		var segment := _segments[index]
+		segment.visible = index < visible_units
+		# 每个小进度条只负责一格：在当前进度内就是满格，否则为空格。
+		segment.value = 1.0 if index < filled_units else 0.0
