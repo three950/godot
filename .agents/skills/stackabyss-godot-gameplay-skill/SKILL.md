@@ -1,6 +1,6 @@
 ---
 name: stackabyss-godot-gameplay-skill
-description: "StackAbyss Godot gameplay rules. Use when editing gameplay code, card interactions, stacked cards, card reparenting, timers, battle behavior, 3D y offsets, visual layering, or render priority. Requires global timer pause support through Events.timers_pause_changed, stacked-card children_card handling, card reparent targets from the Cards3D scene group parent, and documentation updates for y-offset/render-priority changes."
+description: "StackAbyss Godot gameplay and scene-code rules. Use when editing gameplay code, UI scene scripts, card interactions, stacked cards, card reparenting, timers, battle behavior, 3D y offsets, visual layering, render priority, or runtime node setup. Requires scene/resource-owned sizing and tunable parameters, global timer pause support through Events.timers_pause_changed, stacked-card children_card handling, card reparent targets from the Cards3D scene group parent, and documentation updates for y-offset/render-priority changes."
 ---
 
 # StackAbyss Godot Gameplay Skill
@@ -18,6 +18,7 @@ Any gameplay timing logic must follow the project global pause state from `Event
 7. For any logic involving card interaction with cards, enemies, slots, effects, or other gameplay objects, treat cards as potentially stacked and include `children_card` handling so stacked children are not skipped.
 8. For any new node generation or existing node modification involving 3D y position, y offset, transform-origin y, card-related y behavior, visual layering, or `render_priority`, confirm the intended change with the user before finalizing. After the user confirms, update the relevant documentation under `文档/`: `3D_Y_POSITION_ORDER.txt`, `CARD_RELATED_3D_Y_OFFSETS.txt`, and/or `3D_RENDER_PRIORITY_ORDER.txt`. This applies to both static scene/resource edits and dynamic runtime logic in scripts.
 9. For any card node `reparent(...)`, use the parent node of cards in the `Cards3D` scene group as the target parent. Do not reparent card nodes to a battle scene, a battle scene's parent container, or an arbitrary nearby node when a normal `Cards3D` parent is available.
+10. Keep size, layout, styling, and tunable node parameters in `.tscn` / `.tres` scene or resource configuration whenever the node already exists in a scene. Do not set values such as `size`, `custom_minimum_size`, offsets, anchors, `mouse_filter`, progress min/max/step, style overrides, or other editor-visible parameters from scripts just to match a design. Runtime code should collect nodes and update gameplay state only, such as `visible`, `disabled`, `value`, text content, or values that genuinely change during play. If code must create nodes dynamically, expose reusable constants or exported configuration and add a short comment explaining why the setup cannot live in the scene.
 
 ## Timer Node Pattern
 
