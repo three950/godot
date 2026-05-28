@@ -31,6 +31,8 @@ const CARD_BUTTON_STYLE_NAMES := ["normal", "pressed", "hover", "hover_pressed",
 @export var explorer_success_jump_height: float = 18.0
 ## ExplorerIcon 向上跳起并水平翻转半圈的时长。
 @export var explorer_success_jump_up_duration: float = 0.16
+## ExplorerIcon 中心点相对进度条前沿的偏移；负数表示落后于进度前沿。
+@export var explorer_progress_back_offset: float = -16.0
 
 var _progress_segments: Array[ProgressBar] = []
 var _progress_total_units: int = 21
@@ -301,7 +303,8 @@ func _move_explorer_icon_to_progress(progress_units: float) -> void:
 
 	var segment := _progress_segments[segment_index]
 	var progress_front_x := progress_bar_hbox.position.x + segment.position.x + segment.size.x * segment_fraction
-	explorer_icon.position = Vector2(progress_front_x - explorer_icon.size.x * 0.5, _explorer_base_position.y)
+	var explorer_center_x := progress_front_x + explorer_progress_back_offset
+	explorer_icon.position = Vector2(explorer_center_x - explorer_icon.size.x * 0.5, _explorer_base_position.y)
 
 
 func _play_explorer_success_animation() -> void:

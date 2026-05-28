@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://dwsmjx8844mo2" path="res://script_folder/ui_stats_manager.gd" id="4_stats"]
 [ext_resource type="Texture2D" uid="uid://bwcl8eoslb20c" path="res://美术资产/treasures/gold_coin.png" id="5_8aggs"]
 [ext_resource type="Resource" uid="uid://flhywkkf61mb" path="res://base_data/game_stats.tres" id="5_game_stats"]
+[ext_resource type="PackedScene" uid="uid://bbs4rs4l4qeyd" path="res://presentation/power2card/power2card.tscn" id="6_pm1r8"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_00rn6"]
 bg_color = Color(0.69803923, 0.65882355, 0.5137255, 1)
@@ -178,3 +179,7 @@ size_flags_horizontal = 8
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 32
 text = "▶"
+
+[node name="Power2Card" parent="UIContainer" unique_id=174412515 instance=ExtResource("6_pm1r8")]
+layout_mode = 0
+scale = Vector2(2, 2)

@@ -37,7 +37,6 @@ anchors_preset = 0
 offset_right = 594.0
 offset_bottom = 107.0
 script = ExtResource("1_power")
-metadata/_edit_lock_ = true
 
 [node name="Background" type="Panel" parent="." unique_id=754421309]
 layout_mode = 1
@@ -155,7 +154,6 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_arrow")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_arrow")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_arrow")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_arrow")
-metadata/_edit_lock_ = true
 
 [node name="ChevronLeft" type="Line2D" parent="ProgressButton" unique_id=1636655950]
 points = PackedVector2Array(11, 32, 26, 48, 11, 64)
@@ -176,7 +174,6 @@ offset_right = 555.0
 offset_bottom = 103.0
 mouse_filter = 2
 theme_override_constants/separation = 0
-metadata/_edit_lock_ = true
 
 [node name="UnitProgressBar01" type="ProgressBar" parent="UnitProgressBarHBox" unique_id=1448612322]
 custom_minimum_size = Vector2(24, 6)
