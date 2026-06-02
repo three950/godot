@@ -17,7 +17,6 @@
 [ext_resource type="Resource" uid="uid://bnpnjoke06uht" path="res://assets/物品/装备/weapon/化石树的树枝.tres" id="15_ealrb"]
 [ext_resource type="Script" uid="uid://bhwdhxluayto5" path="res://script_folder/card_craft_manager.gd" id="18_craft"]
 [ext_resource type="Script" uid="uid://chvrc588f7156" path="res://base_data/CardInfo.gd" id="19_cardinfo"]
-[ext_resource type="Texture2D" uid="uid://duvau7fgx21p" path="res://presentation/background/空洞地表.png" id="20_layer_default_tex"]
 [ext_resource type="Script" uid="uid://bxyb8ihft7c6l" path="res://script_folder/battle_manager.gd" id="21_battle_manager"]
 [ext_resource type="Resource" uid="uid://do4ivypcif1tw" path="res://assets/人物与敌人/Enemy/enemys/毒针线虫.tres" id="21_lggff"]
 [ext_resource type="PackedScene" uid="uid://6mswy8o4g4l5" path="res://character_3d.tscn" id="22_s0gvp"]
@@ -26,7 +25,7 @@
 ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_sky_contribution = 0.0
-ambient_light_energy = 0.4
+ambient_light_energy = 0.7
 reflected_light_source = 1
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ocean"]
@@ -53,61 +52,10 @@ resource_local_to_scene = true
 resource_name = "GroundSubViewportMaterial"
 render_priority = -127
 transparency = 1
-shading_mode = 2
 albedo_texture = SubResource("ViewportTexture_jka67")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
 size = Vector2(34.71, 21.36)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground_layer_01"]
-resource_local_to_scene = true
-resource_name = "GroundLayer01ImageMaterial"
-render_priority = -127
-transparency = 1
-shading_mode = 0
-albedo_color = Color(0.43, 0.43, 0.43, 1)
-albedo_texture = ExtResource("20_layer_default_tex")
-disable_receive_shadows = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground_layer_02"]
-resource_local_to_scene = true
-resource_name = "GroundLayer02ImageMaterial"
-render_priority = -127
-transparency = 1
-shading_mode = 0
-albedo_color = Color(0.43, 0.43, 0.43, 1)
-albedo_texture = ExtResource("20_layer_default_tex")
-disable_receive_shadows = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground_layer_03"]
-resource_local_to_scene = true
-resource_name = "GroundLayer03ImageMaterial"
-render_priority = -127
-transparency = 1
-shading_mode = 0
-albedo_color = Color(0.43, 0.43, 0.43, 1)
-albedo_texture = ExtResource("20_layer_default_tex")
-disable_receive_shadows = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground_layer_04"]
-resource_local_to_scene = true
-resource_name = "GroundLayer04ImageMaterial"
-render_priority = -127
-transparency = 1
-shading_mode = 0
-albedo_color = Color(0.43, 0.43, 0.43, 1)
-albedo_texture = ExtResource("20_layer_default_tex")
-disable_receive_shadows = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground_layer_05"]
-resource_local_to_scene = true
-resource_name = "GroundLayer05ImageMaterial"
-render_priority = -127
-transparency = 1
-shading_mode = 0
-albedo_color = Color(0.43, 0.43, 0.43, 1)
-albedo_texture = ExtResource("20_layer_default_tex")
-disable_receive_shadows = true
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
 size = Vector3(34.71, 1, 21.36)
@@ -144,9 +92,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.03414154, -0.3, -0.10367689
 material_override = SubResource("ShaderMaterial_ocean")
 cast_shadow = 0
 mesh = SubResource("PlaneMesh_ocean")
+metadata/_edit_lock_ = true
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=1744047288]
-metadata/_edit_lock_ = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.41785383)
 
 [node name="SubViewport" type="SubViewport" parent="Ground" unique_id=1206803335]
 disable_3d = true
@@ -162,36 +111,6 @@ material_override = SubResource("StandardMaterial3D_wc5p8")
 cast_shadow = 0
 mesh = SubResource("PlaneMesh_ground")
 metadata/_edit_lock_ = true
-
-[node name="GroundLayer01" type="MeshInstance3D" parent="Ground" unique_id=1745565372]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.052, 0)
-material_override = SubResource("StandardMaterial3D_ground_layer_01")
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_ground")
-
-[node name="GroundLayer02" type="MeshInstance3D" parent="Ground" unique_id=1286425294]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6.052, 0)
-material_override = SubResource("StandardMaterial3D_ground_layer_02")
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_ground")
-
-[node name="GroundLayer03" type="MeshInstance3D" parent="Ground" unique_id=1770093375]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -9.052, 0)
-material_override = SubResource("StandardMaterial3D_ground_layer_03")
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_ground")
-
-[node name="GroundLayer04" type="MeshInstance3D" parent="Ground" unique_id=1169459625]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -12.052, 0)
-material_override = SubResource("StandardMaterial3D_ground_layer_04")
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_ground")
-
-[node name="GroundLayer05" type="MeshInstance3D" parent="Ground" unique_id=1665373087]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -15.052, 0)
-material_override = SubResource("StandardMaterial3D_ground_layer_05")
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_ground")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=872046681]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.002, 0)
