@@ -41,6 +41,7 @@ var _package_hitboxes: Array[Dictionary] = []  # 3D商品命中盒列表
 
 func _ready() -> void:
 	add_to_group("ShopArea3D")
+	await get_tree().process_frame#TODO 这里也是因为area3d没设置所以需要这样写
 	_build_package_hitboxes()
 	_debug_ready_log()
 
