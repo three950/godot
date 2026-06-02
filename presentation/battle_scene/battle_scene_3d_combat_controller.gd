@@ -19,6 +19,8 @@ const HIT_SHAKE_STEP_TIME := 0.04
 const BATTLE_COMBAT_PROFILE_SCRIPT := preload("res://presentation/battle_scene/combat/battle_combat_profile.gd")
 const BATTLE_UNIT_ACTION_PLANNER_SCRIPT := preload("res://presentation/battle_scene/combat/battle_unit_action_planner.gd")
 const INVALID_COMBAT_FACTION := -1
+const QUEUED_ACTION_TURN := &"turn"
+const QUEUED_ACTION_SKILL := &"skill"
 
 var is_active := false
 
@@ -29,7 +31,7 @@ var _enemies: Array[Card3D] = []
 var _unit_timers: Dictionary = {}
 var _unit_action_planners: Dictionary = {}
 var _next_attack_times: Dictionary = {}
-var _attack_queue: Array[int] = []
+var _attack_queue: Array[Dictionary] = []
 var _is_attack_queue_running := false
 var _attack_animation_tweens: Array[Tween] = []
 var _attack_animation_wait_timers: Array[Timer] = []
@@ -91,7 +93,7 @@ func forget_unit(unit) -> void:
 	_remove_unit_timer(unit_card)
 	_remove_unit_action_planner(unit_card)
 	_next_attack_times.erase(unit_card)
-	_attack_queue.erase(unit_card.get_instance_id())
+	_remove_queued_actions_for_unit(unit_card.get_instance_id())
 
 
 func stop_for_merge() -> void:
@@ -282,8 +284,11 @@ func _on_unit_attack(attacker_id: int) -> void:
 
 func _queue_unit_attack(attacker_id: int) -> void:
 	# Timer 到点只登记一次攻击请求；真正动画由队列串行播放，避免同时出手时特效重叠。
-	if not _attack_queue.has(attacker_id):
-		_attack_queue.append(attacker_id)
+	if not _has_queued_turn(attacker_id):
+		_attack_queue.append({
+			"type": QUEUED_ACTION_TURN,
+			"attacker_id": attacker_id,
+		})
 	_start_attack_queue_if_needed()
 
 
@@ -301,13 +306,28 @@ func _drain_attack_queue() -> void:
 			_attack_queue.clear()
 			break
 
-		var attacker_id := int(_attack_queue.pop_front())
-		await _perform_queued_attack(attacker_id)
+		var action := _attack_queue.pop_front() as Dictionary
+		await _perform_queued_action(action)
 
 	_is_attack_queue_running = false
 
 
-func _perform_queued_attack(attacker_id: int) -> void:
+func _perform_queued_action(action: Dictionary) -> void:
+	if action.is_empty():
+		return
+
+	match action.get("type", &""):
+		QUEUED_ACTION_TURN:
+			await _perform_queued_turn(int(action.get("attacker_id", 0)))
+		QUEUED_ACTION_SKILL:
+			await _perform_queued_skill(
+				int(action.get("attacker_id", 0)),
+				action.get("skill") as BattleSkill,
+				int(action.get("target_id", 0))
+			)
+
+
+func _perform_queued_turn(attacker_id: int) -> void:
 	var attacker := _get_unit_by_instance_id(attacker_id)
 	if not is_active:
 		return
@@ -325,7 +345,17 @@ func _perform_queued_attack(attacker_id: int) -> void:
 		return
 
 	# 目标选择发生在队列真正执行时，而不是 Timer 到点时，避免目标已死却还在队列中等待播放动画。
-	await action_planner.perform_turn(self)
+	var skill := action_planner.get_selected_skill(self)
+	if skill == null or not skill.can_use(attacker, self):
+		_check_battle_end()
+		return
+
+	var target := skill.choose_target(attacker, self) as Card3D
+	if target == null:
+		_check_battle_end()
+		return
+
+	await _execute_skill(attacker, skill, target)
 	_check_battle_end()
 
 	# 一次完整攻击动画结束后，才重新计算并开启下一轮攻击 Timer。
@@ -334,7 +364,7 @@ func _perform_queued_attack(attacker_id: int) -> void:
 		_create_timer_for_unit(attacker, next_time)
 
 
-func request_attack(user, skill: BattleSkill, target) -> void:#TODO: 名义上是“统一请求 controller 执行技能”，但实现只是立即 await skill.execute(...)。现在串行只依赖 _drain_attack_queue() 的调用路径；以后装备效果、反击、触发技能如果直接调用 request_attack()，会绕过攻击队列并和现有动画/结算重叠。
+func request_attack(user, skill: BattleSkill, target) -> void:
 	var attacker_card := _get_valid_card(user)
 	var target_card := _get_valid_card(target)
 	if skill == null or attacker_card == null or target_card == null:
@@ -342,7 +372,32 @@ func request_attack(user, skill: BattleSkill, target) -> void:#TODO: 名义上�
 	if not is_active or not _is_alive(attacker_card) or not _is_alive(target_card):
 		return
 
-	# 所有技能请求都回到 controller 执行；controller 负责串行和最终存活校验。
+	# 反击、装备触发、手动技能都只登记请求；controller 队列会按顺序播放动画和结算。
+	_attack_queue.append({
+		"type": QUEUED_ACTION_SKILL,
+		"attacker_id": attacker_card.get_instance_id(),
+		"skill": skill,
+		"target_id": target_card.get_instance_id(),
+	})
+	_start_attack_queue_if_needed()
+
+
+func _perform_queued_skill(attacker_id: int, skill: BattleSkill, target_id: int) -> void:
+	var attacker := _get_unit_by_instance_id(attacker_id)
+	var target := _get_unit_by_instance_id(target_id)
+	await _execute_skill(attacker, skill, target)
+	_check_battle_end()
+
+
+func _execute_skill(attacker, skill: BattleSkill, target) -> void:
+	var attacker_card := _get_valid_card(attacker)
+	var target_card := _get_valid_card(target)
+	if skill == null or attacker_card == null or target_card == null:
+		return
+	if not is_active or not _is_alive(attacker_card) or not _is_alive(target_card):
+		return
+
+	# 所有技能最终都在队列 drain 中执行，确保动画、扣血、死亡信号按顺序发生。
 	await skill.execute(attacker_card, target_card, self)
 
 
@@ -375,12 +430,11 @@ func perform_basic_attack(attacker, target) -> void:
 	if not _is_alive(attacker_card) or not _is_alive(target_card):
 		return
 
-	_show_hit_flash(target_card)
-
 	var target_resource := _get_battle_resource(target_card)
 	if target_resource == null:
 		return
 
+	_show_hit_flash(target_card)
 	var hp_before := target_resource.HP
 	target_resource.take_damage(damage)
 	var actual_damage := hp_before - target_resource.HP
@@ -651,8 +705,21 @@ func _report_dead_unit(unit: Card3D) -> void:
 	var unit_id := unit_card.get_instance_id()
 	_remove_unit_timer(unit_card)
 	_remove_unit_action_planner(unit_card)
-	_attack_queue.erase(unit_id)
+	_remove_queued_actions_for_unit(unit_id)
 	unit_died.emit(unit_card)
+
+
+func _has_queued_turn(unit_id: int) -> bool:
+	for action in _attack_queue:
+		if action.get("type", &"") == QUEUED_ACTION_TURN and int(action.get("attacker_id", 0)) == unit_id:
+			return true
+	return false
+
+
+func _remove_queued_actions_for_unit(unit_id: int) -> void:
+	for action in _attack_queue.duplicate():
+		if int(action.get("attacker_id", 0)) == unit_id or int(action.get("target_id", 0)) == unit_id:
+			_attack_queue.erase(action)
 
 
 func _remove_unit_timer(unit) -> void:

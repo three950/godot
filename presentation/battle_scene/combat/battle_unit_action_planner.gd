@@ -62,6 +62,11 @@ func perform_turn(context = null) -> void:
 	await battle_context.request_attack(unit, skill, target)
 
 
+func get_selected_skill(context = null) -> BattleSkill:
+	var battle_context = context if context != null else _controller
+	return _select_skill(get_unit(), battle_context)
+
+
 func _select_skill(unit: Card3D, context) -> BattleSkill:
 	if unit == null or context == null:
 		return null
