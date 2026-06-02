@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://c4xdb8v0i2oa1"]
+
+[ext_resource type="PackedScene" uid="uid://bntgel7ybr1bb" path="res://card_3d.tscn" id="1_base"]
+[ext_resource type="Script" uid="uid://buvpce3rmr4f2" path="res://card_3d_scripts/coin_card_3d.gd" id="2_script"]
+[ext_resource type="Resource" path="res://assets/金币/金币.tres" id="3_coin"]
+
+[node name="CoinCard3D" groups=["Cards3D", "CoinCards3D"] instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+cardname = "金币"
+card_info = ExtResource("3_coin")
+can_stack = true

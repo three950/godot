@@ -3,6 +3,7 @@ extends Node
 signal card_fixed()
 signal card_put_in_bag(card:Card)
 signal stack_changed(card: Card3D)
+signal coin_cards_changed()
 
 #场景切换导致的物品资源池更新
 signal max_layer_changed(max_layer:int)

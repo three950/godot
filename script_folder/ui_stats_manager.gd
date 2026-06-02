@@ -17,10 +17,12 @@ func _ready() -> void:
 	Events.food_need_update.connect(_on_food_need_update)
 	Events.food_have_update.connect(_on_food_have_update)
 	Events.timers_pause_changed.connect(_on_timers_pause_changed)
+	Events.coin_cards_changed.connect(_on_coin_cards_changed)
 	play_icon.mouse_filter = Control.MOUSE_FILTER_STOP
 	play_icon.gui_input.connect(_on_play_icon_gui_input)
 	_on_timers_pause_changed(Events.timers_paused)
 	_update_stats()
+	call_deferred("_update_stats")
 	MusicPlayer.play(bgm)
 
 func _on_food_need_update(amount: int) -> void:
@@ -42,10 +44,24 @@ func _process(delta: float) -> void:
 		game_stats.days += 1
 
 func _update_stats() -> void:
-	coin_label.text = "%d" % game_stats.coins
+	coin_label.text = "%d" % _count_scene_coin_cards()
 	food_label.text = "%d/%d" % [game_stats.food_have, game_stats.food_need]
 	layer_label.text = "深渊%d层" % game_stats.layer
 	days_label.text = "%d天" % game_stats.days
+
+
+func _count_scene_coin_cards() -> int:
+	var coin_count := 0
+	for node in get_tree().get_nodes_in_group(CoinCard3D.COIN_CARD_GROUP):
+		var coin_card := node as CoinCard3D
+		if coin_card == null or coin_card.is_queued_for_deletion():
+			continue
+		coin_count += 1
+	return coin_count
+
+
+func _on_coin_cards_changed() -> void:
+	_update_stats()
 
 func _on_play_icon_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
