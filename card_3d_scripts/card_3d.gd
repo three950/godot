@@ -204,7 +204,7 @@ func _assign_card_info_to_2d_view(view: Node) -> void:
 		view.call("set_character_stats", card_info)
 		return
 
-	for property_name in ["character", "enemy", "scene", "item", "equipment", "recource", "remains"]:
+	for property_name in ["character", "enemy", "scene", "item", "equipment", "recource", "remains", "bagresource"]:
 		if _node_has_property(view, property_name):
 			view.set(property_name, card_info)
 			return

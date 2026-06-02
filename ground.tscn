@@ -78,19 +78,23 @@ metadata/_custom_type_script = "uid://bhwdhxluayto5"
 [node name="BattleManager" type="Node" parent="." unique_id=1707850464]
 script = ExtResource("21_battle_manager")
 
-[node name="ShopAreaController3D" type="Node" parent="." node_paths=PackedStringArray("ground_path", "shop_bag_path")]
+[node name="ShopAreaController3D" type="Node" parent="." unique_id=163373368 node_paths=PackedStringArray("ground_path", "shop_bag_path")]
 script = ExtResource("24_shop_area")
 ground_path = NodePath("../Ground")
 shop_bag_path = NodePath("../Ground/SubViewport/ShopBag")
+ground_node_name = "Ground"
+shop_bag_node_name = "ShopBag"
 viewport_size = Vector2(3840, 2160)
 ground_size = Vector2(34.71, 21.36)
 shop_area_rect = Rect2(0, 0, 3840, 397)
-package_hit_margin_px = 18.0
+package_hit_margin_px = 60.0
 shop_exit_padding_px = 220.0
 package_hitbox_y = 0.04
-package_hitbox_height = 0.8
+package_hitbox_height = 1.2
+nearest_package_x_acceptance = 1.45
+debug_drop_logs = true
 
-[node name="DebugCoinQuickSpawner" type="Node" parent="." node_paths=PackedStringArray("spawn_parent_path")]
+[node name="DebugCoinQuickSpawner" type="Node" parent="." unique_id=1239067677 node_paths=PackedStringArray("spawn_parent_path")]
 script = ExtResource("26_debug_coin")
 coin_scene = ExtResource("25_coin_card")
 spawn_parent_path = NodePath("..")
@@ -130,11 +134,11 @@ render_target_update_mode = 1
 
 [node name="backgroundUi" parent="Ground/SubViewport" unique_id=2123796363 instance=ExtResource("1_bg")]
 
-[node name="ShopBag" parent="Ground/SubViewport" instance=ExtResource("23_shop")]
+[node name="ShopBag" parent="Ground/SubViewport" unique_id=376863344 instance=ExtResource("23_shop")]
 offset_left = 921.0
 offset_right = 2921.0
 
-[node name="ShopBoundaryLine" type="ColorRect" parent="Ground/SubViewport"]
+[node name="ShopBoundaryLine" type="ColorRect" parent="Ground/SubViewport" unique_id=1781083544]
 offset_top = 389.0
 offset_right = 3840.0
 offset_bottom = 397.0

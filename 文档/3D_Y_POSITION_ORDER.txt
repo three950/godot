@@ -99,6 +99,8 @@ ViewportMesh：默认 local y = 0。
 
 普通重叠推开逻辑：只改 x/z，不改 y；推开后会同步更新堆叠链子卡位置，子卡仍按每层 y + 0.01。
 
+商店购买生成的卡：由 GroundPackage 直接创建 card_3d.tscn 实例，父节点使用场景中 Cards3D 分组里现有卡牌的父节点。落点取购买时传入的 3D 安全位置，但会强制把 global y 设为 spawn_card_world_y，默认是 0。
+
 
 父节点：Character3D 人物卡的 EquipmentHoverPreview
 父节点是运行时创建的装备悬停预览根节点，默认 local y = 0，挂在人物 Card3D 下。只有人物卡 children_card == null 时，左下悬停才会生成该节点。

@@ -112,3 +112,9 @@
 基于：被推动卡牌自己的 global_position.y。
 规则：推出逻辑只改 x/z，并把 target_position.y 设回 card.global_position.y。
 说明：不会改变卡牌高度。
+
+对象：商店购买生成的 Card3D 根节点。
+类型：动态但不产生 y 偏移。
+基于：GroundPackage.spawn_card_world_y。
+规则：购买生成位置会强制写入 spawn_card_world_y，默认是 0；父节点使用 Cards3D 分组里现有卡牌的父节点。
+说明：根节点落在普通桌面卡牌平面，不走揭示投掷动画，所以生成瞬间就是 y = 0。

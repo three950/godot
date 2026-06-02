@@ -1,28 +1,25 @@
 extends Button
 class_name CardPackage
 signal package_bought(CardPackage)
+
+const CARD_3D_SCENE: PackedScene = preload("res://card_3d.tscn")
+
 @export var game_stats:GameStats
 @export_multiline var package_name: String = ""  # 可导出的名称变量
 @export var mean_layer:int
 @export var package_price: int = 3  # 可导出的价格变量
-## 卡牌生成延迟时间（秒）
-@export var spawn_delay: float = 2.0
-## 卡牌生成位置偏移（相对于当前位置向下）
-@export var spawn_offset: Vector2 = Vector2(0, 360)
-@export var spawn_card_info: BagResource
+## 商店买出的 3D 卡固定落在桌面普通卡牌平面，默认 y = 0。
+@export var spawn_card_world_y: float = 0.0
+@export var spawn_card_info: Resource
 @onready var packagename: Label = %packagename
 @onready var value: Label = %value
 @onready var panel_3: Panel = $Panel3
 @export var coin_sound:AudioStream
 
-var _spawn_timers: Array[Timer] = []
-
 
 func _ready() -> void:
 	_update_display()
 	Events.max_layer_changed.connect(_update_state)
-	if not Events.timers_pause_changed.is_connected(_on_timers_pause_changed):
-		Events.timers_pause_changed.connect(_on_timers_pause_changed)
 	_update_state()
 
 
@@ -43,67 +40,71 @@ func try_accept_card_drop(dropped_card: Node, remaining_position: Variant = null
 	return _buy_package_with_coin_stack(coin_stack, remaining_position)
 
 
+func get_coin_purchase_debug_status(dropped_card: Node) -> String:
+	var coin_stack := dropped_card as CoinCard3D
+	if coin_stack == null:
+		return "not_coin_card"
+	if disabled:
+		return "package_disabled"
+	if game_stats == null:
+		return "missing_game_stats"
+	if spawn_card_info == null:
+		return "missing_spawn_card_info"
+	if _get_spawn_card_info() == null:
+		return "spawn_resource_not_card_info"
+	if _get_spawn_card_scene() == null:
+		return "missing_spawn_card_scene"
+	if _get_cards_3d_spawn_parent() == null:
+		return "missing_cards3d_parent"
+
+	var coin_count := coin_stack.get_coin_stack_count()
+	if coin_count < package_price:
+		return "not_enough_coins_%d_of_%d" % [coin_count, package_price]
+
+	return "ready"
+
+
 func _buy_package_with_coin_stack(coin_stack: CoinCard3D, remaining_position: Variant) -> bool:
-	if disabled or game_stats == null or spawn_card_info == null:
+	if disabled \
+			or game_stats == null \
+			or _get_spawn_card_info() == null \
+			or _get_spawn_card_scene() == null \
+			or _get_cards_3d_spawn_parent() == null:
 		return false
 	if not coin_stack.can_pay_coin_count(package_price):
 		return false
+	var spawn_position := _get_3d_spawn_position(remaining_position)
 	package_bought.emit(self)
 	coin_stack.spend_from_coin_stack(package_price, remaining_position)
-	# 延迟生成卡牌
-	_spawn_card_delayed()
+	# 购买成功后立即生成 3D 卡，不再做延迟等待。
+	_spawn_card(spawn_position)
 	if coin_sound:
 		SFXPlayer.play(coin_sound)
 	return true
 
-## 延迟生成卡牌
-func _spawn_card_delayed() -> void:
-	# 用场景内 Timer 代替 SceneTreeTimer，确保全局暂停时商店发包延迟也会停住。
-	var timer := Timer.new()
-	timer.one_shot = true
-	timer.wait_time = spawn_delay
-	timer.paused = Events.timers_paused
-	add_child(timer)
-	_spawn_timers.append(timer)
-	timer.timeout.connect(_on_spawn_timer_timeout.bind(timer))
-	timer.start()
-
-
-func _on_spawn_timer_timeout(timer: Timer) -> void:
-	_spawn_timers.erase(timer)
-	timer.queue_free()
-	_spawn_card()
-
-
-func _on_timers_pause_changed(is_paused: bool) -> void:
-	for timer in _spawn_timers.duplicate():
-		if timer == null or not is_instance_valid(timer):
-			_spawn_timers.erase(timer)
-			continue
-		timer.paused = is_paused
-
 ## 生成卡牌
-func _spawn_card() -> void:
-	# 根据卡牌资源类型选择正确的场景并实例化
-	var card_instance = _create_card_instance()
-	
-	# 计算生成位置（当前位置的下方）
-	var spawn_position = global_position+spawn_offset*1.1
-	card_instance.global_position = spawn_position
-	card_instance.z_index = 1
-	
-	# 将卡牌添加到Cards分组的根节点
-	var cards_group = get_tree().get_first_node_in_group("Cards")
-	if cards_group:
-		cards_group.add_child(card_instance)
-	print("卡牌已生成")
+func _spawn_card(spawn_position: Vector3) -> void:
+	var card_info := _get_spawn_card_info()
+	var spawn_parent := _get_cards_3d_spawn_parent()
+	if card_info == null or spawn_parent == null:
+		push_warning("CardPackage: cannot spawn 3D card because card_info or Cards3D parent is missing.")
+		return
 
-## 根据卡牌资源类型创建对应的卡牌实例
-func _create_card_instance() -> Node:
-	var instance = spawn_card_info.card_scene.instantiate()
-	instance.bagresource = spawn_card_info
-	instance.set_layer(mean_layer)
-	return instance
+	# 商店奖励统一生成真正的 Card3D，挂到桌面 Card3D 同级父节点下，避免落在 SubViewport/2D Cards 分组里看不见。
+	var spawned_card := CARD_3D_SCENE.instantiate() as Card3D
+	if spawned_card == null:
+		push_error("CardPackage: failed to spawn 3D card for %s." % card_info.name)
+		return
+
+	spawned_card.card_info = card_info
+	spawn_parent.add_child(spawned_card)
+	spawned_card.global_position = spawn_position
+
+	print("商店3D卡牌已生成: %s 位置: %s 父节点: %s" % [
+		card_info.name,
+		spawned_card.global_position,
+		spawn_parent.name,
+	])
 
 	
 func _update_state() -> void:
@@ -113,3 +114,29 @@ func _update_state() -> void:
 	else:
 		panel_3.hide()  # 隐藏面板
 		set_disabled(false)  # 启用按钮交互
+
+
+func _get_spawn_card_scene() -> PackedScene:
+	var card_info := _get_spawn_card_info()
+	if card_info == null:
+		return null
+	return card_info.get("card_scene") as PackedScene
+
+
+func _get_spawn_card_info() -> CardInfo:
+	return spawn_card_info as CardInfo
+
+
+func _get_3d_spawn_position(remaining_position: Variant) -> Vector3:
+	var spawn_position := Vector3.ZERO
+	if remaining_position is Vector3:
+		spawn_position = remaining_position
+	spawn_position.y = spawn_card_world_y
+	return spawn_position
+
+
+func _get_cards_3d_spawn_parent() -> Node:
+	var existing_card := get_tree().get_first_node_in_group("Cards3D") as Card3D
+	if existing_card != null and is_instance_valid(existing_card):
+		return existing_card.get_parent()
+	return get_tree().current_scene
