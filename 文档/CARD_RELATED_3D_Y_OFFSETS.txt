@@ -74,6 +74,11 @@
 基于：BattleScene3D/Visual。
 规则：场景中 local y = 0.04；运行时按 border_height * 0.5 + 0.01 重算，默认 border_height = 0.06，所以结果仍是 0.04。
 
+对象：ShopBag/PackageDropAreas/GroundPackage*DropArea3D。
+类型：静态检测区域。
+基于：presentation/shop_bag/shop.tscn 的 ShopBag 根节点。
+规则：local y = 0.04；金币 Card3D 落到静态 Area3D 盒体内时，ShopAreaController3D 会转发到对应 GroundPackage 执行购买。
+
 
 偏移 +0.01
 

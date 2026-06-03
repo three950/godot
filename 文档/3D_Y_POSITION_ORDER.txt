@@ -28,6 +28,8 @@ OceanMesh：y = -0.3。
 父节点自身 y = 0，位于 node_3d 根节点下。
 
 子节点从高到低：
+ShopBag：presentation/shop_bag/shop.tscn 实例，local y = 0。商店视觉和商品投放检测都归这个 3D 节点所有，不再放在 Ground/SubViewport 里。
+
 GroundMesh：local y = -0.052，所以当前全局 y = -0.052。
 
 GroundLayer01：local y = -3.052。
@@ -39,6 +41,15 @@ GroundLayer03：local y = -9.052。
 GroundLayer04：local y = -12.052。
 
 GroundLayer05：local y = -15.052。
+
+
+父节点：presentation/shop_bag/shop.tscn 的 ShopBag
+父节点自身默认 y = 0。ground.tscn 中作为 Ground 的子节点使用，local z 对齐原地面 SubViewport 顶部商店条。
+
+子节点从高到低：
+PackageDropAreas/GroundPackage*DropArea3D：local y = 0.04。静态商品投放检测区，金币卡落到这里时由 ShopAreaController3D 转发给对应 GroundPackage 处理购买。
+
+ViewportMesh：local y = -0.05。把商店自己的 SubViewport 贴到地面上方，低于卡牌正面和商品检测区，略高于 Ground/GroundMesh。
 
 
 父节点：card_3d.tscn 的 Card3d

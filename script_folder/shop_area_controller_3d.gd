@@ -6,9 +6,10 @@ const INVALID_VIEWPORT_POSITION := Vector2(INF, INF)
 
 # 导出变量 - 场景引用路径
 @export var ground_path: NodePath           # 地面3D节点路径
-@export var shop_bag_path: NodePath         # 商店背包UI节点路径
+@export var shop_path: NodePath             # 商店3D节点路径
+@export var shop_bag_path: NodePath         # 兼容旧场景的商店节点路径
 @export var ground_node_name: String = "Ground"      # 地面节点名称（备用查找）
-@export var shop_bag_node_name: String = "ShopBag"  # 背包节点名称（备用查找）
+@export var shop_node_name: String = "ShopBag"       # 商店节点名称（备用查找）
 
 # 地面纹理映射配置组
 @export_group("Ground Texture Mapping")
@@ -19,11 +20,7 @@ const INVALID_VIEWPORT_POSITION := Vector2(INF, INF)
 # 商店区域配置组
 @export_group("Shop Area")
 @export var shop_area_rect: Rect2 = Rect2(0, 0, 3840, 397)     # 商店区域矩形（视口坐标系）
-@export var package_hit_margin_px: float = 18.0                # 商品命中盒边距（像素）
 @export var shop_exit_padding_px: float = 220.0                # 商店出口偏移量（像素）
-@export var package_hitbox_y: float = 0.04                     # 商品命中盒Y轴位置
-@export var package_hitbox_height: float = 0.8                 # 商品命中盒高度
-@export var nearest_package_x_acceptance: float = 1.45         # 最近商品X轴接受范围
 
 # 调试配置组
 @export_group("Debug")
@@ -31,7 +28,7 @@ const INVALID_VIEWPORT_POSITION := Vector2(INF, INF)
 
 # 运行时节点引用（使用 @onready 自动初始化）
 @onready var _ground: Node3D = _resolve_node(ground_path, ground_node_name) as Node3D
-@onready var _shop_bag: Control = _resolve_node(shop_bag_path, shop_bag_node_name) as Control
+@onready var _shop: Node3D = _resolve_shop_node() as Node3D
 
 # 私有变量
 var _package_hitboxes: Array[Dictionary] = []  # 3D商品命中盒列表
@@ -41,7 +38,6 @@ var _package_hitboxes: Array[Dictionary] = []  # 3D商品命中盒列表
 
 func _ready() -> void:
 	add_to_group("ShopArea3D")
-	await get_tree().process_frame#TODO 这里也是因为area3d没设置所以需要这样写
 	_build_package_hitboxes()
 	_debug_ready_log()
 
@@ -127,6 +123,19 @@ func _resolve_node(configured_path: NodePath, fallback_name: String) -> Node:
 			return configured_node
 	return get_tree().root.find_child(fallback_name, true, false)
 
+
+func _resolve_shop_node() -> Node:
+	if not str(shop_path).is_empty():
+		var configured_shop := get_node_or_null(shop_path)
+		if _is_valid(configured_shop):
+			return configured_shop
+	if not str(shop_bag_path).is_empty():
+		var legacy_shop := get_node_or_null(shop_bag_path)
+		if _is_valid(legacy_shop):
+			return legacy_shop
+	return get_tree().root.find_child(shop_node_name, true, false)
+
+
 # 检查节点是否有效（非空且未被销毁）
 func _is_valid(node: Node) -> bool:
 	return node != null and is_instance_valid(node)
@@ -158,50 +167,38 @@ func _find_package_from_3d_hitbox(card: Card3D) -> Control:
 	return null
 
 
-# 建所有商品的3D碰撞盒
+# 读取商店场景内配置好的商品3D碰撞盒
 func _build_package_hitboxes() -> void:
-	if not _is_valid(_ground) or not _is_valid(_shop_bag):
+	_package_hitboxes.clear()
+	if not _is_valid(_shop):
 		return
 	
-	for package in _collect_card_packages(_shop_bag):
-		_add_package_hitbox(package)
+	for area in _collect_package_drop_areas(_shop):
+		var package := area.get_package()
+		var size := _get_drop_area_size(area)
+		if not _is_valid(package) or size == Vector3.ZERO:
+			continue
+		_package_hitboxes.append({"area": area, "package": package, "size": size})
 
 
-## 为单个商品添加3D碰撞盒#TODO area3d还是在场景中建号比较好
-## @param package: 商品控件
-func _add_package_hitbox(package: Control) -> void:
-	var rect := Rect2(package.global_position, package.size).grow(package_hit_margin_px)
-	
-	var center := _ground_viewport_to_ground_local(rect.get_center())
-	var size := Vector3(
-		rect.size.x / viewport_size.x * ground_size.x,
-		package_hitbox_height,
-		rect.size.y / viewport_size.y * ground_size.y
-	)
-	
-	var area := Area3D.new()
-	area.name = "%sShopDropArea3D" % package.name
-	area.collision_mask = 2
-	area.position = Vector3(center.x, package_hitbox_y, center.z)
-	_ground.add_child(area)
-	
-	var shape := CollisionShape3D.new()
-	shape.shape = BoxShape3D.new()
-	(shape.shape as BoxShape3D).size = size
-	area.add_child(shape)
-	
-	_package_hitboxes.append({"area": area, "package": package, "size": size})
-
-
-# 递归收集所有支持卡牌掉落的商品控件
-# @param root: 搜索起始节点
-# @return: 商品控件数组
-func _collect_card_packages(root: Node) -> Array[CardPackage]:
-	var result: Array[CardPackage] = []
+func _collect_package_drop_areas(root: Node) -> Array[ShopPackageDropArea3D]:
+	var result: Array[ShopPackageDropArea3D] = []
+	if root is ShopPackageDropArea3D:
+		result.append(root)
 	for child in root.get_children():
-		if child is CardPackage:
-			result.append(child)
+		result.append_array(_collect_package_drop_areas(child))
 	return result
+
+
+func _get_drop_area_size(area: Area3D) -> Vector3:
+	for child in area.get_children():
+		var shape_node := child as CollisionShape3D
+		if shape_node == null:
+			continue
+		var box_shape := shape_node.shape as BoxShape3D
+		if box_shape != null:
+			return box_shape.size
+	return Vector3.ZERO
 
 
 # ======================== 辅助函数 ========================
@@ -214,23 +211,6 @@ func _get_shop_exit_position(card: Card3D, viewport_position: Vector2) -> Vector
 	var safe_viewport_pos := viewport_position
 	safe_viewport_pos.y = shop_area_rect.position.y + shop_area_rect.size.y + shop_exit_padding_px
 	return ground_viewport_to_world(safe_viewport_pos, card.global_position.y)
-
-
-# 将视口坐标转换为地面局部坐标
-# @param viewport_position: 视口坐标
-# @return: 地面局部3D坐标（Y轴为0）
-func _ground_viewport_to_ground_local(viewport_position: Vector2) -> Vector3:
-	var normalized_x := viewport_position.x / viewport_size.x
-	var normalized_y := viewport_position.y / viewport_size.y
-	
-	if not texture_top_is_negative_z:
-		normalized_y = 1.0 - normalized_y
-	
-	return Vector3(
-		(normalized_x - 0.5) * ground_size.x,
-		0.0,
-		(normalized_y - 0.5) * ground_size.y
-	)
 
 
 # 将卡牌链移出商店区域
@@ -321,8 +301,8 @@ func _debug_ready_log() -> void:
 		ground_name = _ground.name
 	
 	var shop_name := "none"
-	if _is_valid(_shop_bag):
-		shop_name = _shop_bag.name
+	if _is_valid(_shop):
+		shop_name = _shop.name
 	
 	print("[ShopArea3D] ready ground=%s shop=%s package_hitboxes=%d" % [
 		ground_name, shop_name, _package_hitboxes.size()

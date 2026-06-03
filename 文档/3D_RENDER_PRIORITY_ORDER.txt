@@ -5,6 +5,7 @@
 0：海洋动态 shader（OceanMesh 的 OceanWavesMaterial）
 -1：攻击 2D 特效贴图（Attack3D 的 2D SubViewport 贴到 ViewportMesh 平面上）
 -80：受击白色闪烁遮罩（战斗中动态生成的 HitWhiteMask，盖在卡牌表面）
+-126：商店 viewport 贴图（presentation/shop_bag/shop.tscn 的 ViewportMesh，独立 3D 商店视觉）
 -127：地面 viewport 贴图（Ground/GroundMesh，把 Ground/SubViewport 内容贴到地面平面）
 -127：地下背景图层 01（GroundLayer01）
 -127：地下背景图层 02（GroundLayer02）

@@ -85,7 +85,7 @@ coin_scene = ExtResource("25_coin_card")
 [node name="ShopAreaController3D" type="Node" parent="." unique_id=163373368]
 script = ExtResource("24_shop_area")
 ground_path = NodePath("../Ground")
-shop_bag_path = NodePath("../Ground/SubViewport/ShopBag")
+shop_path = NodePath("../Ground/ShopBag")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=440816023]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 12.213525, 0)
@@ -118,16 +118,15 @@ render_target_update_mode = 1
 
 [node name="backgroundUi" parent="Ground/SubViewport" unique_id=2123796363 instance=ExtResource("1_bg")]
 
-[node name="ShopBag" parent="Ground/SubViewport" unique_id=376863344 instance=ExtResource("23_shop")]
-offset_left = 921.0
-offset_right = 2921.0
-
 [node name="ShopBoundaryLine" type="ColorRect" parent="Ground/SubViewport" unique_id=1781083544]
 offset_top = 389.0
 offset_right = 3840.0
 offset_bottom = 397.0
 mouse_filter = 2
 color = Color(0.1764706, 0.12156863, 0.06666667, 1)
+
+[node name="ShopBag" parent="Ground" unique_id=376863344 instance=ExtResource("23_shop")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8.974166)
 
 [node name="GroundMesh" type="MeshInstance3D" parent="Ground" unique_id=1430717003]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.052, 0)

@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://cpvvd1084dyc8"]
 
+[ext_resource type="Script" path="res://presentation/shop_bag/shop_package_drop_area_3d.gd" id="1_area"]
 [ext_resource type="Resource" uid="uid://flhywkkf61mb" path="res://base_data/game_stats.tres" id="2_tyvbe"]
 [ext_resource type="PackedScene" uid="uid://dde8q2r1usqpa" path="res://presentation/shop_bag/GroundPackage.tscn" id="4_fovme"]
 [ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/cards/钓鱼竿.tres" id="5_773qs"]
@@ -7,19 +8,46 @@
 [ext_resource type="AudioStream" uid="uid://cjq0vp7xl35vh" path="res://声音资产/useful/coin_sound.mp3" id="7_8o2f1"]
 [ext_resource type="Resource" uid="uid://b5lhfvaex1tbh" path="res://assets/物品/资源/鱼.tres" id="8_7hq0p"]
 
-[node name="HBoxContainer" type="HBoxContainer" unique_id=1849008416]
+[sub_resource type="ViewportTexture" id="ViewportTexture_shop"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shop"]
+resource_local_to_scene = true
+resource_name = "ShopViewportMaterial"
+render_priority = -126
+transparency = 1
+shading_mode = 2
+albedo_texture = SubResource("ViewportTexture_shop")
+texture_filter = 0
+disable_receive_shadows = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_shop"]
+size = Vector2(18.060046, 3.411666)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_package_drop"]
+size = Vector3(2.7117188, 0.8, 3.7676666)
+
+[node name="ShopBag" type="Node3D" unique_id=1849008416]
+
+[node name="SubViewport" type="SubViewport" parent="."]
+disable_3d = true
+transparent_bg = true
+size = Vector2i(1998, 345)
+render_target_update_mode = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport"]
 offset_right = 1998.0
 offset_bottom = 345.0
 mouse_filter = 2
 theme_override_constants/separation = 25
 alignment = 1
 
-[node name="GroundPackage" parent="." unique_id=2042522313 instance=ExtResource("4_fovme")]
+[node name="GroundPackage" parent="SubViewport/HBoxContainer" unique_id=2042522313 instance=ExtResource("4_fovme")]
 layout_mode = 2
 game_stats = ExtResource("2_tyvbe")
 spawn_card_info = ExtResource("5_773qs")
 
-[node name="GroundPackage1" parent="." unique_id=753576639 instance=ExtResource("4_fovme")]
+[node name="GroundPackage1" parent="SubViewport/HBoxContainer" unique_id=753576639 instance=ExtResource("4_fovme")]
 layout_mode = 2
 game_stats = ExtResource("2_tyvbe")
 package_name = "深界一层
@@ -28,7 +56,7 @@ package_price = 5
 spawn_card_info = ExtResource("6_6c2nj")
 coin_sound = ExtResource("7_8o2f1")
 
-[node name="GroundPackage2" parent="." unique_id=399810940 instance=ExtResource("4_fovme")]
+[node name="GroundPackage2" parent="SubViewport/HBoxContainer" unique_id=399810940 instance=ExtResource("4_fovme")]
 layout_mode = 2
 game_stats = ExtResource("2_tyvbe")
 package_name = "深界二层
@@ -36,30 +64,108 @@ package_name = "深界二层
 package_price = 8
 spawn_card_info = ExtResource("8_7hq0p")
 
-[node name="GroundPackage3" parent="." unique_id=566522953 instance=ExtResource("4_fovme")]
+[node name="GroundPackage3" parent="SubViewport/HBoxContainer" unique_id=566522953 instance=ExtResource("4_fovme")]
 layout_mode = 2
 game_stats = ExtResource("2_tyvbe")
 package_name = "深界三层
 大断层"
 package_price = 12
 
-[node name="GroundPackage4" parent="." unique_id=938509066 instance=ExtResource("4_fovme")]
+[node name="GroundPackage4" parent="SubViewport/HBoxContainer" unique_id=938509066 instance=ExtResource("4_fovme")]
 layout_mode = 2
 game_stats = ExtResource("2_tyvbe")
 package_name = "深界四层
 巨人之杯"
 package_price = 18
 
-[node name="GroundPackage5" parent="." unique_id=294019065 instance=ExtResource("4_fovme")]
+[node name="GroundPackage5" parent="SubViewport/HBoxContainer" unique_id=294019065 instance=ExtResource("4_fovme")]
 layout_mode = 2
 game_stats = ExtResource("2_tyvbe")
 package_name = "深界五层
 亡骸之海"
 package_price = 25
 
-[node name="GroundPackage6" parent="." unique_id=1130141460 instance=ExtResource("4_fovme")]
+[node name="GroundPackage6" parent="SubViewport/HBoxContainer" unique_id=1130141460 instance=ExtResource("4_fovme")]
 layout_mode = 2
 game_stats = ExtResource("2_tyvbe")
 package_name = "深界六层
 来无回之都"
 package_price = 35
+
+[node name="ViewportMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+material_override = SubResource("StandardMaterial3D_shop")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_shop")
+
+[node name="PackageDropAreas" type="Node3D" parent="."]
+
+[node name="GroundPackageDropArea3D" type="Area3D" parent="PackageDropAreas"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.8368673, 0.04, 0)
+collision_mask = 2
+input_ray_pickable = false
+script = ExtResource("1_area")
+package_path = NodePath("../../SubViewport/HBoxContainer/GroundPackage")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackageDropArea3D"]
+shape = SubResource("BoxShape3D_package_drop")
+
+[node name="GroundPackage1DropArea3D" type="Area3D" parent="PackageDropAreas"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.224578, 0.04, 0)
+collision_mask = 2
+input_ray_pickable = false
+script = ExtResource("1_area")
+package_path = NodePath("../../SubViewport/HBoxContainer/GroundPackage1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackage1DropArea3D"]
+shape = SubResource("BoxShape3D_package_drop")
+
+[node name="GroundPackage2DropArea3D" type="Area3D" parent="PackageDropAreas"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.612289, 0.04, 0)
+collision_mask = 2
+input_ray_pickable = false
+script = ExtResource("1_area")
+package_path = NodePath("../../SubViewport/HBoxContainer/GroundPackage2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackage2DropArea3D"]
+shape = SubResource("BoxShape3D_package_drop")
+
+[node name="GroundPackage3DropArea3D" type="Area3D" parent="PackageDropAreas"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+collision_mask = 2
+input_ray_pickable = false
+script = ExtResource("1_area")
+package_path = NodePath("../../SubViewport/HBoxContainer/GroundPackage3")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackage3DropArea3D"]
+shape = SubResource("BoxShape3D_package_drop")
+
+[node name="GroundPackage4DropArea3D" type="Area3D" parent="PackageDropAreas"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.612289, 0.04, 0)
+collision_mask = 2
+input_ray_pickable = false
+script = ExtResource("1_area")
+package_path = NodePath("../../SubViewport/HBoxContainer/GroundPackage4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackage4DropArea3D"]
+shape = SubResource("BoxShape3D_package_drop")
+
+[node name="GroundPackage5DropArea3D" type="Area3D" parent="PackageDropAreas"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.224578, 0.04, 0)
+collision_mask = 2
+input_ray_pickable = false
+script = ExtResource("1_area")
+package_path = NodePath("../../SubViewport/HBoxContainer/GroundPackage5")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackage5DropArea3D"]
+shape = SubResource("BoxShape3D_package_drop")
+
+[node name="GroundPackage6DropArea3D" type="Area3D" parent="PackageDropAreas"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8368673, 0.04, 0)
+collision_mask = 2
+input_ray_pickable = false
+script = ExtResource("1_area")
+package_path = NodePath("../../SubViewport/HBoxContainer/GroundPackage6")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackage6DropArea3D"]
+shape = SubResource("BoxShape3D_package_drop")

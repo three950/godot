@@ -2,7 +2,7 @@ extends Button#TODO 不再是按钮了，是普通的2d
 class_name CardPackage
 
 ## 当卡包被成功购买时发出信号
-signal package_bought()
+signal package_bought(package: CardPackage)
 
 # --- 资源引用 ---
 ## 3D卡牌的场景资源，用于实例化新的卡牌
@@ -32,8 +32,7 @@ var _cards_3d_parent: Node = null
 
 func _ready() -> void:
 	# 缓存3D卡牌的父节点。"Cards3D"的组。
-	var any_card_3d := get_tree().get_first_node_in_group("Cards3D") as Card3D
-	_cards_3d_parent = any_card_3d.get_parent()
+	_resolve_cards_3d_parent()
 
 	_update_display()
 	# 连接游戏状态中"最大层数改变"的信号，用于更新卡包的锁定/解锁状态
@@ -70,8 +69,8 @@ func _update_lock_state() -> void:
 ## 返回值: 是否成功接受并处理了这次拖拽（用于拖拽系统判断）。
 func _can_drop_data(_position: Vector2, data: Variant) -> bool:
 	# 检查拖拽的数据是否是一个CoinCard3D节点
-	var dragged_card: Node = data
-	if not dragged_card is CoinCard3D:
+	var dragged_card := data as CoinCard3D
+	if dragged_card == null:
 		return false
 	
 	# 返回是否可以购买（仅检查条件，不实际购买）
@@ -91,6 +90,16 @@ func _drop_data(_position: Vector2, data: Variant) -> void:
 ## 检查给定的金币卡是否足以购买此卡包（不执行实际扣费和生成动作）
 ## 用于拖拽时的有效性检查（比如鼠标图标变化）
 func _is_purchase_possible(coin_card: CoinCard3D) -> bool:
+	if coin_card == null:
+		return false
+	if disabled:
+		return false
+	if package_price <= 0:
+		return false
+	if spawn_card_info == null:
+		return false
+	if _resolve_cards_3d_parent() == null:
+		return false
 	if not coin_card.can_pay_coin_count(package_price):
 		return false
 	
@@ -129,6 +138,7 @@ func _spawn_3d_card(fall_position: Vector3) -> void:
 	if spawn_card_info == null:
 		push_error("CardPackage: 无法生成3D卡牌，因为 spawn_card_info 为空。")
 		return
+	_resolve_cards_3d_parent()
 	if _cards_3d_parent == null:
 		push_error("CardPackage: 无法生成3D卡牌，因为 _cards_3d_parent 为空。")
 		return
@@ -157,6 +167,16 @@ func _spawn_3d_card(fall_position: Vector3) -> void:
 	])
 
 
+func _resolve_cards_3d_parent() -> Node:
+	if _cards_3d_parent != null and is_instance_valid(_cards_3d_parent):
+		return _cards_3d_parent
+	
+	var any_card_3d := get_tree().get_first_node_in_group("Cards3D") as Card3D
+	if any_card_3d != null:
+		_cards_3d_parent = any_card_3d.get_parent()
+	return _cards_3d_parent
+
+
 # --- 保留但修改/注释的原始接口（为了兼容外部调用）---
 # 如果外部有其他脚本调用了 try_accept_card_drop，可以保留此函数
 func try_accept_card_drop(dropped_card: Node, remaining_position: Variant = null) -> bool:
@@ -170,5 +190,20 @@ func try_accept_card_drop(dropped_card: Node, remaining_position: Variant = null
 	
 	return _try_buy_package_with_coin(coin_card, drop_pos)
 
-# 调试函数，如果确实需要可以保留，但建议只在调试模式下使用
-# 或者完全移除，因为 _is_purchase_possible 已经能给出足够的错误预防
+
+func get_coin_purchase_debug_status(dropped_card: Node) -> String:
+	var coin_card := dropped_card as CoinCard3D
+	if coin_card == null:
+		return "not_coin"
+	if disabled:
+		return "package_locked"
+	if package_price <= 0:
+		return "invalid_price"
+	if spawn_card_info == null:
+		return "missing_spawn_card_info"
+	if _resolve_cards_3d_parent() == null:
+		return "missing_cards_3d_parent"
+	var coin_count := coin_card.get_coin_stack_count()
+	if coin_count < package_price:
+		return "not_enough_coins price=%d coins=%d" % [package_price, coin_count]
+	return "can_buy"
