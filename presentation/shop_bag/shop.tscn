@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cpvvd1084dyc8"]
 
-[ext_resource type="Script" path="res://presentation/shop_bag/shop_package_drop_area_3d.gd" id="1_area"]
+[ext_resource type="Script" uid="uid://b70m81pdft06a" path="res://presentation/shop_bag/shop_package_drop_area_3d.gd" id="1_area"]
 [ext_resource type="Resource" uid="uid://flhywkkf61mb" path="res://base_data/game_stats.tres" id="2_tyvbe"]
 [ext_resource type="PackedScene" uid="uid://dde8q2r1usqpa" path="res://presentation/shop_bag/GroundPackage.tscn" id="4_fovme"]
 [ext_resource type="Resource" uid="uid://fcqupg4pyrk6" path="res://assets/物品/道具/cards/钓鱼竿.tres" id="5_773qs"]
@@ -22,20 +22,20 @@ texture_filter = 0
 disable_receive_shadows = true
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_shop"]
-size = Vector2(18.060046, 3.411666)
+size = Vector2(18.060045, 3.411666)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_package_drop"]
-size = Vector3(2.7117188, 0.8, 3.7676666)
+size = Vector3(2.64, 0.8, 3.45)
 
 [node name="ShopBag" type="Node3D" unique_id=1849008416]
 
-[node name="SubViewport" type="SubViewport" parent="."]
+[node name="SubViewport" type="SubViewport" parent="." unique_id=184216964]
 disable_3d = true
 transparent_bg = true
 size = Vector2i(1998, 345)
 render_target_update_mode = 4
 
-[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport"]
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport" unique_id=569937540]
 offset_right = 1998.0
 offset_bottom = 345.0
 mouse_filter = 2
@@ -45,7 +45,6 @@ alignment = 1
 [node name="GroundPackage" parent="SubViewport/HBoxContainer" unique_id=2042522313 instance=ExtResource("4_fovme")]
 layout_mode = 2
 game_stats = ExtResource("2_tyvbe")
-unlock_threshold_layer = 0
 spawn_card_info = ExtResource("5_773qs")
 
 [node name="GroundPackage1" parent="SubViewport/HBoxContainer" unique_id=753576639 instance=ExtResource("4_fovme")]
@@ -99,80 +98,80 @@ package_name = "深界六层
 unlock_threshold_layer = 6
 package_price = 35
 
-[node name="ViewportMesh" type="MeshInstance3D" parent="."]
+[node name="ViewportMesh" type="MeshInstance3D" parent="." unique_id=278771414]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
 material_override = SubResource("StandardMaterial3D_shop")
 cast_shadow = 0
 mesh = SubResource("PlaneMesh_shop")
 
-[node name="PackageDropAreas" type="Node3D" parent="."]
+[node name="PackageDropAreas" type="Node3D" parent="." unique_id=1909941886]
 
-[node name="GroundPackageDropArea3D" type="Area3D" parent="PackageDropAreas"]
+[node name="GroundPackageDropArea3D" type="Area3D" parent="PackageDropAreas" unique_id=305401397]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.8368673, 0.04, 0)
 collision_mask = 2
 input_ray_pickable = false
 script = ExtResource("1_area")
 package_path = NodePath("../../SubViewport/HBoxContainer/GroundPackage")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackageDropArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackageDropArea3D" unique_id=1126993289]
 shape = SubResource("BoxShape3D_package_drop")
 
-[node name="GroundPackage1DropArea3D" type="Area3D" parent="PackageDropAreas"]
+[node name="GroundPackage1DropArea3D" type="Area3D" parent="PackageDropAreas" unique_id=1419945284]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.224578, 0.04, 0)
 collision_mask = 2
 input_ray_pickable = false
 script = ExtResource("1_area")
 package_path = NodePath("../../SubViewport/HBoxContainer/GroundPackage1")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackage1DropArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackage1DropArea3D" unique_id=267020944]
 shape = SubResource("BoxShape3D_package_drop")
 
-[node name="GroundPackage2DropArea3D" type="Area3D" parent="PackageDropAreas"]
+[node name="GroundPackage2DropArea3D" type="Area3D" parent="PackageDropAreas" unique_id=1142353210]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.612289, 0.04, 0)
 collision_mask = 2
 input_ray_pickable = false
 script = ExtResource("1_area")
 package_path = NodePath("../../SubViewport/HBoxContainer/GroundPackage2")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackage2DropArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackage2DropArea3D" unique_id=2125461874]
 shape = SubResource("BoxShape3D_package_drop")
 
-[node name="GroundPackage3DropArea3D" type="Area3D" parent="PackageDropAreas"]
+[node name="GroundPackage3DropArea3D" type="Area3D" parent="PackageDropAreas" unique_id=1926245134]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
 collision_mask = 2
 input_ray_pickable = false
 script = ExtResource("1_area")
 package_path = NodePath("../../SubViewport/HBoxContainer/GroundPackage3")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackage3DropArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackage3DropArea3D" unique_id=1465348276]
 shape = SubResource("BoxShape3D_package_drop")
 
-[node name="GroundPackage4DropArea3D" type="Area3D" parent="PackageDropAreas"]
+[node name="GroundPackage4DropArea3D" type="Area3D" parent="PackageDropAreas" unique_id=723892952]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.612289, 0.04, 0)
 collision_mask = 2
 input_ray_pickable = false
 script = ExtResource("1_area")
 package_path = NodePath("../../SubViewport/HBoxContainer/GroundPackage4")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackage4DropArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackage4DropArea3D" unique_id=1274907044]
 shape = SubResource("BoxShape3D_package_drop")
 
-[node name="GroundPackage5DropArea3D" type="Area3D" parent="PackageDropAreas"]
+[node name="GroundPackage5DropArea3D" type="Area3D" parent="PackageDropAreas" unique_id=300714139]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.224578, 0.04, 0)
 collision_mask = 2
 input_ray_pickable = false
 script = ExtResource("1_area")
 package_path = NodePath("../../SubViewport/HBoxContainer/GroundPackage5")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackage5DropArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackage5DropArea3D" unique_id=1404297511]
 shape = SubResource("BoxShape3D_package_drop")
 
-[node name="GroundPackage6DropArea3D" type="Area3D" parent="PackageDropAreas"]
+[node name="GroundPackage6DropArea3D" type="Area3D" parent="PackageDropAreas" unique_id=1053480100]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8368673, 0.04, 0)
 collision_mask = 2
 input_ray_pickable = false
 script = ExtResource("1_area")
 package_path = NodePath("../../SubViewport/HBoxContainer/GroundPackage6")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackage6DropArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageDropAreas/GroundPackage6DropArea3D" unique_id=1733884586]
 shape = SubResource("BoxShape3D_package_drop")

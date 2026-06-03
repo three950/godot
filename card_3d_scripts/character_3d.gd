@@ -4,12 +4,14 @@ extends Card3D
 
 const CARD_3D_SCENE: PackedScene = preload("res://card_3d.tscn")
 const CARD_THROW_PHYSICS_SCRIPT: GDScript = preload("res://script_folder/card_reveal_spawner.gd")
+const COIN_CARD_3D_SCENE_PATH := "res://assets/金币/coin_card_3d.tscn"
 const EQUIPMENT_HOVER_PREVIEW_NAME := "EquipmentHoverPreview"
 const EQUIPMENT_HOVER_AREA_NAME := "EquipmentHoverPreviewArea"
 const EQUIPMENT_HOVER_AREA_PADDING := Vector2(0.2, 0.2)
 const EQUIPMENT_HOVER_AREA_HEIGHT := 0.8
 
 @onready var bottom_left_hover_timer: Timer = get_node_or_null("BottomLeftHoverArea/BottomLeftHoverTimer") as Timer
+@onready var coin_generation_timer: Timer = get_node_or_null("CoinGenerationTimer") as Timer
 # 这两个节点是人物卡内置的装备展示参考位；节点名保持通用，避免和具体物品数据绑定。
 @onready var equipment_weapon_preview_template: Card3D = get_node_or_null("WeaponPreview") as Card3D
 @onready var equipment_armor_preview_template: Card3D = get_node_or_null("ArmorPreview") as Card3D
@@ -34,6 +36,65 @@ func _ready() -> void:
 		bottom_left_hover_timer.wait_time = 0.6
 		if not bottom_left_hover_timer.timeout.is_connected(_on_bottom_left_hover_timer_timeout):
 			bottom_left_hover_timer.timeout.connect(_on_bottom_left_hover_timer_timeout)
+
+
+func start_fixed_coin_generation_timer() -> void:
+	if coin_generation_timer == null:
+		push_warning("Character3D: missing CoinGenerationTimer.")
+		return
+
+	coin_generation_timer.one_shot = false
+	if not coin_generation_timer.timeout.is_connected(_on_coin_generation_timer_timeout):
+		coin_generation_timer.timeout.connect(_on_coin_generation_timer_timeout)
+	if not Events.timers_pause_changed.is_connected(_on_timers_pause_changed):
+		Events.timers_pause_changed.connect(_on_timers_pause_changed)
+	coin_generation_timer.paused = Events.timers_paused
+	coin_generation_timer.start()
+
+
+func stop_fixed_coin_generation_timer() -> void:
+	if coin_generation_timer != null:
+		coin_generation_timer.stop()
+		coin_generation_timer.paused = false
+		if coin_generation_timer.timeout.is_connected(_on_coin_generation_timer_timeout):
+			coin_generation_timer.timeout.disconnect(_on_coin_generation_timer_timeout)
+	if Events.timers_pause_changed.is_connected(_on_timers_pause_changed):
+		Events.timers_pause_changed.disconnect(_on_timers_pause_changed)
+
+
+func _on_timers_pause_changed(is_paused: bool) -> void:
+	if coin_generation_timer != null:
+		coin_generation_timer.paused = is_paused
+
+
+func _on_coin_generation_timer_timeout() -> void:
+	_spawn_generated_coin_card()
+
+
+func _spawn_generated_coin_card() -> void:
+	var coin_card_info := GAME_STATS.generated_coin_card_info
+	if coin_card_info == null:
+		push_warning("Character3D: GameStats.generated_coin_card_info is not assigned.")
+		return
+
+	var coin_scene := load(COIN_CARD_3D_SCENE_PATH) as PackedScene
+	if coin_scene == null:
+		push_warning("Character3D: failed to load generated coin card scene %s." % COIN_CARD_3D_SCENE_PATH)
+		return
+
+	var spawn_parent := get_parent()
+	if spawn_parent == null:
+		push_warning("Character3D: no Cards3D parent found for generated coin.")
+		return
+
+	var spawned_card := CARD_THROW_PHYSICS_SCRIPT.spawn_revealed_card(
+			coin_card_info,
+			global_position,
+			spawn_parent,
+			coin_scene
+	) as Card3D
+	if spawned_card == null:
+		push_warning("Character3D: failed to spawn generated coin card.")
 
 
 func bestacked_on_me(children: Card3D) -> void:

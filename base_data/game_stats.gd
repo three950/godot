@@ -5,6 +5,7 @@ extends Resource
 @export var days:int:set = set_days#总天数
 
 @export var coins:int:set = set_coins #金币
+@export var generated_coin_card_info: CardInfo #角色定时生成金币卡的卡面数据
 
 @export var food_need:int:set = set_food_need#总共需要的食物
 @export var food_have:int:set = set_food_have#现有的食物

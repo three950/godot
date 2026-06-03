@@ -94,6 +94,9 @@ shape = SubResource("BoxShape3D_bottom_left_hover")
 unique_name_in_owner = true
 one_shot = true
 
+[node name="CoinGenerationTimer" type="Timer" parent="." unique_id=449081475]
+wait_time = 5.0
+
 [node name="CardStackDetectorArea" type="Area3D" parent="." unique_id=1021535360]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
 collision_mask = 2

@@ -7,6 +7,13 @@ func enter() -> void:
 	card.reset_offset()
 	card.reparent_requested.emit(card)
 	card.end_drag()
+	if card.has_method("start_fixed_coin_generation_timer"):
+		card.call("start_fixed_coin_generation_timer")
+
+
+func exit() -> void:
+	if card.has_method("stop_fixed_coin_generation_timer"):
+		card.call("stop_fixed_coin_generation_timer")
 
 
 func on_area_input(camera: Camera3D, event: InputEvent, event_position: Vector3, _normal: Vector3, _shape_idx: int) -> void:

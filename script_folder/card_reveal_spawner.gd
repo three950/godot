@@ -9,6 +9,7 @@ enum Phase {
 	RISE_FLIP,
 	FALL,
 	BOUNCE,
+	SETTLE_DELAY,
 	SETTLED,
 }
 
@@ -75,12 +76,17 @@ func _ready() -> void:
 		play_card_reveal()
 
 
-static func spawn_revealed_card(card_info: CardInfo, spawn_position: Vector3, spawn_parent: Node) -> Card3D:
+static func spawn_revealed_card(
+		card_info: CardInfo,
+		spawn_position: Vector3,
+		spawn_parent: Node,
+		card_scene: PackedScene = null
+) -> Card3D:
 	if spawn_parent == null:
 		push_error("CardRevealSpawner: spawn_parent is null.")
 		return null
 
-	var card_3d_scene := load(CARD_3D_SCENE_UID) as PackedScene
+	var card_3d_scene := card_scene if card_scene != null else load(CARD_3D_SCENE_UID) as PackedScene
 	if card_3d_scene == null:
 		push_error("CardRevealSpawner: failed to load %s." % CARD_3D_SCENE_UID)
 		return null
@@ -94,6 +100,11 @@ static func spawn_revealed_card(card_info: CardInfo, spawn_position: Vector3, sp
 	spawn_parent.add_child(instance)
 	instance.global_position = spawn_position
 
+	_attach_reveal_to_card(instance, spawn_position)
+	return instance
+
+
+static func _attach_reveal_to_card(instance: Card3D, spawn_position: Vector3) -> void:
 	var reveal: Node = load("res://script_folder/card_reveal_spawner.gd").new()
 	reveal.name = "CraftRevealThrow"
 	reveal.auto_play_on_ready = false
@@ -104,8 +115,6 @@ static func spawn_revealed_card(card_info: CardInfo, spawn_position: Vector3, sp
 	reveal.print_motion_samples = false
 	instance.add_child(reveal)
 	reveal.play_card_reveal()
-
-	return instance
 
 func _physics_process(delta: float) -> void:
 	if _card == null or _phase == Phase.IDLE or _phase == Phase.SETTLED:
@@ -120,6 +129,8 @@ func _physics_process(delta: float) -> void:
 			_update_fall()
 		Phase.BOUNCE:
 			_update_bounce()
+		Phase.SETTLE_DELAY:
+			_update_settle_delay()
 
 	if print_motion_samples and _phase_time >= _next_sample_time:
 		_next_sample_time += motion_sample_interval
@@ -194,11 +205,14 @@ func _update_bounce() -> void:
 	if t >= 1.0:
 		_bounce_index += 1
 		if _bounce_index >= _bounce_count:
-			_enter_phase(Phase.SETTLED)
-			await get_tree().create_timer(settle_delay).timeout
-			_settle_card()
+			_enter_phase(Phase.SETTLE_DELAY)
 		else:
 			_enter_phase(Phase.BOUNCE)
+
+
+func _update_settle_delay() -> void:
+	if _phase_time >= maxf(settle_delay, 0.0):
+		_settle_card()
 
 
 func _settle_card() -> void:
@@ -334,6 +348,8 @@ func _phase_name() -> String:
 			return "fall"
 		Phase.BOUNCE:
 			return "bounce_%d" % [_bounce_index + 1]
+		Phase.SETTLE_DELAY:
+			return "settle_delay"
 		Phase.SETTLED:
 			return "settled"
 		_:

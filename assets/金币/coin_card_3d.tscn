@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://c4xdb8v0i2oa1"]
+
+[ext_resource type="PackedScene" uid="uid://bntgel7ybr1bb" path="res://card_3d.tscn" id="1_base"]
+[ext_resource type="Script" uid="uid://buvpce3rmr4f2" path="res://card_3d_scripts/coin_card_3d.gd" id="2_script"]
+[ext_resource type="Resource" uid="uid://cfef8wndp7fxm" path="res://assets/金币/金币.tres" id="3_coin"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_k2kea"]
+viewport_path = NodePath("FrontFace/SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7ii8e"]
+resource_local_to_scene = true
+resource_name = "Card3DFrontMaterial"
+transparency = 2
+alpha_scissor_threshold = 0.01
+alpha_antialiasing_mode = 0
+shading_mode = 2
+albedo_texture = SubResource("ViewportTexture_k2kea")
+texture_filter = 0
+disable_receive_shadows = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c2chi"]
+resource_local_to_scene = true
+resource_name = "Card3DBackBlackMaterial"
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 1)
+disable_receive_shadows = true
+
+[node name="CoinCard3D" unique_id=1702575123 groups=["CoinCards3D"] instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+cardname = "金币"
+card_info = ExtResource("3_coin")
+
+[node name="FrontFace" parent="." index="0" unique_id=1833840304]
+material_override = SubResource("StandardMaterial3D_7ii8e")
+
+[node name="BackFace" parent="." index="1" unique_id=103283408]
+material_override = SubResource("StandardMaterial3D_c2chi")

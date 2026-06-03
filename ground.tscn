@@ -22,7 +22,7 @@
 [ext_resource type="PackedScene" uid="uid://6mswy8o4g4l5" path="res://character_3d.tscn" id="22_s0gvp"]
 [ext_resource type="PackedScene" uid="uid://cpvvd1084dyc8" path="res://presentation/shop_bag/shop.tscn" id="23_shop"]
 [ext_resource type="Script" uid="uid://bbx7ba1838vwn" path="res://script_folder/shop_area_controller_3d.gd" id="24_shop_area"]
-[ext_resource type="PackedScene" uid="uid://c4xdb8v0i2oa1" path="res://coin_card_3d.tscn" id="25_coin_card"]
+[ext_resource type="PackedScene" uid="uid://c4xdb8v0i2oa1" path="res://assets/金币/coin_card_3d.tscn" id="25_coin_card"]
 [ext_resource type="Script" uid="uid://72kxphkxtdhm" path="res://script_folder/debug_coin_quick_spawner.gd" id="26_debug_coin"]
 
 [sub_resource type="Environment" id="Environment_card_shadow"]
@@ -126,7 +126,7 @@ mouse_filter = 2
 color = Color(0.1764706, 0.12156863, 0.06666667, 1)
 
 [node name="ShopBag" parent="Ground" unique_id=376863344 instance=ExtResource("23_shop")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8.974166)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8.598314)
 
 [node name="GroundMesh" type="MeshInstance3D" parent="Ground" unique_id=1430717003]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.052, 0)
@@ -165,7 +165,7 @@ cardname = "钓鱼竿"
 card_info = ExtResource("11_fishing_rod")
 
 [node name="石块" parent="." unique_id=611933154 instance=ExtResource("5_i5arm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.812561, 0, -7.4912834)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.812561, 0, -2.08286)
 cardname = "石块"
 card_info = ExtResource("11_i0g27")
 
@@ -175,7 +175,7 @@ cardname = "鱼"
 card_info = ExtResource("13_fish")
 
 [node name="树枝" parent="." unique_id=1256753826 instance=ExtResource("5_i5arm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.846097, 0, -5.37652)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.846097, 0, -4.185395)
 cardname = "化石树的树枝"
 card_info = ExtResource("15_ealrb")
 

@@ -1,11 +1,13 @@
 [gd_resource type="Resource" script_class="GameStats" format=3 uid="uid://flhywkkf61mb"]
 
 [ext_resource type="Script" uid="uid://dhbllj5o00dyc" path="res://base_data/game_stats.gd" id="1_2b2sk"]
+[ext_resource type="Resource" uid="uid://cfef8wndp7fxm" path="res://assets/金币/金币.tres" id="2_coin_info"]
 
 [resource]
 script = ExtResource("1_2b2sk")
 time = 2
 coins = 100
+generated_coin_card_info = ExtResource("2_coin_info")
 layer = 3
 max_layer = 3
 metadata/_custom_type_script = "uid://dhbllj5o00dyc"
