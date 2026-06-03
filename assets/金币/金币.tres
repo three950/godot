@@ -9,5 +9,5 @@ script = ExtResource("1_info")
 card_scene = ExtResource("2_scene")
 name = "金币"
 portrait = ExtResource("3_coin")
-"能被堆叠" = false
+"能被堆叠" = true
 type = 5

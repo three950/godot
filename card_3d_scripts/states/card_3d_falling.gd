@@ -3,17 +3,10 @@ extends Card3DState
 
 func enter() -> void:
 	await get_tree().process_frame
-	card.dropped.emit(self)
-	card.end_drag()
-
-	if _apply_shop_drop_rules():
-		if _is_card_still_available():
-			card.snap_to_base_plane()
-			if card.children_card != null:
-				card.update_children_position()
-			transition_requested.emit(self, Card3DState.State.fixed)
-			_play_fall_sound()
+	card.dropped.emit(self, card)
+	if not _is_card_still_available():
 		return
+	card.end_drag()
 
 	if _try_apply_stack_interaction():
 		if _is_card_still_available():
@@ -48,10 +41,20 @@ func enter() -> void:
 func find_closest_card() -> Card3D:
 	var closest_card: Card3D = null
 	var closest_distance_sq := INF
+	var checked_cards: Array[Card3D] = []
 
-	for target_card in card.overlapping_cards:
+	for overlapping_card in card.overlapping_cards:
+		if overlapping_card == null or not is_instance_valid(overlapping_card):
+			continue
+
+		var target_card := overlapping_card.get_stack_tail()
 		if target_card == null or not is_instance_valid(target_card):
 			continue
+		if target_card == card or card.has_card_in_child_stack(target_card):
+			continue
+		if checked_cards.has(target_card):
+			continue
+		checked_cards.append(target_card)
 
 		var target_state := target_card.card_state_machine.current_state if target_card.card_state_machine else null
 		var is_bestacked := target_state != null \
@@ -80,24 +83,6 @@ func _try_apply_stack_interaction() -> bool:
 	return false
 
 
-func _apply_shop_drop_rules() -> bool:
-	var shop_controller := _get_shop_area_controller()
-	if shop_controller == null:
-		return false
-	if not shop_controller.has_method("apply_card_drop_rules"):
-		return false
-
-	# 商店区域是地面 SubViewport 上的 2D 区块；控制器负责把 3D 落点换算过去。
-	return bool(shop_controller.call("apply_card_drop_rules", card))
-
-
-func _get_shop_area_controller() -> Node:
-	var tree := card.get_tree() if card != null else null
-	if tree == null:
-		return null
-	return tree.get_first_node_in_group("ShopArea3D")
-
-
 func _get_stack_interaction_candidates() -> Array[Card3D]:
 	var candidates: Array[Card3D] = []
 	for target_card in card.overlapping_cards:
@@ -117,6 +102,12 @@ func _get_stack_interaction_candidates() -> Array[Card3D]:
 
 
 func stack_on_card(target_card: Card3D) -> void:
+	target_card = target_card.get_stack_tail()
+	if target_card == null or not is_instance_valid(target_card):
+		return
+	if target_card == card or card.has_card_in_child_stack(target_card):
+		return
+
 	card.stack_state = Card3DState.STACK_STATE_STACKING
 	card.follow_target = target_card
 	# 自己成为某张卡的上层卡时，自己的堆叠归属也已经改变；先通知本卡监听者取消旧合成。

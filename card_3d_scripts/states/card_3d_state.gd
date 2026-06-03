@@ -1,7 +1,7 @@
 class_name Card3DState
 extends Node
 
-enum State {fixed, pickingup, dragging, falling, instack, instackdragging}
+enum State {fixed, pickingup, dragging, falling, instack, instackdragging, battle}
 enum CardType {normal, selling, architecture}
 
 signal transition_requested(from: Card3DState, to: State)

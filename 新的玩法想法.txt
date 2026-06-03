@@ -11,7 +11,7 @@
 
 
 
-
+find_closest_card() 只排除了“状态是 instack 且已经有子卡”的目标，但底部金币通常是 fixed + bestacked，没有被排除。
 
 
 

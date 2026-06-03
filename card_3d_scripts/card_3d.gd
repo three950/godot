@@ -6,7 +6,7 @@ signal card_label_entered_stack_area(entering_card: Card3D)
 signal card_label_exited_stack_area(exiting_card: Card3D)
 signal stacking_on_you(children: Card3D)
 signal stop_stacking_on_you()
-signal dropped(source_state: Card3DState)
+signal dropped(source_state: Card3DState, card: Card3D)
 signal drag_started()
 signal array_changed()
 signal reparent_requested(which_card: Card3D)
@@ -398,6 +398,25 @@ func get_stack_head() -> Card3D:
 	while current.follow_target != null:
 		current = current.follow_target
 	return current
+
+
+func get_stack_tail() -> Card3D:
+	var current: Card3D = self
+	while current.children_card != null and is_instance_valid(current.children_card):
+		current = current.children_card
+	return current
+
+
+func has_card_in_child_stack(candidate: Card3D) -> bool:
+	if candidate == null:
+		return false
+
+	var current := children_card
+	while current != null and is_instance_valid(current):
+		if current == candidate:
+			return true
+		current = current.children_card
+	return false
 
 
 func get_child_stack_position() -> Vector3:

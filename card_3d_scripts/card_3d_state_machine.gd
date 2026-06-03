@@ -8,6 +8,7 @@ signal card_fixed(card: Card3D)
 var current_state: Card3DState
 var states := {}
 var _card: Card3D = null
+var _battle_scene: Node = null
 
 
 func init(card: Card3D) -> void:
@@ -52,11 +53,35 @@ func on_mouse_exited() -> void:
 
 
 func force_transition(to: Card3DState.State) -> void:
+	if to == Card3DState.State.battle:
+		return
 	_transition_to(to)
+
+
+func enter_battle_state(battle_scene: Node) -> bool:
+	if not states.has(Card3DState.State.battle):
+		return false
+	_battle_scene = battle_scene
+	_transition_to(Card3DState.State.battle)
+	return true
+
+
+func exit_battle_state() -> bool:
+	if current_state == null or current_state.state != Card3DState.State.battle:
+		return false
+	_battle_scene = null
+	_transition_to(Card3DState.State.fixed)
+	return true
+
+
+func get_battle_scene() -> Node:
+	return _battle_scene
 
 
 func _on_transition_requested(from: Card3DState, to: Card3DState.State) -> void:
 	if from != current_state:
+		return
+	if to == Card3DState.State.battle:
 		return
 
 	_transition_to(to)
@@ -104,5 +129,7 @@ func _state_name_by_enum(state_value: Card3DState.State) -> String:
 			return "instack"
 		Card3DState.State.instackdragging:
 			return "instackdragging"
+		Card3DState.State.battle:
+			return "battle"
 		_:
 			return "unknown(%s)" % [str(state_value)]

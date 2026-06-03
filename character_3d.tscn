@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://bdu5oslu7jijs" path="res://card_3d_scripts/states/card_3d_falling.gd" id="7_70tqk"]
 [ext_resource type="Script" uid="uid://ckoavtjfv7hmc" path="res://card_3d_scripts/states/card_3d_instack.gd" id="8_hfncb"]
 [ext_resource type="Script" uid="uid://dk7r8p6btsrfb" path="res://card_3d_scripts/states/card_3d_instack_dragging.gd" id="9_kompf"]
+[ext_resource type="Script" uid="uid://botoikhbr5jp8" path="res://card_3d_scripts/states/card_3d_battle.gd" id="10_battle"]
 [ext_resource type="PackedScene" uid="uid://bntgel7ybr1bb" path="res://card_3d.tscn" id="10_7gu60"]
 [ext_resource type="Script" uid="uid://lrsjtdiq5il8" path="res://card_3d_scripts/character_3d.gd" id="10_character3d"]
 
@@ -144,6 +145,10 @@ state = 4
 [node name="Card3DInstackDragging" type="Node" parent="Card3DStateMachine" unique_id=1397542537]
 script = ExtResource("9_kompf")
 state = 5
+
+[node name="Card3DBattle" type="Node" parent="Card3DStateMachine"]
+script = ExtResource("10_battle")
+state = 6
 
 [node name="WeaponPreview" parent="." unique_id=24067575 instance=ExtResource("10_7gu60")]
 transform = Transform3D(0.6724733, 0.023483282, 0.19294615, -0.02442965, 0.6995736, 0, -0.19282863, -0.0067337235, 0.67288315, -1.3783197, 0.5, 1.8962269)
