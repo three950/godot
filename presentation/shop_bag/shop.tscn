@@ -45,6 +45,7 @@ alignment = 1
 [node name="GroundPackage" parent="SubViewport/HBoxContainer" unique_id=2042522313 instance=ExtResource("4_fovme")]
 layout_mode = 2
 game_stats = ExtResource("2_tyvbe")
+unlock_threshold_layer = 0
 spawn_card_info = ExtResource("5_773qs")
 
 [node name="GroundPackage1" parent="SubViewport/HBoxContainer" unique_id=753576639 instance=ExtResource("4_fovme")]
@@ -52,6 +53,7 @@ layout_mode = 2
 game_stats = ExtResource("2_tyvbe")
 package_name = "深界一层
 阿比斯之渊"
+unlock_threshold_layer = 1
 package_price = 5
 spawn_card_info = ExtResource("6_6c2nj")
 coin_sound = ExtResource("7_8o2f1")
@@ -61,6 +63,7 @@ layout_mode = 2
 game_stats = ExtResource("2_tyvbe")
 package_name = "深界二层
 诱惑之森"
+unlock_threshold_layer = 2
 package_price = 8
 spawn_card_info = ExtResource("8_7hq0p")
 
@@ -69,6 +72,7 @@ layout_mode = 2
 game_stats = ExtResource("2_tyvbe")
 package_name = "深界三层
 大断层"
+unlock_threshold_layer = 3
 package_price = 12
 
 [node name="GroundPackage4" parent="SubViewport/HBoxContainer" unique_id=938509066 instance=ExtResource("4_fovme")]
@@ -76,6 +80,7 @@ layout_mode = 2
 game_stats = ExtResource("2_tyvbe")
 package_name = "深界四层
 巨人之杯"
+unlock_threshold_layer = 4
 package_price = 18
 
 [node name="GroundPackage5" parent="SubViewport/HBoxContainer" unique_id=294019065 instance=ExtResource("4_fovme")]
@@ -83,6 +88,7 @@ layout_mode = 2
 game_stats = ExtResource("2_tyvbe")
 package_name = "深界五层
 亡骸之海"
+unlock_threshold_layer = 5
 package_price = 25
 
 [node name="GroundPackage6" parent="SubViewport/HBoxContainer" unique_id=1130141460 instance=ExtResource("4_fovme")]
@@ -90,6 +96,7 @@ layout_mode = 2
 game_stats = ExtResource("2_tyvbe")
 package_name = "深界六层
 来无回之都"
+unlock_threshold_layer = 6
 package_price = 35
 
 [node name="ViewportMesh" type="MeshInstance3D" parent="."]

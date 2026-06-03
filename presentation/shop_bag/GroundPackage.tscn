@@ -5,7 +5,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_daudm"]
 bg_color = Color(0.07840798, 0.078405924, 0.059983395, 1)
 
-[node name="GroundPackage" type="Button" unique_id=1062222207]
+[node name="GroundPackage" type="Control" unique_id=1062222207]
 custom_minimum_size = Vector2(264, 345)
 offset_top = -1.0
 offset_right = 88.0
@@ -86,5 +86,3 @@ grow_vertical = 2
 theme_override_font_sizes/font_size = 48
 text = "？？？"
 horizontal_alignment = 1
-
-[connection signal="pressed" from="." to="." method="_on_pressed"]

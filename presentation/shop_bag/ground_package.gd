@@ -1,4 +1,4 @@
-extends Button#TODO 不再是按钮了，是普通的2d
+extends Control
 class_name CardPackage
 
 ## 当卡包被成功购买时发出信号
@@ -28,6 +28,7 @@ const CARD_3D_SCENE: PackedScene = preload("res://card_3d.tscn")
 # --- 私有变量 ---
 ## 缓存所有3D卡牌的父节点，避免每次生成时都去场景树查找，提升性能
 var _cards_3d_parent: Node = null
+var _is_locked: bool = true
 
 
 func _ready() -> void:
@@ -36,7 +37,10 @@ func _ready() -> void:
 
 	_update_display()
 	# 连接游戏状态中"最大层数改变"的信号，用于更新卡包的锁定/解锁状态
-	Events.max_layer_changed.connect(_update_lock_state)
+	if not Events.max_layer_changed.is_connected(_update_lock_state):
+		Events.max_layer_changed.connect(_update_lock_state)
+	if game_stats != null and not game_stats.changed.is_connected(_update_lock_state):
+		game_stats.changed.connect(_update_lock_state)
 	# 初始更新一次锁定状态
 	_update_lock_state()
 
@@ -48,23 +52,22 @@ func _update_display() -> void:
 
 
 ## 根据玩家当前层数更新卡包的锁定/解锁状态
-func _update_lock_state() -> void:
-	# 如果游戏状态无效，直接禁用并返回
+func _update_lock_state(_max_layer: int = -1) -> void:
 	if game_stats == null:
+		_is_locked = true
+		lock_panel.show()
 		return
 		
-	var is_locked: bool = game_stats.max_layer <= unlock_threshold_layer
+	_is_locked = game_stats.max_layer < unlock_threshold_layer
 	
-	# 按钮的禁用状态与锁定状态同步
-	set_disabled(is_locked)
 	# 锁定遮罩面板的显示与锁定状态同步
-	if is_locked:
+	if _is_locked:
 		lock_panel.show()
 	else:
 		lock_panel.hide()
 
 
-## 当鼠标（或拖拽的卡片）落在这个按钮上时，Godot会自动调用这个方法（如果按钮的`mouse_filter`设置为`MOUSE_FILTER_STOP`）。
+## 当鼠标（或拖拽的卡片）落在这个控件上时，Godot会自动调用这个方法（如果控件的`mouse_filter`设置为`MOUSE_FILTER_STOP`）。
 ## 我们用它来处理从外部拖拽过来的金币卡。
 ## 返回值: 是否成功接受并处理了这次拖拽（用于拖拽系统判断）。
 func _can_drop_data(_position: Vector2, data: Variant) -> bool:
@@ -92,7 +95,9 @@ func _drop_data(_position: Vector2, data: Variant) -> void:
 func _is_purchase_possible(coin_card: CoinCard3D) -> bool:
 	if coin_card == null:
 		return false
-	if disabled:
+	if game_stats == null:
+		return false
+	if _is_locked:
 		return false
 	if package_price <= 0:
 		return false
@@ -195,7 +200,9 @@ func get_coin_purchase_debug_status(dropped_card: Node) -> String:
 	var coin_card := dropped_card as CoinCard3D
 	if coin_card == null:
 		return "not_coin"
-	if disabled:
+	if game_stats == null:
+		return "missing_game_stats"
+	if _is_locked:
 		return "package_locked"
 	if package_price <= 0:
 		return "invalid_price"
